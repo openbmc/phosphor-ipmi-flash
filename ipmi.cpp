@@ -38,3 +38,9 @@ ipmi_ret_t startTransfer(UpdateInterface* updater, const uint8_t* reqBuf,
     (*dataLen) = 1;
     return IPMI_CC_OK;
 }
+
+ipmi_ret_t dataBlock(UpdateInterface* updater, const uint8_t* reqBuf,
+                     uint8_t* replyBuf, size_t* dataLen)
+{
+    
+}
