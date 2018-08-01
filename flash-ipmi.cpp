@@ -37,3 +37,9 @@ bool FlashUpdate::start(uint32_t)
     /* Start over! */
     return openEverything();
 }
+
+bool FlashUpdate::flashData(uint32_t offset, const std::vector<uint8_t>& bytes)
+{
+    /* TODO: implement. */
+    return false;
+}

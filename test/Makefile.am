@@ -10,9 +10,13 @@ AM_LDFLAGS = \
 
 # Run all 'check' test programs
 check_PROGRAMS = \
-	ipmi_starttransfer_unittest
+	ipmi_starttransfer_unittest \
+	ipmi_flashdata_unittest
 
 TESTS = $(check_PROGRAMS)
 
 ipmi_starttransfer_unittest_SOURCES = ipmi_starttransfer_unittest.cpp
 ipmi_starttransfer_unittest_LDADD = $(top_builddir)/ipmi.o
+
+ipmi_flashdata_unittest_SOURCES = ipmi_flashdata_unittest.cpp
+ipmi_flashdata_unittest_LDADD = $(top_builddir)/ipmi.o
