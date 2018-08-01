@@ -1,5 +1,10 @@
 #pragma once
 
+#include "host-ipmid/ipmid-api.h"
+
+/* Clearer way to represent the subcommand size. */
+#define SUBCMD_SZ sizeof(uint8_t)
+
 /*
  * flashStartTransfer -- starts file upload.
  * flashDataBlock -- adds data to image file.
@@ -54,4 +59,53 @@ enum FlashSubCmds
     flashDataExtBlock = 11,
     flashHashExtData = 12,
     flashMapRegionLpc = 13,
+};
+
+/*
+ * StartTransfer expects a basic structure providing some information.
+ */
+struct StartTx
+{
+    uint8_t cmd;
+    uint32_t length; /* Maximum image length is 4GiB (little-endian) */
+} __attribute__((packed));
+
+class UpdateInterface
+{
+  public:
+    virtual ~UpdateInterface() = default;
+
+    virtual bool start(uint32_t) = 0;
+};
+
+class FlashUpdate : public UpdateInterface
+{
+  public:
+    FlashUpdate() = default;
+    ~FlashUpdate() = default;
+    FlashUpdate(const FlashUpdate&) = default;
+    FlashUpdate& operator=(const FlashUpdate&) = default;
+    FlashUpdate(FlashUpdate&&) = default;
+    FlashUpdate& operator=(FlashUpdate&&) = default;
+
+    /**
+     * Prepare to receive a BMC image and then a signature.
+     *
+     * @param[in] packet - pointer to the StartTx structure.
+     * @return true on success, false otherwise.
+     */
+    bool start(uint32_t length) override;
+
+  private:
+    /**
+     * Tries to close out and delete anything staged.
+     */
+    void abortEverything();
+
+    /**
+     * Open all staged file handles you expect to use.
+     *
+     * @return false on failure.
+     */
+    bool openEverything();
 };
