@@ -17,6 +17,8 @@
 #include "host-ipmid/ipmid-api.h"
 #include "host-ipmid/oemrouter.hpp"
 
+#include "flash-ipmi.hpp"
+
 /* TODO: Once OEM IPMI number placement is settled, point to that. */
 namespace oem
 {
