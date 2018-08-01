@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+#include <memory>
+
 #include "host-ipmid/ipmid-api.h"
 #include "host-ipmid/oemrouter.hpp"
 
 #include "flash-ipmi.hpp"
+#include "ipmi.hpp"
 
 /* TODO: Once OEM IPMI number placement is settled, point to that. */
 namespace oem
@@ -29,6 +32,9 @@ constexpr int flashOverBTCmd = 127;
 } // namespace google
 } // namespace oem
 
+/* We have one instance of the FlashUpdate object tracking commands. */
+std::unique_ptr<FlashUpdate> flashUpdateSingleton;
+
 static ipmi_ret_t flashControl(ipmi_cmd_t cmd, const uint8_t* reqBuf,
                                uint8_t* replyCmdBuf, size_t* dataLen)
 {
@@ -36,6 +42,18 @@ static ipmi_ret_t flashControl(ipmi_cmd_t cmd, const uint8_t* reqBuf,
     if ((*dataLen) < 1)
     {
         return IPMI_CC_INVALID;
+    }
+
+    uint8_t subCmd = reqBuf[0];
+
+    /* TODO: This could be cleaner to just have a function pointer table, may
+     * transition in later patchset.
+     */
+    switch (subCmd)
+    {
+        case FlashSubCmds::flashStartTransfer:
+            return startTransfer(flashUpdateSingleton.get(), reqBuf,
+                                 replyCmdBuf, dataLen);
     }
 
     return IPMI_CC_INVALID;
@@ -58,6 +76,8 @@ void setupGlobalOemFlashControl() __attribute__((constructor));
 
 void setupGlobalOemFlashControl()
 {
+    flashUpdateSingleton = std::make_unique<FlashUpdate>();
+
 #ifdef ENABLE_GOOGLE
     oem::Router* router = oem::mutableRouter();
 
