@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "host-ipmid/ipmid-api.h"
 
 /* Clearer way to represent the subcommand size. */
@@ -70,12 +72,21 @@ struct StartTx
     uint32_t length; /* Maximum image length is 4GiB (little-endian) */
 } __attribute__((packed));
 
+struct ChunkHdr
+{
+    uint8_t cmd;
+    uint32_t offset; /* 0-based write offset */
+    uint8_t data[];
+} __attribute__((packed));
+
 class UpdateInterface
 {
   public:
     virtual ~UpdateInterface() = default;
 
     virtual bool start(uint32_t) = 0;
+    virtual bool flashData(uint32_t offset,
+                           const std::vector<uint8_t>& bytes) = 0;
 };
 
 class FlashUpdate : public UpdateInterface
@@ -95,6 +106,15 @@ class FlashUpdate : public UpdateInterface
      * @return true on success, false otherwise.
      */
     bool start(uint32_t length) override;
+
+    /**
+     * Attempt to write the bytes at the offset.
+     *
+     * @param[in] offset - the 0-based byte offset into the flash image.
+     * @param[in] bytes - the bytes to write.
+     * @return true on success, false otherwise.
+     */
+    bool flashData(uint32_t offset, const std::vector<uint8_t>& bytes) override;
 
   private:
     /**
