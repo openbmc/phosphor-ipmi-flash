@@ -2,54 +2,27 @@
 
 #include <gtest/gtest.h>
 
-// ipmid.hpp isn't installed where we can grab it and this value is per BMC
-// SoC.
-#define MAX_IPMI_BUFFER 64
-
-TEST(IpmiValidateTest, BoringValidateCheckReturnsTrue)
+TEST(IpmiValidateTest, VerifyCommandMinimumLengths)
 {
-    // Verify the validate check can return true when it's happy.
-    auto cmd = FlashSubCmds::flashStartTransfer;
-    size_t dataLen = sizeof(struct StartTx);
-    EXPECT_TRUE(validateRequestLength(cmd, dataLen));
-}
+    struct TestCases
+    {
+        FlashSubCmds cmd;
+        size_t len;
+        bool expect;
+    };
 
-TEST(IpmiValidateTest, InvalidLengthStartTransferReturnsFalse)
-{
-    // Verify that the request is sanity checked w.r.t length.
-    auto cmd = FlashSubCmds::flashStartTransfer;
-    size_t dataLen = sizeof(struct StartTx) - 1;
-    EXPECT_FALSE(validateRequestLength(cmd, dataLen));
-}
+    std::vector<TestCases> tests = {
+        {FlashSubCmds::flashStartTransfer, sizeof(struct StartTx), true},
+        {FlashSubCmds::flashStartTransfer, sizeof(struct StartTx) - 1, false},
+        {FlashSubCmds::flashDataBlock, sizeof(struct ChunkHdr) - 1, false},
+        {FlashSubCmds::flashDataBlock, sizeof(struct ChunkHdr), false},
+        {FlashSubCmds::flashStartHash, sizeof(struct StartTx) - 1, false},
+        {FlashSubCmds::flashHashData, sizeof(struct ChunkHdr) - 1, false},
+    };
 
-TEST(IpmiValidateTest, InvalidLengthDataBlockReturnsFalse)
-{
-    // This request isn't large enough to be well-formed.
-    auto cmd = FlashSubCmds::flashDataBlock;
-    size_t dataLen = sizeof(struct ChunkHdr) - 1;
-    EXPECT_FALSE(validateRequestLength(cmd, dataLen));
-}
-
-TEST(IpmiValidateTest, DataBlockNoDataReturnsFalse)
-{
-    // If the request has no data, it's invalid, returns failure.
-    auto cmd = FlashSubCmds::flashDataBlock;
-    size_t dataLen = sizeof(struct ChunkHdr);
-    EXPECT_FALSE(validateRequestLength(cmd, dataLen));
-}
-
-TEST(IpmiValidateTest, StartHashInvalidReturnsFalse)
-{
-    // Verify the request is sanity checked w.r.t length.
-    auto cmd = FlashSubCmds::flashStartHash;
-    size_t dataLen = sizeof(struct StartTx) - 1;
-    EXPECT_FALSE(validateRequestLength(cmd, dataLen));
-}
-
-TEST(IpmiValidateTest, InvalidLengthHashBlockReturnsFalse)
-{
-    // This request isn't large enough to be well-formed.
-    auto cmd = FlashSubCmds::flashHashData;
-    size_t dataLen = sizeof(struct ChunkHdr) - 1;
-    EXPECT_FALSE(validateRequestLength(cmd, dataLen));
+    for (const auto& test : tests)
+    {
+        bool result = validateRequestLength(test.cmd, test.len);
+        EXPECT_EQ(result, test.expect);
+    }
 }
