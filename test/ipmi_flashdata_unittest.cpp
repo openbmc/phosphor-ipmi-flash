@@ -14,46 +14,6 @@ using ::testing::StrictMock;
 // SoC.
 #define MAX_IPMI_BUFFER 64
 
-TEST(IpmiFlashData, InvalidRequestLengthReturnsFailure)
-{
-    // This request isn't large enough to be well-formed.
-
-    StrictMock<UpdaterMock> updater;
-
-    size_t dataLen;
-    uint8_t request[MAX_IPMI_BUFFER] = {0};
-    uint8_t reply[MAX_IPMI_BUFFER] = {0};
-
-    struct ChunkHdr tx;
-    tx.cmd = FlashSubCmds::flashDataBlock;
-    tx.offset = 0x00;
-    std::memcpy(request, &tx, sizeof(tx));
-
-    dataLen = sizeof(tx) - 1; // It's too small to be a valid packet.
-
-    EXPECT_EQ(IPMI_CC_INVALID, dataBlock(&updater, request, reply, &dataLen));
-}
-
-TEST(IpmiFlashData, NoDataReturnsFailure)
-{
-    // If the request has no data, it's invalid, returns failure.
-
-    StrictMock<UpdaterMock> updater;
-
-    size_t dataLen;
-    uint8_t request[MAX_IPMI_BUFFER] = {0};
-    uint8_t reply[MAX_IPMI_BUFFER] = {0};
-
-    struct ChunkHdr tx;
-    tx.cmd = FlashSubCmds::flashDataBlock;
-    tx.offset = 0x00;
-    std::memcpy(request, &tx, sizeof(tx));
-
-    dataLen = sizeof(tx); // It's only the header, so no data.
-
-    EXPECT_EQ(IPMI_CC_INVALID, dataBlock(&updater, request, reply, &dataLen));
-}
-
 TEST(IpmiFlashData, DataReceivedIsPassedOnOk)
 {
     // If valid data was passed in, it'll pass it onto the update handler.
