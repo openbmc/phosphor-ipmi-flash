@@ -23,6 +23,7 @@
 std::unordered_map<FlashSubCmds, size_t> minimumLengths = {
     {FlashSubCmds::flashStartTransfer, sizeof(struct StartTx)},
     {FlashSubCmds::flashDataBlock, sizeof(struct ChunkHdr) + 1},
+    {FlashSubCmds::flashStartHash, sizeof(struct StartTx)},
 };
 
 bool validateRequestLength(FlashSubCmds command, size_t requestLen)
@@ -92,6 +93,22 @@ ipmi_ret_t dataFinish(UpdateInterface* updater, const uint8_t* reqBuf,
     }
 
     /* TODO: If all commands return this on success, handle it in one place. */
+
+    /* We were successful and set the response byte to 0. */
+    replyBuf[0] = 0x00;
+    (*dataLen) = 1;
+    return IPMI_CC_OK;
+}
+
+ipmi_ret_t startHash(UpdateInterface* updater, const uint8_t* reqBuf,
+                     uint8_t* replyBuf, size_t* dataLen)
+{
+    auto request = reinterpret_cast<const struct StartTx*>(reqBuf);
+
+    if (!updater->startHash(request->length))
+    {
+        return IPMI_CC_INVALID;
+    }
 
     /* We were successful and set the response byte to 0. */
     replyBuf[0] = 0x00;
