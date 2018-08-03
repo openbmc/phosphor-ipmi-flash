@@ -5,6 +5,15 @@
 #include "flash-ipmi.hpp"
 
 /**
+ * Validate the minimum request length if there is one.
+ *
+ * @param[in] subcommand - the command
+ * @param[in] requestLength - the length of the request
+ * @return bool - true if valid.
+ */
+bool validateRequestLength(FlashSubCmds command, size_t requestLen);
+
+/**
  * Prepare to receive a BMC image and then a signature.
  *
  * @param[in] updater - Pointer to Updater object.
