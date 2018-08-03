@@ -61,3 +61,9 @@ bool FlashUpdate::hashData(uint32_t offset, const std::vector<uint8_t>& bytes)
     /* TODO: implement. */
     return false;
 }
+
+bool FlashUpdate::hashFinish()
+{
+    /* TODO: implement. */
+    return false;
+}
