@@ -124,6 +124,11 @@ class UpdateInterface
      */
     virtual bool hashData(uint32_t offset,
                           const std::vector<uint8_t>& bytes) = 0;
+
+    /**
+     * Called to indicate the host is done sending the hash bytes.
+     */
+    virtual bool hashFinish() = 0;
 };
 
 class FlashUpdate : public UpdateInterface
@@ -142,6 +147,7 @@ class FlashUpdate : public UpdateInterface
 
     bool startHash(uint32_t length) override;
     bool hashData(uint32_t offset, const std::vector<uint8_t>& bytes) override;
+    bool hashFinish() override;
 
   private:
     /**
