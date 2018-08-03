@@ -63,6 +63,9 @@ static ipmi_ret_t flashControl(ipmi_cmd_t cmd, const uint8_t* reqBuf,
         case FlashSubCmds::flashDataBlock:
             return dataBlock(flashUpdateSingleton.get(), reqBuf, replyCmdBuf,
                              dataLen);
+        case FlashSubCmds::flashDataFinish:
+            return dataFinish(flashUpdateSingleton.get(), reqBuf, replyCmdBuf,
+                              dataLen);
         default:
             return IPMI_CC_INVALID;
     }
