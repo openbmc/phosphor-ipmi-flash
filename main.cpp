@@ -44,7 +44,13 @@ static ipmi_ret_t flashControl(ipmi_cmd_t cmd, const uint8_t* reqBuf,
         return IPMI_CC_INVALID;
     }
 
-    uint8_t subCmd = reqBuf[0];
+    auto subCmd = static_cast<FlashSubCmds>(reqBuf[0]);
+
+    /* Validate the minimum request length for the command. */
+    if (!validateRequestLength(subCmd, *dataLen))
+    {
+        return IPMI_CC_INVALID;
+    }
 
     /* TODO: This could be cleaner to just have a function pointer table, may
      * transition in later patchset.
@@ -57,6 +63,28 @@ static ipmi_ret_t flashControl(ipmi_cmd_t cmd, const uint8_t* reqBuf,
         case FlashSubCmds::flashDataBlock:
             return dataBlock(flashUpdateSingleton.get(), reqBuf, replyCmdBuf,
                              dataLen);
+
+        default:
+            return IPMI_CC_INVALID;
+
+#if 0
+        /* Not yet implemented, now that it's an enum switch they all need to
+         * be defined.
+         */
+        case FlashSubCmds::flashDataFinish:
+        case FlashSubCmds::flashStartHash:
+        case FlashSubCmds::flashHashData:
+        case FlashSubCmds::flashHashFinish:
+        case FlashSubCmds::flashDataVerify:
+        case FlashSubCmds::flashAbort:
+        case FlashSubCmds::flashVerifyCheck:
+        case FlashSubCmds::flashVersion:
+        case FlashSubCmds::flashRequestRegion:
+        case FlashSubCmds::flashDataExtBlock:
+        case FlashSubCmds::flashHashExtData:
+        case FlashSubCmds::flashMapRegionLpc:
+            return IPMI_CC_INVALID;
+#endif
     }
 
     return IPMI_CC_INVALID;
