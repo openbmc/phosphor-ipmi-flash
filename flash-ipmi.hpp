@@ -84,9 +84,28 @@ class UpdateInterface
   public:
     virtual ~UpdateInterface() = default;
 
+    /**
+     * Prepare to receive a BMC image and then a signature.
+     *
+     * @param[in] length - the size of the flash image.
+     * @return true on success, false otherwise.
+     */
     virtual bool start(uint32_t length) = 0;
+
+    /**
+     * Attempt to write the bytes at the offset.
+     *
+     * @param[in] offset - the 0-based byte offset into the flash image.
+     * @param[in] bytes - the bytes to write.
+     * @return true on success, false otherwise.
+     */
     virtual bool flashData(uint32_t offset,
                            const std::vector<uint8_t>& bytes) = 0;
+
+    /**
+     * Called to indicate the host is done sending the flash bytes.
+     */
+    virtual bool flashFinish() = 0;
 };
 
 class FlashUpdate : public UpdateInterface
@@ -99,22 +118,11 @@ class FlashUpdate : public UpdateInterface
     FlashUpdate(FlashUpdate&&) = default;
     FlashUpdate& operator=(FlashUpdate&&) = default;
 
-    /**
-     * Prepare to receive a BMC image and then a signature.
-     *
-     * @param[in] length - the size of the flash image.
-     * @return true on success, false otherwise.
-     */
     bool start(uint32_t length) override;
 
-    /**
-     * Attempt to write the bytes at the offset.
-     *
-     * @param[in] offset - the 0-based byte offset into the flash image.
-     * @param[in] bytes - the bytes to write.
-     * @return true on success, false otherwise.
-     */
     bool flashData(uint32_t offset, const std::vector<uint8_t>& bytes) override;
+
+    bool flashFinish() override;
 
   private:
     /**

@@ -82,3 +82,19 @@ ipmi_ret_t dataBlock(UpdateInterface* updater, const uint8_t* reqBuf,
     (*dataLen) = 1;
     return IPMI_CC_OK;
 }
+
+ipmi_ret_t dataFinish(UpdateInterface* updater, const uint8_t* reqBuf,
+                      uint8_t* replyBuf, size_t* dataLen)
+{
+    if (!updater->flashFinish())
+    {
+        return IPMI_CC_INVALID;
+    }
+
+    /* TODO: If all commands return this on success, handle it in one place. */
+
+    /* We were successful and set the response byte to 0. */
+    replyBuf[0] = 0x00;
+    (*dataLen) = 1;
+    return IPMI_CC_OK;
+}

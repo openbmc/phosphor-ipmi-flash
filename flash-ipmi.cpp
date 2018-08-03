@@ -43,3 +43,9 @@ bool FlashUpdate::flashData(uint32_t offset, const std::vector<uint8_t>& bytes)
     /* TODO: implement. */
     return false;
 }
+
+bool FlashUpdate::flashFinish()
+{
+    /* TODO: implement. */
+    return false;
+}
