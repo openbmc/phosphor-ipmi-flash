@@ -13,4 +13,5 @@ class UpdaterMock : public UpdateInterface
     MOCK_METHOD1(start, bool(uint32_t));
     MOCK_METHOD2(flashData, bool(uint32_t, const std::vector<uint8_t>&));
     MOCK_METHOD0(flashFinish, bool());
+    MOCK_METHOD1(startHash, bool(uint32_t));
 };
