@@ -41,8 +41,15 @@ TEST(IpmiValidateTest, DataBlockNoDataReturnsFalse)
 TEST(IpmiValidateTest, StartHashInvalidReturnsFalse)
 {
     // Verify the request is sanity checked w.r.t length.
-
     auto cmd = FlashSubCmds::flashStartHash;
     size_t dataLen = sizeof(struct StartTx) - 1;
+    EXPECT_FALSE(validateRequestLength(cmd, dataLen));
+}
+
+TEST(IpmiValidateTest, InvalidLengthHashBlockReturnsFalse)
+{
+    // This request isn't large enough to be well-formed.
+    auto cmd = FlashSubCmds::flashHashData;
+    size_t dataLen = sizeof(struct ChunkHdr) - 1;
     EXPECT_FALSE(validateRequestLength(cmd, dataLen));
 }

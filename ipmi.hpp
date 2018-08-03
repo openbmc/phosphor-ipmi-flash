@@ -60,3 +60,15 @@ ipmi_ret_t dataFinish(UpdateInterface* updater, const uint8_t* reqBuf,
  */
 ipmi_ret_t startHash(UpdateInterface* updater, const uint8_t* reqBuf,
                      uint8_t* replyBuf, size_t* dataLen);
+
+/**
+ * Receive a flash hash data block and store it.
+ *
+ * @param[in] reqBuf - the IPMI packet.
+ * @param[in] replyBuf - Pointer to buffer for any response.
+ * @param[in,out] dataLen - Initially reqBuf length, set to replyBuf
+ * length when done.
+ * @return corresponding IPMI return code.
+ */
+ipmi_ret_t hashBlock(UpdateInterface* updater, const uint8_t* reqBuf,
+                     uint8_t* replyBuf, size_t* dataLen);
