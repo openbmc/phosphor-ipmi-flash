@@ -15,19 +15,37 @@
  */
 
 #include <cstring>
+#include <unordered_map>
 
 #include "flash-ipmi.hpp"
 #include "ipmi.hpp"
 
+bool validateRequestLength(FlashSubCmds command, size_t requestLen)
+{
+    static const std::unordered_map<FlashSubCmds, size_t> minimumLengths = {
+        {FlashSubCmds::flashStartTransfer, sizeof(struct StartTx)},
+        {FlashSubCmds::flashDataBlock, sizeof(struct ChunkHdr) + 1},
+    };
+
+    auto results = minimumLengths.find(command);
+    if (results == minimumLengths.end())
+    {
+        /* Valid length by default if we don't care. */
+        return true;
+    }
+
+    /* If the request is shorter than the minimum, it's invalid. */
+    if (requestLen < results->second)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 ipmi_ret_t startTransfer(UpdateInterface* updater, const uint8_t* reqBuf,
                          uint8_t* replyBuf, size_t* dataLen)
 {
-    /* Validate the request buffer. */
-    if (sizeof(struct StartTx) > (*dataLen))
-    {
-        return IPMI_CC_INVALID;
-    }
-
     auto request = reinterpret_cast<const struct StartTx*>(reqBuf);
 
     if (!updater->start(request->length))
@@ -44,15 +62,10 @@ ipmi_ret_t startTransfer(UpdateInterface* updater, const uint8_t* reqBuf,
 ipmi_ret_t dataBlock(UpdateInterface* updater, const uint8_t* reqBuf,
                      uint8_t* replyBuf, size_t* dataLen)
 {
-    size_t requestLength = (*dataLen);
-    /* Require at least one byte. */
-    if (requestLength < sizeof(struct ChunkHdr) + 1)
-    {
-        return IPMI_CC_INVALID;
-    }
-
     struct ChunkHdr hdr;
     std::memcpy(&hdr, reqBuf, sizeof(hdr));
+
+    size_t requestLength = (*dataLen);
 
     /* Grab the bytes from the packet. */
     size_t bytesLength = requestLength - sizeof(struct ChunkHdr);
