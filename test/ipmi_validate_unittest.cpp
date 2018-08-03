@@ -37,3 +37,12 @@ TEST(IpmiValidateTest, DataBlockNoDataReturnsFalse)
     size_t dataLen = sizeof(struct ChunkHdr);
     EXPECT_FALSE(validateRequestLength(cmd, dataLen));
 }
+
+TEST(IpmiValidateTest, StartHashInvalidReturnsFalse)
+{
+    // Verify the request is sanity checked w.r.t length.
+
+    auto cmd = FlashSubCmds::flashStartHash;
+    size_t dataLen = sizeof(struct StartTx) - 1;
+    EXPECT_FALSE(validateRequestLength(cmd, dataLen));
+}
