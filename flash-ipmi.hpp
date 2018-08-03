@@ -114,6 +114,16 @@ class UpdateInterface
      * @return true on success, false otherwise.
      */
     virtual bool startHash(uint32_t length) = 0;
+
+    /**
+     * Attempt to write the bytes at the offset.
+     *
+     * @param[in] offset - the 0-based byte offset into the flash image.
+     * @param[in] bytes - the bytes to write.
+     * @return true on success, false otherwise.
+     */
+    virtual bool hashData(uint32_t offset,
+                          const std::vector<uint8_t>& bytes) = 0;
 };
 
 class FlashUpdate : public UpdateInterface
@@ -127,12 +137,11 @@ class FlashUpdate : public UpdateInterface
     FlashUpdate& operator=(FlashUpdate&&) = default;
 
     bool start(uint32_t length) override;
-
     bool flashData(uint32_t offset, const std::vector<uint8_t>& bytes) override;
-
     bool flashFinish() override;
 
     bool startHash(uint32_t length) override;
+    bool hashData(uint32_t offset, const std::vector<uint8_t>& bytes) override;
 
   private:
     /**

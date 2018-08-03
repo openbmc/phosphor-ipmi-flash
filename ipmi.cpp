@@ -24,6 +24,7 @@ std::unordered_map<FlashSubCmds, size_t> minimumLengths = {
     {FlashSubCmds::flashStartTransfer, sizeof(struct StartTx)},
     {FlashSubCmds::flashDataBlock, sizeof(struct ChunkHdr) + 1},
     {FlashSubCmds::flashStartHash, sizeof(struct StartTx)},
+    {FlashSubCmds::flashHashData, sizeof(struct ChunkHdr) + 1},
 };
 
 bool validateRequestLength(FlashSubCmds command, size_t requestLen)
@@ -106,6 +107,32 @@ ipmi_ret_t startHash(UpdateInterface* updater, const uint8_t* reqBuf,
     auto request = reinterpret_cast<const struct StartTx*>(reqBuf);
 
     if (!updater->startHash(request->length))
+    {
+        return IPMI_CC_INVALID;
+    }
+
+    /* We were successful and set the response byte to 0. */
+    replyBuf[0] = 0x00;
+    (*dataLen) = 1;
+    return IPMI_CC_OK;
+}
+
+ipmi_ret_t hashBlock(UpdateInterface* updater, const uint8_t* reqBuf,
+                     uint8_t* replyBuf, size_t* dataLen)
+{
+    struct ChunkHdr hdr;
+    std::memcpy(&hdr, reqBuf, sizeof(hdr));
+
+    size_t requestLength = (*dataLen);
+
+    /* Grab the bytes from the packet. */
+    size_t bytesLength = requestLength - sizeof(struct ChunkHdr);
+    std::vector<uint8_t> bytes(bytesLength);
+    std::memcpy(bytes.data(), &reqBuf[sizeof(struct ChunkHdr)], bytesLength);
+
+    /* TODO: Refactor this and dataBlock for re-use. */
+
+    if (!updater->hashData(hdr.offset, bytes))
     {
         return IPMI_CC_INVALID;
     }
