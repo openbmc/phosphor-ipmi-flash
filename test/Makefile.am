@@ -12,6 +12,7 @@ AM_LDFLAGS = \
 check_PROGRAMS = \
 	ipmi_starttransfer_unittest \
 	ipmi_flashdata_unittest \
+	ipmi_flashfinish_unittest \
 	ipmi_validate_unittest
 
 TESTS = $(check_PROGRAMS)
@@ -21,6 +22,9 @@ ipmi_starttransfer_unittest_LDADD = $(top_builddir)/ipmi.o
 
 ipmi_flashdata_unittest_SOURCES = ipmi_flashdata_unittest.cpp
 ipmi_flashdata_unittest_LDADD = $(top_builddir)/ipmi.o
+
+ipmi_flashfinish_unittest_SOURCES = ipmi_flashfinish_unittest.cpp
+ipmi_flashfinish_unittest_LDADD = $(top_builddir)/ipmi.o
 
 ipmi_validate_unittest_SOURCES = ipmi_validate_unittest.cpp
 ipmi_validate_unittest_LDADD = $(top_builddir)/ipmi.o
