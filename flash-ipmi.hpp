@@ -106,6 +106,14 @@ class UpdateInterface
      * Called to indicate the host is done sending the flash bytes.
      */
     virtual bool flashFinish() = 0;
+
+    /**
+     * Prepare to receive a BMC image signature.
+     *
+     * @param[in] length - length of signature in bytes.
+     * @return true on success, false otherwise.
+     */
+    virtual bool startHash(uint32_t length) = 0;
 };
 
 class FlashUpdate : public UpdateInterface
@@ -123,6 +131,8 @@ class FlashUpdate : public UpdateInterface
     bool flashData(uint32_t offset, const std::vector<uint8_t>& bytes) override;
 
     bool flashFinish() override;
+
+    bool startHash(uint32_t length) override;
 
   private:
     /**
