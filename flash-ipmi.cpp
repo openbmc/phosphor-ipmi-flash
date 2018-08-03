@@ -49,3 +49,9 @@ bool FlashUpdate::flashFinish()
     /* TODO: implement. */
     return false;
 }
+
+bool FlashUpdate::startHash(uint32_t length)
+{
+    /* TODO: implement. */
+    return false;
+}
