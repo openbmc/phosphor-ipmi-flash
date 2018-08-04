@@ -136,6 +136,13 @@ class UpdateInterface
      * @return true if it was started succesfully.
      */
     virtual bool startDataVerification() = 0;
+
+    /**
+     * Attempt to abort everything.
+     *
+     * @return true if aborted, false if unable or failed.
+     */
+    virtual bool abortUpdate() = 0;
 };
 
 class FlashUpdate : public UpdateInterface
@@ -157,6 +164,7 @@ class FlashUpdate : public UpdateInterface
     bool hashFinish() override;
 
     bool startDataVerification() override;
+    bool abortUpdate() override;
 
   private:
     /**
