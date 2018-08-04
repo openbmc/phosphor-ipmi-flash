@@ -20,12 +20,32 @@
 #include "flash-ipmi.hpp"
 #include "ipmi.hpp"
 
+static const std::unordered_map<FlashSubCmds, IpmiFlashHandler> subHandlers = {
+    {FlashSubCmds::flashStartTransfer, startTransfer},
+    {FlashSubCmds::flashDataBlock, dataBlock},
+    {FlashSubCmds::flashDataFinish, dataFinish},
+    {FlashSubCmds::flashStartHash, startHash},
+    {FlashSubCmds::flashHashData, hashBlock},
+    {FlashSubCmds::flashHashFinish, hashFinish},
+};
+
 std::unordered_map<FlashSubCmds, size_t> minimumLengths = {
     {FlashSubCmds::flashStartTransfer, sizeof(struct StartTx)},
     {FlashSubCmds::flashDataBlock, sizeof(struct ChunkHdr) + 1},
     {FlashSubCmds::flashStartHash, sizeof(struct StartTx)},
     {FlashSubCmds::flashHashData, sizeof(struct ChunkHdr) + 1},
 };
+
+IpmiFlashHandler getCommandHandler(FlashSubCmds command)
+{
+    auto results = subHandlers.find(command);
+    if (results == subHandlers.end())
+    {
+        return nullptr;
+    }
+
+    return results->second;
+}
 
 bool validateRequestLength(FlashSubCmds command, size_t requestLen)
 {
