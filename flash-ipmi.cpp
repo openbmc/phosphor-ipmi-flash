@@ -73,3 +73,9 @@ bool FlashUpdate::startDataVerification()
     /* TODO: implement. */
     return false;
 }
+
+bool FlashUpdate::abortUpdate()
+{
+    /* TODO: implement. */
+    return false;
+}

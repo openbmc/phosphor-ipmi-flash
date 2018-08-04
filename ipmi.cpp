@@ -31,6 +31,7 @@ IpmiFlashHandler getCommandHandler(FlashSubCmds command)
             {FlashSubCmds::flashHashData, hashBlock},
             {FlashSubCmds::flashHashFinish, hashFinish},
             {FlashSubCmds::flashDataVerify, dataVerify},
+            {FlashSubCmds::flashAbort, abortUpdate},
         };
 
     auto results = subHandlers.find(command);
@@ -183,6 +184,23 @@ ipmi_ret_t dataVerify(UpdateInterface* updater, const uint8_t* reqBuf,
                       uint8_t* replyBuf, size_t* dataLen)
 {
     if (!updater->startDataVerification())
+    {
+        return IPMI_CC_INVALID;
+    }
+
+    /* We were successful and set the response byte to 0. */
+    replyBuf[0] = 0x00;
+    (*dataLen) = 1;
+    return IPMI_CC_OK;
+}
+
+ipmi_ret_t abortUpdate(UpdateInterface* updater, const uint8_t* reqBuf,
+                       uint8_t* replyBuf, size_t* dataLen)
+{
+    /* TODO: May make sense to work all the pass-through commands into one
+     * piece of code
+     */
+    if (!updater->abortUpdate())
     {
         return IPMI_CC_INVALID;
     }

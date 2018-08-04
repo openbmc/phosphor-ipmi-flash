@@ -110,3 +110,15 @@ ipmi_ret_t hashFinish(UpdateInterface* updater, const uint8_t* reqBuf,
  */
 ipmi_ret_t dataVerify(UpdateInterface* updater, const uint8_t* reqBuf,
                       uint8_t* replyBuf, size_t* dataLen);
+
+/**
+ * Abort the image update process.
+ *
+ * @param[in] reqBuf - the IPMI packet.
+ * @param[in] replyBuf - Pointer to buffer for any response.
+ * @param[in,out] dataLen - Initially reqBuf length, set to replyBuf
+ * length when done.
+ * @return corresponding IPMI return code.
+ */
+ipmi_ret_t abortUpdate(UpdateInterface* updater, const uint8_t* reqBuf,
+                       uint8_t* replyBuf, size_t* dataLen);
