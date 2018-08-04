@@ -67,3 +67,9 @@ bool FlashUpdate::hashFinish()
     /* TODO: implement. */
     return false;
 }
+
+bool FlashUpdate::startDataVerification()
+{
+    /* TODO: implement. */
+    return false;
+}
