@@ -16,4 +16,5 @@ class UpdaterMock : public UpdateInterface
     MOCK_METHOD1(startHash, bool(uint32_t));
     MOCK_METHOD2(hashData, bool(uint32_t, const std::vector<uint8_t>&));
     MOCK_METHOD0(hashFinish, bool());
+    MOCK_METHOD0(startDataVerification, bool());
 };
