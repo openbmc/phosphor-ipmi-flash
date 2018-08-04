@@ -1,8 +1,22 @@
 #pragma once
 
+#include <functional>
+
 #include "host-ipmid/ipmid-api.h"
 
 #include "flash-ipmi.hpp"
+
+using IpmiFlashHandler =
+    std::function<ipmi_ret_t(UpdateInterface* updater, const uint8_t* reqBuf,
+                             uint8_t* replyBuf, size_t* dataLen)>;
+
+/**
+ * Retrieve the IPMI command handler.
+ *
+ * @param[in] subcommand - the command
+ * @return the function to call or nullptr on error.
+ */
+IpmiFlashHandler getCommandHandler(FlashSubCmds command);
 
 /**
  * Validate the minimum request length if there is one.

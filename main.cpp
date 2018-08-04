@@ -38,8 +38,10 @@ std::unique_ptr<FlashUpdate> flashUpdateSingleton;
 static ipmi_ret_t flashControl(ipmi_cmd_t cmd, const uint8_t* reqBuf,
                                uint8_t* replyCmdBuf, size_t* dataLen)
 {
+    size_t requestLength = (*dataLen);
+
     /* Verify it's at least as long as the shortest message. */
-    if ((*dataLen) < 1)
+    if (requestLength < 1)
     {
         return IPMI_CC_INVALID;
     }
@@ -47,36 +49,16 @@ static ipmi_ret_t flashControl(ipmi_cmd_t cmd, const uint8_t* reqBuf,
     auto subCmd = static_cast<FlashSubCmds>(reqBuf[0]);
 
     /* Validate the minimum request length for the command. */
-    if (!validateRequestLength(subCmd, *dataLen))
+    if (!validateRequestLength(subCmd, requestLength))
     {
         return IPMI_CC_INVALID;
     }
 
-    /* TODO: This could be cleaner to just have a function pointer table, may
-     * transition in later patchset.
-     */
-    switch (subCmd)
+    auto handler = getCommandHandler(subCmd);
+    if (handler)
     {
-        case FlashSubCmds::flashStartTransfer:
-            return startTransfer(flashUpdateSingleton.get(), reqBuf,
-                                 replyCmdBuf, dataLen);
-        case FlashSubCmds::flashDataBlock:
-            return dataBlock(flashUpdateSingleton.get(), reqBuf, replyCmdBuf,
-                             dataLen);
-        case FlashSubCmds::flashDataFinish:
-            return dataFinish(flashUpdateSingleton.get(), reqBuf, replyCmdBuf,
-                              dataLen);
-        case FlashSubCmds::flashStartHash:
-            return startHash(flashUpdateSingleton.get(), reqBuf, replyCmdBuf,
-                             dataLen);
-        case FlashSubCmds::flashHashData:
-            return hashBlock(flashUpdateSingleton.get(), reqBuf, replyCmdBuf,
-                             dataLen);
-        case FlashSubCmds::flashHashFinish:
-            return hashFinish(flashUpdateSingleton.get(), reqBuf, replyCmdBuf,
-                              dataLen);
-        default:
-            return IPMI_CC_INVALID;
+        return handler(flashUpdateSingleton.get(), reqBuf, replyCmdBuf,
+                       dataLen);
     }
 
     return IPMI_CC_INVALID;
