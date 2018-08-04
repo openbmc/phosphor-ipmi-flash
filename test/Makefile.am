@@ -16,7 +16,8 @@ check_PROGRAMS = \
 	ipmi_starthash_unittest \
 	ipmi_hashdata_unittest \
 	ipmi_hashfinish_unittest \
-	ipmi_validate_unittest
+	ipmi_validate_unittest \
+	ipmi_command_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -40,3 +41,6 @@ ipmi_hashfinish_unittest_LDADD = $(top_builddir)/ipmi.o
 
 ipmi_validate_unittest_SOURCES = ipmi_validate_unittest.cpp
 ipmi_validate_unittest_LDADD = $(top_builddir)/ipmi.o
+
+ipmi_command_unittest_SOURCES = ipmi_command_unittest.cpp
+ipmi_command_unittest_LDADD = $(top_builddir)/ipmi.o
