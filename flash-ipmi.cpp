@@ -18,6 +18,13 @@
 
 #include <cstdio>
 #include <fstream>
+#include <sdbusplus/bus.hpp>
+
+/* systemd service to kick start a service. */
+static constexpr auto systemdService = "org.freedesktop.systemd1";
+static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
+static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
+static constexpr auto verifyTarget = "verify_image.service";
 
 void FlashUpdate::closeEverything()
 {
@@ -167,6 +174,15 @@ bool FlashUpdate::hashFinish()
 
 bool FlashUpdate::startDataVerification()
 {
+    /* TODO: Look for injection point to test this. */
+    auto bus = sdbusplus::bus::new_default();
+
+    auto method = bus.new_method_call(systemdService, systemdRoot,
+                                      systemdInterface, "StartUnit");
+    method.append(verifyTarget);
+    method.append("replace");
+    bus.call_noreply(method);
+
     /* TODO: implement. */
     return false;
 }
