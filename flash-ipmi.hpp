@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdio>
+#include <sdbusplus/bus.hpp>
 #include <string>
 #include <vector>
 
@@ -169,15 +170,15 @@ class UpdateInterface
 class FlashUpdate : public UpdateInterface
 {
   public:
-    FlashUpdate(const std::string& stagingPath, const std::string& verifyPath,
-                const std::string& hash = "") :
-        flashLength(0),
-        flashFd(nullptr), tmpPath(stagingPath), hashLength(0), hashFd(nullptr),
-        hashPath(hash), verifyPath(verifyPath){};
+    FlashUpdate(sdbusplus::bus::bus&& bus, const std::string& stagingPath,
+                const std::string& verifyPath, const std::string& hash = "") :
+        bus(std::move(bus)),
+        flashLength(0), flashFd(nullptr), tmpPath(stagingPath), hashLength(0),
+        hashFd(nullptr), hashPath(hash), verifyPath(verifyPath){};
     ~FlashUpdate();
 
-    FlashUpdate(const FlashUpdate&) = default;
-    FlashUpdate& operator=(const FlashUpdate&) = default;
+    FlashUpdate(const FlashUpdate&) = delete;
+    FlashUpdate& operator=(const FlashUpdate&) = delete;
     FlashUpdate(FlashUpdate&&) = default;
     FlashUpdate& operator=(FlashUpdate&&) = default;
 
@@ -206,6 +207,11 @@ class FlashUpdate : public UpdateInterface
                     const std::vector<uint8_t>& bytes);
 
     /**
+     * Tries to delete everything.
+     */
+    void deleteEverything();
+
+    /**
      * Tries to close out everything.
      */
     void closeEverything();
@@ -221,6 +227,9 @@ class FlashUpdate : public UpdateInterface
      * @return false on failure.
      */
     bool openEverything();
+
+    /* A bus. */
+    sdbusplus::bus::bus bus;
 
     /* The length of the flash image in bytes. */
     uint32_t flashLength;
