@@ -166,7 +166,11 @@ bool FlashUpdate::startHash(uint32_t length)
 
 bool FlashUpdate::hashData(uint32_t offset, const std::vector<uint8_t>& bytes)
 {
-    /* TODO: implement. */
+    if (hashFd)
+    {
+        return writeBlock(hashFd, offset, bytes);
+    }
+
     return false;
 }
 
