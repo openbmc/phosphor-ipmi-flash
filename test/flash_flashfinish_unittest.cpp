@@ -30,7 +30,7 @@ TEST_F(FlashIpmiFlashDataTest, CalledOutOfSequenceFails)
     // Verify that there is sanity checking
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name);
+    FlashUpdate updater(name, "");
     EXPECT_FALSE(updater.flashFinish());
 
     // Verify the file doesn't exist.
@@ -43,7 +43,7 @@ TEST_F(FlashIpmiFlashDataTest, CalledInSequenceSucceeds)
     // Verify that under normal usage it closes the file.
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name);
+    FlashUpdate updater(name, "");
     updater.start(THIRTYTWO_MIB);
     EXPECT_TRUE(updater.flashFinish());
 
@@ -59,7 +59,7 @@ TEST_F(FlashIpmiFlashDataTest, CalledTwiceFails)
     // be closed twice.
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name);
+    FlashUpdate updater(name, "");
     updater.start(THIRTYTWO_MIB);
     EXPECT_TRUE(updater.flashFinish());
 

@@ -10,6 +10,18 @@
 #define SUBCMD_SZ sizeof(uint8_t)
 
 /*
+ * These are the codes we return over IPMI when the host checks for the status
+ * of the asynchronous verification call.
+ */
+enum VerifyCheckResponse
+{
+    running = 0x00,
+    success = 0x01,
+    failed = 0x02,
+    other = 0x03,
+};
+
+/*
  * flashStartTransfer -- starts file upload.
  * flashDataBlock -- adds data to image file.
  * flashDataFinish -- closes the file.
@@ -145,14 +157,23 @@ class UpdateInterface
      * @return true if aborted, false if unable or failed.
      */
     virtual bool abortUpdate() = 0;
+
+    /**
+     * Check if the verification result is available and return.
+     *
+     * @return the verification response.
+     */
+    virtual VerifyCheckResponse checkVerify() = 0;
 };
 
 class FlashUpdate : public UpdateInterface
 {
   public:
-    FlashUpdate(std::string stagingPath, std::string hash = "") :
-        flashLength(0), flashFd(nullptr), tmpPath(stagingPath), hashLength(0),
-        hashFd(nullptr), hashPath(hash){};
+    FlashUpdate(std::string stagingPath, std::string verifyPath,
+                std::string hash = "") :
+        flashLength(0),
+        flashFd(nullptr), tmpPath(stagingPath), hashLength(0), hashFd(nullptr),
+        hashPath(hash), verifyPath(verifyPath){};
     ~FlashUpdate();
 
     FlashUpdate(const FlashUpdate&) = default;
@@ -170,6 +191,7 @@ class FlashUpdate : public UpdateInterface
 
     bool startDataVerification() override;
     bool abortUpdate() override;
+    VerifyCheckResponse checkVerify() override;
 
   private:
     /**
@@ -219,4 +241,7 @@ class FlashUpdate : public UpdateInterface
      * process uses a separate signature.
      */
     std::string hashPath;
+
+    /* The path to read the status of the signature verification. */
+    std::string verifyPath;
 };
