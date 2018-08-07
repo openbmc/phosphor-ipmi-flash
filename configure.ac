@@ -76,6 +76,10 @@ AC_ARG_VAR(HASH_PATH, [The path for the hash file.])
 AS_IF([test "x$HASH_PATH" == "x"], [HASH_PATH="/tmp/bmc.sig"])
 AC_DEFINE_UNQUOTED([HASH_PATH], ["$HASH_PATH"], [The path for the hash file.])
 
+AC_ARG_VAR(STATUS_PATH, [The path for the verification status file.])
+AS_IF([test "x$STATUS_PATH" == "x"], [STATUS_PATH="/tmp/bmc.verify"])
+AC_DEFINE_UNQUOTED([STATUS_PATH], ["$STATUS_PATH"], [The path for the verification status file.])
+
 # Create configured output
 AC_CONFIG_FILES([Makefile test/Makefile])
 AC_OUTPUT

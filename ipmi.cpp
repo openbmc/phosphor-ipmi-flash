@@ -32,6 +32,7 @@ IpmiFlashHandler getCommandHandler(FlashSubCmds command)
             {FlashSubCmds::flashHashFinish, hashFinish},
             {FlashSubCmds::flashDataVerify, dataVerify},
             {FlashSubCmds::flashAbort, abortUpdate},
+            {FlashSubCmds::flashVerifyCheck, checkVerify},
         };
 
     auto results = subHandlers.find(command);
@@ -207,6 +208,15 @@ ipmi_ret_t abortUpdate(UpdateInterface* updater, const uint8_t* reqBuf,
 
     /* We were successful and set the response byte to 0. */
     replyBuf[0] = 0x00;
+    (*dataLen) = 1;
+    return IPMI_CC_OK;
+}
+
+ipmi_ret_t checkVerify(UpdateInterface* updater, const uint8_t* reqBuf,
+                       uint8_t* replyBuf, size_t* dataLen)
+{
+    auto value = updater->checkVerify();
+    replyBuf[0] = static_cast<uint8_t>(value);
     (*dataLen) = 1;
     return IPMI_CC_OK;
 }
