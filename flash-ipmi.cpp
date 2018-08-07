@@ -16,23 +16,77 @@
 
 #include "flash-ipmi.hpp"
 
+#include <cstdio>
+#include <phosphor-logging/log.hpp>
+
+using namespace phosphor::logging;
+
+namespace
+{
+
+/**
+ * Close a file pointer and set to null.
+ *
+ * @param[in] fd a pointer to your file handle.
+ */
+void closeFile(std::FILE** fd)
+{
+    if (!fd)
+    {
+        return;
+    }
+
+    if (*fd)
+    {
+        std::fclose(*fd);
+        (*fd) = nullptr;
+    }
+}
+}
+
+void FlashUpdate::closeEverything()
+{
+    closeFile(&flashFd);
+}
+
+FlashUpdate::~FlashUpdate()
+{
+    /* Close without deleting.  This object can only be destroyed if the ipmi
+     * daemon unloads it, by closing down.  In this event, we want the verified
+     * file to live on.
+     */
+    closeEverything();
+}
+
 void FlashUpdate::abortEverything()
 {
+    closeEverything();
+
+    /* TODO: And now delete everything */
     return;
 }
 
 bool FlashUpdate::openEverything()
 {
+    flashFd = std::fopen(tmpPath.c_str(), "w");
+    if (flashFd == nullptr)
+    {
+        log<level::INFO>("Unable to open staging path",
+                         entry("PATH=%s", tmpPath.c_str()));
+        return false;
+    }
+
     return true;
 }
 
 /* Prepare to receive a BMC image and then a signature. */
-bool FlashUpdate::start(uint32_t)
+bool FlashUpdate::start(uint32_t length)
 {
-    /* TODO: Validate request->length */
-
     /* Close out and delete everything. */
     abortEverything();
+
+    /* TODO: Validate request->length */
+    flashLength = length;
 
     /* Start over! */
     return openEverything();
