@@ -23,6 +23,12 @@ void FlashUpdate::closeEverything()
     if (flashFd)
     {
         std::fclose(flashFd);
+        flashFd = nullptr;
+    }
+    if (hashFd)
+    {
+        std::fclose(hashFd);
+        hashFd = nullptr;
     }
 }
 
@@ -49,6 +55,17 @@ bool FlashUpdate::openEverything()
     if (flashFd == nullptr)
     {
         return false;
+    }
+
+    /* hash path is basically optional. */
+    if (!hashPath.empty())
+    {
+        hashFd = std::fopen(hashPath.c_str(), "wb");
+        if (hashFd == nullptr)
+        {
+            /* TODO: may be worth calling closeEverything() on failure. */
+            return false;
+        }
     }
 
     return true;
@@ -116,8 +133,13 @@ bool FlashUpdate::flashFinish()
 
 bool FlashUpdate::startHash(uint32_t length)
 {
-    /* TODO: implement. */
-    return false;
+    if (!hashFd)
+    {
+        return false;
+    }
+
+    hashLength = length;
+    return true;
 }
 
 bool FlashUpdate::hashData(uint32_t offset, const std::vector<uint8_t>& bytes)

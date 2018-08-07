@@ -150,8 +150,9 @@ class UpdateInterface
 class FlashUpdate : public UpdateInterface
 {
   public:
-    FlashUpdate(std::string stagingPath) :
-        flashLength(0), flashFd(nullptr), tmpPath(stagingPath){};
+    FlashUpdate(std::string stagingPath, std::string hash = "") :
+        flashLength(0), flashFd(nullptr), tmpPath(stagingPath), hashLength(0),
+        hashFd(nullptr), hashPath(hash){};
     ~FlashUpdate();
 
     FlashUpdate(const FlashUpdate&) = default;
@@ -207,4 +208,15 @@ class FlashUpdate : public UpdateInterface
 
     /* Where the bytes are written before verification. */
     std::string tmpPath;
+
+    /* The length of the hash in bytes. */
+    uint32_t hashLength;
+
+    /* The file handle to the hash file. */
+    std::FILE* hashFd;
+
+    /* Where we write the hash bytes.  Only required if your verification
+     * process uses a separate signature.
+     */
+    std::string hashPath;
 };
