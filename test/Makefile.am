@@ -21,7 +21,8 @@ check_PROGRAMS = \
 	ipmi_validate_unittest \
 	ipmi_command_unittest \
 	flash_start_unittest \
-	flash_flashdata_unittest
+	flash_flashdata_unittest \
+	flash_flashfinish_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -60,3 +61,6 @@ flash_start_unittest_LDADD = $(top_builddir)/flash-ipmi.o
 
 flash_flashdata_unittest_SOURCES = flash_flashdata_unittest.cpp
 flash_flashdata_unittest_LDADD = $(top_builddir)/flash-ipmi.o
+
+flash_flashfinish_unittest_SOURCES = flash_flashfinish_unittest.cpp
+flash_flashfinish_unittest_LDADD = $(top_builddir)/flash-ipmi.o
