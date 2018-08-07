@@ -1,0 +1,54 @@
+#include "flash-ipmi.hpp"
+
+#include <cstdio>
+#include <cstring>
+#include <gtest/gtest.h>
+#include <string>
+#include <vector>
+
+#define THIRTYTWO_MIB 33554432
+
+class FlashIpmiFlashDataTest : public ::testing::Test
+{
+  protected:
+    FlashIpmiFlashDataTest() = default;
+
+    void SetUp() override
+    {
+        name = std::tmpnam(nullptr);
+    }
+    void TearDown() override
+    {
+        (void)std::remove(name.c_str());
+    }
+
+    std::string name;
+};
+
+TEST_F(FlashIpmiFlashDataTest, CalledOutOfSequenceFails)
+{
+    // Verify that there is sanity checking
+    std::vector<uint8_t> bytes = {0xaa, 0x55};
+
+    FlashUpdate updater(name);
+    EXPECT_FALSE(updater.flashFinish());
+
+    // Verify the file doesn't exist.
+    auto file = std::fopen(name.c_str(), "r");
+    EXPECT_FALSE(file);
+}
+
+TEST_F(FlashIpmiFlashDataTest, CalledWithDataSucceeds)
+{
+    // Verify that under normal usage it closes the file.
+    std::vector<uint8_t> bytes = {0xaa, 0x55};
+
+    FlashUpdate updater(name);
+    updater.start(THIRTYTWO_MIB);
+    EXPECT_TRUE(updater.flashFinish());
+
+    // Verify we can open the file, so we know it didn't get deleted.
+    auto file = std::fopen(name.c_str(), "r");
+    EXPECT_TRUE(file);
+    std::fclose(file);
+}
