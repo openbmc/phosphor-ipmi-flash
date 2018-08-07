@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstring>
 #include <gtest/gtest.h>
+#include <sdbusplus/test/sdbus_mock.hpp>
 #include <string>
 #include <vector>
 
@@ -33,7 +34,10 @@ TEST_F(FlashIpmiHashDataTest, CalledOutOfSequenceFails)
     // Verify that there is sanity checking
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name, "", name2);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    FlashUpdate updater(std::move(bus_mock), name, "", name2);
     EXPECT_FALSE(updater.hashFinish());
 
     // Verify the file doesn't exist.
@@ -46,7 +50,10 @@ TEST_F(FlashIpmiHashDataTest, CalledInSequenceSucceeds)
     // Verify that under normal usage it closes the file.
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name, "", name2);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    FlashUpdate updater(std::move(bus_mock), name, "", name2);
     EXPECT_TRUE(updater.start(THIRTYTWO_MIB));
     EXPECT_TRUE(updater.startHash(THIRTYTWO_MIB));
     EXPECT_TRUE(updater.hashFinish());
@@ -63,7 +70,10 @@ TEST_F(FlashIpmiHashDataTest, CalledTwiceFails)
     // be closed twice.
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name, "", name2);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    FlashUpdate updater(std::move(bus_mock), name, "", name2);
     EXPECT_TRUE(updater.start(THIRTYTWO_MIB));
     EXPECT_TRUE(updater.startHash(THIRTYTWO_MIB));
     EXPECT_TRUE(updater.hashFinish());
