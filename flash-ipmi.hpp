@@ -1,11 +1,17 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include "host-ipmid/ipmid-api.h"
 
 /* Clearer way to represent the subcommand size. */
 #define SUBCMD_SZ sizeof(uint8_t)
+
+enum FileState
+{
+    fileClosed = -1,
+};
 
 /*
  * flashStartTransfer -- starts file upload.
@@ -148,8 +154,10 @@ class UpdateInterface
 class FlashUpdate : public UpdateInterface
 {
   public:
-    FlashUpdate() = default;
-    ~FlashUpdate() = default;
+    FlashUpdate(std::string stagingPath) :
+        flashLength(0), flashFd(FileState::fileClosed), tmpPath(stagingPath){};
+    ~FlashUpdate();
+
     FlashUpdate(const FlashUpdate&) = default;
     FlashUpdate& operator=(const FlashUpdate&) = default;
     FlashUpdate(FlashUpdate&&) = default;
@@ -168,6 +176,11 @@ class FlashUpdate : public UpdateInterface
 
   private:
     /**
+     * Tries to close out everything.
+     */
+    void closeEverything();
+
+    /**
      * Tries to close out and delete anything staged.
      */
     void abortEverything();
@@ -178,4 +191,13 @@ class FlashUpdate : public UpdateInterface
      * @return false on failure.
      */
     bool openEverything();
+
+    /* The length of the flash image in bytes. */
+    uint32_t flashLength;
+
+    /* The file handle to the flash staging file. */
+    int flashFd;
+
+    /* Where the bytes are written before verification. */
+    std::string tmpPath;
 };

@@ -22,6 +22,12 @@
 #include "flash-ipmi.hpp"
 #include "ipmi.hpp"
 
+#ifdef STAGING_PATH
+static constexpr auto stagingPath = STAGING_PATH;
+#else
+static constexpr auto stagingPath = "/run/initramfs/bmc-image";
+#endif
+
 /* TODO: Once OEM IPMI number placement is settled, point to that. */
 namespace oem
 {
@@ -81,7 +87,7 @@ void setupGlobalOemFlashControl() __attribute__((constructor));
 
 void setupGlobalOemFlashControl()
 {
-    flashUpdateSingleton = std::make_unique<FlashUpdate>();
+    flashUpdateSingleton = std::make_unique<FlashUpdate>(stagingPath);
 
 #ifdef ENABLE_GOOGLE
     oem::Router* router = oem::mutableRouter();

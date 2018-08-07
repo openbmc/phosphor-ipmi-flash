@@ -16,23 +16,53 @@
 
 #include "flash-ipmi.hpp"
 
+#include <fcntl.h>
+#include <unistd.h>
+
+void FlashUpdate::closeEverything()
+{
+    if (flashFd != FileState::fileClosed)
+    {
+        close(flashFd);
+    }
+}
+
+FlashUpdate::~FlashUpdate()
+{
+    /* Close without deleting.  This object can only be destroyed if the ipmi
+     * daemon unloads it, by closing down.  In this event, we want the verified
+     * file to live on.
+     */
+    closeEverything();
+}
+
 void FlashUpdate::abortEverything()
 {
+    closeEverything();
+
+    /* TODO: And now delete everything */
     return;
 }
 
 bool FlashUpdate::openEverything()
 {
+    flashFd = open(tmpPath.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    if (flashFd == FileState::fileClosed)
+    {
+        return false;
+    }
+
     return true;
 }
 
 /* Prepare to receive a BMC image and then a signature. */
-bool FlashUpdate::start(uint32_t)
+bool FlashUpdate::start(uint32_t length)
 {
-    /* TODO: Validate request->length */
-
     /* Close out and delete everything. */
     abortEverything();
+
+    /* TODO: Validate request->length */
+    flashLength = length;
 
     /* Start over! */
     return openEverything();
