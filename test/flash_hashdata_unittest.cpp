@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstring>
 #include <gtest/gtest.h>
+#include <sdbusplus/test/sdbus_mock.hpp>
 #include <string>
 #include <vector>
 
@@ -35,7 +36,10 @@ TEST_F(FlashIpmiHashDataTest, CalledOutOfSequenceFails)
 
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name, "", name2);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    FlashUpdate updater(std::move(bus_mock), name, "", name2);
     EXPECT_FALSE(updater.hashData(0, bytes));
 }
 
@@ -44,7 +48,10 @@ TEST_F(FlashIpmiHashDataTest, CalledWithDataSucceeds)
     // Verify the normal use case works.
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name, "", name2);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    FlashUpdate updater(std::move(bus_mock), name, "", name2);
     EXPECT_TRUE(updater.start(THIRTYTWO_MIB));
     EXPECT_TRUE(updater.startHash(THIRTYTWO_MIB));
     EXPECT_TRUE(updater.hashData(0, bytes));
@@ -67,7 +74,10 @@ TEST_F(FlashIpmiHashDataTest, CalledNonZeroOffsetSucceeds)
 
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name, "", name2);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    FlashUpdate updater(std::move(bus_mock), name, "", name2);
     EXPECT_TRUE(updater.start(THIRTYTWO_MIB));
     EXPECT_TRUE(updater.startHash(THIRTYTWO_MIB));
     EXPECT_TRUE(updater.hashData(2, bytes));

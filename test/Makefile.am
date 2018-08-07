@@ -27,7 +27,8 @@ check_PROGRAMS = \
 	flash_hashstart_unittest \
 	flash_hashdata_unittest \
 	flash_hashfinish_unittest \
-	flash_checkverify_unittest
+	flash_checkverify_unittest \
+	flash_flashabort_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -84,3 +85,6 @@ flash_hashfinish_unittest_LDADD = $(top_builddir)/flash-ipmi.o $(SDBUSPLUS_LIBS)
 
 flash_checkverify_unittest_SOURCES = flash_checkverify_unittest.cpp
 flash_checkverify_unittest_LDADD = $(top_builddir)/flash-ipmi.o $(SDBUSPLUS_LIBS)
+
+flash_flashabort_unittest_SOURCES = flash_flashabort_unittest.cpp
+flash_flashabort_unittest_LDADD = $(top_builddir)/flash-ipmi.o $(SDBUSPLUS_LIBS)
