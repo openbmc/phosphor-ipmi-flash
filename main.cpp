@@ -86,8 +86,8 @@ void setupGlobalOemFlashControl() __attribute__((constructor));
 
 void setupGlobalOemFlashControl()
 {
-    flashUpdateSingleton =
-        std::make_unique<FlashUpdate>(stagingPath, statusPath, hashPath);
+    flashUpdateSingleton = std::make_unique<FlashUpdate>(
+        sdbusplus::bus::new_default(), stagingPath, statusPath, hashPath);
 
 #ifdef ENABLE_GOOGLE
     oem::Router* router = oem::mutableRouter();

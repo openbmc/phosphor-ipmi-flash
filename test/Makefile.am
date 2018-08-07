@@ -7,8 +7,7 @@ AM_CXXFLAGS = \
 AM_LDFLAGS = \
 	$(GMOCK_LIBS) \
 	$(GTEST_MAIN_LIBS) \
-	$(OESDK_TESTCASE_FLAGS) \
-	$(SDBUSPLUS_LIBS)
+	$(OESDK_TESTCASE_FLAGS)
 
 # Run all 'check' test programs
 check_PROGRAMS = \
