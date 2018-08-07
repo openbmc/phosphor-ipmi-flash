@@ -13,7 +13,7 @@ TEST(FlashIpmiHashStartTest, OutofSequenceFails)
     std::string name = std::tmpnam(nullptr);
     std::string name2 = std::tmpnam(nullptr);
 
-    FlashUpdate updater(name, name2);
+    FlashUpdate updater(name, "", name2);
     EXPECT_FALSE(updater.startHash(THIRTYTWO_MIB));
 
     (void)std::remove(name.c_str());
@@ -27,7 +27,7 @@ TEST(FlashIpmiHashStartTest, VerifyHashFileCreated)
     std::string name = std::tmpnam(nullptr);
     std::string name2 = std::tmpnam(nullptr);
 
-    FlashUpdate updater(name, name2);
+    FlashUpdate updater(name, "", name2);
     EXPECT_TRUE(updater.start(THIRTYTWO_MIB));
     EXPECT_TRUE(updater.startHash(THIRTYTWO_MIB));
 
