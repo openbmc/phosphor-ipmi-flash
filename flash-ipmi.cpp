@@ -68,7 +68,7 @@ void FlashUpdate::abortEverything()
 
 bool FlashUpdate::openEverything()
 {
-    flashFd = std::fopen(tmpPath.c_str(), "w");
+    flashFd = std::fopen(tmpPath.c_str(), "wb");
     if (flashFd == nullptr)
     {
         log<level::INFO>("Unable to open staging path",
@@ -92,9 +92,38 @@ bool FlashUpdate::start(uint32_t length)
     return openEverything();
 }
 
+bool FlashUpdate::writeBlock(std::FILE* fd, uint32_t offset,
+                             const std::vector<uint8_t>& bytes)
+{
+    /* Seek into position, let's assume fseek won't call if offset matches
+     * position.
+     */
+    if (std::fseek(fd, offset, SEEK_SET))
+    {
+        log<level::ERR>("Unable to seek into file to write bytes.");
+        return false;
+    }
+
+    /* Write the bytes. */
+    auto written = std::fwrite(bytes.data(), 1, bytes.size(), fd);
+
+    if (written != bytes.size())
+    {
+        log<level::ERR>("Unable to write all the bytes requested.");
+        return false;
+    }
+
+    (void)std::fflush(fd);
+    return true;
+}
+
 bool FlashUpdate::flashData(uint32_t offset, const std::vector<uint8_t>& bytes)
 {
-    /* TODO: implement. */
+    if (flashFd)
+    {
+        return writeBlock(flashFd, offset, bytes);
+    }
+
     return false;
 }
 
