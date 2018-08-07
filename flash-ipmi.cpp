@@ -154,7 +154,13 @@ bool FlashUpdate::hashData(uint32_t offset, const std::vector<uint8_t>& bytes)
 
 bool FlashUpdate::hashFinish()
 {
-    /* TODO: implement. */
+    if (hashFd)
+    {
+        std::fclose(hashFd);
+        hashFd = nullptr;
+        return true;
+    }
+
     return false;
 }
 
