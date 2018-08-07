@@ -17,6 +17,7 @@
 #include "flash-ipmi.hpp"
 
 #include <cstdio>
+#include <fstream>
 
 void FlashUpdate::closeEverything()
 {
@@ -178,6 +179,30 @@ bool FlashUpdate::abortUpdate()
 
 VerifyCheckResponse FlashUpdate::checkVerify()
 {
-    /* TODO: implement. */
-    return VerifyCheckResponse::other;
+    auto result = VerifyCheckResponse::other;
+    std::ifstream ifs;
+    ifs.open(verifyPath);
+    if (ifs.good())
+    {
+        std::string status;
+        /*
+         * Check for the contents of the file, excepting:
+         * running, success, or failed.
+         */
+        ifs >> status;
+        if (status == "running")
+        {
+            result = VerifyCheckResponse::running;
+        }
+        else if (status == "success")
+        {
+            result = VerifyCheckResponse::success;
+        }
+        else if (status == "failed")
+        {
+            result = VerifyCheckResponse::failed;
+        }
+    }
+
+    return result;
 }

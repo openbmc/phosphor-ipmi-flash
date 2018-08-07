@@ -26,7 +26,8 @@ check_PROGRAMS = \
 	flash_flashfinish_unittest \
 	flash_hashstart_unittest \
 	flash_hashdata_unittest \
-	flash_hashfinish_unittest
+	flash_hashfinish_unittest \
+	flash_checkverify_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -80,3 +81,6 @@ flash_hashdata_unittest_LDADD = $(top_builddir)/flash-ipmi.o
 
 flash_hashfinish_unittest_SOURCES = flash_hashfinish_unittest.cpp
 flash_hashfinish_unittest_LDADD = $(top_builddir)/flash-ipmi.o
+
+flash_checkverify_unittest_SOURCES = flash_checkverify_unittest.cpp
+flash_checkverify_unittest_LDADD = $(top_builddir)/flash-ipmi.o
