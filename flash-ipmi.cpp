@@ -58,6 +58,20 @@ void FlashUpdate::closeEverything()
     closeFile(&hashFd);
 }
 
+void FlashUpdate::deleteEverything()
+{
+    /* Assumes you've called closeEverything() already */
+
+    (void)std::remove(tmpPath.c_str());
+    (void)std::remove(verifyPath.c_str());
+
+    /* hashPath is optional. */
+    if (!hashPath.empty())
+    {
+        (void)std::remove(hashPath.c_str());
+    }
+}
+
 FlashUpdate::~FlashUpdate()
 {
     /* Close without deleting.  This object can only be destroyed if the ipmi
@@ -71,7 +85,14 @@ void FlashUpdate::abortEverything()
 {
     closeEverything();
 
-    /* TODO: And now delete everything */
+    /* Stop the systemd unit if it was running. */
+    auto method = bus.new_method_call(systemdService, systemdRoot,
+                                      systemdInterface, "StopUnit");
+    method.append(verifyTarget);
+    method.append("replace");
+    bus.call_noreply(method);
+
+    deleteEverything();
     return;
 }
 
@@ -195,9 +216,6 @@ bool FlashUpdate::hashFinish()
 
 bool FlashUpdate::startDataVerification()
 {
-    /* TODO: Look for injection point to test this. */
-    auto bus = sdbusplus::bus::new_default();
-
     auto method = bus.new_method_call(systemdService, systemdRoot,
                                       systemdInterface, "StartUnit");
     method.append(verifyTarget);
@@ -209,8 +227,8 @@ bool FlashUpdate::startDataVerification()
 
 bool FlashUpdate::abortUpdate()
 {
-    /* TODO: implement. */
-    return false;
+    abortEverything();
+    return true;
 }
 
 VerifyCheckResponse FlashUpdate::checkVerify()
