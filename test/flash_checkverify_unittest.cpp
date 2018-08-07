@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <fstream>
 #include <gtest/gtest.h>
+#include <sdbusplus/test/sdbus_mock.hpp>
 #include <string>
 #include <vector>
 
@@ -43,7 +44,10 @@ TEST_F(FlashIpmiCheckVerifyTest, VerifyItReturnsFileContents)
 
     std::string vname = std::tmpnam(nullptr);
 
-    FlashUpdate updater(name, vname);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    FlashUpdate updater(std::move(bus_mock), name, vname);
 
     for (const auto& test : tests)
     {
