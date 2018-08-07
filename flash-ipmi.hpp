@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdio>
 #include <string>
 #include <vector>
 
@@ -170,6 +171,17 @@ class FlashUpdate : public UpdateInterface
     bool abortUpdate() override;
 
   private:
+    /**
+     * Attempt to write the bytes at the offset.
+     *
+     * @param[in] fd - the file stream pointer.
+     * @param[in] offset - the 0-based byte offset into the flash image.
+     * @param[in] bytes - the bytes to write.
+     * @return true on success, false otherwise.
+     */
+    bool writeBlock(std::FILE* fd, uint32_t offset,
+                    const std::vector<uint8_t>& bytes);
+
     /**
      * Tries to close out everything.
      */
