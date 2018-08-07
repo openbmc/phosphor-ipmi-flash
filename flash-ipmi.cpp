@@ -128,7 +128,13 @@ bool FlashUpdate::flashData(uint32_t offset, const std::vector<uint8_t>& bytes)
 
 bool FlashUpdate::flashFinish()
 {
-    /* TODO: implement. */
+    /* If it's open, close it. */
+    if (flashFd)
+    {
+        closeFile(&flashFd);
+        return true;
+    }
+
     return false;
 }
 
