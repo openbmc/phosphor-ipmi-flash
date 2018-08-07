@@ -18,4 +18,5 @@ class UpdaterMock : public UpdateInterface
     MOCK_METHOD0(hashFinish, bool());
     MOCK_METHOD0(startDataVerification, bool());
     MOCK_METHOD0(abortUpdate, bool());
+    MOCK_METHOD0(checkVerify, VerifyCheckResponse());
 };

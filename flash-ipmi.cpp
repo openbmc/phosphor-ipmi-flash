@@ -195,3 +195,9 @@ bool FlashUpdate::abortUpdate()
     /* TODO: implement. */
     return false;
 }
+
+VerifyCheckResponse FlashUpdate::checkVerify()
+{
+    /* TODO: implement. */
+    return VerifyCheckResponse::other;
+}

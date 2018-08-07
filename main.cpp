@@ -25,6 +25,7 @@
 
 static constexpr auto stagingPath = STAGING_PATH;
 static constexpr auto hashPath = HASH_PATH;
+static constexpr auto statusPath = STATUS_PATH;
 
 /* TODO: Once OEM IPMI number placement is settled, point to that. */
 namespace oem
@@ -85,7 +86,8 @@ void setupGlobalOemFlashControl() __attribute__((constructor));
 
 void setupGlobalOemFlashControl()
 {
-    flashUpdateSingleton = std::make_unique<FlashUpdate>(stagingPath, hashPath);
+    flashUpdateSingleton =
+        std::make_unique<FlashUpdate>(stagingPath, statusPath, hashPath);
 
 #ifdef ENABLE_GOOGLE
     oem::Router* router = oem::mutableRouter();

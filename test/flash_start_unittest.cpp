@@ -13,7 +13,7 @@ TEST(FlashIpmiStartTest, VerifiesFieldsAndAction)
 
     std::string name = std::tmpnam(nullptr);
 
-    FlashUpdate updater(name);
+    FlashUpdate updater(name, "");
     updater.start(THIRTYTWO_MIB);
 
     auto file = std::fopen(name.c_str(), "r");

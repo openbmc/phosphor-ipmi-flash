@@ -30,7 +30,7 @@ TEST_F(FlashIpmiFlashDataTest, CalledOutOfSequenceFails)
     // Verify that there is sanity checking.
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name);
+    FlashUpdate updater(name, "");
     EXPECT_FALSE(updater.flashData(0, bytes));
 
     // Verify the file doesn't exist.
@@ -43,7 +43,7 @@ TEST_F(FlashIpmiFlashDataTest, CalledWithDataSucceeds)
     // Verify that under normal usage it writes the bytes.
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name);
+    FlashUpdate updater(name, "");
     updater.start(THIRTYTWO_MIB);
     EXPECT_TRUE(updater.flashData(0, bytes));
 
@@ -65,7 +65,7 @@ TEST_F(FlashIpmiFlashDataTest, CalledNonZeroOffsetSucceeds)
 
     std::vector<uint8_t> bytes = {0xaa, 0x55};
 
-    FlashUpdate updater(name);
+    FlashUpdate updater(name, "");
     updater.start(THIRTYTWO_MIB);
     EXPECT_TRUE(updater.flashData(2, bytes));
 
