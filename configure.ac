@@ -81,5 +81,5 @@ AS_IF([test "x$STATUS_PATH" == "x"], [STATUS_PATH="/tmp/bmc.verify"])
 AC_DEFINE_UNQUOTED([STATUS_PATH], ["$STATUS_PATH"], [The path for the verification status file.])
 
 # Create configured output
-AC_CONFIG_FILES([Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile test/Makefile tools/Makefile])
 AC_OUTPUT
