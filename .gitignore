@@ -32,3 +32,4 @@ x86_64-libtool
 *_unittest.log
 *_unittest.trs
 test-suite.log
+tools/burn_my_bmc

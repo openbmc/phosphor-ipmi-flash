@@ -16,4 +16,4 @@ libflashcmds_la_CXXFLAGS = $(SYSTEMD_CFLAGS) \
                            $(PHOSPHOR_DBUS_INTERFACES_CFLAGS) \
                            $(PHOSPHOR_LOGGING_CFLAGS)
 
-SUBDIRS = . test
+SUBDIRS = . test tools
