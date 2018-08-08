@@ -1,3 +1,3 @@
-[submodule "tools/ipmitool"]
-	path = tools/ipmitool
+[submodule "tools/libs/ipmitool"]
+	path = tools/libs/ipmitool
 	url = https://github.com/ipmitool/ipmitool

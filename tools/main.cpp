@@ -17,7 +17,11 @@
 #include <getopt.h>
 
 #include <cstdio>
+#include <set>
+#include <stdexcept>
 #include <string>
+
+#include "updater.hpp"
 
 static void usage(const char* name)
 {
@@ -28,7 +32,10 @@ static void usage(const char* name)
         "'ping'\n"
         "  -i, --interface <INTERFACE> the interface to use, 'ipmibt'\n"
         "  -m, --imaage <IMAGE>        the image file\n"
-        "  -s, --signature <SIGNATURE> the signature file\n",
+        "  -s, --signature <SIGNATURE> the signature file\n"
+        "\n"
+        " If command is update, you must specify an interface, image, and "
+        "signature.\n",
         name);
 }
 
@@ -36,12 +43,15 @@ int main(int argc, char* argv[])
 {
     int opt;
 
+    // clang-format off
     static const struct option long_options[] = {
-        {"command", required_argument, NULL, 'c'},
+        {"command",   required_argument, NULL, 'c'},
         {"interface", required_argument, NULL, 'i'},
-        {"image", required_argument, NULL, 'm'},
+        {"image",     required_argument, NULL, 'm'},
         {"signature", required_argument, NULL, 's'},
-        {0, 0, 0, 0}};
+        {0, 0, 0, 0}
+    };
+    // clang-format on
     const char* pm = "c:i:m:s:";
 
     std::string command, interface, image, signature;
@@ -67,6 +77,39 @@ int main(int argc, char* argv[])
             default:
                 usage(argv[0]);
                 exit(EXIT_FAILURE);
+        }
+    }
+
+    if (command.empty())
+    {
+        usage(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    static const std::set<std::string> supportedCommands = {"update"};
+    if (!supportedCommands.count(command))
+    {
+        usage(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    if (command == "update")
+    {
+        if (interface.empty() || image.empty() || signature.empty())
+        {
+            usage(argv[0]);
+            exit(EXIT_FAILURE);
+        }
+
+        try
+        {
+            UpdaterMain(interface, image, signature);
+            return 0;
+        }
+        catch (const std::runtime_error& e)
+        {
+            fprintf(stderr, "runtime error: %s\n", e.what());
+            exit(EXIT_FAILURE);
         }
     }
 
