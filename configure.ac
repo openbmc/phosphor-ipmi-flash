@@ -73,5 +73,5 @@ AS_IF([test "x$STAGING_PATH" == "x"], [STAGING_PATH="/run/initramfs/bmc-image"])
 AC_DEFINE_UNQUOTED([STAGING_PATH], ["$STAGING_PATH"], [The staging path for the flash image.])
 
 # Create configured output
-AC_CONFIG_FILES([Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile test/Makefile tools/Makefile])
 AC_OUTPUT
