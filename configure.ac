@@ -15,7 +15,7 @@ AC_PROG_MAKE_SET
 
 # Checks for typedefs, structures, and compiler characteristics.
 AX_CXX_COMPILE_STDCXX_14([noext])
-AX_APPEND_COMPILE_FLAGS([-Wall -Werror], [CXXFLAGS])
+AX_APPEND_COMPILE_FLAGS([-Wall], [CXXFLAGS])
 
 # Checks for libraries.
 PKG_CHECK_MODULES([SYSTEMD], [libsystemd >= 221], [], [AC_MSG_ERROR(["systemd required and not found"])])
@@ -81,5 +81,5 @@ AS_IF([test "x$STATUS_PATH" == "x"], [STATUS_PATH="/tmp/bmc.verify"])
 AC_DEFINE_UNQUOTED([STATUS_PATH], ["$STATUS_PATH"], [The path for the verification status file.])
 
 # Create configured output
-AC_CONFIG_FILES([Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile test/Makefile tools/Makefile tools/test/Makefile])
 AC_OUTPUT
