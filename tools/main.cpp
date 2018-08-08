@@ -17,7 +17,10 @@
 #include <getopt.h>
 
 #include <cstdio>
+#include <stdexcept>
 #include <string>
+
+#include "updater.hpp"
 
 static void usage(const char* name)
 {
@@ -67,6 +70,25 @@ int main(int argc, char* argv[])
             default:
                 usage(argv[0]);
                 exit(EXIT_FAILURE);
+        }
+    }
+
+    if (command == "update")
+    {
+        if (interface.empty() || image.empty() || signature.empty())
+        {
+            usage(argv[0]);
+            exit(EXIT_FAILURE);
+        }
+        try
+        {
+            UpdaterMain(interface, image, signature);
+            return 0;
+        }
+        catch (const std::runtime_error& e)
+        {
+            fprintf(stderr, "runtime error: %s\n", e.what());
+            exit(EXIT_FAILURE);
         }
     }
 
