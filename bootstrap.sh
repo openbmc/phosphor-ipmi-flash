@@ -15,5 +15,7 @@ case $1 in
 esac
 
 autoreconf -i
+git submodule init
+git submodule update
 echo 'Run "./configure ${CONFIGURE_FLAGS} && make"'
 
