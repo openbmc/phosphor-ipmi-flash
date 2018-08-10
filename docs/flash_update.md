@@ -11,6 +11,7 @@ file over IPMI packets, which is a very slow process. A 32-MiB image can take
 bridge, or just a few minutes via LPC depending on the size of the mapped area.
 
 This is implemented in the Google OEM number space: **11129**.
+This is also implemented under the Firmware netfn.
 
 It is command: **127**
 
@@ -83,9 +84,8 @@ send the following sequences of commands:
 
 ### P2A
 
-The PCI-to-AHB bridge is only available on some systems, possibly on all
-non-Zaius, and provides a 64-KiB region that can be pointed anywhere in BMC
-memory space.
+The PCI-to-AHB bridge is only available on some systems, and provides a 64-KiB
+region that can be pointed anywhere in BMC memory space.
 
 It is controlled by two PCIe MMIO addresses that are based on BAR1. Further
 specifics can be found in the ASPEED data sheet. However, the way it works in
@@ -93,7 +93,7 @@ this instance is that the BMC has configured a region of physical memory it
 plans to use as this buffer region. The BMC returns the address to host program
 so it can configure the PCIe MMIO registers properly for that address.
 
-As an example, the 64-KiB region the Iceblink OpenBmc image will use for this
+As an example, a 64-KiB region a platform can use for this
 approach is the last 64-KiB of the VGA reserved region: `0x47ff0000`.
 
 ### LPC
@@ -119,6 +119,8 @@ is not supported.
 
 In the following, any reference to the command body starts after the 3 bytes of
 OEM header, and the 1-byte subcommand.
+
+*This will now also go after the firmware function.*
 
 ### FlashStartTransfer (0)
 
@@ -172,7 +174,8 @@ portion.
 The FlashStartHash command expects to receive a body of:
 
 ```
-struct StartTx {
+struct StartTx
+{
     uint32_t length; /* Maximum image length is 4GiB */
 };
 ```
@@ -187,7 +190,8 @@ portion.
 This command expects to receive a body of:
 
 ```
-struct ChunkHdr {
+struct ChunkHdr
+{
     uint32_t offset; /* The byte sequence start, (0 based). */
 };
 ```
@@ -236,7 +240,8 @@ contains: "`running`", "`success`" or "`failed`". This then packs that as a 1
 byte of result of:
 
 ```
-enum VerifyCheckResponses {
+enum VerifyCheckResponses
+{
     VerifyRunning = 0x00,
     VerifySuccess = 0x01,
     VerifyFailed  = 0x02,
@@ -264,7 +269,8 @@ space (P2A bridge) or in LPC FW space (LPC bridge).
 This command expects to receive:
 
 ```
-struct ExtChunkHdr {
+struct ExtChunkHdr
+{
     uint32_t length; /* Length of the data queued (little endian). */
 };
 ```
@@ -280,7 +286,8 @@ portion.
 This command expects to receive:
 
 ```
-struct ExtChunkHdr {
+struct ExtChunkHdr
+{
     uint32_t length; /* Length of the data queued (little endian). */
 };
 ```
@@ -297,7 +304,8 @@ This command maps a chunk (size specified by host) of the BMC memory into LPC
 space at a specified address. It expects to receive:
 
 ```
-struct LpcRegion {
+struct LpcRegion
+{
     uint32_t address; /* Host LPC address where the chunk is to be mapped. */
     uint32_t length; /* Size of the chunk to be mapped. */
 };
