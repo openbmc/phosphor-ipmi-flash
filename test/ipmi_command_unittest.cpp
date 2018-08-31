@@ -22,7 +22,7 @@ void EqualFunctions(IpmiFlashHandler lhs, IpmiFlashHandler rhs)
     EXPECT_EQ(*lPtr, *rPtr);
     return;
 }
-}
+} // namespace
 
 TEST(IpmiCommandTest, VerifyCommandReturnsExpected)
 {

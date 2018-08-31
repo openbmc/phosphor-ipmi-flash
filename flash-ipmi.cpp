@@ -50,7 +50,7 @@ void closeFile(std::FILE** fd)
         (*fd) = nullptr;
     }
 }
-}
+} // namespace
 
 void FlashUpdate::closeEverything()
 {
