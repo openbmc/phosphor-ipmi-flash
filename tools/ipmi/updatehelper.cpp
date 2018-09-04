@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
+#include "config.h"
+
 #include "updatehelper.hpp"
 
 #include <cstring>
 #include <vector>
 
-#include "config.h"
-
 namespace
 {
 // Output a vector of bytes consisted of the command header and given input.
 // Precondition: packet must be preallocated with kFlashCommandHdrSizeBytes.
-void constructFlashIpmiPacket(int command, const uint8_t *payload,
-                              int payload_size, std::vector<uint8_t> *packet)
+void constructFlashIpmiPacket(int command, const uint8_t* payload,
+                              int payload_size, std::vector<uint8_t>* packet)
 {
     struct CommandHdr hdr;
     std::memset(&hdr, 0, sizeof(hdr));
@@ -55,7 +55,7 @@ void constructFlashIpmiPacket(int command, const uint8_t *payload,
  */
 struct IpmiResponse
     IpmiUpdateHelper::SendCommand(int command,
-                                  const std::vector<uint8_t> &payload)
+                                  const std::vector<uint8_t>& payload)
 {
     std::vector<uint8_t> packet(kFlashCommandHdrSizeBytes);
     constructFlashIpmiPacket(command, payload.data(), payload.size(), &packet);

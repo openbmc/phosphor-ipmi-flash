@@ -35,7 +35,7 @@ const struct valstr completion_code_vals[] = {
     {0xff, "Unspecified error"},
     {0x00, NULL}};
 
-const char *val2str(uint16_t val, const struct valstr *vs)
+const char* val2str(uint16_t val, const struct valstr* vs)
 {
     static char un_str[32];
     int i;
@@ -52,32 +52,32 @@ const char *val2str(uint16_t val, const struct valstr *vs)
     return un_str;
 }
 
-void ipmi_intf_session_set_timeout(struct ipmi_intf *intf, uint32_t timeout)
+void ipmi_intf_session_set_timeout(struct ipmi_intf* intf, uint32_t timeout)
 {
     intf->ssn_params.timeout = timeout;
 }
 
-void ipmi_intf_session_set_retry(struct ipmi_intf *intf, int retry)
+void ipmi_intf_session_set_retry(struct ipmi_intf* intf, int retry)
 {
     intf->ssn_params.retry = retry;
 }
 
 /* Nullify the methods we don't care about. */
-void lprintf(int level, const char *format, ...)
+void lprintf(int level, const char* format, ...)
 {
     return;
 }
-void lperror(int level, const char *format, ...)
+void lperror(int level, const char* format, ...)
 {
     return;
 }
 
 int verbose = 0;
 
-const char *buf2str_extended(const uint8_t *buf, int len, const char *sep)
+const char* buf2str_extended(const uint8_t* buf, int len, const char* sep)
 {
     static char str[BUF2STR_MAXIMUM_OUTPUT_SIZE];
-    char *cur;
+    char* cur;
     int i;
     int sz;
     int left;
@@ -86,7 +86,7 @@ const char *buf2str_extended(const uint8_t *buf, int len, const char *sep)
     if (buf == NULL)
     {
         snprintf(str, sizeof(str), "<NULL>");
-        return (const char *)str;
+        return (const char*)str;
     }
     cur = str;
     left = sizeof(str);
@@ -123,15 +123,15 @@ const char *buf2str_extended(const uint8_t *buf, int len, const char *sep)
     }
     *cur = '\0';
 
-    return (const char *)str;
+    return (const char*)str;
 }
 
-const char *buf2str(const uint8_t *buf, int len)
+const char* buf2str(const uint8_t* buf, int len)
 {
     return buf2str_extended(buf, len, NULL);
 }
 
-uint8_t ipmi_csum(uint8_t *d, int s)
+uint8_t ipmi_csum(uint8_t* d, int s)
 {
     uint8_t c = 0;
     for (; s > 0; s--, d++)
@@ -139,7 +139,7 @@ uint8_t ipmi_csum(uint8_t *d, int s)
     return -c;
 }
 
-void printbuf(const uint8_t *buf, int len, const char *desc)
+void printbuf(const uint8_t* buf, int len, const char* desc)
 {
     int i;
 
@@ -160,12 +160,12 @@ void printbuf(const uint8_t *buf, int len, const char *desc)
 }
 
 IPMI_OEM
-ipmi_get_oem(struct ipmi_intf *intf)
+ipmi_get_oem(struct ipmi_intf* intf)
 {
     /* Execute a Get Device ID command to determine the OEM */
-    struct ipmi_rs *rsp;
+    struct ipmi_rs* rsp;
     struct ipmi_rq req;
-    struct ipm_devid_rsp *devid;
+    struct ipm_devid_rsp* devid;
 
     if (intf->fd == 0)
     {
@@ -204,7 +204,7 @@ ipmi_get_oem(struct ipmi_intf *intf)
         return IPMI_OEM_UNKNOWN;
     }
 
-    devid = (struct ipm_devid_rsp *)rsp->data;
+    devid = (struct ipm_devid_rsp*)rsp->data;
 
     lprintf(LOG_DEBUG, "Iana: %u",
             IPM_DEV_MANUFACTURER_ID(devid->manufacturer_id));

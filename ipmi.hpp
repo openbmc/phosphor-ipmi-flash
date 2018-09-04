@@ -1,10 +1,10 @@
 #pragma once
 
+#include "flash-ipmi.hpp"
+
 #include <functional>
 
 #include "host-ipmid/ipmid-api.h"
-
-#include "flash-ipmi.hpp"
 
 using IpmiFlashHandler =
     std::function<ipmi_ret_t(UpdateInterface* updater, const uint8_t* reqBuf,

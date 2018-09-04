@@ -16,15 +16,15 @@
 
 #include "updater.hpp"
 
+#include "bt.hpp"
+#include "raw.hpp"
+#include "updatehelper.hpp"
+
 #include <experimental/filesystem>
 #include <fstream>
 #include <memory>
 #include <set>
 #include <stdexcept>
-
-#include "bt.hpp"
-#include "raw.hpp"
-#include "updatehelper.hpp"
 
 extern "C" {
 #include "ipmitoolintf.h"
