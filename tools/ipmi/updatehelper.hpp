@@ -1,9 +1,10 @@
 #pragma once
 
-#include <vector>
-
 #include "config.h"
+
 #include "raw.hpp"
+
+#include <vector>
 
 constexpr int OEM_FLASH_UPDATE_BT_COMMAND = 127;
 constexpr uint8_t NETFN_FIRMWARE = 0x08;

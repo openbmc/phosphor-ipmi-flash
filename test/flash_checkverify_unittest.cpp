@@ -2,10 +2,11 @@
 
 #include <cstdio>
 #include <fstream>
-#include <gtest/gtest.h>
 #include <sdbusplus/test/sdbus_mock.hpp>
 #include <string>
 #include <vector>
+
+#include <gtest/gtest.h>
 
 class FlashIpmiCheckVerifyTest : public ::testing::Test
 {

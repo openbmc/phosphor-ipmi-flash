@@ -1,9 +1,10 @@
 #include "flash-ipmi.hpp"
 
 #include <cstdio>
-#include <gtest/gtest.h>
 #include <sdbusplus/test/sdbus_mock.hpp>
 #include <string>
+
+#include <gtest/gtest.h>
 
 #define THIRTYTWO_MIB 33554432
 

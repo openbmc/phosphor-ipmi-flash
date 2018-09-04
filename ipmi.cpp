@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-#include <cstring>
-#include <unordered_map>
+#include "ipmi.hpp"
 
 #include "flash-ipmi.hpp"
-#include "ipmi.hpp"
+
+#include <cstring>
+#include <unordered_map>
 
 IpmiFlashHandler getCommandHandler(FlashSubCmds command)
 {

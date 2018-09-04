@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
+#include "updater.hpp"
+
 #include <getopt.h>
 
 #include <cstdio>
 #include <set>
 #include <stdexcept>
 #include <string>
-
-#include "updater.hpp"
 
 static void usage(const char* name)
 {

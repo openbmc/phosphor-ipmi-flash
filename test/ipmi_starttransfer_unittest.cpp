@@ -1,9 +1,9 @@
 #include "flash-ipmi.hpp"
 #include "ipmi.hpp"
-
 #include "updater_mock.hpp"
 
 #include <cstring>
+
 #include <gtest/gtest.h>
 
 using ::testing::NotNull;

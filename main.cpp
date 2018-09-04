@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
+#include "config.h"
+
+#include "flash-ipmi.hpp"
+#include "host-ipmid/oemrouter.hpp"
+#include "ipmi.hpp"
+
 #include <memory>
 
 #include "host-ipmid/ipmid-api.h"
-#include "host-ipmid/oemrouter.hpp"
-
-#include "config.h"
-#include "flash-ipmi.hpp"
-#include "ipmi.hpp"
 
 static constexpr auto stagingPath = STAGING_PATH;
 static constexpr auto hashPath = HASH_PATH;

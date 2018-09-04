@@ -6,7 +6,7 @@
 class BtDataHandler : public DataInterface
 {
   public:
-    explicit BtDataHandler(UpdateHelperInterface *helper) : helper(helper)
+    explicit BtDataHandler(UpdateHelperInterface* helper) : helper(helper)
     {
     }
 
@@ -18,5 +18,5 @@ class BtDataHandler : public DataInterface
     }
 
   private:
-    UpdateHelperInterface *helper;
+    UpdateHelperInterface* helper;
 };

@@ -1,9 +1,10 @@
 #pragma once
 
-#include <gmock/gmock.h>
+#include "flash-ipmi.hpp"
+
 #include <vector>
 
-#include "flash-ipmi.hpp"
+#include <gmock/gmock.h>
 
 class UpdaterMock : public UpdateInterface
 {
