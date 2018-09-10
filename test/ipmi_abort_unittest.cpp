@@ -1,6 +1,5 @@
 #include "flash-ipmi.hpp"
 #include "ipmi.hpp"
-
 #include "updater_mock.hpp"
 
 #include <gtest/gtest.h>
