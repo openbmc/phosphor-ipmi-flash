@@ -17,12 +17,13 @@
 #include "config.h"
 
 #include "flash-ipmi.hpp"
-#include "host-ipmid/oemrouter.hpp"
 #include "ipmi.hpp"
 
-#include <memory>
+#include <host-ipmid/ipmid-api.h>
 
-#include "host-ipmid/ipmid-api.h"
+#include <host-ipmid/iana.hpp>
+#include <host-ipmid/oemrouter.hpp>
+#include <memory>
 
 static constexpr auto stagingPath = STAGING_PATH;
 static constexpr auto hashPath = HASH_PATH;
@@ -33,7 +34,6 @@ namespace oem
 {
 namespace google
 {
-constexpr int number = 11129;
 constexpr int flashOverBTCmd = 127;
 } // namespace google
 } // namespace oem
@@ -94,9 +94,9 @@ void setupGlobalOemFlashControl()
     oem::Router* router = oem::mutableRouter();
 
     fprintf(stderr, "Registering OEM:[%#08X], Cmd:[%#04X] for Flash Update\n",
-            oem::google::number, oem::google::flashOverBTCmd);
+            oem::googOemNumber, oem::google::flashOverBTCmd);
 
-    router->registerHandler(oem::google::number, oem::google::flashOverBTCmd,
+    router->registerHandler(oem::googOemNumber, oem::google::flashOverBTCmd,
                             flashControl);
 #endif
 
