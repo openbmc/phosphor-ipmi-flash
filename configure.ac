@@ -1,7 +1,7 @@
 
 # Initialization
 AC_PREREQ([2.69])
-AC_INIT([flash-ipmi], [1.0], [https://www.google.com])
+AC_INIT([phosphor-ipmi-flash], [1.0], [https://www.github.com/openbmc/phosphor-ipmi-flash/issues])
 AC_LANG([C++])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([subdir-objects -Wall -Werror foreign dist-xz])
