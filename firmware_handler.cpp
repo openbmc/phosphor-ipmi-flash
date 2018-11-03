@@ -17,6 +17,7 @@ std::vector<std::string> supportedFirmware = {
 
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
 {
+    /* Check if the path is in our supported list (or active list). */
     return false;
 }
 std::vector<std::string> FirmwareBlobHandler::getBlobIds()
@@ -37,6 +38,12 @@ std::vector<std::string> FirmwareBlobHandler::getBlobIds()
 }
 bool FirmwareBlobHandler::deleteBlob(const std::string& path)
 {
+    /* If this is called on the type listing, it should fail.
+     * If this is called on /flash/active/image, /flash/active/hash, check to
+     * see what state we're in and delete the item...  If they delete the
+     * image, should we delete the hash if it was started?  The design didn't
+     * go into that but the idea of delete is to abort().
+     */
     return false;
 }
 bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
