@@ -24,6 +24,16 @@ PKG_CHECK_MODULES([PHOSPHOR_LOGGING], [phosphor-logging],, [AC_MSG_ERROR([Could 
 AC_CHECK_HEADER([blobs-ipmid], [AC_MSG_ERROR(["phosphor-ipmi-blobs required and not found."])])
 AX_PTHREAD([], [AC_MSG_ERROR(["pthread required and not found"])])
 
+# Configurability
+# Enable static layout for firmware image staging.
+AC_ARG_ENABLE([static-layout],
+    AS_HELP_STRING([--enable-static-layout],
+                   [Enable static layout firmware update via Blobs]))
+AS_IF([test "x$enable_static_layout" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_STATIC_LAYOUT], [CXXFLAGS])
+])
+# Enable BlockTransfer, P2A, and or LPC.
+
 # Check/set gtest specific functions.
 PKG_CHECK_MODULES([GTEST], [gtest], [], [AC_MSG_NOTICE([gtest not found, tests will not build])])
 PKG_CHECK_MODULES([GMOCK], [gmock], [], [AC_MSG_NOTICE([gmock not found, tests will not build])])
