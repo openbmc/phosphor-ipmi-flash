@@ -13,6 +13,23 @@ enum class FirmwareUpdateFlags
 };
 
 /**
+ * Representation of an update in progress.  We only allow one of these to
+ * exist at a time.
+ */
+struct UpdateSession
+{
+
+    /* state -- are we receiving the image or the hash or did we trigger */
+
+    /* type of session (p2a, lpc, bt, etc) */
+    FirmwareUpdateFlags sessionType;
+
+    /* write handler (whether a write from the host copies from p2a or lpc
+     * or...
+     */
+};
+
+/**
  * Register only one firmware blob handler that will manage all sessions.
  */
 class FirmwareBlobHandler : public GenericBlobInterface
@@ -41,6 +58,10 @@ class FirmwareBlobHandler : public GenericBlobInterface
     bool close(uint16_t session) override;
     bool stat(uint16_t session, struct BlobMeta* meta) override;
     bool expire(uint16_t session) override;
+
+  private:
+    UpdateSession session;
+    bool active = false;
 };
 
 } // namespace blobs
