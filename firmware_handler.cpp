@@ -1,7 +1,19 @@
+#include "config.h"
+
 #include "firmware_handler.hpp"
+
+#include <string>
+#include <vector>
 
 namespace blobs
 {
+
+std::vector<std::string> supportedFirmware = {
+    "/flash/hash",
+#ifdef ENABLE_LEGACY
+    "/flash/image",
+#endif
+};
 
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
 {
@@ -9,7 +21,19 @@ bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
 }
 std::vector<std::string> FirmwareBlobHandler::getBlobIds()
 {
-    return {};
+    /*
+     * Grab the list of supported firmware.
+     * If there's an open session, add that to this list.
+     */
+    std::vector<std::string> blobs = supportedFirmware;
+
+    /*
+     * If there's an open firmware session, it'll add "/flash/active_image",
+     * and if the hash has started, "/flash/active_hash" regardless of
+     * mechanism.
+     */
+
+    return blobs;
 }
 bool FirmwareBlobHandler::deleteBlob(const std::string& path)
 {
