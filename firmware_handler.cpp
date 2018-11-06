@@ -1,5 +1,6 @@
 #include "firmware_handler.hpp"
 
+#include <algorithm>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -18,6 +19,11 @@ std::unique_ptr<GenericBlobInterface>
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
 {
     /* Check if the path is in our supported list (or active list). */
+    if (std::count(firmwares.begin(), firmwares.end(), path))
+    {
+        return true;
+    }
+
     return false;
 }
 
@@ -25,17 +31,13 @@ std::vector<std::string> FirmwareBlobHandler::getBlobIds()
 {
     /*
      * Grab the list of supported firmware.
-     * If there's an open session, add that to this list.
+     *
+     * If there's an open firmware session, it'll already be present in the
+     * list as "/flash/active/image", and if the hash has started,
+     * "/flash/active/hash" regardless of mechanism.  This is done in the open
+     * comamnd, no extra work is required here.
      */
-    std::vector<std::string> blobs = baseFirmwares;
-
-    /*
-     * If there's an open firmware session, it'll add "/flash/active/image",
-     * and if the hash has started, "/flash/active/hash" regardless of
-     * mechanism.
-     */
-
-    return blobs;
+    return firmwares;
 }
 
 bool FirmwareBlobHandler::deleteBlob(const std::string& path)

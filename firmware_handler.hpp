@@ -22,13 +22,25 @@ enum class FirmwareUpdateFlags
 class FirmwareBlobHandler : public GenericBlobInterface
 {
   public:
+    /**
+     * Create a FirmwareBlobHandler.
+     *
+     * @param[in] firmwares - list of blobs_ids to support.
+     * @param[in] transports - bitmask of transports to support.
+     */
     static std::unique_ptr<GenericBlobInterface>
         CreateFirmwareBlobHandler(const std::vector<std::string>& firmwares,
                                   std::uint32_t transports);
 
+    /**
+     * Create a FirmwareBlobHandler.
+     *
+     * @param[in] firmwares - list of blobs_ids to support.
+     * @param[in] transports - bitmask of transports to support.
+     */
     FirmwareBlobHandler(const std::vector<std::string>& firmwares,
                         std::uint32_t transports) :
-        baseFirmwares(firmwares),
+        firmwares(firmwares),
         transports(transports)
     {
     }
@@ -56,7 +68,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
     bool expire(uint16_t session) override;
 
   private:
-    std::vector<std::string> baseFirmwares;
+    std::vector<std::string> firmwares;
     std::uint32_t transports;
 };
 
