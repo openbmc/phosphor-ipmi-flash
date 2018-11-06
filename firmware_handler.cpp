@@ -10,6 +10,9 @@ namespace blobs
 {
 
 const std::string FirmwareBlobHandler::hashBlobID = "/flash/hash";
+const std::string FirmwareBlobHandler::activeImageBlobID =
+    "/flash/active/image";
+const std::string FirmwareBlobHandler::activeHashBlobID = "/flash/active/hash";
 
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
