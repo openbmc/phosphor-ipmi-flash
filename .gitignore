@@ -40,6 +40,10 @@ install-sh
 ltmain.sh
 missing
 test-driver
+*_unittest
+*_unittest.log
+*_unittest.trs
+test-suite.log
 
 # Custom generated files
 
