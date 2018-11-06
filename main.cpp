@@ -13,7 +13,8 @@ void setupFirmwareHandler() __attribute__((constructor));
 void setupFirmwareHandler()
 {
     auto* manager = getBlobManager();
-    if (!manager->registerHandler(std::make_unique<FirmwareBlobHandler>()))
+    if (!manager->registerHandler(
+            FirmwareBlobHandler::CreateFirmwareBlobHandler()))
     {
         log<level::ERR>("Failed to register Firmware Handler");
     }

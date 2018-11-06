@@ -2,6 +2,7 @@
 
 #include "firmware_handler.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -14,6 +15,12 @@ std::vector<std::string> supportedFirmware = {
     "/flash/image",
 #endif
 };
+
+std::unique_ptr<GenericBlobInterface>
+    FirmwareBlobHandler::CreateFirmwareBlobHandler()
+{
+    return std::make_unique<FirmwareBlobHandler>();
+}
 
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
 {

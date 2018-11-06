@@ -1,6 +1,7 @@
 #pragma once
 
 #include <blobs-ipmid/blobs.hpp>
+#include <memory>
 
 namespace blobs
 {
@@ -18,6 +19,8 @@ enum class FirmwareUpdateFlags
 class FirmwareBlobHandler : public GenericBlobInterface
 {
   public:
+    static std::unique_ptr<GenericBlobInterface> CreateFirmwareBlobHandler();
+
     FirmwareBlobHandler() = default;
     ~FirmwareBlobHandler() = default;
     FirmwareBlobHandler(const FirmwareBlobHandler&) = default;
