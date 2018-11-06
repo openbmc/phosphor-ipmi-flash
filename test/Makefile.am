@@ -11,7 +11,8 @@ AM_LDFLAGS = \
 # Run all 'check' test programs
 check_PROGRAMS = \
 	firmware_handler_unittest \
-	firmware_stat_unittest
+	firmware_stat_unittest \
+	firmware_canhandle_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -21,3 +22,5 @@ firmware_handler_unittest_LDADD = $(top_builddir)/firmware_handler.o
 firmware_stat_unittest_SOURCES = firmware_stat_unittest.cpp
 firmware_stat_unittest_LDADD = $(top_builddir)/firmware_handler.o
 
+firmware_canhandle_unittest_SOURCES = firmware_canhandle_unittest.cpp
+firmware_canhandle_unittest_LDADD = $(top_builddir)/firmware_handler.o
