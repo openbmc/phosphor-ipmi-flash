@@ -17,18 +17,18 @@ std::vector<std::string> supportedFirmware = {
 #endif
 };
 
-std::uint32_t supportedTransports =
-    static_cast<std::uint32_t>(FirmwareUpdateFlags::bt);
+std::uint16_t supportedTransports =
+    static_cast<std::uint16_t>(FirmwareUpdateFlags::bt);
 
 void setupFirmwareHandler() __attribute__((constructor));
 
 void setupFirmwareHandler()
 {
 #ifdef ENABLE_PCI_BRIDGE
-    supportedTransports |= static_cast<std::uint32_t>(FirmwareUpdateFlags::p2a);
+    supportedTransports |= static_cast<std::uint16_t>(FirmwareUpdateFlags::p2a);
 #endif
 #ifdef ENABLE_LPC_BRIDGE
-    supportedTransports |= static_cast<std::uint32_t>(FirmwareUpdateFlags::lpc);
+    supportedTransports |= static_cast<std::uint16_t>(FirmwareUpdateFlags::lpc);
 #endif
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
