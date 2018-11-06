@@ -25,7 +25,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
     /**
      * Create a FirmwareBlobHandler.
      *
-     * @param[in] firmwares - list of blobs_ids to support.
+     * @param[in] firmwares - list of firmware blob_ids to support.
      * @param[in] transports - bitmask of transports to support.
      */
     static std::unique_ptr<GenericBlobInterface>
@@ -35,12 +35,12 @@ class FirmwareBlobHandler : public GenericBlobInterface
     /**
      * Create a FirmwareBlobHandler.
      *
-     * @param[in] firmwares - list of blobs_ids to support.
+     * @param[in] blobs - list of blobs_ids to support.
      * @param[in] transports - bitmask of transports to support.
      */
-    FirmwareBlobHandler(const std::vector<std::string>& firmwares,
+    FirmwareBlobHandler(const std::vector<std::string>& blobs,
                         std::uint32_t transports) :
-        firmwares(firmwares),
+        blobIDs(blobs),
         transports(transports)
     {
     }
@@ -68,7 +68,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
     bool expire(uint16_t session) override;
 
   private:
-    std::vector<std::string> firmwares;
+    std::vector<std::string> blobIDs;
     std::uint32_t transports;
 };
 

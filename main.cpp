@@ -12,7 +12,6 @@ namespace blobs
 using namespace phosphor::logging;
 
 std::vector<std::string> supportedFirmware = {
-    "/flash/hash",
 #ifdef ENABLE_STATIC_LAYOUT
     "/flash/image",
 #endif

@@ -9,17 +9,22 @@
 namespace blobs
 {
 
+static std::string hashBlobID = "/flash/hash";
+
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
         const std::vector<std::string>& firmwares, std::uint32_t transports)
 {
-    return std::make_unique<FirmwareBlobHandler>(firmwares, transports);
+    std::vector<std::string> blobs = firmwares;
+    blobs.push_back(hashBlobID);
+
+    return std::make_unique<FirmwareBlobHandler>(blobs, transports);
 }
 
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
 {
     /* Check if the path is in our supported list (or active list). */
-    if (std::count(firmwares.begin(), firmwares.end(), path))
+    if (std::count(blobIDs.begin(), blobIDs.end(), path))
     {
         return true;
     }
@@ -37,7 +42,7 @@ std::vector<std::string> FirmwareBlobHandler::getBlobIds()
      * "/flash/active/hash" regardless of mechanism.  This is done in the open
      * comamnd, no extra work is required here.
      */
-    return firmwares;
+    return blobIDs;
 }
 
 bool FirmwareBlobHandler::deleteBlob(const std::string& path)
