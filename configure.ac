@@ -32,7 +32,7 @@ AC_ARG_ENABLE([static-layout],
 AS_IF([test "x$enable_static_layout" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_STATIC_LAYOUT], [CXXFLAGS])
 ])
-# Enable BlockTransfer, P2A, and or LPC.
+# Enable P2A, and or LPC (block-transfer is always enabled).
 
 # Check/set gtest specific functions.
 PKG_CHECK_MODULES([GTEST], [gtest], [], [AC_MSG_NOTICE([gtest not found, tests will not build])])
