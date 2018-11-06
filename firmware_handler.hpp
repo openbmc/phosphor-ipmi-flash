@@ -2,6 +2,8 @@
 
 #include <blobs-ipmid/blobs.hpp>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace blobs
 {
@@ -19,9 +21,13 @@ enum class FirmwareUpdateFlags
 class FirmwareBlobHandler : public GenericBlobInterface
 {
   public:
-    static std::unique_ptr<GenericBlobInterface> CreateFirmwareBlobHandler();
+    static std::unique_ptr<GenericBlobInterface>
+        CreateFirmwareBlobHandler(const std::vector<std::string>& firmwares);
 
-    FirmwareBlobHandler() = default;
+    explicit FirmwareBlobHandler(const std::vector<std::string>& firmwares) :
+        baseFirmwares(firmwares)
+    {
+    }
     ~FirmwareBlobHandler() = default;
     FirmwareBlobHandler(const FirmwareBlobHandler&) = default;
     FirmwareBlobHandler& operator=(const FirmwareBlobHandler&) = default;
@@ -44,6 +50,9 @@ class FirmwareBlobHandler : public GenericBlobInterface
     bool close(uint16_t session) override;
     bool stat(uint16_t session, struct BlobMeta* meta) override;
     bool expire(uint16_t session) override;
+
+  private:
+    std::vector<std::string> baseFirmwares;
 };
 
 } // namespace blobs

@@ -1,5 +1,3 @@
-#include "config.h"
-
 #include "firmware_handler.hpp"
 
 #include <memory>
@@ -9,17 +7,11 @@
 namespace blobs
 {
 
-std::vector<std::string> supportedFirmware = {
-    "/flash/hash",
-#ifdef ENABLE_STATIC_LAYOUT
-    "/flash/image",
-#endif
-};
-
 std::unique_ptr<GenericBlobInterface>
-    FirmwareBlobHandler::CreateFirmwareBlobHandler()
+    FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        const std::vector<std::string>& firmwares)
 {
-    return std::make_unique<FirmwareBlobHandler>();
+    return std::make_unique<FirmwareBlobHandler>(firmwares);
 }
 
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
@@ -34,7 +26,7 @@ std::vector<std::string> FirmwareBlobHandler::getBlobIds()
      * Grab the list of supported firmware.
      * If there's an open session, add that to this list.
      */
-    std::vector<std::string> blobs = supportedFirmware;
+    std::vector<std::string> blobs = baseFirmwares;
 
     /*
      * If there's an open firmware session, it'll add "/flash/active/image",
