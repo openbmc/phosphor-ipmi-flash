@@ -16,7 +16,7 @@ const std::string FirmwareBlobHandler::activeHashBlobID = "/flash/active/hash";
 
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        const std::vector<std::string>& firmwares, std::uint32_t transports)
+        const std::vector<std::string>& firmwares, std::uint16_t transports)
 {
     /* There must be at least one. */
     if (!firmwares.size())
@@ -73,6 +73,27 @@ bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
      * of the data cached, and any additional pertinent information.  The
      * blob_state on the active files will return the state of the update.
      */
+
+    /* We know we support this path because canHandle is called ahead */
+    if (path == FirmwareBlobHandler::activeImageBlobID)
+    {
+        /* We need to return information for the image that's staged. */
+    }
+    else if (path == FirmwareBlobHandler::activeHashBlobID)
+    {
+        /* We need to return information for the hash that's staged. */
+    }
+    else
+    {
+        /* They are requesting information about the generic blob_id. */
+        meta->blobState = transports;
+        meta->size = 0;
+
+        /* The generic blob_ids state is only the bits related to the transport
+         * mechanisms. */
+        return true;
+    }
+
     return false;
 }
 
@@ -154,8 +175,7 @@ bool FirmwareBlobHandler::close(uint16_t session)
 bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
 {
     /*
-     * Return the supported mechanisms if it's the handler blob_id, versus
-     * the active one.
+     * Return session specific information.
      */
     return false;
 }

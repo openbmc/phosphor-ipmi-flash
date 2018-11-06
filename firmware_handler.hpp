@@ -30,7 +30,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
      */
     static std::unique_ptr<GenericBlobInterface>
         CreateFirmwareBlobHandler(const std::vector<std::string>& firmwares,
-                                  std::uint32_t transports);
+                                  std::uint16_t transports);
 
     /**
      * Create a FirmwareBlobHandler.
@@ -39,7 +39,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
      * @param[in] transports - bitmask of transports to support.
      */
     FirmwareBlobHandler(const std::vector<std::string>& blobs,
-                        std::uint32_t transports) :
+                        std::uint16_t transports) :
         blobIDs(blobs),
         transports(transports)
     {
@@ -73,7 +73,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
 
   private:
     std::vector<std::string> blobIDs;
-    std::uint32_t transports;
+    std::uint16_t transports;
 };
 
 } // namespace blobs
