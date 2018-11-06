@@ -31,10 +31,18 @@ void setupFirmwareHandler()
     supportedTransports |= static_cast<std::uint32_t>(FirmwareUpdateFlags::lpc);
 #endif
 
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        supportedFirmware, supportedTransports);
+
+    if (!handler)
+    {
+        log<level::ERR>("Firmware Handler has invalid configuration");
+        return;
+    }
+
     auto* manager = getBlobManager();
-    if (!manager->registerHandler(
-            FirmwareBlobHandler::CreateFirmwareBlobHandler(
-                supportedFirmware, supportedTransports)))
+
+    if (!manager->registerHandler(std::move(handler)))
     {
         log<level::ERR>("Failed to register Firmware Handler");
     }

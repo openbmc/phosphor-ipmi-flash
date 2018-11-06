@@ -15,6 +15,12 @@ std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
         const std::vector<std::string>& firmwares, std::uint32_t transports)
 {
+    /* There must be at least one. */
+    if (!firmwares.size())
+    {
+        return nullptr;
+    }
+
     std::vector<std::string> blobs = firmwares;
     blobs.push_back(hashBlobID);
 
