@@ -33,6 +33,18 @@ AS_IF([test "x$enable_static_layout" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_STATIC_LAYOUT], [CXXFLAGS])
 ])
 # Enable P2A, and or LPC (block-transfer is always enabled).
+AC_ARG_ENABLE([pci-bridge],
+    AS_HELP_STRING([--enable-pci-bridge],
+                   [Enable pci-bridge transport mechanism]))
+AS_IF([test "x$enable_pci_bridge" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_PCI_BRIDGE], [CXXFLAGS])
+])
+AC_ARG_ENABLE([lpc-bridge],
+    AS_HELP_STRING([--enable-lpc-bridge],
+                   [Enable lpc-bridge transport mechanism]))
+AS_IF([test "x$enable_lpc_bridge" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_LPC_BRIDGE], [CXXFLAGS])
+])
 
 # Check/set gtest specific functions.
 PKG_CHECK_MODULES([GTEST], [gtest], [], [AC_MSG_NOTICE([gtest not found, tests will not build])])

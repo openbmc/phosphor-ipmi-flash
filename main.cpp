@@ -3,6 +3,7 @@
 #include "firmware_handler.hpp"
 
 #include <blobs-ipmid/manager.hpp>
+#include <cstdint>
 #include <memory>
 #include <phosphor-logging/log.hpp>
 
@@ -17,13 +18,23 @@ std::vector<std::string> supportedFirmware = {
 #endif
 };
 
+std::uint32_t supportedTransports = static_cast<std::uint32_t>(FirmwareUpdateFlags::bt);
+
 void setupFirmwareHandler() __attribute__((constructor));
 
 void setupFirmwareHandler()
 {
+#ifdef ENABLE_PCI_BRIDGE
+    supportedTransports |= static_cast<std::uint32_t>(FirmwareUpdateFlags::p2a);
+#endif
+#ifdef ENABLE_LPC_BRIDGE
+    supportedTransports |= static_cast<std::uint32_t>(FirmwareUpdateFlags::lpc);
+#endif
+
     auto* manager = getBlobManager();
     if (!manager->registerHandler(
-            FirmwareBlobHandler::CreateFirmwareBlobHandler(supportedFirmware)))
+            FirmwareBlobHandler::CreateFirmwareBlobHandler(
+                supportedFirmware, supportedTransports)))
     {
         log<level::ERR>("Failed to register Firmware Handler");
     }
