@@ -40,6 +40,7 @@ install-sh
 ltmain.sh
 missing
 test-driver
+test/*_*
 
 # Custom generated files
 
