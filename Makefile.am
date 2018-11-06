@@ -8,3 +8,5 @@ libfirmwareblob_la_LDFLAGS = $(PHOSPHOR_LOGGING_LIBS) \
                         -version-info 0:0:0 -shared
 libfirmwareblob_la_CXXFLAGS = $(PHOSPHOR_LOGGING_CFLAGS) \
                          -flto
+
+SUBDIRS = . test
