@@ -58,6 +58,8 @@ class FirmwareBlobHandler : public GenericBlobInterface
   private:
     std::vector<std::string> baseFirmwares;
     std::uint32_t transports;
+    /** Cache of the current blob_ids we own. */
+    std::vector<std::string> blobCache;
 };
 
 } // namespace blobs
