@@ -1,6 +1,7 @@
 #pragma once
 
 #include <blobs-ipmid/blobs.hpp>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
@@ -22,10 +23,13 @@ class FirmwareBlobHandler : public GenericBlobInterface
 {
   public:
     static std::unique_ptr<GenericBlobInterface>
-        CreateFirmwareBlobHandler(const std::vector<std::string>& firmwares);
+        CreateFirmwareBlobHandler(const std::vector<std::string>& firmwares,
+                                  std::uint32_t transports);
 
-    explicit FirmwareBlobHandler(const std::vector<std::string>& firmwares) :
-        baseFirmwares(firmwares)
+    FirmwareBlobHandler(const std::vector<std::string>& firmwares,
+                        std::uint32_t transports) :
+        baseFirmwares(firmwares),
+        transports(transports)
     {
     }
     ~FirmwareBlobHandler() = default;
@@ -53,6 +57,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
 
   private:
     std::vector<std::string> baseFirmwares;
+    std::uint32_t transports;
 };
 
 } // namespace blobs

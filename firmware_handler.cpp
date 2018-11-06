@@ -1,5 +1,6 @@
 #include "firmware_handler.hpp"
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
@@ -9,9 +10,9 @@ namespace blobs
 
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        const std::vector<std::string>& firmwares)
+        const std::vector<std::string>& firmwares, std::uint32_t transports)
 {
-    return std::make_unique<FirmwareBlobHandler>(firmwares);
+    return std::make_unique<FirmwareBlobHandler>(firmwares, transports);
 }
 
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
