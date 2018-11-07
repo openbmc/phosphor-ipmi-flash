@@ -97,20 +97,66 @@ bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
     return false;
 }
 
+/*
+ * If you open /flash/image or /flash/tarball, or /flash/hash it will
+ * interpret the open flags and perform whatever actions are required for
+ * that update process.  The session returned can be used immediately for
+ * sending data down, without requiring one to open the new active file.
+ *
+ * If you open the active flash image or active hash it will let you
+ * overwrite pieces, depending on the state.
+ *
+ * Once the verification process has started the active files cannot be
+ * opened.
+ *
+ * You can only have one open session at a time.  Which means, you can only
+ * have one file open at a time.  Trying to open the hash blob_id while you
+ * still have the flash image blob_id open will fail.  Opening the flash
+ * blob_id when it is already open will fail.
+ */
 bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
                                const std::string& path)
 {
-    /*
-     * If you open /flash/image or /flash/tarball, or /flash/hash it will
-     * interpret the open flags and perform whatever actions are required for
-     * that update process.  The session returned can be used immediately for
-     * sending data down, without requiring one to open the new active file.
-     *
-     * If you open the active flash image or active hash it will let you
-     * overwrite pieces, depending on the state.
-     * Once the verification process has started the active files cannot be
-     * opened.
+    /* Check that they've opened for writing - read back not supported. */
+    if ((flags & OpenFlags::write) == 0)
+    {
+        return false;
+    }
+
+    /* TODO: Is the verification process underway? */
+
+    /* Is there an open session already? We only allow one at a time.
+     * TODO: Temporarily using a simple boolean flag until there's a full
+     * session object to check.
      */
+    if (fileOpen)
+    {
+        return false;
+    }
+
+    /* Check the flags for the transport mechanism: if none match we don't
+     * support what they request. */
+    if ((flags & transports) == 0)
+    {
+        return false;
+    }
+
+    /* 2) there isn't, so what are they opening? */
+    if (path == activeImageBlobID)
+    {
+        /* 2a) are they opening the active image? this can only happen if they
+         * already started one (due to canHandleBlob's behavior). */
+    }
+    else if (path == activeHashBlobID)
+    {
+        /* 2b) are they opening the active hash? this can only happen if they
+         * already started one (due to canHandleBlob's behavior). */
+    }
+
+    /* 2c) are they opening the /flash/hash ? (to start the process) */
+    /* 2d) are they opening the /flash/tarball ? (to start the UBI process) */
+    /* 2e) are they opening the /flash/image ? (to start the process) */
+    /* 2...) are they opening the /flash/... ? (to start the process) */
     return false;
 }
 
