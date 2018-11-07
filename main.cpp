@@ -2,6 +2,8 @@
 
 #include "firmware_handler.hpp"
 #include "image_handler.hpp"
+#include "lpc_handler.hpp"
+#include "pci_handler.hpp"
 #include "static_handler.hpp"
 
 #include <blobs-ipmid/manager.hpp>
@@ -16,6 +18,8 @@ using namespace phosphor::logging;
 namespace
 {
 StaticLayoutHandler staticLayoutHandler;
+LpcDataHandler lpcDataHandler;
+PciDataHandler pciDataHandler;
 
 std::vector<HandlerPack> supportedFirmware = {
 #ifdef ENABLE_STATIC_LAYOUT
@@ -23,21 +27,22 @@ std::vector<HandlerPack> supportedFirmware = {
 #endif
 };
 
-std::uint16_t supportedTransports =
-    FirmwareBlobHandler::FirmwareUpdateFlags::bt;
+std::vector<DataHandlerPack> supportedTransports = {
+    {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+#ifdef ENABLE_PCI_BRIDGE
+    {FirmwareBlobHandler::FirmwareUpdateFlags::p2a, &pciDataHandler},
+#endif
+#ifdef ENABLE_LPC_BRIDGE
+    {FirmwareBlobHandler::FirmwareUpdateFlags::lpc, &lpcDataHandler},
+#endif
+};
+
 } // namespace
 
 void setupFirmwareHandler() __attribute__((constructor));
 
 void setupFirmwareHandler()
 {
-#ifdef ENABLE_PCI_BRIDGE
-    supportedTransports |= FirmwareBlobHandler::FirmwareUpdateFlags::p2a;
-#endif
-#ifdef ENABLE_LPC_BRIDGE
-    supportedTransports |= FirmwareBlobHandler::FirmwareUpdateFlags::lpc;
-#endif
-
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         supportedFirmware, supportedTransports);
 

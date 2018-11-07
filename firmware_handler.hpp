@@ -1,5 +1,6 @@
 #pragma once
 
+#include "data_handler.hpp"
 #include "image_handler.hpp"
 
 #include <blobs-ipmid/blobs.hpp>
@@ -28,23 +29,26 @@ class FirmwareBlobHandler : public GenericBlobInterface
      * Create a FirmwareBlobHandler.
      *
      * @param[in] firmwares - list of firmware blob_ids to support.
-     * @param[in] transports - bitmask of transports to support.
+     * @param[in] transports - list of transports to support.
      */
-    static std::unique_ptr<GenericBlobInterface>
-        CreateFirmwareBlobHandler(const std::vector<HandlerPack>& firmwares,
-                                  std::uint16_t transports);
+    static std::unique_ptr<GenericBlobInterface> CreateFirmwareBlobHandler(
+        const std::vector<HandlerPack>& firmwares,
+        const std::vector<DataHandlerPack>& transports);
 
     /**
      * Create a FirmwareBlobHandler.
      *
-     * @param[in] blobs - list of blobs_ids to support and their image handlers.
-     * @param[in] transports - bitmask of transports to support.
+     * @param[in] firmwares - list of firmware types and their handlers
+     * @param[in] blobs - list of blobs_ids to support
+     * @param[in] transports - list of transport types and their handlers
+     * @param[in] bitmask - bitmask of transports to support
      */
     FirmwareBlobHandler(const std::vector<HandlerPack>& firmwares,
                         const std::vector<std::string>& blobs,
-                        std::uint16_t transports) :
+                        const std::vector<DataHandlerPack>& transports,
+                        std::uint16_t bitmask) :
         handlers(firmwares),
-        blobIDs(blobs), transports(transports)
+        blobIDs(blobs), transports(transports), bitmask(bitmask)
     {
     }
     ~FirmwareBlobHandler() = default;
@@ -81,8 +85,11 @@ class FirmwareBlobHandler : public GenericBlobInterface
     /** Active list of blobIDs. */
     std::vector<std::string> blobIDs;
 
+    /** List of handlers by transport type. */
+    std::vector<DataHandlerPack> transports;
+
     /** The bits set indicate what transport mechanisms are supported. */
-    std::uint16_t transports;
+    std::uint16_t bitmask;
 
     /** Temporary variable to track whether a blob is open. */
     bool fileOpen = false;

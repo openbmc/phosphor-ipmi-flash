@@ -18,10 +18,15 @@ const std::string FirmwareBlobHandler::activeHashBlobID = "/flash/active/hash";
 
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        const std::vector<HandlerPack>& firmwares, std::uint16_t transports)
+        const std::vector<HandlerPack>& firmwares,
+        const std::vector<DataHandlerPack>& transports)
 {
     /* There must be at least one. */
     if (!firmwares.size())
+    {
+        return nullptr;
+    }
+    if (!transports.size())
     {
         return nullptr;
     }
@@ -33,7 +38,15 @@ std::unique_ptr<GenericBlobInterface>
     }
     blobs.push_back(hashBlobID);
 
-    return std::make_unique<FirmwareBlobHandler>(firmwares, blobs, transports);
+    std::uint16_t bitmask = 0;
+    for (const auto& item : transports)
+    {
+        /* TODO: can use std::accumulate() unless I'm mistaken. :D */
+        bitmask |= item.bitmask;
+    }
+
+    return std::make_unique<FirmwareBlobHandler>(firmwares, blobs, transports,
+                                                 bitmask);
 }
 
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
@@ -92,7 +105,7 @@ bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
     else
     {
         /* They are requesting information about the generic blob_id. */
-        meta->blobState = transports;
+        meta->blobState = bitmask;
         meta->size = 0;
 
         /* The generic blob_ids state is only the bits related to the transport
@@ -148,7 +161,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
 
     /* Check the flags for the transport mechanism: if none match we don't
      * support what they request. */
-    if ((flags & transports) == 0)
+    if ((flags & bitmask) == 0)
     {
         return false;
     }
@@ -170,6 +183,16 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     }
     else
     {
+        /* How are they expecting to copy this data? */
+        auto d = std::find_if(
+            transports.begin(), transports.end(),
+            [&flags](const auto& iter) { return (iter.bitmask & flags); });
+        if (d != transports.end())
+        {
+            /* We found the transport handler they requested, no surprise since
+             * above we verify they selected at least one we wanted. */
+        }
+
         /* 2d) are they opening the /flash/tarball ? (to start the UBI process)
          */
         /* 2e) are they opening the /flash/image ? (to start the process) */
