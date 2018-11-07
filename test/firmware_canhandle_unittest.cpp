@@ -1,3 +1,4 @@
+#include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 
@@ -25,9 +26,11 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
         {"asdf", &imageMock},
         {"bcdf", &imageMock},
     };
+    std::vector<DataHandlerPack> data = {
+        {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+    };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, FirmwareBlobHandler::FirmwareUpdateFlags::bt);
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
 
     for (const auto& item : items)
     {

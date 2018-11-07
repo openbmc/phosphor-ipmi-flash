@@ -22,9 +22,11 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
     std::vector<HandlerPack> blobs = {
         {"asdf", &imageMock},
     };
+    std::vector<DataHandlerPack> data = {
+        {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+    };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, FirmwareBlobHandler::FirmwareUpdateFlags::bt);
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
     struct BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));
     EXPECT_EQ(FirmwareBlobHandler::FirmwareUpdateFlags::bt, meta.blobState);

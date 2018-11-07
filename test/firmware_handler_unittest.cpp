@@ -12,7 +12,22 @@ namespace blobs
 
 TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
 {
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler({}, 0);
+    std::vector<DataHandlerPack> data = {
+        {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+    };
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler({}, data);
+    EXPECT_EQ(handler, nullptr);
+}
+TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
+{
+    ImageHandlerMock imageMock;
+
+    std::vector<HandlerPack> blobs = {
+        {"asdf", &imageMock},
+    };
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, {});
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, CreateEmptyListVerifyHasHash)
@@ -22,8 +37,11 @@ TEST(FirmwareHandlerTest, CreateEmptyListVerifyHasHash)
     std::vector<HandlerPack> blobs = {
         {"asdf", &imageMock},
     };
+    std::vector<DataHandlerPack> data = {
+        {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+    };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, 0);
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
     auto result = handler->getBlobIds();
     EXPECT_EQ(2, result.size());
     EXPECT_EQ(2, std::count(result.begin(), result.end(), "asdf") +
