@@ -1,8 +1,10 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace blobs
 {
@@ -22,6 +24,16 @@ class ImageHandlerInterface
      * @return bool - returns true on success.
      */
     virtual bool open(const std::string& path) = 0;
+
+    /**
+     * write data to the staged file.
+     *
+     * @param[in] offset - 0-based offset into the file.
+     * @param[in] data - the data to write.
+     * @return bool - returns true on success.
+     */
+    virtual bool write(std::uint32_t offset,
+                       const std::vector<std::uint8_t>& data) = 0;
 };
 
 struct HandlerPack
