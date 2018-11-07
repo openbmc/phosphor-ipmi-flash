@@ -187,11 +187,14 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         auto d = std::find_if(
             transports.begin(), transports.end(),
             [&flags](const auto& iter) { return (iter.bitmask & flags); });
-        if (d != transports.end())
+        if (d == transports.end())
         {
-            /* We found the transport handler they requested, no surprise since
-             * above we verify they selected at least one we wanted. */
+            return false;
         }
+
+        /* We found the transport handler they requested, no surprise since
+         * above we verify they selected at least one we wanted.
+         */
 
         /* 2d) are they opening the /flash/tarball ? (to start the UBI process)
          */
@@ -201,14 +204,18 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         auto h = std::find_if(
             handlers.begin(), handlers.end(),
             [&path](const auto& iter) { return (iter.blobName == path); });
-        if (h != handlers.end())
+        if (h == handlers.end())
         {
-            /* Ok, so we found a handler that matched, so call open() */
-            if (h->handler->open(path))
-            {
-                /* open() succeeded. */
-            }
+            return false;
         }
+
+        /* Ok, so we found a handler that matched, so call open() */
+        if (!h->handler->open(path))
+        {
+            return false;
+        }
+
+        /* open() succeeded. */
 
         /* TODO: Actually handle storing this information. */
     }
