@@ -72,8 +72,14 @@ class FirmwareBlobHandler : public GenericBlobInterface
     static const std::string activeHashBlobID;
 
   private:
+    /** Active list of blobIDs. */
     std::vector<std::string> blobIDs;
+
+    /** The bits set indicate what transport mechanisms are supported. */
     std::uint16_t transports;
+
+    /** Temporary variable to track whether a blob is open. */
+    bool fileOpen = false;
 };
 
 } // namespace blobs
