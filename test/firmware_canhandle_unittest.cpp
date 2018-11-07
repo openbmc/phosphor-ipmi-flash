@@ -1,4 +1,5 @@
 #include "firmware_handler.hpp"
+#include "image_mock.hpp"
 
 #include <memory>
 #include <vector>
@@ -9,7 +10,6 @@ namespace blobs
 {
 TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
 {
-
     struct ListItem
     {
         std::string name;
@@ -19,8 +19,15 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
     std::vector<ListItem> items = {
         {"asdf", true}, {"nope", false}, {"123123", false}, {"bcdf", true}};
 
+    ImageHandlerMock imageMock;
+
+    std::vector<HandlerPack> blobs = {
+        {"asdf", &imageMock},
+        {"bcdf", &imageMock},
+    };
+
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        {"asdf", "bcdf"}, static_cast<uint16_t>(FirmwareUpdateFlags::bt));
+        blobs, static_cast<uint16_t>(FirmwareUpdateFlags::bt));
 
     for (const auto& item : items)
     {

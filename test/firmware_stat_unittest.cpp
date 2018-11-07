@@ -1,6 +1,8 @@
 #include "firmware_handler.hpp"
+#include "image_mock.hpp"
 
 #include <memory>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -15,8 +17,14 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
      * the input for this function.
      */
 
+    ImageHandlerMock imageMock;
+
+    std::vector<HandlerPack> blobs = {
+        {"asdf", &imageMock},
+    };
+
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        {"asdf"}, static_cast<uint16_t>(FirmwareUpdateFlags::bt));
+        blobs, static_cast<uint16_t>(FirmwareUpdateFlags::bt));
     struct BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));
     EXPECT_EQ(static_cast<uint16_t>(FirmwareUpdateFlags::bt), meta.blobState);
