@@ -24,7 +24,7 @@ std::vector<HandlerPack> supportedFirmware = {
 };
 
 std::uint16_t supportedTransports =
-    static_cast<std::uint16_t>(FirmwareUpdateFlags::bt);
+    FirmwareBlobHandler::FirmwareUpdateFlags::bt;
 } // namespace
 
 void setupFirmwareHandler() __attribute__((constructor));
@@ -32,10 +32,10 @@ void setupFirmwareHandler() __attribute__((constructor));
 void setupFirmwareHandler()
 {
 #ifdef ENABLE_PCI_BRIDGE
-    supportedTransports |= static_cast<std::uint16_t>(FirmwareUpdateFlags::p2a);
+    supportedTransports |= FirmwareBlobHandler::FirmwareUpdateFlags::p2a;
 #endif
 #ifdef ENABLE_LPC_BRIDGE
-    supportedTransports |= static_cast<std::uint16_t>(FirmwareUpdateFlags::lpc);
+    supportedTransports |= FirmwareBlobHandler::FirmwareUpdateFlags::lpc;
 #endif
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(

@@ -24,10 +24,10 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, static_cast<uint16_t>(FirmwareUpdateFlags::bt));
+        blobs, FirmwareBlobHandler::FirmwareUpdateFlags::bt);
     struct BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));
-    EXPECT_EQ(static_cast<uint16_t>(FirmwareUpdateFlags::bt), meta.blobState);
+    EXPECT_EQ(FirmwareBlobHandler::FirmwareUpdateFlags::bt, meta.blobState);
 }
 
 } // namespace blobs
