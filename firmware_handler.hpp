@@ -11,19 +11,19 @@
 namespace blobs
 {
 
-enum class FirmwareUpdateFlags
-{
-    bt = (1 << 8),   /* Expect to send contents over IPMI BlockTransfer. */
-    p2a = (1 << 9),  /* Expect to send contents over P2A bridge. */
-    lpc = (1 << 10), /* Expect to send contents over LPC bridge. */
-};
-
 /**
  * Register only one firmware blob handler that will manage all sessions.
  */
 class FirmwareBlobHandler : public GenericBlobInterface
 {
   public:
+    enum FirmwareUpdateFlags
+    {
+        bt = (1 << 8),   /* Expect to send contents over IPMI BlockTransfer. */
+        p2a = (1 << 9),  /* Expect to send contents over P2A bridge. */
+        lpc = (1 << 10), /* Expect to send contents over LPC bridge. */
+    };
+
     /**
      * Create a FirmwareBlobHandler.
      *

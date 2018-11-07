@@ -27,7 +27,7 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, static_cast<uint16_t>(FirmwareUpdateFlags::bt));
+        blobs, FirmwareBlobHandler::FirmwareUpdateFlags::bt);
 
     for (const auto& item : items)
     {
