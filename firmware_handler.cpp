@@ -1,5 +1,7 @@
 #include "firmware_handler.hpp"
 
+#include "image_handler.hpp"
+
 #include <algorithm>
 #include <cstdint>
 #include <memory>
@@ -16,7 +18,7 @@ const std::string FirmwareBlobHandler::activeHashBlobID = "/flash/active/hash";
 
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        const std::vector<std::string>& firmwares, std::uint16_t transports)
+        const std::vector<HandlerPack>& firmwares, std::uint16_t transports)
 {
     /* There must be at least one. */
     if (!firmwares.size())
@@ -24,10 +26,14 @@ std::unique_ptr<GenericBlobInterface>
         return nullptr;
     }
 
-    std::vector<std::string> blobs = firmwares;
+    std::vector<std::string> blobs;
+    for (const auto& item : firmwares)
+    {
+        blobs.push_back(item.blobName);
+    }
     blobs.push_back(hashBlobID);
 
-    return std::make_unique<FirmwareBlobHandler>(blobs, transports);
+    return std::make_unique<FirmwareBlobHandler>(firmwares, blobs, transports);
 }
 
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
@@ -168,6 +174,20 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
          */
         /* 2e) are they opening the /flash/image ? (to start the process) */
         /* 2...) are they opening the /flash/... ? (to start the process) */
+
+        auto h = std::find_if(
+            handlers.begin(), handlers.end(),
+            [&path](const auto& iter) { return (iter.blobName == path); });
+        if (h != handlers.end())
+        {
+            /* Ok, so we found a handler that matched, so call open() */
+            if (h->handler->open(path))
+            {
+                /* open() succeeded. */
+            }
+        }
+
+        /* TODO: Actually handle storing this information. */
     }
 
     return false;
