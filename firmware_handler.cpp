@@ -218,6 +218,8 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         /* open() succeeded. */
 
         /* TODO: Actually handle storing this information. */
+
+        return true;
     }
 
     return false;
