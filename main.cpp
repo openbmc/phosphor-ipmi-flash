@@ -1,6 +1,8 @@
 #include "config.h"
 
 #include "firmware_handler.hpp"
+#include "image_handler.hpp"
+#include "static_handler.hpp"
 
 #include <blobs-ipmid/manager.hpp>
 #include <cstdint>
@@ -11,14 +13,19 @@ namespace blobs
 {
 using namespace phosphor::logging;
 
-std::vector<std::string> supportedFirmware = {
+namespace
+{
+StaticLayoutHandler staticLayoutHandler;
+
+std::vector<HandlerPack> supportedFirmware = {
 #ifdef ENABLE_STATIC_LAYOUT
-    "/flash/image",
+    {"/flash/image", &staticLayoutHandler},
 #endif
 };
 
 std::uint16_t supportedTransports =
     static_cast<std::uint16_t>(FirmwareUpdateFlags::bt);
+} // namespace
 
 void setupFirmwareHandler() __attribute__((constructor));
 

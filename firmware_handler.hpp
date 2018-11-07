@@ -1,5 +1,7 @@
 #pragma once
 
+#include "image_handler.hpp"
+
 #include <blobs-ipmid/blobs.hpp>
 #include <cstdint>
 #include <memory>
@@ -29,19 +31,20 @@ class FirmwareBlobHandler : public GenericBlobInterface
      * @param[in] transports - bitmask of transports to support.
      */
     static std::unique_ptr<GenericBlobInterface>
-        CreateFirmwareBlobHandler(const std::vector<std::string>& firmwares,
+        CreateFirmwareBlobHandler(const std::vector<HandlerPack>& firmwares,
                                   std::uint16_t transports);
 
     /**
      * Create a FirmwareBlobHandler.
      *
-     * @param[in] blobs - list of blobs_ids to support.
+     * @param[in] blobs - list of blobs_ids to support and their image handlers.
      * @param[in] transports - bitmask of transports to support.
      */
-    FirmwareBlobHandler(const std::vector<std::string>& blobs,
+    FirmwareBlobHandler(const std::vector<HandlerPack>& firmwares,
+                        const std::vector<std::string>& blobs,
                         std::uint16_t transports) :
-        blobIDs(blobs),
-        transports(transports)
+        handlers(firmwares),
+        blobIDs(blobs), transports(transports)
     {
     }
     ~FirmwareBlobHandler() = default;
@@ -72,6 +75,9 @@ class FirmwareBlobHandler : public GenericBlobInterface
     static const std::string activeHashBlobID;
 
   private:
+    /** List of handlers by type. */
+    std::vector<HandlerPack> handlers;
+
     /** Active list of blobIDs. */
     std::vector<std::string> blobIDs;
 
