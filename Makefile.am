@@ -7,7 +7,8 @@ libfirmwareblob_la_SOURCES = \
 	firmware_handler.cpp \
 	static_handler.cpp \
 	lpc_handler.cpp \
-	pci_handler.cpp
+	pci_handler.cpp \
+	hash_handler.cpp
 libfirmwareblob_la_LDFLAGS = \
 	$(PHOSPHOR_LOGGING_LIBS) \
 	-version-info 0:0:0 -shared
