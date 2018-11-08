@@ -28,7 +28,7 @@ std::vector<HandlerPack> supportedFirmware = {
 };
 
 std::vector<DataHandlerPack> supportedTransports = {
-    {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+    {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
 #ifdef ENABLE_PCI_BRIDGE
     {FirmwareBlobHandler::FirmwareUpdateFlags::p2a, &pciDataHandler},
 #endif

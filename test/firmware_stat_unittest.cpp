@@ -23,13 +23,13 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
     struct BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));
-    EXPECT_EQ(FirmwareBlobHandler::FirmwareUpdateFlags::bt, meta.blobState);
+    EXPECT_EQ(FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, meta.blobState);
 }
 
 } // namespace blobs
