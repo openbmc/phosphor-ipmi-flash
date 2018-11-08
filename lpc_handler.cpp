@@ -12,4 +12,15 @@ std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
     return {};
 }
 
+bool LpcDataHandler::write(const std::vector<std::uint8_t>& configuration)
+{
+    /* TODO: LPC needs this, so please implement. */
+    return false;
+}
+
+std::vector<std::uint8_t> LpcDataHandler::read()
+{
+    return {};
+}
+
 } // namespace blobs
