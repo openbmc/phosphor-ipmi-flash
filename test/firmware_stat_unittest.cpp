@@ -20,6 +20,7 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {

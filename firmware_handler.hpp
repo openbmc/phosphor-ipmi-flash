@@ -25,7 +25,15 @@ struct Session
     /** Pointer to the correct image handler interface.  (nullptr on hash
      * blob_id) */
     ImageHandlerInterface* imageHandler;
+
+    /** The flags used to open the session. */
+    std::uint16_t flags;
 };
+
+struct ExtChunkHdr
+{
+    std::uint32_t length; /* Length of the data queued (little endian). */
+} __attribute__((packed));
 
 /**
  * Register only one firmware blob handler that will manage all sessions.

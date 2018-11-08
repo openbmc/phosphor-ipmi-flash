@@ -23,6 +23,7 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
         {"asdf", &imageMock},
         {"bcdf", &imageMock},
     };

@@ -13,7 +13,8 @@ check_PROGRAMS = \
 	firmware_handler_unittest \
 	firmware_stat_unittest \
 	firmware_canhandle_unittest \
-	firmware_open_unittest
+	firmware_open_unittest \
+	firmware_write_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -28,3 +29,6 @@ firmware_canhandle_unittest_LDADD = $(top_builddir)/firmware_handler.o
 
 firmware_open_unittest_SOURCES = firmware_open_unittest.cpp
 firmware_open_unittest_LDADD = $(top_builddir)/firmware_handler.o
+
+firmware_write_unittest_SOURCES = firmware_write_unittest.cpp
+firmware_write_unittest_LDADD = $(top_builddir)/firmware_handler.o

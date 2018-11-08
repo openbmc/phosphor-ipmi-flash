@@ -20,6 +20,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValid)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -43,6 +44,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidImageHandlerFails)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -65,6 +67,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithoutWriteFails)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -84,6 +87,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithInvalidTransportBit)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -103,6 +107,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithInvalidImageBlobId)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
