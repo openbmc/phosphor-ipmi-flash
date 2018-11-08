@@ -2,7 +2,6 @@
 #include "image_mock.hpp"
 
 #include <algorithm>
-#include <memory>
 #include <vector>
 
 #include <gtest/gtest.h>
