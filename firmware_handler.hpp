@@ -5,6 +5,7 @@
 
 #include <blobs-ipmid/blobs.hpp>
 #include <cstdint>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -62,7 +63,8 @@ class FirmwareBlobHandler : public GenericBlobInterface
                         const std::vector<DataHandlerPack>& transports,
                         std::uint16_t bitmask) :
         handlers(firmwares),
-        blobIDs(blobs), transports(transports), bitmask(bitmask)
+        blobIDs(blobs), transports(transports), bitmask(bitmask), activeImage(),
+        activeHash(), lookup()
     {
     }
     ~FirmwareBlobHandler() = default;
@@ -104,6 +106,15 @@ class FirmwareBlobHandler : public GenericBlobInterface
 
     /** The bits set indicate what transport mechanisms are supported. */
     std::uint16_t bitmask;
+
+    /** Active image session. */
+    Session activeImage;
+
+    /** Active hash session. */
+    Session activeHash;
+
+    /** A quick method for looking up a session's mechanisms and details. */
+    std::map<std::uint16_t, Session*> lookup;
 
     /** Temporary variable to track whether a blob is open. */
     bool fileOpen = false;
