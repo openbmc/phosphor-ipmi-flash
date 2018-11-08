@@ -1,9 +1,11 @@
 #include "firmware_handler.hpp"
 
+#include "hash_handler.hpp"
 #include "image_handler.hpp"
 
 #include <algorithm>
 #include <cstdint>
+#include <cstring>
 #include <memory>
 #include <string>
 #include <vector>
@@ -36,7 +38,11 @@ std::unique_ptr<GenericBlobInterface>
     {
         blobs.push_back(item.blobName);
     }
-    blobs.push_back(hashBlobID);
+
+    if (0 == std::count(blobs.begin(), blobs.end(), hashBlobID))
+    {
+        return nullptr;
+    }
 
     std::uint16_t bitmask = 0;
     for (const auto& item : transports)
@@ -169,7 +175,8 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
      */
 
     /* Check the flags for the transport mechanism: if none match we don't
-     * support what they request. */
+     * support what they request.
+     */
     if ((flags & bitmask) == 0)
     {
         return false;
@@ -179,15 +186,34 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     if (path == activeImageBlobID)
     {
         /* 2a) are they opening the active image? this can only happen if they
-         * already started one (due to canHandleBlob's behavior). */
+         * already started one (due to canHandleBlob's behavior).
+         */
     }
     else if (path == activeHashBlobID)
     {
         /* 2b) are they opening the active hash? this can only happen if they
-         * already started one (due to canHandleBlob's behavior). */
+         * already started one (due to canHandleBlob's behavior).
+         */
     }
-    else if (path == hashBlobID)
+
+    /* How are they expecting to copy this data? */
+    auto d = std::find_if(
+        transports.begin(), transports.end(),
+        [&flags](const auto& iter) { return (iter.bitmask & flags); });
+    if (d == transports.end())
     {
+        return false;
+    }
+
+    /* We found the transport handler they requested, no surprise since
+     * above we verify they selected at least one we wanted.
+     */
+    Session* curr;
+
+    if (path == hashBlobID)
+    {
+        curr = &activeHash;
+
         /* 2c) are they opening the /flash/hash ? (to start the process) */
 
         /* Add active hash blob_id to canHandle list. */
@@ -195,49 +221,43 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     }
     else
     {
-        /* How are they expecting to copy this data? */
-        auto d = std::find_if(
-            transports.begin(), transports.end(),
-            [&flags](const auto& iter) { return (iter.bitmask & flags); });
-        if (d == transports.end())
-        {
-            return false;
-        }
-
-        /* We found the transport handler they requested, no surprise since
-         * above we verify they selected at least one we wanted.
-         */
-
-        /* 2d) are they opening the /flash/tarball ? (to start the UBI process)
-         */
-        /* 2e) are they opening the /flash/image ? (to start the process) */
-        /* 2...) are they opening the /flash/... ? (to start the process) */
-
-        auto h = std::find_if(
-            handlers.begin(), handlers.end(),
-            [&path](const auto& iter) { return (iter.blobName == path); });
-        if (h == handlers.end())
-        {
-            return false;
-        }
-
-        /* Ok, so we found a handler that matched, so call open() */
-        if (!h->handler->open(path))
-        {
-            return false;
-        }
-
-        /* open() succeeded. */
-
-        /* TODO: Actually handle storing this information. */
+        curr = &activeImage;
 
         /* add active image blob_id to canHandle list. */
         blobIDs.push_back(activeImageBlobID);
-
-        return true;
     }
 
-    return false;
+    curr->flags = flags;
+
+    curr->dataHandler = d->handler;
+
+    /* 2d) are they opening the /flash/tarball ? (to start the UBI process)
+     */
+    /* 2e) are they opening the /flash/image ? (to start the process) */
+    /* 2...) are they opening the /flash/... ? (to start the process) */
+
+    auto h = std::find_if(
+        handlers.begin(), handlers.end(),
+        [&path](const auto& iter) { return (iter.blobName == path); });
+    if (h == handlers.end())
+    {
+        return false;
+    }
+
+    curr->imageHandler = h->handler;
+
+    /* Ok, so we found a handler that matched, so call open() */
+    if (!h->handler->open(path))
+    {
+        return false;
+    }
+
+    /* open() succeeded. */
+
+    /* TODO: Actually handle storing this information. */
+    lookup[session] = curr;
+
+    return true;
 }
 
 std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t session,
@@ -251,15 +271,45 @@ std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t session,
     return {};
 }
 
+/**
+ * The write command really just grabs the data from wherever it is and sends it
+ * to the image handler.  It's the image handler's responsibility to deal with
+ * the data provided.
+ */
 bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
                                 const std::vector<uint8_t>& data)
 {
-    /*
-     * This will do whatever behavior is expected by mechanism - likely will
-     * just call the specific write handler.
-     */
-    return false;
+    auto item = lookup.find(session);
+    if (item == lookup.end())
+    {
+        return false;
+    }
+
+    std::vector<std::uint8_t> bytes;
+
+    if (item->second->flags & FirmwareUpdateFlags::ipmi)
+    {
+        bytes = data;
+    }
+    else
+    {
+        /* little endian required per design, and so on, but TODO: do endianness
+         * with boost.
+         */
+        struct ExtChunkHdr header;
+
+        if (data.size() != sizeof(header))
+        {
+            return false;
+        }
+
+        std::memcpy(&header, data.data(), data.size());
+        bytes = item->second->dataHandler->copyFrom(header.length);
+    }
+
+    return item->second->imageHandler->write(offset, bytes);
 }
+
 bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
                                     const std::vector<uint8_t>& data)
 {

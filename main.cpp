@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include "firmware_handler.hpp"
+#include "hash_handler.hpp"
 #include "image_handler.hpp"
 #include "lpc_handler.hpp"
 #include "pci_handler.hpp"
@@ -17,11 +18,13 @@ using namespace phosphor::logging;
 
 namespace
 {
+HashFileHandler hashHandler;
 StaticLayoutHandler staticLayoutHandler;
 LpcDataHandler lpcDataHandler;
 PciDataHandler pciDataHandler;
 
 std::vector<HandlerPack> supportedFirmware = {
+    {FirmwareBlobHandler::hashBlobID, &hashHandler},
 #ifdef ENABLE_STATIC_LAYOUT
     {"/flash/image", &staticLayoutHandler},
 #endif
