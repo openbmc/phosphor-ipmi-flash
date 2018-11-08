@@ -23,7 +23,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValid)
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
@@ -31,7 +31,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValid)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::bt,
+        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::ipmi,
         "asdf"));
 }
 
@@ -46,7 +46,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidImageHandlerFails)
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
@@ -54,7 +54,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidImageHandlerFails)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(false));
 
     EXPECT_FALSE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::bt,
+        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::ipmi,
         "asdf"));
 }
 
@@ -68,13 +68,13 @@ TEST(FirmwareHandlerOpenTest, OpenWithoutWriteFails)
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
 
-    EXPECT_FALSE(
-        handler->open(0, FirmwareBlobHandler::FirmwareUpdateFlags::bt, "asdf"));
+    EXPECT_FALSE(handler->open(
+        0, FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, "asdf"));
 }
 
 TEST(FirmwareHandlerOpenTest, OpenWithInvalidTransportBit)
@@ -87,7 +87,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithInvalidTransportBit)
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
@@ -106,13 +106,13 @@ TEST(FirmwareHandlerOpenTest, OpenWithInvalidImageBlobId)
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::bt, nullptr},
+        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
 
     EXPECT_FALSE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::bt,
+        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::ipmi,
         "bcdf"));
 }
 
