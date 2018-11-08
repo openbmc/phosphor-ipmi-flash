@@ -13,6 +13,20 @@ namespace blobs
 {
 
 /**
+ * Representation of a session, includes how to read/write data.
+ */
+struct Session
+{
+    /** Pointer to the correct Data handler interface. (nullptr on BT (or KCS))
+     */
+    DataInterface* dataHandler;
+
+    /** Pointer to the correct image handler interface.  (nullptr on hash
+     * blob_id) */
+    ImageHandlerInterface* imageHandler;
+};
+
+/**
  * Register only one firmware blob handler that will manage all sessions.
  */
 class FirmwareBlobHandler : public GenericBlobInterface
