@@ -24,14 +24,16 @@ TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
         {"asdf", &imageMock},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, {});
     EXPECT_EQ(handler, nullptr);
 }
-TEST(FirmwareHandlerTest, CreateEmptyListVerifyHasHash)
+TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
 {
+    /* This works fine only if you also pass in the hash handler. */
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
@@ -42,6 +44,11 @@ TEST(FirmwareHandlerTest, CreateEmptyListVerifyHasHash)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    EXPECT_EQ(handler, nullptr);
+
+    blobs.push_back({FirmwareBlobHandler::hashBlobID, &imageMock});
+
+    handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
     auto result = handler->getBlobIds();
     EXPECT_EQ(2, result.size());
     EXPECT_EQ(2, std::count(result.begin(), result.end(), "asdf") +
