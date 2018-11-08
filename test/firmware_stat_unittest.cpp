@@ -1,7 +1,6 @@
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 
-#include <memory>
 #include <vector>
 
 #include <gtest/gtest.h>

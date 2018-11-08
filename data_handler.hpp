@@ -21,6 +21,22 @@ class DataInterface
      * @return the bytes read
      */
     virtual std::vector<std::uint8_t> copyFrom(std::uint32_t length) = 0;
+
+    /**
+     * set configuration.
+     *
+     * @param[in] configuration - byte vector of data.
+     * @return bool - returns true on success.
+     */
+    virtual bool write(const std::vector<std::uint8_t>& configuration) = 0;
+
+    /**
+     * read configuration.
+     *
+     * @return bytes - whatever bytes are required configuration information for
+     * the mechanism.
+     */
+    virtual std::vector<std::uint8_t> read() = 0;
 };
 
 struct DataHandlerPack

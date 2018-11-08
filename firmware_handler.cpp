@@ -304,17 +304,30 @@ bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
     return item->second->imageHandler->write(offset, bytes);
 }
 
+/*
+ * If the active session (image or hash) is over LPC, this allows
+ * configuring it.  This option is only available before you start
+ * writing data for the given item (image or hash).  This will return
+ * false at any other part. -- the lpc handler portion will know to return
+ * false.
+ */
 bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
                                     const std::vector<uint8_t>& data)
 {
-    /*
-     * If the active session (image or hash) is over LPC, this allows
-     * configuring it.  This option is only available before you start
-     * writing data for the given item (image or hash).  This will return
-     * false at any other part.
-     */
-    return false;
+    auto item = lookup.find(session);
+    if (item == lookup.end())
+    {
+        return false;
+    }
+
+    if (item->second->flags & FirmwareUpdateFlags::ipmi)
+    {
+        return false;
+    }
+
+    return item->second->dataHandler->write(data);
 }
+
 bool FirmwareBlobHandler::commit(uint16_t session,
                                  const std::vector<uint8_t>& data)
 {
