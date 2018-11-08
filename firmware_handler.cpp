@@ -147,6 +147,15 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     /* Is there an open session already? We only allow one at a time.
      * TODO: Temporarily using a simple boolean flag until there's a full
      * session object to check.
+     *
+     * Further on this, if there's an active session to the hash we don't allow
+     * re-opening the image, and if we have the image open, we don't allow
+     * opening the hash.  This design decision may be re-evaluated, and changed
+     * to only allow one session per object type (of the two types).  But,
+     * consider if the hash is open, do we want to allow writing to the image?
+     * And why would we?  But, really, the point of no-return is once the
+     * verification process has begun -- which is done via commit() on the hash
+     * blob_id, we no longer want to allow updating the contents.
      */
     if (fileOpen)
     {
@@ -180,6 +189,9 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     else if (path == hashBlobID)
     {
         /* 2c) are they opening the /flash/hash ? (to start the process) */
+
+        /* Add active hash blob_id to canHandle list. */
+        blobIDs.push_back(activeHashBlobID);
     }
     else
     {
@@ -218,6 +230,9 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         /* open() succeeded. */
 
         /* TODO: Actually handle storing this information. */
+
+        /* add active image blob_id to canHandle list. */
+        blobIDs.push_back(activeImageBlobID);
 
         return true;
     }
