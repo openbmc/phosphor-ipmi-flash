@@ -15,6 +15,14 @@ class DataInterface
     virtual ~DataInterface() = default;
 
     /**
+     * Initialize data transport mechanism.  Calling this should be idempotent
+     * if possible.
+     *
+     * @return true if successful
+     */
+    virtual bool open() = 0;
+
+    /**
      * Copy bytes from external interface (blocking call).
      *
      * @param[in] length - number of bytes to copy
