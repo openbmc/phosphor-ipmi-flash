@@ -23,6 +23,7 @@ class PciDataHandler : public DataInterface
     PciDataHandler() = default;
 
     bool open() override;
+    bool close() override;
     std::vector<std::uint8_t> copyFrom(std::uint32_t length) override;
     bool write(const std::vector<std::uint8_t>& configuration) override;
     std::vector<std::uint8_t> read() override;

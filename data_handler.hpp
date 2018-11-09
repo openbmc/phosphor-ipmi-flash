@@ -21,6 +21,11 @@ class DataInterface
     virtual bool open() = 0;
 
     /**
+     * Close the data transport mechanism.
+     */
+    virtual bool close() = 0;
+
+    /**
      * Copy bytes from external interface (blocking call).
      *
      * @param[in] length - number of bytes to copy

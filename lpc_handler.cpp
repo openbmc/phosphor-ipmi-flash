@@ -15,6 +15,12 @@ bool LpcDataHandler::open()
     return true;
 }
 
+bool LpcDataHandler::close()
+{
+    /* TODO: implement ioctl call to close window. */
+    return false;
+}
+
 std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
 {
     /* TODO: implement this. */
