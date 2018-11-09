@@ -7,6 +7,14 @@
 namespace blobs
 {
 
+bool LpcDataHandler::open()
+{
+    /* For the ASPEED LPC CTRL driver, the ioctl is required to set up the
+     * window, with information from write() below.
+     */
+    return true;
+}
+
 std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
 {
     /* TODO: implement this. */
