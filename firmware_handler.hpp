@@ -48,6 +48,21 @@ class FirmwareBlobHandler : public GenericBlobInterface
         lpc = (1 << 10), /* Expect to send contents over LPC bridge. */
     };
 
+    /** The state of the firmware update process. */
+    enum UpdateState
+    {
+        /** The initial state. */
+        notYetStarted = 0,
+        /**
+         * The upload process has started, but verification has not started.
+         */
+        uploadInProgress = 1,
+        /** The verification process has started, no more writes allowed. */
+        verificationStarted = 2,
+        /** The verification process has completed. */
+        verificationCompleted = 3,
+    };
+
     /**
      * Create a FirmwareBlobHandler.
      *
@@ -72,7 +87,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
                         std::uint16_t bitmask) :
         handlers(firmwares),
         blobIDs(blobs), transports(transports), bitmask(bitmask), activeImage(),
-        activeHash(), lookup()
+        activeHash(), lookup(), state(UpdateState::notYetStarted)
     {
     }
     ~FirmwareBlobHandler() = default;
@@ -102,6 +117,12 @@ class FirmwareBlobHandler : public GenericBlobInterface
     static const std::string activeImageBlobID;
     static const std::string activeHashBlobID;
 
+    /** Allow grabbing the current state. */
+    UpdateState getCurrentState() const
+    {
+        return state;
+    };
+
   private:
     /** List of handlers by type. */
     std::vector<HandlerPack> handlers;
@@ -123,6 +144,9 @@ class FirmwareBlobHandler : public GenericBlobInterface
 
     /** A quick method for looking up a session's mechanisms and details. */
     std::map<std::uint16_t, Session*> lookup;
+
+    /** The firmware update state. */
+    UpdateState state;
 
     /** Temporary variable to track whether a blob is open. */
     bool fileOpen = false;
