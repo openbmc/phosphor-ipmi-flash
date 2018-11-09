@@ -8,6 +8,9 @@
 namespace blobs
 {
 
+const std::string StaticLayoutHandler::stagedFilename =
+    "/run/initramfs/bmc-image";
+
 bool StaticLayoutHandler::open(const std::string& path)
 {
     this->path = path;
