@@ -9,8 +9,15 @@ namespace blobs
 
 bool PciDataHandler::open()
 {
-    /* For the ASPEED P2A driver, this method will enable the memory region to
-     * use.
+    /* TODO: For the ASPEED P2A driver, this method will enable the memory
+     * region to use.
+     */
+    return false;
+}
+
+bool PciDataHandler::close()
+{
+    /* TODO: Turn off the P2A bridge and region to disable host-side access.
      */
     return false;
 }
