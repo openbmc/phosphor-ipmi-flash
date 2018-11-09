@@ -38,7 +38,7 @@ std::vector<std::uint8_t> PciDataHandler::read()
 {
     /* PCI handler does require returning a configuration from read. */
     struct PciConfigResponse reply;
-    reply.address = 0;
+    reply.address = regionAddress;
 
     std::vector<std::uint8_t> bytes;
     bytes.resize(sizeof(reply));

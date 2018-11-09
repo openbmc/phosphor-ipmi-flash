@@ -12,6 +12,10 @@
 #include <memory>
 #include <phosphor-logging/log.hpp>
 
+#ifndef PCI_PHYSICAL_ADDRESS
+#define PCI_PHYSICAL_ADDRESS 0
+#endif
+
 namespace blobs
 {
 using namespace phosphor::logging;
@@ -21,7 +25,7 @@ namespace
 HashFileHandler hashHandler;
 StaticLayoutHandler staticLayoutHandler;
 LpcDataHandler lpcDataHandler;
-PciDataHandler pciDataHandler;
+PciDataHandler pciDataHandler(PCI_PHYSICAL_ADDRESS);
 
 std::vector<HandlerPack> supportedFirmware = {
     {FirmwareBlobHandler::hashBlobID, &hashHandler},
