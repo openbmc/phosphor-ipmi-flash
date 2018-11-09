@@ -25,6 +25,8 @@ class StaticLayoutHandler : public ImageHandlerInterface
 
   private:
     std::string path;
+
+    static const std::string stagedFilename;
 };
 
 } // namespace blobs
