@@ -147,7 +147,11 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         return false;
     }
 
-    /* TODO: Is the verification process underway? */
+    /* Is the verification process underway? */
+    if (state == UpdateState::verificationStarted)
+    {
+        return false;
+    }
 
     /* Is there an open session already? We only allow one at a time.
      * TODO: Temporarily using a simple boolean flag until there's a full
@@ -275,6 +279,12 @@ bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
 {
     auto item = lookup.find(session);
     if (item == lookup.end())
+    {
+        return false;
+    }
+
+    /* Prevent writing during verification. */
+    if (state == UpdateState::verificationStarted)
     {
         return false;
     }
