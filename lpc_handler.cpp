@@ -14,7 +14,17 @@ std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
 
 bool LpcDataHandler::write(const std::vector<std::uint8_t>& configuration)
 {
-    /* TODO: LPC needs this, so please implement. */
+    struct LpcRegion lpcRequest;
+
+    if (configuration.size() != sizeof(lpcRequest))
+    {
+        return false;
+    }
+
+    std::memcpy(&lpcRequest, configuration.data(), configuration.size());
+    /* TODO: Implement the call to the driver or aspeed lpc ctrl library to send ioctl.
+     */
+
     return false;
 }
 

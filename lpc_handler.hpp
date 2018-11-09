@@ -8,6 +8,12 @@
 namespace blobs
 {
 
+struct LpcRegion
+{
+    std::uint32_t address; /* Host LPC address where the chunk is to be mapped. */
+    std::uint32_t length; /* Size of the chunk to be mapped. */
+} __attribute__((packed));
+
 class LpcDataHandler : public DataInterface
 {
 
