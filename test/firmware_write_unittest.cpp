@@ -10,7 +10,6 @@
 
 namespace blobs
 {
-using ::testing::ElementsAreArray;
 using ::testing::Eq;
 using ::testing::Return;
 
