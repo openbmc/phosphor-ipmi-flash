@@ -81,6 +81,11 @@ AS_IF([test "x$PCI_PHYSICAL_ADDRESS" == "x"],
     [AC_DEFINE(PCI_PHYSICAL_ADDRESS, [$PCI_PHYSICAL_ADDRESS], [Value for PCI-to-AHB bridge set.])]
 )
 
+AC_ARG_VAR(STATIC_HANDLER_STAGED_NAME, [The file to use for staging the firmware update.])
+AS_IF([test "x$STATIC_HANDLER_STAGED_NAME" == "x"], [STATIC_HANDLER_STAGED_NAME="/run/initramfs/bmc-image"])
+AC_DEFINE_UNQUOTED([STATIC_HANDLER_STAGED_NAME], ["$STATIC_HANDLER_STAGED_NAME"], [The file to use for staging the firmware update.])
+
+
 # Create configured output
 AC_CONFIG_FILES([Makefile test/Makefile])
 AC_OUTPUT

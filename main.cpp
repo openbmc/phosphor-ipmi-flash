@@ -19,7 +19,7 @@ using namespace phosphor::logging;
 namespace
 {
 HashFileHandler hashHandler;
-StaticLayoutHandler staticLayoutHandler;
+StaticLayoutHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
 LpcDataHandler lpcDataHandler;
 PciDataHandler pciDataHandler(PCI_PHYSICAL_ADDRESS);
 
