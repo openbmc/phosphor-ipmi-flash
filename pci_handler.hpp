@@ -20,13 +20,17 @@ struct PciConfigResponse
 class PciDataHandler : public DataInterface
 {
   public:
-    PciDataHandler() = default;
+    explicit PciDataHandler(std::uint32_t regionAddress) :
+        regionAddress(regionAddress){};
 
     bool open() override;
     bool close() override;
     std::vector<std::uint8_t> copyFrom(std::uint32_t length) override;
     bool write(const std::vector<std::uint8_t>& configuration) override;
     std::vector<std::uint8_t> read() override;
+
+  private:
+    std::uint32_t regionAddress;
 };
 
 } // namespace blobs

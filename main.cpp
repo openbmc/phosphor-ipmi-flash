@@ -21,7 +21,7 @@ namespace
 HashFileHandler hashHandler;
 StaticLayoutHandler staticLayoutHandler;
 LpcDataHandler lpcDataHandler;
-PciDataHandler pciDataHandler;
+PciDataHandler pciDataHandler(PCI_PHYSICAL_ADDRESS);
 
 std::vector<HandlerPack> supportedFirmware = {
     {FirmwareBlobHandler::hashBlobID, &hashHandler},
