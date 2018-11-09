@@ -31,12 +31,12 @@ std::vector<HandlerPack> supportedFirmware = {
 };
 
 std::vector<DataHandlerPack> supportedTransports = {
-    {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
+    {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
 #ifdef ENABLE_PCI_BRIDGE
-    {FirmwareBlobHandler::FirmwareUpdateFlags::p2a, &pciDataHandler},
+    {FirmwareBlobHandler::UpdateFlags::p2a, &pciDataHandler},
 #endif
 #ifdef ENABLE_LPC_BRIDGE
-    {FirmwareBlobHandler::FirmwareUpdateFlags::lpc, &lpcDataHandler},
+    {FirmwareBlobHandler::UpdateFlags::lpc, &lpcDataHandler},
 #endif
 };
 

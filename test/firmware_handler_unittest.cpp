@@ -12,7 +12,7 @@ namespace blobs
 TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
 {
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler({}, data);
@@ -39,7 +39,7 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
