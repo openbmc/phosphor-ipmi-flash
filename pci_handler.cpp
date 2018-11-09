@@ -1,6 +1,7 @@
 #include "pci_handler.hpp"
 
 #include <cstdint>
+#include <cstring>
 #include <vector>
 
 namespace blobs
@@ -26,6 +27,7 @@ std::vector<std::uint8_t> PciDataHandler::read()
 
     std::vector<std::uint8_t> bytes;
     bytes.resize(sizeof(reply));
+    std::memcpy(bytes.data(), &reply, sizeof(reply));
 
     return bytes;
 }
