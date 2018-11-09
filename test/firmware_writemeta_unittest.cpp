@@ -20,8 +20,8 @@ TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
     DataHandlerMock dataMock;
 
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::FirmwareUpdateFlags::lpc, &dataMock},
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
@@ -29,8 +29,7 @@ TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::ipmi,
-        "asdf"));
+        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
 
     std::vector<std::uint8_t> bytes = {0xaa, 0x55};
 
@@ -48,8 +47,8 @@ TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
     DataHandlerMock dataMock;
 
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::FirmwareUpdateFlags::lpc, &dataMock},
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
@@ -57,8 +56,7 @@ TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::lpc,
-        "asdf"));
+        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));
 
     std::vector<std::uint8_t> bytes = {0x01, 0x02, 0x03, 0x04};
 

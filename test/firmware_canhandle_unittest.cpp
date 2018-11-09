@@ -27,7 +27,7 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
         {"bcdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);

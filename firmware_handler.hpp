@@ -41,7 +41,7 @@ struct ExtChunkHdr
 class FirmwareBlobHandler : public GenericBlobInterface
 {
   public:
-    enum FirmwareUpdateFlags : std::uint16_t
+    enum UpdateFlags : std::uint16_t
     {
         ipmi = (1 << 8), /* Expect to send contents over IPMI BlockTransfer. */
         p2a = (1 << 9),  /* Expect to send contents over P2A bridge. */

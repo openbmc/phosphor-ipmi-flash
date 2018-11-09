@@ -291,7 +291,7 @@ bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
 
     std::vector<std::uint8_t> bytes;
 
-    if (item->second->flags & FirmwareUpdateFlags::ipmi)
+    if (item->second->flags & UpdateFlags::ipmi)
     {
         bytes = data;
     }
@@ -330,7 +330,7 @@ bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
         return false;
     }
 
-    if (item->second->flags & FirmwareUpdateFlags::ipmi)
+    if (item->second->flags & UpdateFlags::ipmi)
     {
         return false;
     }

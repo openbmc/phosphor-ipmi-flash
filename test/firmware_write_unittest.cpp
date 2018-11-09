@@ -24,7 +24,7 @@ TEST(FirmwareHandlerWriteTest, DataTypeIpmiWriteSuccess)
     };
 
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
@@ -32,8 +32,7 @@ TEST(FirmwareHandlerWriteTest, DataTypeIpmiWriteSuccess)
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::ipmi,
-        "asdf"));
+        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
 
     std::vector<std::uint8_t> bytes = {0xaa, 0x55};
 
@@ -54,8 +53,8 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteSuccess)
     DataHandlerMock dataMock;
 
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::FirmwareUpdateFlags::lpc, &dataMock},
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
@@ -63,8 +62,7 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteSuccess)
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::lpc,
-        "asdf"));
+        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));
 
     struct ExtChunkHdr request;
     request.length = 4; /* number of bytes to read. */
@@ -93,8 +91,8 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteFailsBadRequest)
     DataHandlerMock dataMock;
 
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::FirmwareUpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::FirmwareUpdateFlags::lpc, &dataMock},
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
@@ -102,8 +100,7 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteFailsBadRequest)
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::FirmwareUpdateFlags::lpc,
-        "asdf"));
+        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));
 
     struct ExtChunkHdr request;
     request.length = 4; /* number of bytes to read. */
