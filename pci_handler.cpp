@@ -7,6 +7,11 @@
 namespace blobs
 {
 
+bool PciDataHandler::init()
+{
+    return false;
+}
+
 std::vector<std::uint8_t> PciDataHandler::copyFrom(std::uint32_t length)
 {
     /* TODO: implement this. */
