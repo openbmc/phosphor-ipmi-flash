@@ -63,6 +63,15 @@ class FirmwareBlobHandler : public GenericBlobInterface
         verificationCompleted = 3,
     };
 
+    /** The return values for verification. */
+    enum VerifyCheckResponses
+    {
+        running = 0,
+        success = 1,
+        failed = 2,
+        other = 3,
+    };
+
     /**
      * Create a FirmwareBlobHandler.
      *
