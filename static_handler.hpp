@@ -16,7 +16,8 @@ class StaticLayoutHandler : public ImageHandlerInterface
     /**
      * Create a StaticLayoutHandler.
      */
-    StaticLayoutHandler() = default;
+    explicit StaticLayoutHandler(const std::string& temporaryName) :
+        stagedFilename(temporaryName){};
 
     bool open(const std::string& path) override;
 
@@ -25,6 +26,9 @@ class StaticLayoutHandler : public ImageHandlerInterface
 
   private:
     std::string path;
+
+    /** The file to use for staging the bytes. */
+    std::string stagedFilename;
 };
 
 } // namespace blobs
