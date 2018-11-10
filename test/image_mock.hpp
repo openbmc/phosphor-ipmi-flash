@@ -13,6 +13,7 @@ class ImageHandlerMock : public ImageHandlerInterface
     virtual ~ImageHandlerMock() = default;
 
     MOCK_METHOD1(open, bool(const std::string&));
+    MOCK_METHOD0(close, void());
     MOCK_METHOD2(write, bool(std::uint32_t, const std::vector<std::uint8_t>&));
 };
 
