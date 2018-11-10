@@ -19,7 +19,7 @@ class HashFileHandler : public ImageHandlerInterface
     HashFileHandler() = default;
 
     bool open(const std::string& path) override;
-
+    void close() override;
     bool write(std::uint32_t offset,
                const std::vector<std::uint8_t>& data) override;
 

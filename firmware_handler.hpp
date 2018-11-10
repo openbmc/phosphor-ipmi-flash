@@ -41,6 +41,9 @@ struct Session
 
     /** The current state of this session. */
     State state;
+
+    /** The active path. */
+    std::string activePath;
 };
 
 struct ExtChunkHdr
