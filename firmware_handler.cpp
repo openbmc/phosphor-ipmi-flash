@@ -81,10 +81,41 @@ std::vector<std::string> FirmwareBlobHandler::getBlobIds()
 /*
  * Per the design, this mean abort, and this will trigger whatever
  * appropriate actions are required to abort the process.
+ *
+ * You cannot delete a blob that has an open handle in the system, therefore
+ * this is never called if there's an open session.  Guaranteed by the blob
+ * manager.
  */
 bool FirmwareBlobHandler::deleteBlob(const std::string& path)
 {
-    return false;
+    const std::string* toDelete;
+
+    if (path == hashBlobID || path == activeHashBlobID)
+    {
+        /* They're deleting the hash. */
+        toDelete = &activeHashBlobID;
+    }
+    else
+    {
+        /* They're deleting the image. */
+        toDelete = &activeImageBlobID;
+    }
+
+    auto it = std::find_if(
+        blobIDs.begin(), blobIDs.end(),
+        [toDelete](const auto& iter) { return (iter == *toDelete); });
+    if (it == blobIDs.end())
+    {
+        /* Somehow they've asked to delete something we didn't say we could
+         * handle.
+         */
+    }
+
+    blobIDs.erase(it);
+
+    /* TODO: Handle aborting the process and fixing up the state. */
+
+    return true;
 }
 
 /*
