@@ -391,11 +391,30 @@ bool FirmwareBlobHandler::commit(uint16_t session,
  */
 bool FirmwareBlobHandler::close(uint16_t session)
 {
+    auto item = lookup.find(session);
+    if (item == lookup.end())
+    {
+        return false;
+    }
+
+    if (item->second->dataHandler)
+    {
+        item->second->dataHandler->close();
+    }
+    item->second->imageHandler->close();
+    item->second->state = Session::State::closed;
+    /* Do not delete the active blob_id from the list of blob_ids, because that
+     * blob_id indicates there is data stored.  Delete will destroy it.
+     */
+
+    lookup.erase(item);
+
     fileOpen = false;
 
-    /* TODO: implement other aspects of closing out a session. */
-
-    return false;
+    /* TODO: implement other aspects of closing out a session, such as changing
+     * global firmware state.
+     */
+    return true;
 }
 
 bool FirmwareBlobHandler::expire(uint16_t session)
