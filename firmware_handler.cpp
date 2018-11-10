@@ -54,9 +54,9 @@ std::unique_ptr<GenericBlobInterface>
                                                  bitmask);
 }
 
+/* Check if the path is in our supported list (or active list). */
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
 {
-    /* Check if the path is in our supported list (or active list). */
     if (std::count(blobIDs.begin(), blobIDs.end(), path))
     {
         return true;
@@ -65,39 +65,38 @@ bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
     return false;
 }
 
+/*
+ * Grab the list of supported firmware.
+ *
+ * If there's an open firmware session, it'll already be present in the
+ * list as "/flash/active/image", and if the hash has started,
+ * "/flash/active/hash" regardless of mechanism.  This is done in the open
+ * comamnd, no extra work is required here.
+ */
 std::vector<std::string> FirmwareBlobHandler::getBlobIds()
 {
-    /*
-     * Grab the list of supported firmware.
-     *
-     * If there's an open firmware session, it'll already be present in the
-     * list as "/flash/active/image", and if the hash has started,
-     * "/flash/active/hash" regardless of mechanism.  This is done in the open
-     * comamnd, no extra work is required here.
-     */
     return blobIDs;
 }
 
+/*
+ * Per the design, this mean abort, and this will trigger whatever
+ * appropriate actions are required to abort the process.
+ */
 bool FirmwareBlobHandler::deleteBlob(const std::string& path)
 {
-    /*
-     * Per the design, this mean abort, and this will trigger whatever
-     * appropriate actions are required to abort the process.
-     */
     return false;
 }
 
+/*
+ * Stat on the files will return information such as what supported
+ * transport mechanisms are available.
+ *
+ * Stat on an active file or hash will return information such as the size
+ * of the data cached, and any additional pertinent information.  The
+ * blob_state on the active files will return the state of the update.
+ */
 bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
 {
-    /*
-     * Stat on the files will return information such as what supported
-     * transport mechanisms are available.
-     *
-     * Stat on an active file or hash will return information such as the size
-     * of the data cached, and any additional pertinent information.  The
-     * blob_state on the active files will return the state of the update.
-     */
-
     /* We know we support this path because canHandle is called ahead */
     if (path == FirmwareBlobHandler::activeImageBlobID)
     {
@@ -114,10 +113,28 @@ bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
         meta->size = 0;
 
         /* The generic blob_ids state is only the bits related to the transport
-         * mechanisms. */
+         * mechanisms.
+         */
         return true;
     }
 
+    return false;
+}
+
+/*
+ * Return stat information on an open session.  It therefore must be an active
+ * handle to either the active image or active hash.
+ *
+ * The stat() and sessionstat() commands will return the same information in
+ * many cases, therefore the logic will be combined.
+ *
+ * TODO: combine the logic for stat and sessionstat().
+ */
+bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
+{
+    /*
+     * Return session specific information.
+     */
     return false;
 }
 
@@ -231,9 +248,9 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     }
 
     /* 2d) are they opening the /flash/tarball ? (to start the UBI process)
+     * 2e) are they opening the /flash/image ? (to start the process)
+     * 2...) are they opening the /flash/... ? (to start the process)
      */
-    /* 2e) are they opening the /flash/image ? (to start the process) */
-    /* 2...) are they opening the /flash/... ? (to start the process) */
 
     auto h = std::find_if(
         handlers.begin(), handlers.end(),
@@ -259,21 +276,13 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     return true;
 }
 
-std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t session,
-                                               uint32_t offset,
-                                               uint32_t requestedSize)
-{
-    /*
-     * Currently, the design does not provide this with a function, however,
-     * it will likely change to support reading data back.
-     */
-    return {};
-}
-
 /**
  * The write command really just grabs the data from wherever it is and sends it
  * to the image handler.  It's the image handler's responsibility to deal with
  * the data provided.
+ *
+ * This receives a session from the blob manager, therefore it is always called
+ * between open() and close().
  */
 bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
                                 const std::vector<uint8_t>& data)
@@ -339,42 +348,49 @@ bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
     return item->second->dataHandler->write(data);
 }
 
+/*
+ * If this command is called on the session for the hash image, it'll
+ * trigger a systemd service `verify_image.service` to attempt to verify
+ * the image. Before doing this, if the transport mechanism is not IPMI
+ * BT, it'll shut down the mechanism used for transport preventing the
+ * host from updating anything.
+ */
 bool FirmwareBlobHandler::commit(uint16_t session,
                                  const std::vector<uint8_t>& data)
 {
-    /*
-     * If this command is called on the session for the hash image, it'll
-     * trigger a systemd service `verify_image.service` to attempt to verify
-     * the image. Before doing this, if the transport mechanism is not IPMI
-     * BT, it'll shut down the mechanism used for transport preventing the
-     * host from updating anything.
-     */
     return false;
 }
+
+/*
+ * Close must be called on the firmware image before triggering
+ * verification via commit. Once the verification is complete, you can
+ * then close the hash file.
+ *
+ * If the `verify_image.service` returned success, closing the hash file
+ * will have a specific behavior depending on the update. If it's UBI,
+ * it'll perform the install. If it's static layout, it'll do nothing. The
+ * verify_image service in the static layout case is responsible for placing
+ * the file in the correct staging position.
+ */
 bool FirmwareBlobHandler::close(uint16_t session)
 {
-    /*
-     * Close must be called on the firmware image before triggering
-     * verification via commit. Once the verification is complete, you can
-     * then close the hash file.
-     *
-     * If the `verify_image.service` returned success, closing the hash file
-     * will have a specific behavior depending on the update. If it's UBI,
-     * it'll perform the install. If it's static layout, it'll do nothing. The
-     * verify_image service in the static layout case is responsible for placing
-     * the file in the correct staging position.
-     */
     return false;
 }
-bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
-{
-    /*
-     * Return session specific information.
-     */
-    return false;
-}
+
 bool FirmwareBlobHandler::expire(uint16_t session)
 {
     return false;
 }
+
+/*
+ * Currently, the design does not provide this with a function, however,
+ * it will likely change to support reading data back.
+ */
+std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t session,
+                                               uint32_t offset,
+                                               uint32_t requestedSize)
+{
+    return {};
+}
+
 } // namespace blobs
