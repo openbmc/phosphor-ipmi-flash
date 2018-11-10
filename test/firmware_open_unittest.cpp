@@ -166,8 +166,7 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsVerifyOpenFileCheck)
         1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
         FirmwareBlobHandler::hashBlobID));
 
-    /* Close the file, currently ignoring its return value. */
-    handler->close(0);
+    EXPECT_TRUE(handler->close(0));
 
     EXPECT_CALL(imageMock1, open(StrEq(FirmwareBlobHandler::hashBlobID)))
         .WillOnce(Return(true));
@@ -210,7 +209,7 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
     /* Close only active session, to verify it's failing on attempt to open a
      * specific blob_id.
      */
-    handler->close(0);
+    EXPECT_TRUE(handler->close(0));
 
     EXPECT_FALSE(handler->open(
         1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
