@@ -231,22 +231,19 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
      * above we verify they selected at least one we wanted.
      */
     Session* curr;
+    const std::string* active;
 
     if (path == hashBlobID)
     {
         /* 2c) are they opening the /flash/hash ? (to start the process) */
 
         curr = &activeHash;
-
-        /* Add active hash blob_id to canHandle list. */
-        blobIDs.push_back(activeHashBlobID);
+        active = &activeHashBlobID;
     }
     else
     {
         curr = &activeImage;
-
-        /* add active image blob_id to canHandle list. */
-        blobIDs.push_back(activeImageBlobID);
+        active = &activeImageBlobID;
     }
 
     /* 2d) are they opening the /flash/tarball ? (to start the UBI process)
@@ -273,6 +270,8 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     curr->state = Session::State::open;
 
     lookup[session] = curr;
+
+    blobIDs.push_back(*active);
 
     return true;
 }
