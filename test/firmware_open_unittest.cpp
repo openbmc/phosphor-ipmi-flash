@@ -70,6 +70,68 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidHashFile)
                             FirmwareBlobHandler::activeHashBlobID));
 }
 
+TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerAllSucceeds)
+{
+    /* Attempting to open a file that has an active handler, and use that active
+     * handler method.
+     */
+    DataHandlerMock dataMock;
+    ImageHandlerMock imageMock;
+
+    std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {"asdf", &imageMock},
+    };
+    std::vector<DataHandlerPack> data = {
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
+    };
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+
+    EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
+    EXPECT_CALL(imageMock, open(Eq(FirmwareBlobHandler::hashBlobID)))
+        .WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(
+        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
+        FirmwareBlobHandler::hashBlobID));
+
+    /* The active hash blob_id was added. */
+    auto currentBlobs = handler->getBlobIds();
+    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
+                            FirmwareBlobHandler::activeHashBlobID));
+}
+
+TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerReturnsFailure)
+{
+    /* The data handler call returns failure on open, therefore open fails. */
+    DataHandlerMock dataMock;
+    ImageHandlerMock imageMock;
+
+    std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {"asdf", &imageMock},
+    };
+    std::vector<DataHandlerPack> data = {
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
+    };
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+
+    EXPECT_CALL(dataMock, open()).WillOnce(Return(false));
+
+    EXPECT_FALSE(handler->open(
+        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
+        FirmwareBlobHandler::hashBlobID));
+
+    /* The active hash blob_id was added. */
+    auto currentBlobs = handler->getBlobIds();
+    EXPECT_EQ(2, currentBlobs.size());
+}
+
 TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
 {
     /* Attempting to open the active image blob, when it's present will fail.
