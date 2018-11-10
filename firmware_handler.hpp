@@ -18,12 +18,15 @@ namespace blobs
  */
 struct Session
 {
-    /** Pointer to the correct Data handler interface. (nullptr on BT (or KCS))
+    /**
+     * Pointer to the correct Data handler interface. (nullptr on BT (or KCS))
      */
     DataInterface* dataHandler;
 
-    /** Pointer to the correct image handler interface.  (nullptr on hash
-     * blob_id) */
+    /**
+     * Pointer to the correct image handler interface.  (nullptr on hash
+     * blob_id)
+     */
     ImageHandlerInterface* imageHandler;
 
     /** The flags used to open the session. */
