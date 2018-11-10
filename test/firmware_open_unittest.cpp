@@ -126,6 +126,10 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidImageHandlerFails)
 
     EXPECT_FALSE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+
+    /* Verify blob_id list doesn't grow. */
+    auto currentBlobs = handler->getBlobIds();
+    EXPECT_EQ(2, currentBlobs.size());
 }
 
 TEST(FirmwareHandlerOpenTest, OpenWithoutWriteFails)
