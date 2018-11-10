@@ -239,7 +239,6 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     if (path == hashBlobID)
     {
         /* 2c) are they opening the /flash/hash ? (to start the process) */
-
         curr = &activeHash;
         active = &activeHashBlobID;
     }
@@ -288,6 +287,8 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     lookup[session] = curr;
 
     blobIDs.push_back(*active);
+
+    fileOpen = true;
 
     return true;
 }
@@ -390,6 +391,10 @@ bool FirmwareBlobHandler::commit(uint16_t session,
  */
 bool FirmwareBlobHandler::close(uint16_t session)
 {
+    fileOpen = false;
+
+    /* TODO: implement other aspects of closing out a session. */
+
     return false;
 }
 
