@@ -26,6 +26,11 @@ class ImageHandlerInterface
     virtual bool open(const std::string& path) = 0;
 
     /**
+     * close the image.
+     */
+    virtual void close() = 0;
+
+    /**
      * write data to the staged file.
      *
      * @param[in] offset - 0-based offset into the file.
