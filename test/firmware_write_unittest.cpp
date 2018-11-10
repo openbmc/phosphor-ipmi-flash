@@ -59,6 +59,7 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteSuccess)
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
 
+    EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
@@ -97,6 +98,7 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteFailsBadRequest)
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
 
+    EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
