@@ -208,12 +208,14 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         /* 2a) are they opening the active image? this can only happen if they
          * already started one (due to canHandleBlob's behavior).
          */
+        return false;
     }
     else if (path == activeHashBlobID)
     {
         /* 2b) are they opening the active hash? this can only happen if they
          * already started one (due to canHandleBlob's behavior).
          */
+        return false;
     }
 
     /* How are they expecting to copy this data? */
@@ -232,9 +234,9 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
 
     if (path == hashBlobID)
     {
-        curr = &activeHash;
-
         /* 2c) are they opening the /flash/hash ? (to start the process) */
+
+        curr = &activeHash;
 
         /* Add active hash blob_id to canHandle list. */
         blobIDs.push_back(activeHashBlobID);
@@ -251,7 +253,6 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
      * 2e) are they opening the /flash/image ? (to start the process)
      * 2...) are they opening the /flash/... ? (to start the process)
      */
-
     auto h = std::find_if(
         handlers.begin(), handlers.end(),
         [&path](const auto& iter) { return (iter.blobName == path); });
