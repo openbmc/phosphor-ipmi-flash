@@ -11,6 +11,7 @@ namespace blobs
 {
 using ::testing::Eq;
 using ::testing::Return;
+using ::testing::StrEq;
 
 TEST(FirmwareHandlerOpenTest, OpenWithEverythingValid)
 {
@@ -132,6 +133,50 @@ TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerReturnsFailure)
     EXPECT_EQ(2, currentBlobs.size());
 }
 
+TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsVerifyOpenFileCheck)
+{
+    /* Verify only one file can be open at a time by opening a file, trying
+     * again, then closing, and trying again.
+     */
+    ImageHandlerMock imageMock1, imageMock2;
+
+    std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {"asdf", &imageMock2},
+    };
+    std::vector<DataHandlerPack> data = {
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+    };
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+
+    EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(
+        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+
+    /* The active image blob_id was added. */
+    auto currentBlobs = handler->getBlobIds();
+    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
+                            FirmwareBlobHandler::activeImageBlobID));
+
+    /* Open the hash file (since we opened an image file). */
+    EXPECT_FALSE(handler->open(
+        1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        FirmwareBlobHandler::hashBlobID));
+
+    /* Close the file, currently ignoring its return value. */
+    handler->close(0);
+
+    EXPECT_CALL(imageMock1, open(StrEq(FirmwareBlobHandler::hashBlobID)))
+        .WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(
+        1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        FirmwareBlobHandler::hashBlobID));
+}
+
 TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
 {
     /* Attempting to open the active image blob, when it's present will fail.
@@ -161,6 +206,11 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
     EXPECT_EQ(3, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeImageBlobID));
+
+    /* Close only active session, to verify it's failing on attempt to open a
+     * specific blob_id.
+     */
+    handler->close(0);
 
     EXPECT_FALSE(handler->open(
         1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
