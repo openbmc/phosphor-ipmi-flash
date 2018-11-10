@@ -28,6 +28,15 @@ struct Session
 
     /** The flags used to open the session. */
     std::uint16_t flags;
+
+    /** A sesion can be for an image (or tarball) or the hash. */
+    enum SessionState {
+       open = 0,
+       closed = 1,
+    };
+
+    /** The current state of this session. */
+    SessionState state;
 };
 
 struct ExtChunkHdr
