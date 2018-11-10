@@ -9,6 +9,7 @@
 
 namespace blobs
 {
+using ::testing::Eq;
 using ::testing::Return;
 
 TEST(FirmwareHandlerOpenTest, OpenWithEverythingValid)
@@ -32,6 +33,76 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValid)
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+
+    /* The active image blob_id was added. */
+    auto currentBlobs = handler->getBlobIds();
+    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
+                            FirmwareBlobHandler::activeImageBlobID));
+}
+
+TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidHashFile)
+{
+    /* Open the hash file by blob_id. */
+    ImageHandlerMock imageMock;
+
+    std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {"asdf", &imageMock},
+    };
+    std::vector<DataHandlerPack> data = {
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+    };
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+
+    EXPECT_CALL(imageMock, open(Eq(FirmwareBlobHandler::hashBlobID)))
+        .WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(
+        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        FirmwareBlobHandler::hashBlobID));
+
+    /* The active hash blob_id was added. */
+    auto currentBlobs = handler->getBlobIds();
+    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
+                            FirmwareBlobHandler::activeHashBlobID));
+}
+
+TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
+{
+    /* Attempting to open the active image blob, when it's present will fail.
+     *
+     * TODO: We'll need another test that closes first because you can only have
+     * one file open at a time.
+     */
+    ImageHandlerMock imageMock;
+
+    std::vector<HandlerPack> blobs = {
+        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {"asdf", &imageMock},
+    };
+    std::vector<DataHandlerPack> data = {
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+    };
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+
+    EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(
+        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+
+    /* The active image blob_id was added. */
+    auto currentBlobs = handler->getBlobIds();
+    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
+                            FirmwareBlobHandler::activeImageBlobID));
+
+    EXPECT_FALSE(handler->open(
+        1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        FirmwareBlobHandler::activeImageBlobID));
 }
 
 TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidImageHandlerFails)
