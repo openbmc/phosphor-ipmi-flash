@@ -16,7 +16,8 @@ check_PROGRAMS = \
 	firmware_open_unittest \
 	firmware_write_unittest \
 	firmware_writemeta_unittest \
-	firmware_close_unittest
+	firmware_close_unittest \
+	firmware_delete_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -40,3 +41,6 @@ firmware_writemeta_unittest_LDADD = $(top_builddir)/firmware_handler.o
 
 firmware_close_unittest_SOURCES = firmware_close_unittest.cpp
 firmware_close_unittest_LDADD = $(top_builddir)/firmware_handler.o
+
+firmware_delete_unittest_SOURCES = firmware_delete_unittest.cpp
+firmware_delete_unittest_LDADD = $(top_builddir)/firmware_handler.o
