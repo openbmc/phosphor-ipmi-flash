@@ -270,6 +270,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     curr->flags = flags;
     curr->dataHandler = d->handler;
     curr->imageHandler = h->handler;
+    curr->state = Session::State::open;
 
     lookup[session] = curr;
 
