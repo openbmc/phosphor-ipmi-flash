@@ -158,7 +158,9 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
 bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
                                const std::string& path)
 {
-    /* Check that they've opened for writing - read back not supported. */
+    /* Check that they've opened for writing - read back not currently
+     * supported.
+     */
     if ((flags & OpenFlags::write) == 0)
     {
         return false;
@@ -171,6 +173,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     }
 
     /* Is there an open session already? We only allow one at a time.
+     *
      * TODO: Temporarily using a simple boolean flag until there's a full
      * session object to check.
      *
@@ -244,6 +247,19 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     {
         curr = &activeImage;
         active = &activeImageBlobID;
+    }
+
+    /* Elsewhere I do this check by checking "if ::ipmi" because that's the
+     * only non-external data pathway -- but this is just a more generic
+     * approach to that.
+     */
+    if (d->handler)
+    {
+        /* If the data handler open call fails, open fails. */
+        if (!d->handler->open())
+        {
+            return false;
+        }
     }
 
     /* 2d) are they opening the /flash/tarball ? (to start the UBI process)
