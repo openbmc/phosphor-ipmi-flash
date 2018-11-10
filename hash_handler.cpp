@@ -14,6 +14,11 @@ bool HashFileHandler::open(const std::string& path)
     return false;
 }
 
+void HashFileHandler::close()
+{
+    return;
+}
+
 bool HashFileHandler::write(std::uint32_t offset,
                             const std::vector<std::uint8_t>& data)
 {
