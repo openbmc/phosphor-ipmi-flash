@@ -17,6 +17,11 @@ bool StaticLayoutHandler::open(const std::string& path)
     return false;
 }
 
+void StaticLayoutHandler::close()
+{
+    return;
+}
+
 bool StaticLayoutHandler::write(std::uint32_t offset,
                                 const std::vector<std::uint8_t>& data)
 {
