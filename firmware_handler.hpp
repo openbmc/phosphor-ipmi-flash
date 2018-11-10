@@ -18,6 +18,12 @@ namespace blobs
  */
 struct Session
 {
+    explicit Session(const std::string& path) :
+        dataHandler(nullptr), imageHandler(nullptr), flags(0),
+        state(State::closed), activePath(path)
+    {
+    }
+
     /**
      * Pointer to the correct Data handler interface. (nullptr on BT (or KCS))
      */
@@ -111,8 +117,9 @@ class FirmwareBlobHandler : public GenericBlobInterface
                         const std::vector<DataHandlerPack>& transports,
                         std::uint16_t bitmask) :
         handlers(firmwares),
-        blobIDs(blobs), transports(transports), bitmask(bitmask), activeImage(),
-        activeHash(), lookup(), state(UpdateState::notYetStarted)
+        blobIDs(blobs), transports(transports), bitmask(bitmask),
+        activeImage(activeImageBlobID), activeHash(activeHashBlobID), lookup(),
+        state(UpdateState::notYetStarted)
     {
     }
     ~FirmwareBlobHandler() = default;
