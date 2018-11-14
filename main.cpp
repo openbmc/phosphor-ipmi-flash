@@ -14,8 +14,6 @@
 
 namespace blobs
 {
-using namespace phosphor::logging;
-
 namespace
 {
 HashFileHandler hashHandler;
@@ -42,25 +40,30 @@ std::vector<DataHandlerPack> supportedTransports = {
 
 } // namespace
 
-void setupFirmwareHandler() __attribute__((constructor));
+} // namespace blobs
 
-void setupFirmwareHandler()
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+std::unique_ptr<blobs::GenericBlobInterface> createHandler();
+
+#ifdef __cplusplus
+}
+#endif
+
+std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        supportedFirmware, supportedTransports);
+    using namespace phosphor::logging;
+
+    auto handler = blobs::FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        blobs::supportedFirmware, blobs::supportedTransports);
 
     if (!handler)
     {
         log<level::ERR>("Firmware Handler has invalid configuration");
-        return;
+        return nullptr;
     }
 
-    auto* manager = getBlobManager();
-
-    if (!manager->registerHandler(std::move(handler)))
-    {
-        log<level::ERR>("Failed to register Firmware Handler");
-    }
+    return std::move(handler);
 }
-
-} // namespace blobs
