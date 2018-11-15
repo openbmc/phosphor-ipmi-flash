@@ -23,23 +23,32 @@ bool LpcDataHandler::close()
 
 std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
 {
-    /* TODO: implement this. */
+    /* TODO: implement this */
     return {};
 }
 
 bool LpcDataHandler::write(const std::vector<std::uint8_t>& configuration)
 {
-    struct LpcRegion lpcRequest;
+    struct LpcRegion lpcRegion;
 
-    if (configuration.size() != sizeof(lpcRequest))
+    if (configuration.size() != sizeof(lpcRegion))
     {
         return false;
     }
 
-    std::memcpy(&lpcRequest, configuration.data(), configuration.size());
-    /* TODO: Implement the call to the driver or aspeed lpc ctrl library to send
-     * ioctl.
-     */
+    std::memcpy(&lpcRegion, configuration.data(), configuration.size());
+
+    std::uint32_t windowOffset;
+    std::uint32_t windowSize;
+
+    /* TODO: LpcRegion sanity checking. */
+
+    std::tie(windowOffset, windowSize) =
+        mapper->mapWindow(lpcRegion.address, lpcRegion.length);
+    if (windowSize == 0)
+    {
+        /* Failed to map region. */
+    }
 
     return false;
 }
