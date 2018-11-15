@@ -11,11 +11,35 @@ namespace blobs
 bool StaticLayoutHandler::open(const std::string& path)
 {
     this->path = path;
-    return false;
+
+    if (stagedOutput.is_open())
+    {
+        /* This wasn't properly closed somehow.
+         * TODO: Throw an error or just reset the state?
+         */
+        return false;
+    }
+
+    /* using ofstream no need to set out */
+    stagedOutput.open(stagedFilename, std::ios::binary);
+    if (stagedOutput.bad())
+    {
+        /* TODO: Oh no! Care about this. */
+        return false;
+    }
+
+    /* We were able to open the file for staging.
+     * TODO: We'll need to do other stuff to eventually.
+     */
+    return true;
 }
 
 void StaticLayoutHandler::close()
 {
+    if (stagedOutput.is_open())
+    {
+        stagedOutput.close();
+    }
     return;
 }
 

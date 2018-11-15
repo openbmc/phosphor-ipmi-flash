@@ -3,6 +3,7 @@
 #include "image_handler.hpp"
 
 #include <cstdint>
+#include <fstream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -26,6 +27,9 @@ class StaticLayoutHandler : public ImageHandlerInterface
 
   private:
     std::string path;
+
+    /** The staged output file stream object. */
+    std::ofstream stagedOutput;
 
     /** The file to use for staging the bytes. */
     std::string stagedFilename;
