@@ -5,7 +5,6 @@ libfirmwareblob_LTLIBRARIES = libfirmwareblob.la
 libfirmwareblob_la_SOURCES = \
 	main.cpp \
 	firmware_handler.cpp \
-	static_handler.cpp \
 	lpc_handler.cpp \
 	pci_handler.cpp \
 	file_handler.cpp
