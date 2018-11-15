@@ -3,6 +3,7 @@
 #include "image_handler.hpp"
 
 #include <cstdint>
+#include <fstream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -19,6 +20,10 @@ class StaticLayoutHandler : public ImageHandlerInterface
     explicit StaticLayoutHandler(const std::string& temporaryName) :
         stagedFilename(temporaryName){};
 
+    /* Destroying the ofstream closes it first. */
+    ~StaticLayoutHandler() = default;
+
+    /* Opens the stagedFilename. */
     bool open(const std::string& path) override;
     void close() override;
     bool write(std::uint32_t offset,
@@ -26,6 +31,9 @@ class StaticLayoutHandler : public ImageHandlerInterface
 
   private:
     std::string path;
+
+    /** The staged output file stream object. */
+    std::ofstream stagedOutput;
 
     /** The file to use for staging the bytes. */
     std::string stagedFilename;
