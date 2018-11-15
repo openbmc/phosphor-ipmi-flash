@@ -28,6 +28,7 @@ class FileHandler : public ImageHandlerInterface
     void close() override;
     bool write(std::uint32_t offset,
                const std::vector<std::uint8_t>& data) override;
+    int getSize() override;
 
   private:
     /** the active hash path, ignore. */

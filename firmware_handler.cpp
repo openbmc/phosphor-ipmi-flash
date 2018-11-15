@@ -164,10 +164,37 @@ bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
  */
 bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
 {
-    /*
-     * Return session specific information.
+    auto item = lookup.find(session);
+    if (item == lookup.end())
+    {
+        return false;
+    }
+
+    /* The blobState here relates to an active sesion, so we should return the
+     * flags used to open this session.
      */
-    return false;
+    meta->blobState = item->second->flags;
+    /* The size here refers to the size of the file -- of something analagous.
+     */
+    meta->size = item->second->imageHandler->getSize();
+
+    /* The metadata blob returned comes from the data handler... it's used for
+     * instance, in P2A bridging to get required information about the mapping,
+     * and is the "opposite" of the lpc writemeta requirement.
+     */
+    meta->metadata.clear();
+    if (item->second->dataHandler)
+    {
+        auto bytes = item->second->dataHandler->read();
+        meta->metadata.insert(meta->metadata.begin(), bytes.begin(),
+                              bytes.end());
+    }
+
+    /* TODO: During things like verification, etc, we can report the state as
+     * committed, etc, so we'll need to do that.
+     */
+
+    return true;
 }
 
 /*

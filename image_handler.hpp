@@ -39,6 +39,13 @@ class ImageHandlerInterface
      */
     virtual bool write(std::uint32_t offset,
                        const std::vector<std::uint8_t>& data) = 0;
+
+    /**
+     * return the size of the file (if that notion makes sense).
+     *
+     * @return the size in bytes of the image staged.
+     */
+    virtual int getSize() = 0;
 };
 
 struct HandlerPack
