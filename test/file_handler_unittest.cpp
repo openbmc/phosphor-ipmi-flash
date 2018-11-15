@@ -1,4 +1,4 @@
-#include "static_handler.hpp"
+#include "file_handler.hpp"
 
 #include <cstdint>
 #include <cstdio>
@@ -12,7 +12,7 @@ namespace blobs
 
 static constexpr auto TESTPATH = "test.output";
 
-class StaticHandlerOpenTest : public ::testing::Test
+class FileHandlerOpenTest : public ::testing::Test
 {
   protected:
     void TearDown() override
@@ -21,23 +21,23 @@ class StaticHandlerOpenTest : public ::testing::Test
     }
 };
 
-TEST_F(StaticHandlerOpenTest, VerifyItIsHappy)
+TEST_F(FileHandlerOpenTest, VerifyItIsHappy)
 {
     /* Opening a fail may create it? */
 
-    StaticLayoutHandler handler(TESTPATH);
+    FileHandler handler(TESTPATH);
     EXPECT_TRUE(handler.open(""));
 
     /* Calling open twice fails the second time. */
     EXPECT_FALSE(handler.open(""));
 }
 
-TEST_F(StaticHandlerOpenTest, VerifyWriteDataWrites)
+TEST_F(FileHandlerOpenTest, VerifyWriteDataWrites)
 {
     /* Verify writing bytes writes them... flushing data can be an issue here,
      * so we close first.
      */
-    StaticLayoutHandler handler(TESTPATH);
+    FileHandler handler(TESTPATH);
     EXPECT_TRUE(handler.open(""));
 
     std::vector<std::uint8_t> bytes = {0x01, 0x02};
