@@ -18,7 +18,17 @@ namespace
 {
 HashFileHandler hashHandler;
 StaticLayoutHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
-LpcDataHandler lpcDataHandler;
+
+#ifdef ENABLE_LPC_BRIDGE
+#ifdef ASPEED_LPC
+LpcDataHandler lpcDataHandler(LpcMapperAspeed::createAspeedMapper());
+#elif NUVOTON_LPC
+LpcDataHandler lpcDataHandler(LpcMapperNuvoton::createNuvotonMapper());
+#else
+#error "You must specify a hardware implementation."
+#endif
+#endif
+
 PciDataHandler pciDataHandler(PCI_PHYSICAL_ADDRESS);
 
 std::vector<HandlerPack> supportedFirmware = {
