@@ -1,8 +1,10 @@
 #pragma once
 
 #include "data_handler.hpp"
+#include "lpc_interface.hpp"
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 namespace blobs
@@ -24,13 +26,24 @@ struct LpcRegion
 class LpcDataHandler : public DataInterface
 {
   public:
-    LpcDataHandler() = default;
+    /**
+     * Create an LpcDataHandler.
+     *
+     * @param[in] mapper - pointer to a mapper implementation to use.
+     */
+    explicit LpcDataHandler(std::unique_ptr<LpcMapperInterface> mapper) :
+        mapper(std::move(mapper))
+    {
+    }
 
     bool open() override;
     bool close() override;
     std::vector<std::uint8_t> copyFrom(std::uint32_t length) override;
     bool write(const std::vector<std::uint8_t>& configuration) override;
     std::vector<std::uint8_t> read() override;
+
+  private:
+    std::unique_ptr<LpcMapperInterface> mapper;
 };
 
 } // namespace blobs
