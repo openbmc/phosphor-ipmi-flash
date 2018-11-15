@@ -16,7 +16,7 @@ namespace blobs
 {
 namespace
 {
-HashFileHandler hashHandler;
+HashFileHandler hashHandler(HASH_FILENAME);
 StaticLayoutHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
 
 #ifdef ENABLE_LPC_BRIDGE
