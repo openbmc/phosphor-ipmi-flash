@@ -1,7 +1,7 @@
 #include "config.h"
 
+#include "file_handler.hpp"
 #include "firmware_handler.hpp"
-#include "hash_handler.hpp"
 #include "image_handler.hpp"
 #include "lpc_handler.hpp"
 #include "pci_handler.hpp"
@@ -16,7 +16,7 @@ namespace blobs
 {
 namespace
 {
-HashFileHandler hashHandler;
+FileHandler hashHandler(HASH_FILENAME);
 StaticLayoutHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
 
 #ifdef ENABLE_LPC_BRIDGE
@@ -54,15 +54,9 @@ std::vector<DataHandlerPack> supportedTransports = {
 
 } // namespace blobs
 
-#ifdef __cplusplus
 extern "C" {
-#endif
-
 std::unique_ptr<blobs::GenericBlobInterface> createHandler();
-
-#ifdef __cplusplus
 }
-#endif
 
 std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {

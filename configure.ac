@@ -111,6 +111,10 @@ AC_ARG_VAR(STATIC_HANDLER_STAGED_NAME, [The file to use for staging the firmware
 AS_IF([test "x$STATIC_HANDLER_STAGED_NAME" == "x"], [STATIC_HANDLER_STAGED_NAME="/run/initramfs/bmc-image"])
 AC_DEFINE_UNQUOTED([STATIC_HANDLER_STAGED_NAME], ["$STATIC_HANDLER_STAGED_NAME"], [The file to use for staging the firmware update.])
 
+AC_ARG_VAR(HASH_FILENAME, [The file to use for the hash provided.])
+AS_IF([test "x$HASH_FILENAME" == "x"], [HASH_FILENAME="/tmp/bmc.sig"])
+AC_DEFINE_UNQUOTED([HASH_FILENAME], ["$HASH_FILENAME"], [The file to use for the hash provided.])
+
 # Create configured output
 AC_CONFIG_FILES([Makefile test/Makefile])
 AC_OUTPUT
