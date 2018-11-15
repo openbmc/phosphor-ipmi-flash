@@ -46,6 +46,27 @@ AS_IF([test "x$enable_lpc_bridge" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_LPC_BRIDGE], [CXXFLAGS])
 ])
 
+AC_ARG_ENABLE([aspeed-lpc],
+    AS_HELP_STRING([--enable-aspeed-lpc],
+                   [Enable external transfers using Aspeed LPC]))
+AS_IF([test "x$enable_aspeed_lpc" = "xyes"], [
+    AC_CHECK_HEADER(linux/aspeed-lpc-ctrl.h,
+                    [HAVE_UAPI_LINUX_LPC_CTRL_H=""],
+                    [HAVE_UAPI_LINUX_LPC_CTRL_H="-I linux/aspeed-lpc-ctrl.h"])
+    AS_IF([test "$HAVE_UAPI_LINUX_LPC_CTRL_H" != ""],
+        AC_MSG_WARN([Could not find linux/aspeed-lpc-ctrl.h: Attempting to download locally for building from openbmc/linux/+dev-4.18])
+        AC_SUBST([BT_BMC_DL],
+                 [`mkdir -p linux;wget https://raw.githubusercontent.com/openbmc/linux/dev-4.18/include/uapi/linux/aspeed-lpc-ctrl.h -O linux/aspeed-lpc-ctrl.h`])
+    )
+    AX_APPEND_COMPILE_FLAGS([-DASPEED_LPC], [CXXFLAGS])
+])
+AC_ARG_ENABLE([nuvoton-lpc],
+    AS_HELP_STRING([--enable-nuvoton-lpc],
+                   [Enable external transfers using Nuvoton LPC SHM]))
+AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DNUVOTON_LPC], [CXXFLAGS])
+])
+
 # Check/set gtest specific functions.
 PKG_CHECK_MODULES([GTEST], [gtest], [], [AC_MSG_NOTICE([gtest not found, tests will not build])])
 PKG_CHECK_MODULES([GMOCK], [gmock], [], [AC_MSG_NOTICE([gmock not found, tests will not build])])
@@ -84,7 +105,6 @@ AS_IF([test "x$PCI_PHYSICAL_ADDRESS" == "x"],
 AC_ARG_VAR(STATIC_HANDLER_STAGED_NAME, [The file to use for staging the firmware update.])
 AS_IF([test "x$STATIC_HANDLER_STAGED_NAME" == "x"], [STATIC_HANDLER_STAGED_NAME="/run/initramfs/bmc-image"])
 AC_DEFINE_UNQUOTED([STATIC_HANDLER_STAGED_NAME], ["$STATIC_HANDLER_STAGED_NAME"], [The file to use for staging the firmware update.])
-
 
 # Create configured output
 AC_CONFIG_FILES([Makefile test/Makefile])
