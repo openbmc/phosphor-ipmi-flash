@@ -29,9 +29,13 @@ class LpcDataHandler : public DataInterface
     /**
      * Create an LpcDataHandler.
      *
+     * @param[in] regionAddress - BMC address to point the map for the LPC
+     * memory region.
      * @param[in] mapper - pointer to a mapper implementation to use.
      */
-    explicit LpcDataHandler(std::unique_ptr<LpcMapperInterface> mapper) :
+    LpcDataHandler(std::uint32_t regionAddress,
+                   std::unique_ptr<LpcMapperInterface> mapper) :
+        regionAddress(regionAddress),
         mapper(std::move(mapper))
     {
     }
@@ -43,6 +47,7 @@ class LpcDataHandler : public DataInterface
     std::vector<std::uint8_t> read() override;
 
   private:
+    std::uint32_t regionAddress;
     std::unique_ptr<LpcMapperInterface> mapper;
 };
 
