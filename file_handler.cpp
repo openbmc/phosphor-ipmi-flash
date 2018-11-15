@@ -17,12 +17,14 @@
 #include "file_handler.hpp"
 
 #include <cstdint>
+#include <experimental/filesystem>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace blobs
 {
+namespace fs = std::experimental::filesystem;
 
 bool FileHandler::open(const std::string& path)
 {
@@ -90,7 +92,14 @@ bool FileHandler::write(std::uint32_t offset,
 
 int FileHandler::getSize()
 {
-    /* TODO: implement (maybe just stat on the file). */
+    try
+    {
+        return static_cast<int>(fs::file_size(filename));
+    }
+    catch (const fs::filesystem_error& e)
+    {
+    }
+
     return 0;
 }
 
