@@ -17,7 +17,8 @@ check_PROGRAMS = \
 	firmware_write_unittest \
 	firmware_writemeta_unittest \
 	firmware_close_unittest \
-	firmware_delete_unittest
+	firmware_delete_unittest \
+	static_handler_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -44,3 +45,6 @@ firmware_close_unittest_LDADD = $(top_builddir)/firmware_handler.o
 
 firmware_delete_unittest_SOURCES = firmware_delete_unittest.cpp
 firmware_delete_unittest_LDADD = $(top_builddir)/firmware_handler.o
+
+static_handler_unittest_SOURCES = static_handler_unittest.cpp
+static_handler_unittest_LDADD = $(top_builddir)/static_handler.o
