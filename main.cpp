@@ -21,15 +21,17 @@ StaticLayoutHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
 
 #ifdef ENABLE_LPC_BRIDGE
 #if defined(ASPEED_LPC)
-LpcDataHandler lpcDataHandler(LpcMapperAspeed::createAspeedMapper());
+LpcDataHandler lpcDataHandler(MAPPED_ADDRESS,
+                              LpcMapperAspeed::createAspeedMapper());
 #elif defined(NUVOTON_LPC)
-LpcDataHandler lpcDataHandler(LpcMapperNuvoton::createNuvotonMapper());
+LpcDataHandler lpcDataHandler(MAPPED_ADDRESS,
+                              LpcMapperNuvoton::createNuvotonMapper());
 #else
 #error "You must specify a hardware implementation."
 #endif
 #endif
 
-PciDataHandler pciDataHandler(PCI_PHYSICAL_ADDRESS);
+PciDataHandler pciDataHandler(MAPPED_ADDRESS);
 
 std::vector<HandlerPack> supportedFirmware = {
     {FirmwareBlobHandler::hashBlobID, &hashHandler},
