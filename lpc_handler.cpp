@@ -23,7 +23,14 @@ bool LpcDataHandler::close()
 
 std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
 {
-    /* TODO: implement this */
+    /* TODO: implement this -- in an earlier and different version of this that
+     * didn't use BLOBs, the region was memory-mapped and the writes to the data
+     * were just done directly from the memory-mapped region instead of a
+     * copyFrom() first call.  The idea with this change is that we may not be
+     * able to get a memory-mapped handle from the driver from which to
+     * automatically read data, but rather must perform some ioctl or other
+     * access to get the data from the driver.
+     */
     return {};
 }
 
