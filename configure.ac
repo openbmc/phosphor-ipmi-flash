@@ -32,6 +32,7 @@ AC_ARG_ENABLE([static-layout],
 AS_IF([test "x$enable_static_layout" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_STATIC_LAYOUT], [CXXFLAGS])
 ])
+
 # Enable P2A, and or LPC (block-transfer is always enabled).
 AC_ARG_ENABLE([pci-bridge],
     AS_HELP_STRING([--enable-pci-bridge],
@@ -45,6 +46,16 @@ AC_ARG_ENABLE([lpc-bridge],
 AS_IF([test "x$enable_lpc_bridge" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_LPC_BRIDGE], [CXXFLAGS])
 ])
+
+# The address used for mapping P2A or LPC into the BMC's memory-space:
+# e.g. https://github.com/openbmc/linux/blob/1da2ce51886a3b2f5db2087f26c661e13ee13b84/arch/arm/boot/dts/aspeed-bmc-quanta-q71l.dts#L26
+# or https://github.com/openbmc/linux/blob/1da2ce51886a3b2f5db2087f26c661e13ee13b84/arch/arm/boot/dts/aspeed-bmc-opp-zaius.dts#L166
+# for PCI, this address is passed back to the host and is used directly.
+AC_ARG_VAR(MAPPED_ADDRESS, [The base address of the memory region reserved for mapping.])
+AS_IF([test "x$MAPPED_ADDRESS" == "x"],
+    [AC_DEFINE(MAPPED_ADDRESS, [0], [Default address to 0.])],
+    [AC_DEFINE(MAPPED_ADDRESS, [$MAPPED_ADDRESS], [Value for memory region mapping.])]
+)
 
 AC_ARG_ENABLE([aspeed-lpc],
     AS_HELP_STRING([--enable-aspeed-lpc],
@@ -94,12 +105,6 @@ AS_IF([test "x$enable_oe_sdk" == "xyes"],
         testcase_flags="${testcase_flags} -Wl,-dynamic-linker,`find \${OECORE_TARGET_SYSROOT}/lib/ld-*.so | sort -r -n | head -n1`"
     ]
     AC_SUBST([OESDK_TESTCASE_FLAGS], [$testcase_flags])
-)
-
-AC_ARG_VAR(PCI_PHYSICAL_ADDRESS, [The physical address to use on the BMC for the PCI-to-AHB Bridge.])
-AS_IF([test "x$PCI_PHYSICAL_ADDRESS" == "x"],
-    [AC_DEFINE(PCI_PHYSICAL_ADDRESS, [0], [Default address to 0.])],
-    [AC_DEFINE(PCI_PHYSICAL_ADDRESS, [$PCI_PHYSICAL_ADDRESS], [Value for PCI-to-AHB bridge set.])]
 )
 
 AC_ARG_VAR(STATIC_HANDLER_STAGED_NAME, [The file to use for staging the firmware update.])
