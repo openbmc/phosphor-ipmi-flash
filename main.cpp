@@ -5,7 +5,6 @@
 #include "image_handler.hpp"
 #include "lpc_handler.hpp"
 #include "pci_handler.hpp"
-#include "static_handler.hpp"
 
 #include <blobs-ipmid/manager.hpp>
 #include <cstdint>
@@ -17,7 +16,7 @@ namespace blobs
 namespace
 {
 FileHandler hashHandler(HASH_FILENAME);
-StaticLayoutHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
+FileHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
 
 #ifdef ENABLE_LPC_BRIDGE
 #if defined(ASPEED_LPC)
