@@ -72,4 +72,10 @@ bool FileHandler::write(std::uint32_t offset,
     return true;
 }
 
+int FileHandler::getSize()
+{
+    /* TODO: implement (maybe just stat on the file). */
+    return 0;
+}
+
 } // namespace blobs
