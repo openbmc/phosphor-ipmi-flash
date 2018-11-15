@@ -32,6 +32,13 @@ AC_ARG_ENABLE([static-layout],
 AS_IF([test "x$enable_static_layout" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_STATIC_LAYOUT], [CXXFLAGS])
 ])
+# Enable tarball for firmware image staging.
+AC_ARG_ENABLE([tarball-ubi],
+    AS_HELP_STRING([--enable-tarball-ubi],
+                   [Enable tarball firmware update via Blobs]))
+AS_IF([test "x$enanble_tarball_ubi" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_TARBALL_UBI], [CXXFLAGS])
+])
 
 # Enable P2A, and or LPC (block-transfer is always enabled).
 AC_ARG_ENABLE([pci-bridge],
@@ -81,6 +88,10 @@ AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
 AC_ARG_VAR(STATIC_HANDLER_STAGED_NAME, [The file to use for staging the firmware update.])
 AS_IF([test "x$STATIC_HANDLER_STAGED_NAME" == "x"], [STATIC_HANDLER_STAGED_NAME="/run/initramfs/bmc-image"])
 AC_DEFINE_UNQUOTED([STATIC_HANDLER_STAGED_NAME], ["$STATIC_HANDLER_STAGED_NAME"], [The file to use for staging the firmware update.])
+
+AC_ARG_VAR(TARBALL_STAGED_NAME, [The file to use for staging the firmware update.])
+AS_IF([test "x$TARBALL_STAGED_NAME" == "x"], [TARBALL_STAGED_NAME="/tmp/image-update.tar"])
+AC_DEFINE_UNQUOTED([TARBALL_STAGED_NAME], ["$TARBALL_STAGED_NAME"], [The file to use for staging the firmware update.])
 
 AC_ARG_VAR(HASH_FILENAME, [The file to use for the hash provided.])
 AS_IF([test "x$HASH_FILENAME" == "x"], [HASH_FILENAME="/tmp/bmc.sig"])

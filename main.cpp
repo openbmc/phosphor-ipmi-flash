@@ -17,6 +17,7 @@ namespace
 {
 FileHandler hashHandler(HASH_FILENAME);
 FileHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
+FileHandler ubitarballHandler(TARBALL_STAGED_NAME);
 
 #ifdef ENABLE_LPC_BRIDGE
 #if defined(ASPEED_LPC)
@@ -36,6 +37,9 @@ std::vector<HandlerPack> supportedFirmware = {
     {FirmwareBlobHandler::hashBlobID, &hashHandler},
 #ifdef ENABLE_STATIC_LAYOUT
     {"/flash/image", &staticLayoutHandler},
+#endif
+#ifdef ENABLE_TARBALL_UBI
+    {"/flash/tarball", &ubitarballHandler},
 #endif
 };
 
