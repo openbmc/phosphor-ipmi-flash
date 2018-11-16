@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <sdbusplus/bus.hpp>
 #include <string>
 #include <vector>
 
@@ -105,34 +106,38 @@ class FirmwareBlobHandler : public GenericBlobInterface
     /**
      * Create a FirmwareBlobHandler.
      *
+     * @param[in] bus - an sdbusplus for a bus to use.
      * @param[in] firmwares - list of firmware blob_ids to support.
      * @param[in] transports - list of transports to support.
      */
     static std::unique_ptr<GenericBlobInterface> CreateFirmwareBlobHandler(
-        const std::vector<HandlerPack>& firmwares,
+        sdbusplus::bus::bus&& bus, const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports);
 
     /**
      * Create a FirmwareBlobHandler.
      *
+     * @param[in] bus - an sdbusplus for a bus to use
      * @param[in] firmwares - list of firmware types and their handlers
      * @param[in] blobs - list of blobs_ids to support
      * @param[in] transports - list of transport types and their handlers
      * @param[in] bitmask - bitmask of transports to support
      */
-    FirmwareBlobHandler(const std::vector<HandlerPack>& firmwares,
+    FirmwareBlobHandler(sdbusplus::bus::bus&& bus,
+                        const std::vector<HandlerPack>& firmwares,
                         const std::vector<std::string>& blobs,
                         const std::vector<DataHandlerPack>& transports,
                         std::uint16_t bitmask) :
-        handlers(firmwares),
-        blobIDs(blobs), transports(transports), bitmask(bitmask),
-        activeImage(activeImageBlobID), activeHash(activeHashBlobID),
-        verifyImage(verifyBlobID), lookup(), state(UpdateState::notYetStarted)
+        bus(std::move(bus)),
+        handlers(firmwares), blobIDs(blobs), transports(transports),
+        bitmask(bitmask), activeImage(activeImageBlobID),
+        activeHash(activeHashBlobID), verifyImage(verifyBlobID), lookup(),
+        state(UpdateState::notYetStarted)
     {
     }
     ~FirmwareBlobHandler() = default;
-    FirmwareBlobHandler(const FirmwareBlobHandler&) = default;
-    FirmwareBlobHandler& operator=(const FirmwareBlobHandler&) = default;
+    FirmwareBlobHandler(const FirmwareBlobHandler&) = delete;
+    FirmwareBlobHandler& operator=(const FirmwareBlobHandler&) = delete;
     FirmwareBlobHandler(FirmwareBlobHandler&&) = default;
     FirmwareBlobHandler& operator=(FirmwareBlobHandler&&) = default;
 
@@ -167,6 +172,8 @@ class FirmwareBlobHandler : public GenericBlobInterface
     };
 
   private:
+    sdbusplus::bus::bus bus;
+
     /** List of handlers by type. */
     std::vector<HandlerPack> handlers;
 
