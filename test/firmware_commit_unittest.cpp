@@ -2,6 +2,7 @@
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 
+#include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -25,7 +26,11 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
 
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
@@ -50,7 +55,11 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
 
     EXPECT_CALL(imageMock1, open(FirmwareBlobHandler::hashBlobID))
         .WillOnce(Return(true));
@@ -77,7 +86,11 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
 
     EXPECT_TRUE(
         handler->open(0, OpenFlags::write, FirmwareBlobHandler::verifyBlobID));
@@ -99,7 +112,11 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnce)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
 
     EXPECT_TRUE(
         handler->open(0, OpenFlags::write, FirmwareBlobHandler::verifyBlobID));

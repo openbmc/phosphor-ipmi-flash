@@ -2,6 +2,7 @@
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 
+#include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
 
 #include <gmock/gmock.h>
@@ -28,7 +29,11 @@ TEST(FirmwareHandlerDeleteTest, DeleteActiveHashSucceeds)
         {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
 
     EXPECT_CALL(imageMock, open(Eq(FirmwareBlobHandler::hashBlobID)))
         .WillOnce(Return(true));

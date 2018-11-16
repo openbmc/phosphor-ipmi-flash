@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <memory>
 #include <phosphor-logging/log.hpp>
+#include <sdbusplus/bus.hpp>
 
 namespace blobs
 {
@@ -66,7 +67,8 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
     using namespace phosphor::logging;
 
     auto handler = blobs::FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs::supportedFirmware, blobs::supportedTransports);
+        sdbusplus::bus::new_default(), blobs::supportedFirmware,
+        blobs::supportedTransports);
 
     if (!handler)
     {
