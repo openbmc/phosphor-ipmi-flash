@@ -1,6 +1,7 @@
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 
+#include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -26,7 +27,12 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
+
     struct BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));
     EXPECT_EQ(FirmwareBlobHandler::UpdateFlags::ipmi, meta.blobState);

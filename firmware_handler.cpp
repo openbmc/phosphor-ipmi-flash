@@ -11,6 +11,11 @@
 
 namespace blobs
 {
+// systemd service to kick start a target.
+static constexpr auto systemdService = "org.freedesktop.systemd1";
+static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
+static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
+static constexpr auto verifyTarget = "verify_image.service";
 
 const std::string FirmwareBlobHandler::verifyBlobID = "/flash/verify";
 const std::string FirmwareBlobHandler::hashBlobID = "/flash/hash";
@@ -20,7 +25,7 @@ const std::string FirmwareBlobHandler::activeHashBlobID = "/flash/active/hash";
 
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        const std::vector<HandlerPack>& firmwares,
+        sdbusplus::bus::bus&& bus, const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports)
 {
     /* There must be at least one. */
@@ -52,8 +57,8 @@ std::unique_ptr<GenericBlobInterface>
         bitmask |= item.bitmask;
     }
 
-    return std::make_unique<FirmwareBlobHandler>(firmwares, blobs, transports,
-                                                 bitmask);
+    return std::make_unique<FirmwareBlobHandler>(std::move(bus), firmwares,
+                                                 blobs, transports, bitmask);
 }
 
 /* Check if the path is in our supported list (or active list). */
@@ -571,6 +576,23 @@ std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t session,
 
 bool FirmwareBlobHandler::triggerVerification()
 {
+    auto method = bus.new_method_call(systemdService, systemdRoot,
+                                      systemdInterface, "StartUnit");
+    method.append(verifyTarget);
+    method.append("replace");
+
+    try
+    {
+        bus.call_noreply(method);
+    }
+    catch (const sdbusplus::exception::SdBusError& ex)
+    {
+        /* TODO: Once logging supports unit-tests, add a log message to test
+         * this failure.
+         */
+        return false;
+    }
+
     state = UpdateState::verificationStarted;
 
     /* TODO: implement this. */

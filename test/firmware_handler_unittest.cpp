@@ -2,6 +2,7 @@
 #include "image_mock.hpp"
 
 #include <algorithm>
+#include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -15,7 +16,11 @@ TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler({}, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), {}, data);
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
@@ -27,7 +32,11 @@ TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
         {"asdf", &imageMock},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, {});
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, {});
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
@@ -42,12 +51,17 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
     EXPECT_EQ(handler, nullptr);
 
     blobs.push_back({FirmwareBlobHandler::hashBlobID, &imageMock});
 
-    handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
     auto result = handler->getBlobIds();
     EXPECT_EQ(3, result.size());
     EXPECT_EQ(3, std::count(result.begin(), result.end(), "asdf") +
