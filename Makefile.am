@@ -11,9 +11,11 @@ libfirmwareblob_la_SOURCES = \
 	lpc_aspeed.cpp \
 	lpc_nuvoton.cpp
 libfirmwareblob_la_LDFLAGS = \
+	$(SDBUSPLUS_LIBS) \
 	$(PHOSPHOR_LOGGING_LIBS) \
 	-version-info 0:0:0 -shared
 libfirmwareblob_la_CXXFLAGS = \
+	$(SDBUSPLUS_CFLAGS) \
 	$(PHOSPHOR_LOGGING_CFLAGS) \
 	-flto
 

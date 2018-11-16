@@ -36,7 +36,7 @@ const std::string FirmwareBlobHandler::activeHashBlobID = "/flash/active/hash";
 
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        const std::vector<HandlerPack>& firmwares,
+        sdbusplus::bus::bus&& bus, const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports)
 {
     /* There must be at least one. */
@@ -68,8 +68,8 @@ std::unique_ptr<GenericBlobInterface>
         bitmask |= item.bitmask;
     }
 
-    return std::make_unique<FirmwareBlobHandler>(firmwares, blobs, transports,
-                                                 bitmask);
+    return std::make_unique<FirmwareBlobHandler>(std::move(bus), firmwares,
+                                                 blobs, transports, bitmask);
 }
 
 /* Check if the path is in our supported list (or active list). */
