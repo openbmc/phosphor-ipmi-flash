@@ -150,6 +150,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
     bool stat(uint16_t session, struct BlobMeta* meta) override;
     bool expire(uint16_t session) override;
 
+    static const std::string verifyBlobID;
     static const std::string hashBlobID;
     static const std::string activeImageBlobID;
     static const std::string activeHashBlobID;
