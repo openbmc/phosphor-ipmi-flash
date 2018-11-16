@@ -19,6 +19,7 @@ check_PROGRAMS = \
 	firmware_close_unittest \
 	firmware_delete_unittest \
 	firmware_sessionstat_unittest \
+	firmware_commit_unittest \
 	file_handler_unittest
 
 TESTS = $(check_PROGRAMS)
@@ -49,6 +50,9 @@ firmware_delete_unittest_LDADD = $(top_builddir)/firmware_handler.o
 
 firmware_sessionstat_unittest_SOURCES = firmware_sessionstat_unittest.cpp
 firmware_sessionstat_unittest_LDADD = $(top_builddir)/firmware_handler.o
+
+firmware_commit_unittest_SOURCES = firmware_commit_unittest.cpp
+firmware_commit_unittest_LDADD = $(top_builddir)/firmware_handler.o
 
 file_handler_unittest_SOURCES = file_handler_unittest.cpp
 file_handler_unittest_LDADD = $(top_builddir)/file_handler.o -lstdc++fs

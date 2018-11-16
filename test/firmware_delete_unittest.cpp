@@ -39,7 +39,7 @@ TEST(FirmwareHandlerDeleteTest, DeleteActiveHashSucceeds)
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeHashBlobID));
 
@@ -48,7 +48,7 @@ TEST(FirmwareHandlerDeleteTest, DeleteActiveHashSucceeds)
     EXPECT_TRUE(handler->close(0));
 
     currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeHashBlobID));
 
@@ -56,7 +56,7 @@ TEST(FirmwareHandlerDeleteTest, DeleteActiveHashSucceeds)
     EXPECT_TRUE(handler->deleteBlob(FirmwareBlobHandler::activeHashBlobID));
 
     currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(2, currentBlobs.size());
+    EXPECT_EQ(3, currentBlobs.size());
     EXPECT_EQ(0, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeHashBlobID));
 }
