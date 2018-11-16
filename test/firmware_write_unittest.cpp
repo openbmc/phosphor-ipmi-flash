@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -27,7 +28,11 @@ TEST(FirmwareHandlerWriteTest, DataTypeIpmiWriteSuccess)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
 
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
@@ -57,7 +62,11 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteSuccess)
         {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
 
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
@@ -96,7 +105,11 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteFailsBadRequest)
         {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
+    sdbusplus::SdBusMock sdbus_mock;
+    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(bus_mock), blobs, data);
 
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
