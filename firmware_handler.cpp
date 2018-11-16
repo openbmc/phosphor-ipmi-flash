@@ -12,6 +12,7 @@
 namespace blobs
 {
 
+const std::string FirmwareBlobHandler::verifyBlobID = "/flash/verify";
 const std::string FirmwareBlobHandler::hashBlobID = "/flash/hash";
 const std::string FirmwareBlobHandler::activeImageBlobID =
     "/flash/active/image";
@@ -37,6 +38,7 @@ std::unique_ptr<GenericBlobInterface>
     {
         blobs.push_back(item.blobName);
     }
+    blobs.push_back(verifyBlobID); /* Add blob_id to always exist. */
 
     if (0 == std::count(blobs.begin(), blobs.end(), hashBlobID))
     {
