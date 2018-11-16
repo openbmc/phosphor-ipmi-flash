@@ -42,7 +42,7 @@ TEST(FirmwareHandlerCloseTest, CloseSuceedsWithDataHandler)
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeHashBlobID));
 
@@ -84,7 +84,7 @@ TEST(FirmwareHandlerCloseTest, CloseSuceedsWithoutDataHandler)
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeHashBlobID));
 
