@@ -12,6 +12,7 @@
 namespace blobs
 {
 
+const std::string FirmwareBlobHandler::verifyBlobID = "/flash/verify";
 const std::string FirmwareBlobHandler::hashBlobID = "/flash/hash";
 const std::string FirmwareBlobHandler::activeImageBlobID =
     "/flash/active/image";
@@ -37,6 +38,7 @@ std::unique_ptr<GenericBlobInterface>
     {
         blobs.push_back(item.blobName);
     }
+    blobs.push_back(verifyBlobID); /* Add blob_id to always exist. */
 
     if (0 == std::count(blobs.begin(), blobs.end(), hashBlobID))
     {
@@ -90,6 +92,15 @@ bool FirmwareBlobHandler::deleteBlob(const std::string& path)
 {
     const std::string* toDelete;
 
+    /* You cannot delete the verify blob -- trying to delete it, currently has
+     * no impact.
+     * TODO: Should trying to delete this cause an abort?
+     */
+    if (path == verifyBlobID)
+    {
+        return false;
+    }
+
     if (path == hashBlobID || path == activeHashBlobID)
     {
         /* They're deleting the hash. */
@@ -130,11 +141,17 @@ bool FirmwareBlobHandler::deleteBlob(const std::string& path)
 bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
 {
     /* We know we support this path because canHandle is called ahead */
-    if (path == FirmwareBlobHandler::activeImageBlobID)
+    if (path == verifyBlobID)
+    {
+        /* We need to return information for the verify state -- did they call
+         * commit() did things start?
+         */
+    }
+    else if (path == activeImageBlobID)
     {
         /* We need to return information for the image that's staged. */
     }
-    else if (path == FirmwareBlobHandler::activeHashBlobID)
+    else if (path == activeHashBlobID)
     {
         /* We need to return information for the hash that's staged. */
     }
@@ -248,6 +265,27 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     if (fileOpen)
     {
         return false;
+    }
+
+    /* Handle opening the verifyBlobId --> we know the image and hash aren't
+     * open because of the fileOpen check.
+     *
+     * The file must be opened for writing, but no transport mechanism specified
+     * since it's irrelevant.
+     */
+    if (path == verifyBlobID)
+    {
+        /* In this case, there's no image handler to use, or data handler,
+         * simply set up a session.
+         */
+        verifyImage.flags = flags;
+        verifyImage.state = Session::State::open;
+
+        lookup[session] = &verifyImage;
+
+        fileOpen = true;
+
+        return true;
     }
 
     /* There are two abstractions at play, how you get the data and how you
@@ -425,16 +463,38 @@ bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
 }
 
 /*
- * If this command is called on the session for the hash image, it'll
+ * If this command is called on the session for the verifyBlobID, it'll
  * trigger a systemd service `verify_image.service` to attempt to verify
- * the image. Before doing this, if the transport mechanism is not IPMI
- * BT, it'll shut down the mechanism used for transport preventing the
- * host from updating anything.
+ * the image.
+ *
+ * For this file to have opened, the other two must be closed, which means any
+ * out-of-band transport mechanism involved is closed.
  */
 bool FirmwareBlobHandler::commit(uint16_t session,
                                  const std::vector<uint8_t>& data)
 {
-    return false;
+    auto item = lookup.find(session);
+    if (item == lookup.end())
+    {
+        return false;
+    }
+
+    /* You can only commit on the verifyBlodId */
+    if (item->second->activePath != verifyBlobID)
+    {
+        return false;
+    }
+
+    /* Can only be called once per verification. */
+    if (state == UpdateState::verificationStarted)
+    {
+        return false;
+    }
+
+    /* Set state to committing. */
+    item->second->flags |= StateFlags::committing;
+
+    return triggerVerification();
 }
 
 /*
@@ -456,11 +516,28 @@ bool FirmwareBlobHandler::close(uint16_t session)
         return false;
     }
 
+    /* Are you closing the verify blob? */
+    if (item->second->activePath == verifyBlobID)
+    {
+        /* If they close this blob before verification finishes, that's an
+         * abort.
+         * TODO: implement this, for now just let them close the file.
+         */
+        if (state == UpdateState::verificationStarted)
+        {
+            return false;
+        }
+    }
+
     if (item->second->dataHandler)
     {
         item->second->dataHandler->close();
     }
-    item->second->imageHandler->close();
+    if (item->second->imageHandler)
+    {
+        item->second->imageHandler->close();
+    }
+
     item->second->state = Session::State::closed;
     /* Do not delete the active blob_id from the list of blob_ids, because that
      * blob_id indicates there is data stored.  Delete will destroy it.
@@ -490,6 +567,14 @@ std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t session,
                                                uint32_t requestedSize)
 {
     return {};
+}
+
+bool FirmwareBlobHandler::triggerVerification()
+{
+    state = UpdateState::verificationStarted;
+
+    /* TODO: implement this. */
+    return true;
 }
 
 } // namespace blobs

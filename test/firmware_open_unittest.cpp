@@ -37,7 +37,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValid)
 
     /* The active image blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeImageBlobID));
 }
@@ -66,7 +66,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidHashFile)
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeHashBlobID));
 }
@@ -100,7 +100,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerAllSucceeds)
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeHashBlobID));
 }
@@ -130,7 +130,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerReturnsFailure)
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(2, currentBlobs.size());
+    EXPECT_EQ(3, currentBlobs.size());
 }
 
 TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsVerifyOpenFileCheck)
@@ -157,7 +157,7 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsVerifyOpenFileCheck)
 
     /* The active image blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeImageBlobID));
 
@@ -202,7 +202,7 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
 
     /* The active image blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             FirmwareBlobHandler::activeImageBlobID));
 
@@ -240,7 +240,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidImageHandlerFails)
 
     /* Verify blob_id list doesn't grow. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(2, currentBlobs.size());
+    EXPECT_EQ(3, currentBlobs.size());
 }
 
 TEST(FirmwareHandlerOpenTest, OpenWithoutWriteFails)

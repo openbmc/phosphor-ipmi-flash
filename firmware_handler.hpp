@@ -75,6 +75,9 @@ class FirmwareBlobHandler : public GenericBlobInterface
         lpc = (1 << 10), /* Expect to send contents over LPC bridge. */
     };
 
+    /* TODO: All of the states may not be required - if we add abort() commands
+     * appropriately.
+     */
     /** The state of the firmware update process. */
     enum UpdateState
     {
@@ -123,8 +126,8 @@ class FirmwareBlobHandler : public GenericBlobInterface
                         std::uint16_t bitmask) :
         handlers(firmwares),
         blobIDs(blobs), transports(transports), bitmask(bitmask),
-        activeImage(activeImageBlobID), activeHash(activeHashBlobID), lookup(),
-        state(UpdateState::notYetStarted)
+        activeImage(activeImageBlobID), activeHash(activeHashBlobID),
+        verifyImage(verifyBlobID), lookup(), state(UpdateState::notYetStarted)
     {
     }
     ~FirmwareBlobHandler() = default;
@@ -150,6 +153,9 @@ class FirmwareBlobHandler : public GenericBlobInterface
     bool stat(uint16_t session, struct BlobMeta* meta) override;
     bool expire(uint16_t session) override;
 
+    bool triggerVerification();
+
+    static const std::string verifyBlobID;
     static const std::string hashBlobID;
     static const std::string activeImageBlobID;
     static const std::string activeHashBlobID;
@@ -178,6 +184,9 @@ class FirmwareBlobHandler : public GenericBlobInterface
 
     /** Active hash session. */
     Session activeHash;
+
+    /** Session for verification. */
+    Session verifyImage;
 
     /** A quick method for looking up a session's mechanisms and details. */
     std::map<std::uint16_t, Session*> lookup;
