@@ -49,9 +49,11 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
 
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(blobs, data);
     auto result = handler->getBlobIds();
-    EXPECT_EQ(2, result.size());
-    EXPECT_EQ(2, std::count(result.begin(), result.end(), "asdf") +
+    EXPECT_EQ(3, result.size());
+    EXPECT_EQ(3, std::count(result.begin(), result.end(), "asdf") +
                      std::count(result.begin(), result.end(),
-                                FirmwareBlobHandler::hashBlobID));
+                                FirmwareBlobHandler::hashBlobID) +
+                     std::count(result.begin(), result.end(),
+                                FirmwareBlobHandler::verifyBlobID));
 }
 } // namespace blobs

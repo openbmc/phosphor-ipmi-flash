@@ -12,6 +12,7 @@
 namespace blobs
 {
 
+const std::string FirmwareBlobHandler::verifyBlobID = "/flash/verify";
 const std::string FirmwareBlobHandler::hashBlobID = "/flash/hash";
 const std::string FirmwareBlobHandler::activeImageBlobID =
     "/flash/active/image";
@@ -37,6 +38,7 @@ std::unique_ptr<GenericBlobInterface>
     {
         blobs.push_back(item.blobName);
     }
+    blobs.push_back(verifyBlobID); /* Add blob_id to always exist. */
 
     if (0 == std::count(blobs.begin(), blobs.end(), hashBlobID))
     {
@@ -248,6 +250,27 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     if (fileOpen)
     {
         return false;
+    }
+
+    /* Handle opening the verifyBlobId --> we know the image and hash aren't
+     * open because of the fileOpen check.
+     *
+     * The file must be opened for writing, but no transport mechanism specified
+     * since it's irrelevant.
+     */
+    if (path == verifyBlobID)
+    {
+        /* In this case, there's no image handler to use, or data handler,
+         * simply set up a session.
+         */
+        verifyImage.flags = flags;
+        verifyImage.state = Session::State::open;
+
+        lookup[session] = &verifyImage;
+
+        fileOpen = true;
+
+        return true;
     }
 
     /* There are two abstractions at play, how you get the data and how you
