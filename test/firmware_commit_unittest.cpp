@@ -9,6 +9,7 @@
 
 namespace blobs
 {
+using ::testing::_;
 using ::testing::Return;
 
 TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
@@ -120,6 +121,8 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnce)
 
     EXPECT_TRUE(
         handler->open(0, OpenFlags::write, FirmwareBlobHandler::verifyBlobID));
+
+    EXPECT_CALL(sdbus_mock, sd_bus_call(_, _, _, _, _)).WillOnce(Return(0));
 
     EXPECT_TRUE(handler->commit(0, {}));
     EXPECT_FALSE(handler->commit(0, {}));
