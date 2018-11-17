@@ -9,7 +9,12 @@
 
 namespace blobs
 {
+using ::testing::_;
+using ::testing::IsNull;
+using ::testing::NotNull;
 using ::testing::Return;
+using ::testing::StrEq;
+using ::testing::StrictMock;
 
 TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
 {
@@ -112,7 +117,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnce)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    sdbusplus::SdBusMock sdbus_mock;
+    StrictMock<sdbusplus::SdBusMock> sdbus_mock;
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
@@ -120,6 +125,22 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnce)
 
     EXPECT_TRUE(
         handler->open(0, OpenFlags::write, FirmwareBlobHandler::verifyBlobID));
+
+    /* Note: I used StrictMock<> here to just catch all the calls.  However, the
+     * unit-tests pass if we don't use StrictMock and ignore the calls.
+     */
+    EXPECT_CALL(sdbus_mock,
+                sd_bus_message_new_method_call(
+                    IsNull(), NotNull(), StrEq("org.freedesktop.systemd1"),
+                    StrEq("/org/freedesktop/systemd1"),
+                    StrEq("org.freedesktop.systemd1.Manager"),
+                    StrEq("StartUnit")))
+        .WillOnce(Return(0));
+    EXPECT_CALL(sdbus_mock,
+                sd_bus_message_append_basic(IsNull(), 's', NotNull()))
+        .Times(2)
+        .WillRepeatedly(Return(0));
+    EXPECT_CALL(sdbus_mock, sd_bus_call(_, _, _, _, _)).WillOnce(Return(0));
 
     EXPECT_TRUE(handler->commit(0, {}));
     EXPECT_FALSE(handler->commit(0, {}));
