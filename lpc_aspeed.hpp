@@ -2,6 +2,8 @@
 
 #include "lpc_interface.hpp"
 
+#include <memory>
+
 namespace blobs
 {
 
