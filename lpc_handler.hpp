@@ -36,7 +36,7 @@ class LpcDataHandler : public DataInterface
     LpcDataHandler(std::uint32_t regionAddress,
                    std::unique_ptr<LpcMapperInterface> mapper) :
         regionAddress(regionAddress),
-        mapper(std::move(mapper))
+        mapper(std::move(mapper)), initialized(false)
     {
     }
 
@@ -47,8 +47,15 @@ class LpcDataHandler : public DataInterface
     std::vector<std::uint8_t> read() override;
 
   private:
+    bool setInitializedAndReturn(bool value)
+    {
+        initialized = value;
+        return value;
+    }
+
     std::uint32_t regionAddress;
     std::unique_ptr<LpcMapperInterface> mapper;
+    bool initialized;
 };
 
 } // namespace blobs
