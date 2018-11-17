@@ -34,7 +34,8 @@ bool LpcDataHandler::open()
 bool LpcDataHandler::close()
 {
     /* TODO: implement ioctl call to close window. */
-    return false;
+
+    return setInitializedAndReturn(false);
 }
 
 std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
@@ -47,6 +48,14 @@ std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
      * automatically read data, but rather must perform some ioctl or other
      * access to get the data from the driver.
      */
+    if (!initialized)
+    {
+        /* TODO: Consider designing some exceptions we can catch for when there
+         * is an error.
+         */
+        return {};
+    }
+
     return {};
 }
 
@@ -71,9 +80,10 @@ bool LpcDataHandler::write(const std::vector<std::uint8_t>& configuration)
     if (windowSize == 0)
     {
         /* Failed to map region. */
+        return false;
     }
 
-    return false;
+    return setInitializedAndReturn(true);
 }
 
 std::vector<std::uint8_t> LpcDataHandler::read()
