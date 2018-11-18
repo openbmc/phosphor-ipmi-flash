@@ -20,7 +20,6 @@
 
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <unistd.h>
 
 #include <cinttypes>
 #include <cstdint>
@@ -98,10 +97,10 @@ std::pair<std::uint32_t, std::uint32_t>
      * Until then program the register through /dev/mem.
      */
     int fd;
-    if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) == -1)
+    if ((fd = sys->open("/dev/mem", O_RDWR | O_SYNC)) == -1)
     {
         std::fprintf(stderr, "Failed to open /dev/mem\n");
-        close(fd);
+        sys->close(fd);
         return std::make_pair(0, 0);
     }
 
@@ -112,8 +111,8 @@ std::pair<std::uint32_t, std::uint32_t>
     const uint16_t bmcWindowBaseValue = 0x8000; // BMC phyAddr from 0xc0008000
 
     auto mapBasePtr = reinterpret_cast<uint8_t*>(
-        mmap(nullptr, getpagesize(), PROT_READ | PROT_WRITE, MAP_SHARED, fd,
-             bmcMapConfigBaseAddr));
+        sys->mmap(nullptr, sys->getpagesize(), PROT_READ | PROT_WRITE,
+                  MAP_SHARED, fd, bmcMapConfigBaseAddr));
 
     uint8_t* bmcWindowSize = mapBasePtr + bmcMapConfigWindowSizeOffset;
     uint16_t* bmcWindowBase =
@@ -122,8 +121,8 @@ std::pair<std::uint32_t, std::uint32_t>
     *bmcWindowSize = bmcWindowSizeValue;
     *bmcWindowBase = bmcWindowBaseValue;
 
-    munmap(mapBasePtr, getpagesize());
-    close(fd);
+    sys->munmap(mapBasePtr, sys->getpagesize());
+    sys->close(fd);
 
     return std::make_pair(windowOffset, windowSize);
 }
