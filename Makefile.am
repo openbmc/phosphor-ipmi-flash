@@ -9,7 +9,8 @@ libfirmwareblob_la_SOURCES = \
 	pci_handler.cpp \
 	file_handler.cpp \
 	lpc_aspeed.cpp \
-	lpc_nuvoton.cpp
+	lpc_nuvoton.cpp \
+	internal/sys.cpp
 libfirmwareblob_la_LDFLAGS = \
 	$(SDBUSPLUS_LIBS) \
 	$(PHOSPHOR_LOGGING_LIBS) \
