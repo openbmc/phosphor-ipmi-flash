@@ -34,6 +34,7 @@ class Sys
                        off_t offset) const = 0;
     virtual int munmap(void* addr, size_t length) const = 0;
     virtual int getpagesize() const = 0;
+    virtual int ioctl(int fd, unsigned long request, void* param) const = 0;
 };
 
 /**
@@ -50,6 +51,7 @@ class SysImpl : public Sys
                off_t offset) const override;
     int munmap(void* addr, size_t length) const override;
     int getpagesize() const override;
+    int ioctl(int fd, unsigned long request, void* param) const override;
 };
 
 /** @brief Default instantiation of sys */
