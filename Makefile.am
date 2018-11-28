@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I m4
 AM_DEFAULT_SOURCE_EXT = .cpp
 
 libfirmwareblobdir = ${libdir}/ipmid-providers
