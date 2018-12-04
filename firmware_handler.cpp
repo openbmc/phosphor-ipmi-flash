@@ -22,8 +22,11 @@
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <phosphor-logging/log.hpp>
 #include <string>
 #include <vector>
+
+using namespace phosphor::logging;
 
 namespace blobs
 {
@@ -47,6 +50,7 @@ std::unique_ptr<GenericBlobInterface>
     /* There must be at least one. */
     if (!firmwares.size())
     {
+        log<level::ERR>("Must provide at least one firmware handler.");
         return nullptr;
     }
     if (!transports.size())

@@ -3,15 +3,18 @@ AM_CPPFLAGS = -I$(top_srcdir)/ \
 	$(GMOCK_CFLAGS)
 AM_CXXFLAGS = \
 	$(GTEST_MAIN_CFLAGS) \
-	$(SDBUSPLUS_CFLAGS)
+	$(SDBUSPLUS_CFLAGS) \
+	$(PHOSPHOR_LOGGING_CFLAGS)
 AM_LDFLAGS = \
 	$(GMOCK_LIBS) \
 	$(GTEST_MAIN_LIBS) \
 	$(OESDK_TESTCASE_FLAGS) \
-	$(SDBUSPLUS_LIBS)
+	$(SDBUSPLUS_LIBS) \
+	$(PHOSPHOR_LOGGING_LIBS)
 
 # Run all 'check' test programs
 check_PROGRAMS = \
+	firmware_createhandler_unittest \
 	firmware_handler_unittest \
 	firmware_stat_unittest \
 	firmware_canhandle_unittest \
@@ -25,6 +28,9 @@ check_PROGRAMS = \
 	file_handler_unittest
 
 TESTS = $(check_PROGRAMS)
+
+firmware_createhandler_unittest_SOURCES = firmware_createhandler_unittest.cpp
+firmware_createhandler_unittest_LDADD = $(top_builddir)/firmware_handler.o
 
 firmware_handler_unittest_SOURCES = firmware_handler_unittest.cpp
 firmware_handler_unittest_LDADD = $(top_builddir)/firmware_handler.o
