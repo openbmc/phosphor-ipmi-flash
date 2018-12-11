@@ -16,8 +16,42 @@
 
 #include "updater.hpp"
 
+#include "bt.hpp"
+#include "interface.hpp"
+#include "lpc.hpp"
+
+#include <memory>
+
 int updaterMain(const std::string& interface, const std::string& imagePath,
                 const std::string& signaturePath)
 {
+    std::unique_ptr<DataInterface> handler;
+
+    /* Input has already been validated in this case. */
+    if (interface == "ipmibt")
+    {
+        handler = std::make_unique<BtDataHandler>();
+    }
+    else if (interface == "ipmilpc")
+    {
+        handler = std::make_unique<LpcDataHandler>();
+    }
+
+    if (!handler)
+    {
+        /* TODO(venture): use logging or a custom exception. */
+        std::fprintf(stderr, "Interface %s is unavailable\n",
+                     interface.c_str());
+    }
+
+    /* Get list of blob_ids, check for /flash/image, or /flash/tarball.
+     * TODO(venture) the mechanism doesn't care, but the caller of burn_my_bmc
+     * will have in mind which they're sending and we need to verify it's
+     * available and use it.
+     */
+
+    /* Call stat on /flash/image (or /flash/tarball) and check if data interface
+     * is supported. */
+
     return 0;
 }
