@@ -8,4 +8,6 @@ noinst_LTLIBRARIES = libupdater.la
 libupdater_la_LDFLAGS = -static
 libupdater_la_CXXFLAGS =
 libupdater_la_SOURCES = \
-	updater.cpp
+	updater.cpp \
+	bt.cpp \
+	lpc.cpp
