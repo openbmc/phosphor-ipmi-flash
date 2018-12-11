@@ -20,21 +20,22 @@
 #include "interface.hpp"
 #include "lpc.hpp"
 
+#include <algorithm>
 #include <memory>
 
-int updaterMain(const std::string& interface, const std::string& imagePath,
-                const std::string& signaturePath)
+int updaterMain(BlobInterface* blob, const std::string& interface,
+                const std::string& imagePath, const std::string& signaturePath)
 {
     std::unique_ptr<DataInterface> handler;
 
     /* Input has already been validated in this case. */
     if (interface == "ipmibt")
     {
-        handler = std::make_unique<BtDataHandler>();
+        handler = std::make_unique<BtDataHandler>(blob);
     }
     else if (interface == "ipmilpc")
     {
-        handler = std::make_unique<LpcDataHandler>();
+        handler = std::make_unique<LpcDataHandler>(blob);
     }
 
     if (!handler)
@@ -48,7 +49,18 @@ int updaterMain(const std::string& interface, const std::string& imagePath,
     /* TODO(venture): Add optional parameter to specify the flash type, default
      * to legacy for now.
      */
-    std::string goalfirmware = "/flash/image";
+    std::string goalFirmware = "/flash/image";
+
+    std::vector<std::string> blobs = blob->getBlobList();
+
+    auto blobInst = std::find_if(
+        blobs.begin(), blobs.end(),
+        [&goalFirmware](const auto& iter) { return (goalFirmware == iter); });
+    if (blobInst == blobs.end())
+    {
+        std::fprintf(stderr, "firmware goal not found!\n");
+        return -1; /* throw custom exception. */
+    }
 
     /* Get list of blob_ids, check for /flash/image, or /flash/tarball.
      * TODO(venture) the mechanism doesn't care, but the caller of burn_my_bmc
@@ -57,7 +69,8 @@ int updaterMain(const std::string& interface, const std::string& imagePath,
      */
 
     /* Call stat on /flash/image (or /flash/tarball) and check if data interface
-     * is supported. */
+     * is supported.
+     */
 
     return 0;
 }

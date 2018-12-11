@@ -10,4 +10,5 @@ libupdater_la_CXXFLAGS =
 libupdater_la_SOURCES = \
 	updater.cpp \
 	bt.cpp \
-	lpc.cpp
+	lpc.cpp \
+	blob_handler.cpp
