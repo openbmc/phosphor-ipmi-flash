@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+#include "blob_handler.hpp"
 #include "updater.hpp"
 
 /* Use CLI11 argument parser once in openbmc/meta-oe or whatever. */
 #include <getopt.h>
 
 #include <cstdio>
+#include <memory>
 #include <string>
 
 void usage(const char* program)
@@ -104,8 +106,10 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
+        auto blob = std::make_unique<BlobHandler>();
+
         /* The parameters are all filled out. */
-        return updaterMain(interface, imagePath, signaturePath);
+        return updaterMain(blob.get(), interface, imagePath, signaturePath);
     }
 
     return 0;
