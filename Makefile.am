@@ -21,4 +21,4 @@ libfirmwareblob_la_CXXFLAGS = \
 	$(PHOSPHOR_LOGGING_CFLAGS) \
 	-flto
 
-SUBDIRS = . test
+SUBDIRS = . test tools
