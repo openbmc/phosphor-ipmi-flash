@@ -16,36 +16,12 @@
 
 #include "updater.hpp"
 
-#include "bt.hpp"
-#include "interface.hpp"
-#include "lpc.hpp"
-
 #include <algorithm>
 #include <memory>
 
-int updaterMain(BlobInterface* blob, const std::string& interface,
+int updaterMain(BlobInterface* blob, DataInterface* handler,
                 const std::string& imagePath, const std::string& signaturePath)
 {
-    std::unique_ptr<DataInterface> handler;
-
-    /* Input has already been validated in this case. */
-    if (interface == "ipmibt")
-    {
-        handler = std::make_unique<BtDataHandler>(blob);
-    }
-    else if (interface == "ipmilpc")
-    {
-        handler = std::make_unique<LpcDataHandler>(blob);
-    }
-
-    if (!handler)
-    {
-        /* TODO(venture): use a custom exception. */
-        std::fprintf(stderr, "Interface %s is unavailable\n",
-                     interface.c_str());
-        return -1;
-    }
-
     /* TODO(venture): Add optional parameter to specify the flash type, default
      * to legacy for now.
      */

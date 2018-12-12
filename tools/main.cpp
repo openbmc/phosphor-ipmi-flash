@@ -15,22 +15,46 @@
  */
 
 #include "blob_handler.hpp"
+#include "bt.hpp"
 #include "ipmi_handler.hpp"
+#include "lpc.hpp"
 #include "updater.hpp"
 
 /* Use CLI11 argument parser once in openbmc/meta-oe or whatever. */
 #include <getopt.h>
 
+#include <algorithm>
 #include <cstdio>
 #include <memory>
+#include <sstream>
 #include <string>
+#include <vector>
+
+#define IPMILPC "ipmilpc"
+#define IPMIBT "ipmibt"
+
+namespace
+{
+const std::vector<std::string> interfaceList = {IPMIBT, IPMILPC};
+}
 
 void usage(const char* program)
 {
+    std::ostringstream intfs;
+
+    /* can use std::accumulate(), also probably loads of better ways
+     */
+    for (const auto& intf : interfaceList)
+    {
+        intfs << intf << ", ";
+    }
+
     std::fprintf(stderr,
                  "Usage: %s -command <command> -interface <interface> -image "
-                 "<image file> -sig <signature file>",
+                 "<image file> -sig <signature file>\n",
                  program);
+
+    std::fprintf(stderr, "interfaces: %s", intfs.str().c_str());
 }
 
 bool checkCommand(const std::string& command)
@@ -40,7 +64,10 @@ bool checkCommand(const std::string& command)
 
 bool checkInterface(const std::string& interface)
 {
-    return (interface == "ipmibt" || interface == "ipmilpc");
+    auto intf = std::find_if(
+        interfaceList.begin(), interfaceList.end(),
+        [interface](const auto& iter) { return (interface == iter); });
+    return (intf != interfaceList.end());
 }
 
 int main(int argc, char* argv[])
@@ -110,8 +137,28 @@ int main(int argc, char* argv[])
         IpmiHandler ipmi;
         BlobHandler blob(&ipmi);
 
+        std::unique_ptr<DataInterface> handler;
+
+        /* Input has already been validated in this case. */
+        if (interface == IPMIBT)
+        {
+            handler = std::make_unique<BtDataHandler>(&blob);
+        }
+        else if (interface == IPMILPC)
+        {
+            handler = std::make_unique<LpcDataHandler>(&blob);
+        }
+
+        if (!handler)
+        {
+            /* TODO(venture): use a custom exception. */
+            std::fprintf(stderr, "Interface %s is unavailable\n",
+                         interface.c_str());
+            exit(EXIT_FAILURE);
+        }
+
         /* The parameters are all filled out. */
-        return updaterMain(&blob, interface, imagePath, signaturePath);
+        return updaterMain(&blob, handler.get(), imagePath, signaturePath);
     }
 
     return 0;
