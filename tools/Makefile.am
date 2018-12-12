@@ -11,4 +11,5 @@ libupdater_la_SOURCES = \
 	updater.cpp \
 	bt.cpp \
 	lpc.cpp \
-	blob_handler.cpp
+	blob_handler.cpp \
+	ipmi_handler.cpp
