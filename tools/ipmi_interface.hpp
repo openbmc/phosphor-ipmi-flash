@@ -12,7 +12,9 @@ class IpmiInterface
      * Send an IPMI packet to the BMC.
      *
      * @param[in] data - a vector of the IPMI packet contents.
-     * @return non-zero on failure.
+     * @return the bytes returned.
+     * @throws IpmiException on failure.
      */
-    virtual int sendPacket(const std::vector<std::uint8_t>& data) = 0;
+    virtual std::vector<std::uint8_t>
+        sendPacket(const std::vector<std::uint8_t>& data) = 0;
 };
