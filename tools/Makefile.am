@@ -12,4 +12,5 @@ libupdater_la_SOURCES = \
 	bt.cpp \
 	lpc.cpp \
 	blob_handler.cpp \
-	ipmi_handler.cpp
+	ipmi_handler.cpp \
+	crc.cpp
