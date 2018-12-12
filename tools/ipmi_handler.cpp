@@ -16,7 +16,8 @@
 
 #include "ipmi_handler.hpp"
 
-int IpmiHandler::sendPacket(const std::vector<std::uint8_t>& data)
+std::vector<std::uint8_t>
+    IpmiHandler::sendPacket(const std::vector<std::uint8_t>& data)
 {
-    return 0;
+    return {};
 }

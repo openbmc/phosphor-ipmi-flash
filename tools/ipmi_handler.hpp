@@ -7,5 +7,6 @@ class IpmiHandler : public IpmiInterface
   public:
     IpmiHandler() = default;
 
-    int sendPacket(const std::vector<std::uint8_t>& data) override;
+    std::vector<std::uint8_t>
+        sendPacket(const std::vector<std::uint8_t>& data) override;
 };
