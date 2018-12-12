@@ -106,10 +106,10 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
-        auto blob = std::make_unique<BlobHandler>();
+        BlobHandler blob;
 
         /* The parameters are all filled out. */
-        return updaterMain(blob.get(), interface, imagePath, signaturePath);
+        return updaterMain(&blob, interface, imagePath, signaturePath);
     }
 
     return 0;
