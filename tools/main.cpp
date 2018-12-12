@@ -15,6 +15,7 @@
  */
 
 #include "blob_handler.hpp"
+#include "ipmi_handler.hpp"
 #include "updater.hpp"
 
 /* Use CLI11 argument parser once in openbmc/meta-oe or whatever. */
@@ -106,7 +107,8 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
-        BlobHandler blob;
+        IpmiHandler ipmi;
+        BlobHandler blob(&ipmi);
 
         /* The parameters are all filled out. */
         return updaterMain(&blob, interface, imagePath, signaturePath);
