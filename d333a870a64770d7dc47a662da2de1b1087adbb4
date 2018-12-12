@@ -1,0 +1,10 @@
+Ok-To-Test+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Ok-To-Test+1: Patrick Venture <venture@google.com>
+Verified+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Code-Review+1: Adriana Kobylak <anoo@linux.ibm.com>
+Code-Review+2: Patrick Venture <venture@google.com>
+Submitted-by: Patrick Venture <venture@google.com>
+Submitted-at: Wed, 12 Dec 2018 02:23:47 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/16434
+Project: openbmc/phosphor-ipmi-flash
+Branch: refs/heads/master
