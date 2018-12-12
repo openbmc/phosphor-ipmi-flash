@@ -26,7 +26,8 @@ check_PROGRAMS = \
 	firmware_delete_unittest \
 	firmware_sessionstat_unittest \
 	firmware_commit_unittest \
-	file_handler_unittest
+	file_handler_unittest \
+	tools_blob_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -65,3 +66,6 @@ firmware_commit_unittest_LDADD = $(top_builddir)/firmware_handler.o
 
 file_handler_unittest_SOURCES = file_handler_unittest.cpp
 file_handler_unittest_LDADD = $(top_builddir)/file_handler.o -lstdc++fs
+
+tools_blob_unittest_SOURCES = tools_blob_unittest.cpp
+tools_blob_unittest_LDADD = $(top_builddir)/tools/blob_handler.o
