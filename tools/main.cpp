@@ -25,8 +25,9 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <iostream>
+#include <iterator>
 #include <memory>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -40,21 +41,14 @@ const std::vector<std::string> interfaceList = {IPMIBT, IPMILPC};
 
 void usage(const char* program)
 {
-    std::ostringstream intfs;
-
-    /* can use std::accumulate(), also probably loads of better ways
-     */
-    for (const auto& intf : interfaceList)
-    {
-        intfs << intf << ", ";
-    }
-
     std::fprintf(stderr,
                  "Usage: %s -command <command> -interface <interface> -image "
                  "<image file> -sig <signature file>\n",
                  program);
 
-    std::fprintf(stderr, "interfaces: %s", intfs.str().c_str());
+    std::copy(interfaceList.begin(), interfaceList.end(),
+              std::ostream_iterator<std::string>(std::cerr, ", "));
+    std::fprintf(stderr, "\n");
 }
 
 bool checkCommand(const std::string& command)
