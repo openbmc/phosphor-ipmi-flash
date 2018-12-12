@@ -1,4 +1,5 @@
 AM_CPPFLAGS = -I$(top_srcdir)/ \
+	-I$(top_srcdir)/tools/ \
 	$(GTEST_CFLAGS) \
 	$(GMOCK_CFLAGS)
 AM_CXXFLAGS = \
