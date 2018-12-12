@@ -1,5 +1,9 @@
 #pragma once
 
+#include "ipmi_interface.hpp"
+
+#include <gmock/gmock.h>
+
 class IpmiInterfaceMock : public IpmiInterface
 {
   public:
