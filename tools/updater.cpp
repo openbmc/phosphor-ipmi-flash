@@ -16,6 +16,8 @@
 
 #include "updater.hpp"
 
+#include "blob_errors.hpp"
+
 #include <algorithm>
 #include <memory>
 
@@ -48,6 +50,18 @@ int updaterMain(BlobInterface* blob, DataInterface* handler,
     {
         std::fprintf(stderr, "data interface selected not supported.\n");
         return -1; /* throw custom exception. */
+    }
+
+    /* Yay, our data handler is supported. */
+    std::uint16_t session;
+    try
+    {
+        session = blob->openBlob(goalFirmware, handler->supportedType());
+    }
+    catch (const BlobException& b)
+    {
+        std::fprintf(stderr, "blob exception received: %s\n", b.what());
+        return -1;
     }
 
     return 0;

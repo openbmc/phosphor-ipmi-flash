@@ -16,6 +16,7 @@
 
 #include "blob_handler.hpp"
 
+#include "blob_errors.hpp"
 #include "crc.hpp"
 #include "ipmi_errors.hpp"
 
@@ -168,4 +169,27 @@ StatResponse BlobHandler::getStat(const std::string& id)
     }
 
     return meta;
+}
+
+std::uint16_t
+    BlobHandler::openBlob(const std::string& id,
+                          blobs::FirmwareBlobHandler::UpdateFlags handlerFlags)
+{
+    std::uint16_t session;
+    std::vector<std::uint8_t> request;
+    std::uint16_t flags =
+        blobs::FirmwareBlobHandler::UpdateFlags::openWrite | handlerFlags;
+    auto addrFlags = reinterpret_cast<std::uint8_t*>(&flags);
+    std::copy(addrFlags, addrFlags + sizeof(flags),
+              std::back_inserter(request));
+    std::copy(id.begin(), id.end(), std::back_inserter(request));
+
+    auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobOpen, request);
+    if (resp.size() != sizeof(session))
+    {
+        throw BlobException("Did not receive session.");
+    }
+
+    std::memcpy(&session, resp.data(), sizeof(session));
+    return session;
 }
