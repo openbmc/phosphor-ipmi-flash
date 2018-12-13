@@ -140,3 +140,23 @@ TEST(BlobHandler, getStatNoMetadata)
     std::vector<std::uint8_t> metadata = {};
     EXPECT_EQ(metadata, meta.metadata);
 }
+
+TEST(BlobHandler, openBlobSucceeds)
+{
+    /* The open blob succeeds. */
+    IpmiInterfaceMock ipmiMock;
+    BlobHandler blob(&ipmiMock);
+
+    std::vector<std::uint8_t> request = {
+        0xcf, 0xc2, 0x00, BlobHandler::BlobOEMCommands::bmcBlobOpen,
+        0x00, 0x00, 0x02, 0x04,
+        'a',  'b',  'c',  'd'};
+
+    std::vector<std::uint8_t> resp = {0xcf, 0xc2, 0x00, 0x00, 0x00, 0xfe, 0xed};
+
+    EXPECT_CALL(ipmiMock, sendPacket(Eq(request))).WillOnce(Return(resp));
+
+    auto session =
+        blob.openBlob("abcd", blobs::FirmwareBlobHandler::UpdateFlags::lpc);
+    EXPECT_EQ(0xedfe, session);
+}
