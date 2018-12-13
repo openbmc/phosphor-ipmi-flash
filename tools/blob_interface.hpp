@@ -1,5 +1,7 @@
 #pragma once
 
+#include "firmware_handler.hpp"
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -30,4 +32,16 @@ class BlobInterface
      * @return metadata structure.
      */
     virtual StatResponse getStat(const std::string& id) = 0;
+
+    /**
+     * Attempt to open the file using the specific data interface flag.
+     *
+     * @param[in] blob - the blob_id to open.
+     * @param[in] handlerFlags - the data interface flag, if relevant.
+     * @return the session id on success.
+     * @throws BlobException on failure.
+     */
+    virtual std::uint16_t
+        openBlob(const std::string& id,
+                 blobs::FirmwareBlobHandler::UpdateFlags handlerFlags) = 0;
 };
