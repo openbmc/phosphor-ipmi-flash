@@ -66,5 +66,17 @@ int updaterMain(BlobInterface* blob, DataInterface* handler,
 
     std::fprintf(stderr, "using session: %d\n", session);
 
+    /* Send over the firmware image. */
+    if (!handler->sendContents(imagePath, session))
+    {
+        std::fprintf(stderr, "Failed to send contents to %s\n",
+                     imagePath.c_str());
+        return -1;
+    }
+
+    /* Send over the hash contents. */
+    /* Trigger the verification. */
+    /* Check the verification. */
+
     return 0;
 }
