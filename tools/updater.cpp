@@ -46,7 +46,8 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
      * is supported.
      */
     auto stat = blob->getStat(goalFirmware);
-    if ((stat.blob_state & handler->supportedType()) == 0)
+    auto supported = handler->supportedType();
+    if ((stat.blob_state & supported) == 0)
     {
         throw ToolException("data interface selected not supported.");
     }
@@ -55,7 +56,7 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
     std::uint16_t session;
     try
     {
-        session = blob->openBlob(goalFirmware, handler->supportedType());
+        session = blob->openBlob(goalFirmware, supported);
     }
     catch (const BlobException& b)
     {
