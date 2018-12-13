@@ -149,3 +149,23 @@ std::vector<std::string> BlobHandler::getBlobList()
 
     return list;
 }
+
+StatResponse BlobHandler::getStat(const std::string& id)
+{
+    StatResponse meta;
+    std::vector<std::uint8_t> name;
+    std::copy(id.begin(), id.end(), std::back_inserter(name));
+
+    auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobStat, name);
+    std::memcpy(&meta.blob_state, &resp[0], sizeof(meta.blob_state));
+    std::memcpy(&meta.size, &resp[sizeof(meta.blob_state)], sizeof(meta.size));
+    int offset = sizeof(meta.blob_state) + sizeof(meta.size);
+    std::uint8_t len = resp[offset];
+    if (len > 0)
+    {
+        std::copy(&resp[offset + 1], &resp[resp.size()],
+                  std::back_inserter(meta.metadata));
+    }
+
+    return meta;
+}

@@ -27,8 +27,12 @@ int updaterMain(BlobInterface* blob, DataInterface* handler,
      */
     std::string goalFirmware = "/flash/image";
 
+    /* Get list of blob_ids, check for /flash/image, or /flash/tarball.
+     * TODO(venture) the mechanism doesn't care, but the caller of burn_my_bmc
+     * will have in mind which they're sending and we need to verify it's
+     * available and use it.
+     */
     std::vector<std::string> blobs = blob->getBlobList();
-
     auto blobInst = std::find(blobs.begin(), blobs.end(), goalFirmware);
     if (blobInst == blobs.end())
     {
@@ -36,15 +40,10 @@ int updaterMain(BlobInterface* blob, DataInterface* handler,
         return -1; /* throw custom exception. */
     }
 
-    /* Get list of blob_ids, check for /flash/image, or /flash/tarball.
-     * TODO(venture) the mechanism doesn't care, but the caller of burn_my_bmc
-     * will have in mind which they're sending and we need to verify it's
-     * available and use it.
-     */
-
     /* Call stat on /flash/image (or /flash/tarball) and check if data interface
      * is supported.
      */
+    auto stat = blob->getStat(goalFirmware);
 
     return 0;
 }
