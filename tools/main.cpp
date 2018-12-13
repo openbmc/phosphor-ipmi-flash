@@ -18,6 +18,7 @@
 #include "bt.hpp"
 #include "ipmi_handler.hpp"
 #include "lpc.hpp"
+#include "tool_errors.hpp"
 #include "updater.hpp"
 
 /* Use CLI11 argument parser once in openbmc/meta-oe or whatever. */
@@ -151,7 +152,15 @@ int main(int argc, char* argv[])
         }
 
         /* The parameters are all filled out. */
-        return updaterMain(&blob, handler.get(), imagePath, signaturePath);
+        try
+        {
+            updaterMain(&blob, handler.get(), imagePath, signaturePath);
+        }
+        catch (const ToolException& e)
+        {
+            std::fprintf(stderr, "Exception received: %s\n", e.what());
+            return -1;
+        }
     }
 
     return 0;
