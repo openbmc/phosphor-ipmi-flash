@@ -1,5 +1,7 @@
 #pragma once
 
+#include "firmware_handler.hpp"
+
 #include <cstdint>
 #include <string>
 
@@ -19,4 +21,11 @@ class DataInterface
      */
     virtual bool sendContents(const std::string& input,
                               std::uint16_t session) = 0;
+
+    /**
+     * Return the supported data interface for this.
+     *
+     * @return the enum value corresponding to the supported type.
+     */
+    virtual blobs::FirmwareBlobHandler::UpdateFlags supportedType() const = 0;
 };
