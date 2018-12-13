@@ -94,3 +94,49 @@ TEST(BlobHandler, getBlobListIpmiHappy)
 
     EXPECT_EQ(expectedList, blob.getBlobList());
 }
+
+TEST(BlobHandler, getStatWithMetadata)
+{
+    /* Stat received metadata. */
+    IpmiInterfaceMock ipmiMock;
+    BlobHandler blob(&ipmiMock);
+    std::vector<std::uint8_t> request = {
+        0xcf, 0xc2, 0x00, BlobHandler::BlobOEMCommands::bmcBlobStat,
+        0x00, 0x00, 'a',  'b',
+        'c',  'd'};
+
+    /* return blob_state: 0xffff, size: 0x00, metadata 0x3445 */
+    std::vector<std::uint8_t> resp = {0xcf, 0xc2, 0x00, 0x00, 0x00, 0xff, 0xff,
+                                      0x00, 0x00, 0x00, 0x00, 0x02, 0x34, 0x45};
+
+    EXPECT_CALL(ipmiMock, sendPacket(Eq(request))).WillOnce(Return(resp));
+
+    auto meta = blob.getStat("abcd");
+    EXPECT_EQ(meta.blob_state, 0xffff);
+    EXPECT_EQ(meta.size, 0x00);
+    std::vector<std::uint8_t> metadata = {0x34, 0x45};
+    EXPECT_EQ(metadata, meta.metadata);
+}
+
+TEST(BlobHandler, getStatNoMetadata)
+{
+    /* Stat received no metadata. */
+    IpmiInterfaceMock ipmiMock;
+    BlobHandler blob(&ipmiMock);
+    std::vector<std::uint8_t> request = {
+        0xcf, 0xc2, 0x00, BlobHandler::BlobOEMCommands::bmcBlobStat,
+        0x00, 0x00, 'a',  'b',
+        'c',  'd'};
+
+    /* return blob_state: 0xffff, size: 0x00, metadata 0x3445 */
+    std::vector<std::uint8_t> resp = {0xcf, 0xc2, 0x00, 0x00, 0x00, 0xff,
+                                      0xff, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+    EXPECT_CALL(ipmiMock, sendPacket(Eq(request))).WillOnce(Return(resp));
+
+    auto meta = blob.getStat("abcd");
+    EXPECT_EQ(meta.blob_state, 0xffff);
+    EXPECT_EQ(meta.size, 0x00);
+    std::vector<std::uint8_t> metadata = {};
+    EXPECT_EQ(metadata, meta.metadata);
+}

@@ -51,6 +51,7 @@ class BlobHandler : public BlobInterface
     std::string enumerateBlob(std::uint32_t index);
 
     std::vector<std::string> getBlobList() override;
+    StatResponse getStat(const std::string& id) override;
 
   private:
     IpmiInterface* ipmi;
