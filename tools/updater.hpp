@@ -12,7 +12,8 @@
  * @param[in] handler - pointer to the data interface implementation object.
  * @param[in] imagePath - the path to the image file.
  * @param[in] signaturePath - the path to the signature file.
- * @return non-zero on failure.
+ * @throws ToolException on failures.
  */
-int updaterMain(BlobInterface* blob, DataInterface* handler,
-                const std::string& imagePath, const std::string& signaturePath);
+void updaterMain(BlobInterface* blob, DataInterface* handler,
+                 const std::string& imagePath,
+                 const std::string& signaturePath);
