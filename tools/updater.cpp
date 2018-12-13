@@ -64,5 +64,7 @@ int updaterMain(BlobInterface* blob, DataInterface* handler,
         return -1;
     }
 
+    std::fprintf(stderr, "using session: %d\n", session);
+
     return 0;
 }
