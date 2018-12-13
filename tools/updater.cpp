@@ -44,6 +44,11 @@ int updaterMain(BlobInterface* blob, DataInterface* handler,
      * is supported.
      */
     auto stat = blob->getStat(goalFirmware);
+    if ((stat.blob_state & handler->supportedType()) == 0)
+    {
+        std::fprintf(stderr, "data interface selected not supported.\n");
+        return -1; /* throw custom exception. */
+    }
 
     return 0;
 }
