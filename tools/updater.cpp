@@ -17,12 +17,13 @@
 #include "updater.hpp"
 
 #include "blob_errors.hpp"
+#include "tool_errors.hpp"
 
 #include <algorithm>
 #include <memory>
 
-int updaterMain(BlobInterface* blob, DataInterface* handler,
-                const std::string& imagePath, const std::string& signaturePath)
+void updaterMain(BlobInterface* blob, DataInterface* handler,
+                 const std::string& imagePath, const std::string& signaturePath)
 {
     /* TODO(venture): Add optional parameter to specify the flash type, default
      * to legacy for now.
@@ -38,8 +39,7 @@ int updaterMain(BlobInterface* blob, DataInterface* handler,
     auto blobInst = std::find(blobs.begin(), blobs.end(), goalFirmware);
     if (blobInst == blobs.end())
     {
-        std::fprintf(stderr, "firmware goal not found!\n");
-        return -1; /* throw custom exception. */
+        throw ToolException(goalFirmware + " not found");
     }
 
     /* Call stat on /flash/image (or /flash/tarball) and check if data interface
@@ -48,8 +48,7 @@ int updaterMain(BlobInterface* blob, DataInterface* handler,
     auto stat = blob->getStat(goalFirmware);
     if ((stat.blob_state & handler->supportedType()) == 0)
     {
-        std::fprintf(stderr, "data interface selected not supported.\n");
-        return -1; /* throw custom exception. */
+        throw ToolException("data interface selected not supported.");
     }
 
     /* Yay, our data handler is supported. */
@@ -60,21 +59,19 @@ int updaterMain(BlobInterface* blob, DataInterface* handler,
     }
     catch (const BlobException& b)
     {
-        std::fprintf(stderr, "blob exception received: %s\n", b.what());
-        return -1;
+        throw ToolException("blob exception received: " +
+                            std::string(b.what()));
     }
 
     /* Send over the firmware image. */
     if (!handler->sendContents(imagePath, session))
     {
-        std::fprintf(stderr, "Failed to send contents to %s\n",
-                     imagePath.c_str());
-        return -1;
+        throw ToolException("Failed to send contents of " + imagePath);
     }
 
     /* Send over the hash contents. */
     /* Trigger the verification. */
     /* Check the verification. */
 
-    return 0;
+    return;
 }
