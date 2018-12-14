@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <vector>
 
+namespace host_tool
+{
+
 class IpmiInterface
 {
   public:
@@ -18,3 +21,5 @@ class IpmiInterface
     virtual std::vector<std::uint8_t>
         sendPacket(const std::vector<std::uint8_t>& data) = 0;
 };
+
+} // namespace host_tool

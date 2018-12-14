@@ -2,6 +2,9 @@
 
 #include <gmock/gmock.h>
 
+namespace host_tool
+{
+
 class BlobInterfaceMock : public BlobInterface
 {
   public:
@@ -12,3 +15,5 @@ class BlobInterfaceMock : public BlobInterface
                  std::uint16_t(const std::string&,
                                blobs::FirmwareBlobHandler::UpdateFlags));
 };
+
+} // namespace host_tool
