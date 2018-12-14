@@ -3,6 +3,9 @@
 #include "blob_interface.hpp"
 #include "interface.hpp"
 
+namespace host_tool
+{
+
 class BtDataHandler : public DataInterface
 {
   public:
@@ -19,3 +22,5 @@ class BtDataHandler : public DataInterface
     blobs::FirmwareBlobHandler::UpdateFlags flags =
         blobs::FirmwareBlobHandler::UpdateFlags::ipmi;
 };
+
+} // namespace host_tool

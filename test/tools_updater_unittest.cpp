@@ -6,6 +6,9 @@
 
 #include <gtest/gtest.h>
 
+namespace host_tool
+{
+
 using ::testing::Eq;
 using ::testing::Return;
 using ::testing::StrEq;
@@ -43,3 +46,5 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
 
     updaterMain(&blobMock, &handlerMock, firmwareImage, signatureFile);
 }
+
+} // namespace host_tool
