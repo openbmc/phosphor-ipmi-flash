@@ -16,6 +16,7 @@ class IpmiException : public std::exception
         smessage << "Received IPMI_CC: " << cc;
         message = smessage.str();
     }
+    explicit IpmiException(const std::string& message) : message(message){};
 
     virtual const char* what() const noexcept override
     {
