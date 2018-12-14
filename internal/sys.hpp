@@ -12,10 +12,6 @@
 #include <cinttypes>
 #include <cstddef>
 
-namespace blobs
-{
-namespace flash
-{
 namespace internal
 {
 
@@ -58,5 +54,3 @@ class SysImpl : public Sys
 extern SysImpl sys_impl;
 
 } // namespace internal
-} // namespace flash
-} // namespace blobs
