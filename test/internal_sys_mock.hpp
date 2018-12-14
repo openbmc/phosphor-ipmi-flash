@@ -20,6 +20,7 @@ class InternalSysMock : public Sys
     MOCK_CONST_METHOD2(munmap, int(void*, size_t));
     MOCK_CONST_METHOD0(getpagesize, int());
     MOCK_CONST_METHOD3(ioctl, int(int, unsigned long, void*));
+    MOCK_CONST_METHOD3(poll, int(struct pollfd*, nfds_t, int));
 };
 
 } // namespace internal
