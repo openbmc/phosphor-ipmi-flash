@@ -3,6 +3,8 @@
 #include "internal/sys.hpp"
 #include "ipmi_interface.hpp"
 
+#include <vector>
+
 namespace host_tool
 {
 
@@ -21,12 +23,15 @@ class IpmiHandler : public IpmiInterface
     /**
      * Attempt to open the device node.
      *
-     * @return true on success, failure otherwise.
+     * @throws IpmiException on failure.
      */
-    bool open();
+    void open();
 
+    /**
+     * @throws IpmiException on failure.
+     */
     std::vector<std::uint8_t>
-        sendPacket(const std::vector<std::uint8_t>& data) override;
+        sendPacket(std::vector<std::uint8_t>& data) override;
 
   private:
     const internal::Sys* sys;
@@ -34,6 +39,8 @@ class IpmiHandler : public IpmiInterface
      * allow moving this object.
      */
     int fd = -1;
+    /* The last IPMI sequence number we used. */
+    int sequence = 0;
 };
 
 } // namespace host_tool
