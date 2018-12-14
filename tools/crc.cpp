@@ -1,5 +1,8 @@
 #include "crc.hpp"
 
+namespace host_tool
+{
+
 /*
  * This implementation tracks the specification given at
  * http://srecord.sourceforge.net/crc16-ccitt.html
@@ -37,3 +40,5 @@ std::uint16_t generateCrc(const std::vector<std::uint8_t>& data)
 
     return crc;
 }
+
+} // namespace host_tool
