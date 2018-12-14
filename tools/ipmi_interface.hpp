@@ -19,7 +19,7 @@ class IpmiInterface
      * @throws IpmiException on failure.
      */
     virtual std::vector<std::uint8_t>
-        sendPacket(const std::vector<std::uint8_t>& data) = 0;
+        sendPacket(std::vector<std::uint8_t>& data) = 0;
 };
 
 } // namespace host_tool
