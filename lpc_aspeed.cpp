@@ -31,7 +31,7 @@ namespace blobs
 {
 
 std::unique_ptr<LpcMapperInterface>
-    LpcMapperAspeed::createAspeedMapper(size_t regionSize)
+    LpcMapperAspeed::createAspeedMapper(std::size_t regionSize)
 {
     /* NOTE: considered using a joint factory to create one or the other, for
      * now, separate factories.
