@@ -73,7 +73,7 @@ std::vector<std::uint8_t>
         return reply;
     }
 
-    size_t headerSize = ipmiPhosphorOen.size() + sizeof(std::uint16_t);
+    std::size_t headerSize = ipmiPhosphorOen.size() + sizeof(std::uint16_t);
 
     /* This cannot be a response because it's smaller than the smallest
      * response.
