@@ -1,4 +1,5 @@
 #include "internal_sys_mock.hpp"
+#include "ipmi_errors.hpp"
 #include "ipmi_handler.hpp"
 
 namespace host_tool
@@ -14,7 +15,7 @@ TEST(IpmiHandlerTest, OpenAllFails)
     IpmiHandler ipmi(&sysMock);
 
     EXPECT_CALL(sysMock, open(_, _)).WillRepeatedly(Return(-1));
-    EXPECT_EQ(false, ipmi.open());
+    EXPECT_THROW(ipmi.open(), IpmiException);
 }
 
 } // namespace host_tool
