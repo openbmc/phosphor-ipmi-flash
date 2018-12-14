@@ -1,6 +1,6 @@
 #pragma once
 
-#include "internal/sys.hpp"
+#include "../internal/sys.hpp"
 #include "ipmi_interface.hpp"
 
 #include <vector>
