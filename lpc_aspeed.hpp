@@ -14,8 +14,8 @@ class LpcMapperAspeed : public LpcMapperInterface
     static std::unique_ptr<LpcMapperInterface>
         createAspeedMapper(size_t regionSize);
 
-    LpcMapperAspeed(size_t regionSize, const flash::internal::Sys* sys =
-                                           &flash::internal::sys_impl) :
+    LpcMapperAspeed(size_t regionSize,
+                    const internal::Sys* sys = &internal::sys_impl) :
         regionSize(regionSize),
         sys(sys){};
 
@@ -24,7 +24,7 @@ class LpcMapperAspeed : public LpcMapperInterface
 
   private:
     size_t regionSize;
-    const flash::internal::Sys* sys;
+    const internal::Sys* sys;
 };
 
 } // namespace blobs
