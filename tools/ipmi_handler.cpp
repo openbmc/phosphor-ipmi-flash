@@ -16,8 +16,35 @@
 
 #include "ipmi_handler.hpp"
 
+#include <fcntl.h>
+
+#include <sstream>
+#include <string>
+#include <vector>
+
 namespace host_tool
 {
+
+bool IpmiHandler::open()
+{
+    const int device = 0;
+    const std::vector<std::string> formats = {"/dev/ipmi", "/dev/ipmi/",
+                                              "/dev/ipmidev/"};
+
+    for (const auto& format : formats)
+    {
+        std::ostringstream path;
+        path << format << device;
+
+        fd = sys->open(path.str().c_str(), O_RDWR);
+        if (fd < 0)
+        {
+            continue;
+        }
+    }
+
+    return !(fd < 0);
+}
 
 std::vector<std::uint8_t>
     IpmiHandler::sendPacket(const std::vector<std::uint8_t>& data)
