@@ -13,4 +13,5 @@ libupdater_la_SOURCES = \
 	lpc.cpp \
 	blob_handler.cpp \
 	ipmi_handler.cpp \
-	crc.cpp
+	crc.cpp \
+	../internal/sys.cpp
