@@ -3,6 +3,9 @@
 #include <exception>
 #include <string>
 
+namespace host_tool
+{
+
 class ToolException : public std::exception
 {
   public:
@@ -16,3 +19,5 @@ class ToolException : public std::exception
   private:
     std::string message;
 };
+
+} // namespace host_tool
