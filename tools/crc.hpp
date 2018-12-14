@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <vector>
 
+namespace host_tool
+{
+
 /**
  * Generate the CRC for a payload (really any bytes).
  *
@@ -13,3 +16,5 @@
  * @return the CRC value
  */
 std::uint16_t generateCrc(const std::vector<std::uint8_t>& data);
+
+} // namespace host_tool
