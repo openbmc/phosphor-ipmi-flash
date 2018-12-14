@@ -21,10 +21,6 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-namespace blobs
-{
-namespace flash
-{
 namespace internal
 {
 
@@ -62,5 +58,3 @@ int SysImpl::ioctl(int fd, unsigned long request, void* param) const
 SysImpl sys_impl;
 
 } // namespace internal
-} // namespace flash
-} // namespace blobs
