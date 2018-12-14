@@ -92,9 +92,14 @@ std::vector<std::uint8_t>
     auto ptr = reinterpret_cast<std::uint8_t*>(&crc);
     std::memcpy(ptr, &reply[ipmiPhosphorOen.size()], sizeof(crc));
 
+    for (const auto& byte : reply)
+    {
+        std::fprintf(stderr, "0x%02x ", byte);
+    }
+    std::fprintf(stderr, "\n");
+
     std::vector<std::uint8_t> bytes;
-    std::copy(&reply[headerSize], &reply[reply.size()],
-              std::back_inserter(bytes));
+    bytes.insert(bytes.begin(), reply.begin() + headerSize, reply.end());
 
     auto computed = generateCrc(bytes);
     if (crc != computed)
