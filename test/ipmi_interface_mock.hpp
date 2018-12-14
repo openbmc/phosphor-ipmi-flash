@@ -4,6 +4,9 @@
 
 #include <gmock/gmock.h>
 
+namespace host_tool
+{
+
 class IpmiInterfaceMock : public IpmiInterface
 {
   public:
@@ -11,3 +14,5 @@ class IpmiInterfaceMock : public IpmiInterface
     MOCK_METHOD1(sendPacket,
                  std::vector<std::uint8_t>(const std::vector<std::uint8_t>&));
 };
+
+} // namespace host_tool
