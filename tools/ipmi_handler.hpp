@@ -2,6 +2,9 @@
 
 #include "ipmi_interface.hpp"
 
+namespace host_tool
+{
+
 class IpmiHandler : public IpmiInterface
 {
   public:
@@ -10,3 +13,5 @@ class IpmiHandler : public IpmiInterface
     std::vector<std::uint8_t>
         sendPacket(const std::vector<std::uint8_t>& data) override;
 };
+
+} // namespace host_tool
