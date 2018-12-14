@@ -34,13 +34,13 @@ int SysImpl::close(int fd) const
     return ::close(fd);
 }
 
-void* SysImpl::mmap(void* addr, size_t length, int prot, int flags, int fd,
+void* SysImpl::mmap(void* addr, std::size_t length, int prot, int flags, int fd,
                     off_t offset) const
 {
     return ::mmap(addr, length, prot, flags, fd, offset);
 }
 
-int SysImpl::munmap(void* addr, size_t length) const
+int SysImpl::munmap(void* addr, std::size_t length) const
 {
     return ::munmap(addr, length);
 }
