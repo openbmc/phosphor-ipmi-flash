@@ -7,6 +7,7 @@
  * other pieces.
  */
 
+#include <poll.h>
 #include <sys/mman.h>
 
 #include <cinttypes>
@@ -31,6 +32,7 @@ class Sys
     virtual int munmap(void* addr, std::size_t length) const = 0;
     virtual int getpagesize() const = 0;
     virtual int ioctl(int fd, unsigned long request, void* param) const = 0;
+    virtual int poll(struct pollfd* fds, nfds_t nfds, int timeout) const = 0;
 };
 
 /**
@@ -48,6 +50,7 @@ class SysImpl : public Sys
     int munmap(void* addr, std::size_t length) const override;
     int getpagesize() const override;
     int ioctl(int fd, unsigned long request, void* param) const override;
+    int poll(struct pollfd* fds, nfds_t nfds, int timeout) const override;
 };
 
 /** @brief Default instantiation of sys */

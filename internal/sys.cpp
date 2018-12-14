@@ -55,6 +55,11 @@ int SysImpl::ioctl(int fd, unsigned long request, void* param) const
     return ::ioctl(fd, request, param);
 }
 
+int SysImpl::poll(struct pollfd* fds, nfds_t nfds, int timeout) const
+{
+    return ::poll(fds, nfds, timeout);
+}
+
 SysImpl sys_impl;
 
 } // namespace internal
