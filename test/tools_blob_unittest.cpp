@@ -4,6 +4,8 @@
 
 #include <gtest/gtest.h>
 
+namespace host_tool
+{
 CrcInterface* crcIntf = nullptr;
 
 std::uint16_t generateCrc(const std::vector<std::uint8_t>& data)
@@ -228,3 +230,5 @@ TEST_F(BlobHandlerTest, openBlobSucceeds)
         blob.openBlob("abcd", blobs::FirmwareBlobHandler::UpdateFlags::lpc);
     EXPECT_EQ(0xedfe, session);
 }
+
+} // namespace host_tool

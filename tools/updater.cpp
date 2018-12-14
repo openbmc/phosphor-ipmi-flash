@@ -22,6 +22,9 @@
 #include <algorithm>
 #include <memory>
 
+namespace host_tool
+{
+
 void updaterMain(BlobInterface* blob, DataInterface* handler,
                  const std::string& imagePath, const std::string& signaturePath)
 {
@@ -78,3 +81,5 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
 
     return;
 }
+
+} // namespace host_tool

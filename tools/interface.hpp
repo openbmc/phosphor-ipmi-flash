@@ -5,6 +5,9 @@
 #include <cstdint>
 #include <string>
 
+namespace host_tool
+{
+
 class DataInterface
 {
   public:
@@ -29,3 +32,5 @@ class DataInterface
      */
     virtual blobs::FirmwareBlobHandler::UpdateFlags supportedType() const = 0;
 };
+
+} // namespace host_tool
