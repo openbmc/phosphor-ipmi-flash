@@ -19,15 +19,14 @@ class LpcMapperNuvoton : public LpcMapperInterface
      * @param[in] a sys call interface pointer.
      * @todo Needs reserved memory region's physical address and size.
      */
-    explicit LpcMapperNuvoton(
-        const flash::internal::Sys* sys = &flash::internal::sys_impl) :
+    explicit LpcMapperNuvoton(const internal::Sys* sys = &internal::sys_impl) :
         sys(sys){};
 
     std::pair<std::uint32_t, std::uint32_t>
         mapWindow(std::uint32_t address, std::uint32_t length) override;
 
   private:
-    const flash::internal::Sys* sys;
+    const internal::Sys* sys;
 };
 
 } // namespace blobs
