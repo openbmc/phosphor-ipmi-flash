@@ -42,11 +42,13 @@ const std::vector<std::string> interfaceList = {IPMIBT, IPMILPC};
 
 void usage(const char* program)
 {
-    std::fprintf(stderr,
-                 "Usage: %s -command <command> -interface <interface> -image "
-                 "<image file> -sig <signature file>\n",
-                 program);
+    std::fprintf(
+        stderr,
+        "Usage: %s --command <command> --interface <interface> --image "
+        "<image file> --sig <signature file>\n",
+        program);
 
+    std::fprintf(stderr, "interfaces: ");
     std::copy(interfaceList.begin(), interfaceList.end(),
               std::ostream_iterator<std::string>(std::cerr, ", "));
     std::fprintf(stderr, "\n");
