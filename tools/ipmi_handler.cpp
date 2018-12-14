@@ -16,8 +16,13 @@
 
 #include "ipmi_handler.hpp"
 
+namespace host_tool
+{
+
 std::vector<std::uint8_t>
     IpmiHandler::sendPacket(const std::vector<std::uint8_t>& data)
 {
     return {};
 }
+
+} // namespace host_tool
