@@ -16,8 +16,13 @@
 
 #include "lpc.hpp"
 
+namespace host_tool
+{
+
 bool LpcDataHandler::sendContents(const std::string& input,
                                   std::uint16_t session)
 {
     return false;
 }
+
+} // namespace host_tool
