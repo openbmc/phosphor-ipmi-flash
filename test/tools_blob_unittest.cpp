@@ -3,6 +3,9 @@
 
 #include <gtest/gtest.h>
 
+namespace host_tool
+{
+
 std::uint16_t expectedCrc = 0;
 
 std::uint16_t generateCrc(const std::vector<std::uint8_t>& data)
@@ -160,3 +163,5 @@ TEST(BlobHandler, openBlobSucceeds)
         blob.openBlob("abcd", blobs::FirmwareBlobHandler::UpdateFlags::lpc);
     EXPECT_EQ(0xedfe, session);
 }
+
+} // namespace host_tool
