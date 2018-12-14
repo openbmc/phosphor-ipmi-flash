@@ -4,6 +4,9 @@
 
 #include <gmock/gmock.h>
 
+namespace host_tool
+{
+
 class DataInterfaceMock : public DataInterface
 {
 
@@ -14,3 +17,5 @@ class DataInterfaceMock : public DataInterface
     MOCK_CONST_METHOD0(supportedType,
                        blobs::FirmwareBlobHandler::UpdateFlags());
 };
+
+} // namespace host_tool

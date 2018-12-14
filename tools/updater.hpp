@@ -5,6 +5,9 @@
 
 #include <string>
 
+namespace host_tool
+{
+
 /**
  * Attempt to update the BMC's firmware using the interface provided.
  *
@@ -17,3 +20,5 @@
 void updaterMain(BlobInterface* blob, DataInterface* handler,
                  const std::string& imagePath,
                  const std::string& signaturePath);
+
+} // namespace host_tool

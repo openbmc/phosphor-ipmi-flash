@@ -3,6 +3,9 @@
 #include "blob_interface.hpp"
 #include "interface.hpp"
 
+namespace host_tool
+{
+
 class LpcDataHandler : public DataInterface
 {
   public:
@@ -19,3 +22,5 @@ class LpcDataHandler : public DataInterface
     blobs::FirmwareBlobHandler::UpdateFlags flags =
         blobs::FirmwareBlobHandler::UpdateFlags::lpc;
 };
+
+} // namespace host_tool
