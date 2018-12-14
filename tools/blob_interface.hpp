@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 
+namespace host_tool
+{
+
 struct StatResponse
 {
     std::uint16_t blob_state;
@@ -45,3 +48,5 @@ class BlobInterface
         openBlob(const std::string& id,
                  blobs::FirmwareBlobHandler::UpdateFlags handlerFlags) = 0;
 };
+
+} // namespace host_tool

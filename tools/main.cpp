@@ -134,19 +134,19 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
-        IpmiHandler ipmi;
-        BlobHandler blob(&ipmi);
+        host_tool::IpmiHandler ipmi;
+        host_tool::BlobHandler blob(&ipmi);
 
-        std::unique_ptr<DataInterface> handler;
+        std::unique_ptr<host_tool::DataInterface> handler;
 
         /* Input has already been validated in this case. */
         if (interface == IPMIBT)
         {
-            handler = std::make_unique<BtDataHandler>(&blob);
+            handler = std::make_unique<host_tool::BtDataHandler>(&blob);
         }
         else if (interface == IPMILPC)
         {
-            handler = std::make_unique<LpcDataHandler>(&blob);
+            handler = std::make_unique<host_tool::LpcDataHandler>(&blob);
         }
 
         if (!handler)
@@ -160,9 +160,10 @@ int main(int argc, char* argv[])
         /* The parameters are all filled out. */
         try
         {
-            updaterMain(&blob, handler.get(), imagePath, signaturePath);
+            host_tool::updaterMain(&blob, handler.get(), imagePath,
+                                   signaturePath);
         }
-        catch (const ToolException& e)
+        catch (const host_tool::ToolException& e)
         {
             std::fprintf(stderr, "Exception received: %s\n", e.what());
             return -1;

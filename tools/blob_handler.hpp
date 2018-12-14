@@ -3,6 +3,9 @@
 #include "blob_interface.hpp"
 #include "ipmi_interface.hpp"
 
+namespace host_tool
+{
+
 class BlobHandler : public BlobInterface
 {
   public:
@@ -59,3 +62,5 @@ class BlobHandler : public BlobInterface
   private:
     IpmiInterface* ipmi;
 };
+
+} // namespace host_tool
