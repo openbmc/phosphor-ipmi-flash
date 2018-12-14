@@ -119,6 +119,12 @@ int main(int argc, char* argv[])
         }
     }
 
+    if (command.empty())
+    {
+        usage(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
     /* They want to update the firmware. */
     if (command == "update")
     {
