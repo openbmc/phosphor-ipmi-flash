@@ -15,9 +15,9 @@ std::uint16_t generateCrc(const std::vector<std::uint8_t>& data)
     const int kExtraRounds = 2;
     const std::uint8_t* bytes = data.data();
     std::uint16_t crc = 0xFFFF;
-    size_t i;
-    size_t j;
-    size_t size = data.size();
+    std::size_t i;
+    std::size_t j;
+    std::size_t size = data.size();
 
     for (i = 0; i < size + kExtraRounds; ++i)
     {
