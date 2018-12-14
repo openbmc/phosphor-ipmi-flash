@@ -6,10 +6,6 @@
 
 #include <gmock/gmock.h>
 
-namespace blobs
-{
-namespace flash
-{
 namespace internal
 {
 
@@ -27,5 +23,3 @@ class InternalSysMock : public Sys
 };
 
 } // namespace internal
-} // namespace flash
-} // namespace blobs
