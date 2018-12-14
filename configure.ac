@@ -112,6 +112,20 @@ AC_ARG_VAR(HASH_FILENAME, [The file to use for the hash provided.])
 AS_IF([test "x$HASH_FILENAME" == "x"], [HASH_FILENAME="/tmp/bmc.sig"])
 AC_DEFINE_UNQUOTED([HASH_FILENAME], ["$HASH_FILENAME"], [The file to use for the hash provided.])
 
+AC_CHECK_HEADER(linux/ipmi.h, [HAVE_LINUX_IPMI_H=""], [HAVE_LINUX_IPMI_H="-I linux/ipmi.h"])
+AS_IF([test "$HAVE_LINUX_IPMI_H" != ""],
+    AC_MSG_WARN([Could not find linux/ipmi.h: Attempting to download locally for building from openbmc/linux/+/dev-4.18])
+    AC_SUBST([IPMI_BMC_DL],
+             [`mkdir -p linux;wget https://raw.githubusercontent.com/openbmc/linux/dev-4.18/include/uapi/linux/ipmi.h -O linux/ipmi.h`])
+)
+
+AC_CHECK_HEADER(linux/ipmi_msgdefs.h, [HAVE_LINUX_IPMIMSGDEFS_H=""], [HAVE_LINUX_IPMIMSGDEFS_H="-I linux/ipmi_msgdefs.h"])
+AS_IF([test "$HAVE_LINUX_IPMIMSGDEFS_H" != ""],
+    AC_MSG_WARN([Could not find linux/ipmi_msgdefs.h: Attempting to download locally for building from openbmc/linux/+/dev-4.18])
+    AC_SUBST([IPMIMSG_BMC_DL],
+             [`mkdir -p linux;wget https://raw.githubusercontent.com/openbmc/linux/dev-4.18/include/uapi/linux/ipmi_msgdefs.h -O linux/ipmi_msgdefs.h`])
+)
+
 # Check/set gtest specific functions.
 PKG_CHECK_MODULES([GTEST], [gtest], [], [AC_MSG_NOTICE([gtest not found, tests will not build])])
 PKG_CHECK_MODULES([GMOCK], [gmock], [], [AC_MSG_NOTICE([gmock not found, tests will not build])])
