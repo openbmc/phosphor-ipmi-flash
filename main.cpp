@@ -37,7 +37,7 @@ FileHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
 FileHandler ubitarballHandler(TARBALL_STAGED_NAME);
 
 /* The maximum external buffer size we expect is 64KB. */
-static constexpr size_t memoryRegionSize = 64 * 1024UL;
+static constexpr std::size_t memoryRegionSize = 64 * 1024UL;
 
 #ifdef ENABLE_LPC_BRIDGE
 #if defined(ASPEED_LPC)
