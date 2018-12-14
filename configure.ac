@@ -74,7 +74,7 @@ AS_IF([test "x$enable_aspeed_lpc" = "xyes"], [
                     [HAVE_UAPI_LINUX_LPC_CTRL_H=""],
                     [HAVE_UAPI_LINUX_LPC_CTRL_H="-I linux/aspeed-lpc-ctrl.h"])
     AS_IF([test "$HAVE_UAPI_LINUX_LPC_CTRL_H" != ""],
-        AC_MSG_WARN([Could not find linux/aspeed-lpc-ctrl.h: Attempting to download locally for building from openbmc/linux/+dev-4.18])
+        AC_MSG_WARN([Could not find linux/aspeed-lpc-ctrl.h: Attempting to download locally for building from openbmc/linux/+/dev-4.18])
         AC_SUBST([BT_BMC_DL],
                  [`mkdir -p linux;wget https://raw.githubusercontent.com/openbmc/linux/dev-4.18/include/uapi/linux/aspeed-lpc-ctrl.h -O linux/aspeed-lpc-ctrl.h`])
     )
