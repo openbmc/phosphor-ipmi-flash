@@ -4,6 +4,9 @@
 #include <sstream>
 #include <string>
 
+namespace host_tool
+{
+
 class IpmiException : public std::exception
 {
   public:
@@ -22,3 +25,5 @@ class IpmiException : public std::exception
   private:
     std::string message;
 };
+
+} // namespace host_tool

@@ -23,7 +23,13 @@
 #include <array>
 #include <cstring>
 
+namespace host_tool
+{
+
+namespace
+{
 const std::array<std::uint8_t, 3> ipmiPhosphorOen = {0xcf, 0xc2, 0x00};
+}
 
 std::vector<std::uint8_t>
     BlobHandler::sendIpmiPayload(BlobOEMCommands command,
@@ -200,3 +206,5 @@ std::uint16_t
     std::memcpy(&session, resp.data(), sizeof(session));
     return session;
 }
+
+} // namespace host_tool
