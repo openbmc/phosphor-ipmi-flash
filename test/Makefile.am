@@ -28,7 +28,8 @@ check_PROGRAMS = \
 	firmware_commit_unittest \
 	file_handler_unittest \
 	tools_blob_unittest \
-	tools_updater_unittest
+	tools_updater_unittest \
+	tools_ipmi_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -73,3 +74,6 @@ tools_blob_unittest_LDADD = $(top_builddir)/tools/blob_handler.o
 
 tools_updater_unittest_SOURCES = tools_updater_unittest.cpp
 tools_updater_unittest_LDADD = $(top_builddir)/tools/updater.o
+
+tools_ipmi_unittest_SOURCES = tools_ipmi_unittest.cpp
+tools_ipmi_unittest_LDADD = $(top_builddir)/tools/ipmi_handler.o
