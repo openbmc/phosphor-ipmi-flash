@@ -19,7 +19,9 @@
 #include "file_handler.hpp"
 #include "firmware_handler.hpp"
 #include "image_handler.hpp"
+#include "lpc_aspeed.hpp"
 #include "lpc_handler.hpp"
+#include "lpc_nuvoton.hpp"
 #include "pci_handler.hpp"
 
 #include <blobs-ipmid/manager.hpp>
