@@ -20,8 +20,9 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
     BlobInterfaceMock blobMock;
     std::string firmwareImage = "image.bin";
     std::string signatureFile = "image.sig";
+    std::string expectedBlob = "/flash/image";
 
-    std::vector<std::string> blobList = {"/flash/image"};
+    std::vector<std::string> blobList = {expectedBlob};
     StatResponse statObj;
     statObj.blob_state = blobs::FirmwareBlobHandler::UpdateFlags::ipmi |
                          blobs::FirmwareBlobHandler::UpdateFlags::lpc;
@@ -32,12 +33,12 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
 
     EXPECT_CALL(blobMock, getBlobList()).WillOnce(Return(blobList));
 
-    EXPECT_CALL(blobMock, getStat(StrEq(blobList[0].c_str())))
+    EXPECT_CALL(blobMock, getStat(StrEq(expectedBlob.c_str())))
         .WillOnce(Return(statObj));
 
     EXPECT_CALL(handlerMock, supportedType()).WillOnce(Return(supported));
 
-    EXPECT_CALL(blobMock, openBlob(StrEq(blobList[0].c_str()), Eq(supported)))
+    EXPECT_CALL(blobMock, openBlob(StrEq(expectedBlob.c_str()), Eq(supported)))
         .WillOnce(Return(session));
 
     EXPECT_CALL(handlerMock,
