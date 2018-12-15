@@ -62,8 +62,7 @@ std::vector<std::uint8_t>
     }
     catch (const IpmiException& e)
     {
-        std::fprintf(stderr, "Received exception: %s\n", e.what());
-        return {};
+        throw BlobException(e.what());
     }
 
     /* IPMI_CC was OK, and it returned no bytes, so let's be happy with that for
@@ -81,16 +80,14 @@ std::vector<std::uint8_t>
      */
     if (reply.size() < headerSize)
     {
-        std::fprintf(stderr, "Invalid response length\n");
-        return {};
+        throw BlobException("Invalid response length");
     }
 
     /* Verify the OEN. */
     if (std::memcmp(ipmiPhosphorOen.data(), reply.data(),
                     ipmiPhosphorOen.size()) != 0)
     {
-        std::fprintf(stderr, "Invalid OEN received\n");
-        return {};
+        throw BlobException("Invalid OEN received");
     }
 
     /* Validate CRC. */
@@ -112,7 +109,7 @@ std::vector<std::uint8_t>
     {
         std::fprintf(stderr, "Invalid CRC, received: 0x%x, computed: 0x%x\n",
                      crc, computed);
-        return {};
+        throw BlobException("Invalid CRC on received data.");
     }
 
     return bytes;
@@ -121,26 +118,45 @@ std::vector<std::uint8_t>
 int BlobHandler::getBlobCount()
 {
     std::uint32_t count;
-    auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobGetCount, {});
-    if (resp.size() != sizeof(count))
+    try
+    {
+        auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobGetCount, {});
+        if (resp.size() != sizeof(count))
+        {
+            return 0;
+        }
+
+        /* LE to LE (need to make this portable as some point. */
+        std::memcpy(&count, resp.data(), sizeof(count));
+    }
+    catch (const BlobException& b)
     {
         return 0;
     }
 
-    /* LE to LE (need to make this portable as some point. */
-    std::memcpy(&count, resp.data(), sizeof(count));
+    std::fprintf(stderr, "BLOB Count: %d\n", count);
     return count;
 }
 
 std::string BlobHandler::enumerateBlob(std::uint32_t index)
 {
     std::vector<std::uint8_t> payload;
+    std::string output;
     std::uint8_t* data = reinterpret_cast<std::uint8_t*>(&index);
+
     std::copy(data, data + sizeof(std::uint32_t), std::back_inserter(payload));
 
-    auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobEnumerate, payload);
-    std::string output;
-    std::copy(resp.begin(), resp.end(), std::back_inserter(output));
+    try
+    {
+        auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobEnumerate, payload);
+        std::copy(resp.begin(), resp.end(), std::back_inserter(output));
+    }
+    catch (const BlobException& b)
+    {
+        return "";
+    }
+
+    std::fprintf(stderr, "blobid: '%s'\n", output.c_str());
     return output;
 }
 
@@ -165,11 +181,20 @@ std::vector<std::string> BlobHandler::getBlobList()
 StatResponse BlobHandler::getStat(const std::string& id)
 {
     StatResponse meta;
-    std::vector<std::uint8_t> name;
+    std::vector<std::uint8_t> name, resp;
+
     std::copy(id.begin(), id.end(), std::back_inserter(name));
     name.push_back(0x00); /* need to add nul-terminator. */
 
-    auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobStat, name);
+    try
+    {
+        resp = sendIpmiPayload(BlobOEMCommands::bmcBlobStat, name);
+    }
+    catch (const BlobException& b)
+    {
+        throw;
+    }
+
     std::memcpy(&meta.blob_state, &resp[0], sizeof(meta.blob_state));
     std::memcpy(&meta.size, &resp[sizeof(meta.blob_state)], sizeof(meta.size));
     int offset = sizeof(meta.blob_state) + sizeof(meta.size);
@@ -188,16 +213,25 @@ std::uint16_t
                           blobs::FirmwareBlobHandler::UpdateFlags handlerFlags)
 {
     std::uint16_t session;
-    std::vector<std::uint8_t> request;
+    std::vector<std::uint8_t> request, resp;
     std::uint16_t flags =
         blobs::FirmwareBlobHandler::UpdateFlags::openWrite | handlerFlags;
     auto addrFlags = reinterpret_cast<std::uint8_t*>(&flags);
+
     std::copy(addrFlags, addrFlags + sizeof(flags),
               std::back_inserter(request));
     std::copy(id.begin(), id.end(), std::back_inserter(request));
     request.push_back(0x00); /* need to add nul-terminator. */
 
-    auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobOpen, request);
+    try
+    {
+        resp = sendIpmiPayload(BlobOEMCommands::bmcBlobOpen, request);
+    }
+    catch (const BlobException& b)
+    {
+        throw;
+    }
+
     if (resp.size() != sizeof(session))
     {
         throw BlobException("Did not receive session.");
