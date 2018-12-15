@@ -106,7 +106,7 @@ TEST(BlobHandler, getStatWithMetadata)
     std::vector<std::uint8_t> request = {
         0xcf, 0xc2, 0x00, BlobHandler::BlobOEMCommands::bmcBlobStat,
         0x00, 0x00, 'a',  'b',
-        'c',  'd'};
+        'c',  'd',  0x00};
 
     /* return blob_state: 0xffff, size: 0x00, metadata 0x3445 */
     std::vector<std::uint8_t> resp = {0xcf, 0xc2, 0x00, 0x00, 0x00, 0xff, 0xff,
@@ -129,7 +129,7 @@ TEST(BlobHandler, getStatNoMetadata)
     std::vector<std::uint8_t> request = {
         0xcf, 0xc2, 0x00, BlobHandler::BlobOEMCommands::bmcBlobStat,
         0x00, 0x00, 'a',  'b',
-        'c',  'd'};
+        'c',  'd',  0x00};
 
     /* return blob_state: 0xffff, size: 0x00, metadata 0x3445 */
     std::vector<std::uint8_t> resp = {0xcf, 0xc2, 0x00, 0x00, 0x00, 0xff,
@@ -153,7 +153,8 @@ TEST(BlobHandler, openBlobSucceeds)
     std::vector<std::uint8_t> request = {
         0xcf, 0xc2, 0x00, BlobHandler::BlobOEMCommands::bmcBlobOpen,
         0x00, 0x00, 0x02, 0x04,
-        'a',  'b',  'c',  'd'};
+        'a',  'b',  'c',  'd',
+        0x00};
 
     std::vector<std::uint8_t> resp = {0xcf, 0xc2, 0x00, 0x00, 0x00, 0xfe, 0xed};
 
