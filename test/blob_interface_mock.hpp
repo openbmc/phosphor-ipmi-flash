@@ -14,6 +14,7 @@ class BlobInterfaceMock : public BlobInterface
     MOCK_METHOD2(openBlob,
                  std::uint16_t(const std::string&,
                                blobs::FirmwareBlobHandler::UpdateFlags));
+    MOCK_METHOD1(closeBlob, void(std::uint16_t));
 };
 
 } // namespace host_tool
