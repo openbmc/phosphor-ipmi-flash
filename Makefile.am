@@ -15,6 +15,7 @@ libfirmwareblob_la_SOURCES = \
 libfirmwareblob_la_LDFLAGS = \
 	$(SDBUSPLUS_LIBS) \
 	$(PHOSPHOR_LOGGING_LIBS) \
+	-lstdc++fs \
 	-version-info 0:0:0 -shared
 libfirmwareblob_la_CXXFLAGS = \
 	$(SDBUSPLUS_CFLAGS) \
