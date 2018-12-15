@@ -20,6 +20,7 @@
 #include "tool_errors.hpp"
 
 #include <algorithm>
+#include <cstring>
 #include <memory>
 
 void updaterMain(BlobInterface* blob, DataInterface* handler,
@@ -36,7 +37,15 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
      * available and use it.
      */
     std::vector<std::string> blobs = blob->getBlobList();
-    auto blobInst = std::find(blobs.begin(), blobs.end(), goalFirmware);
+    auto blobInst = std::find_if(
+        blobs.begin(), blobs.end(), [&goalFirmware](const auto& iter) {
+            /* Running into weird scenarios where the string comparison doesn't
+             * work.  TODO: revisit.
+             */
+            return (0 == std::memcmp(goalFirmware.c_str(), iter.c_str(),
+                                     goalFirmware.length()));
+            // return (goalFirmware.compare(iter));
+        });
     if (blobInst == blobs.end())
     {
         throw ToolException(goalFirmware + " not found");
@@ -45,7 +54,17 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
     /* Call stat on /flash/image (or /flash/tarball) and check if data interface
      * is supported.
      */
-    auto stat = blob->getStat(goalFirmware);
+    StatResponse stat;
+    try
+    {
+        stat = blob->getStat(goalFirmware);
+    }
+    catch (const BlobException& b)
+    {
+        throw ToolException("blob exception received: " +
+                            std::string(b.what()));
+    }
+
     auto supported = handler->supportedType();
     if ((stat.blob_state & supported) == 0)
     {
@@ -63,8 +82,6 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
         throw ToolException("blob exception received: " +
                             std::string(b.what()));
     }
-
-    std::fprintf(stderr, "using session: %d\n", session);
 
     /* Send over the firmware image. */
     if (!handler->sendContents(imagePath, session))
