@@ -30,6 +30,7 @@ class BlobHandler : public BlobInterface
      * @param[in] command - the blob command.
      * @param[in] payload - the payload bytes.
      * @return the bytes returned from the ipmi interface.
+     * @throws BlobException.
      */
     std::vector<std::uint8_t>
         sendIpmiPayload(BlobOEMCommands command,
@@ -51,7 +52,15 @@ class BlobHandler : public BlobInterface
     std::string enumerateBlob(std::uint32_t index);
 
     std::vector<std::string> getBlobList() override;
+
+    /**
+     * @throws BlobException.
+     */
     StatResponse getStat(const std::string& id) override;
+
+    /**
+     * @throws BlobException.
+     */
     std::uint16_t
         openBlob(const std::string& id,
                  blobs::FirmwareBlobHandler::UpdateFlags handlerFlags) override;
