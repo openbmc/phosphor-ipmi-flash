@@ -248,4 +248,23 @@ std::uint16_t
     return session;
 }
 
+void BlobHandler::closeBlob(std::uint16_t session)
+{
+    std::vector<std::uint8_t> request, resp;
+    auto addrSession = reinterpret_cast<std::uint8_t*>(&session);
+    std::copy(addrSession, addrSession + sizeof(session),
+              std::back_inserter(request));
+
+    try
+    {
+        resp = sendIpmiPayload(BlobOEMCommands::bmcBlobClose, request);
+    }
+    catch (const BlobException& b)
+    {
+        std::fprintf(stderr, "Received failure on close: %s\n", b.what());
+    }
+
+    return;
+}
+
 } // namespace host_tool

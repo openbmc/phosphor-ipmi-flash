@@ -47,6 +47,13 @@ class BlobInterface
     virtual std::uint16_t
         openBlob(const std::string& id,
                  blobs::FirmwareBlobHandler::UpdateFlags handlerFlags) = 0;
+
+    /**
+     * Attempt to close the open session.
+     *
+     * @param[in] session - the session to close.
+     */
+    virtual void closeBlob(std::uint16_t session) = 0;
 };
 
 } // namespace host_tool
