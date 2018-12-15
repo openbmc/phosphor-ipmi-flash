@@ -68,6 +68,8 @@ class BlobHandler : public BlobInterface
         openBlob(const std::string& id,
                  blobs::FirmwareBlobHandler::UpdateFlags handlerFlags) override;
 
+    void closeBlob(std::uint16_t session) override;
+
   private:
     IpmiInterface* ipmi;
 };
