@@ -75,6 +75,8 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
         throw ToolException("Failed to send contents of " + imagePath);
     }
 
+    blob->closeBlob(session);
+
     /* Send over the hash contents. */
     /* Trigger the verification. */
     /* Check the verification. */
