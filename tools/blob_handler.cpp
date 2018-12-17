@@ -167,6 +167,7 @@ StatResponse BlobHandler::getStat(const std::string& id)
     StatResponse meta;
     std::vector<std::uint8_t> name;
     std::copy(id.begin(), id.end(), std::back_inserter(name));
+    name.push_back(0x00); /* need to add nul-terminator. */
 
     auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobStat, name);
     std::memcpy(&meta.blob_state, &resp[0], sizeof(meta.blob_state));
@@ -194,6 +195,7 @@ std::uint16_t
     std::copy(addrFlags, addrFlags + sizeof(flags),
               std::back_inserter(request));
     std::copy(id.begin(), id.end(), std::back_inserter(request));
+    request.push_back(0x00); /* need to add nul-terminator. */
 
     auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobOpen, request);
     if (resp.size() != sizeof(session))
