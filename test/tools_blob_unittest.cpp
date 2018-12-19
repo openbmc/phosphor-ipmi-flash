@@ -41,7 +41,7 @@ TEST(BlobHandler, enumerateBlobIpmiHappy)
 
     /* return value. */
     std::vector<std::uint8_t> resp = {0xcf, 0xc2, 0x00, 0x00, 0x00,
-                                      'a',  'b',  'c',  'd'};
+                                      'a',  'b',  'c',  'd',  0x00};
 
     EXPECT_CALL(ipmiMock, sendPacket(Eq(request))).WillOnce(Return(resp));
     EXPECT_STREQ("abcd", blob.enumerateBlob(1).c_str());
@@ -86,11 +86,11 @@ TEST(BlobHandler, getBlobListIpmiHappy)
 
     /* return value. */
     std::vector<std::uint8_t> resp2 = {0xcf, 0xc2, 0x00, 0x00, 0x00,
-                                       'a',  'b',  'c',  'd'};
+                                       'a',  'b',  'c',  'd',  0x00};
 
     EXPECT_CALL(ipmiMock, sendPacket(Eq(request2))).WillOnce(Return(resp2));
 
-    std::vector<std::string> expectedList = {"abcd"};
+    std::vector<std::string> expectedList = {std::string{"abcd"}};
 
     EXPECT_EQ(expectedList, blob.getBlobList());
 }
