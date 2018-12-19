@@ -128,9 +128,8 @@ std::string BlobHandler::enumerateBlob(std::uint32_t index)
     std::copy(data, data + sizeof(std::uint32_t), std::back_inserter(payload));
 
     auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobEnumerate, payload);
-    std::string output;
-    std::copy(resp.begin(), resp.end(), std::back_inserter(output));
-    return output;
+    return (resp.size() > 0) ? std::string(&resp[0], &resp[resp.size() - 1])
+                             : "";
 }
 
 std::vector<std::string> BlobHandler::getBlobList()
