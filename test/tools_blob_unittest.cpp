@@ -90,6 +90,7 @@ TEST(BlobHandler, getBlobListIpmiHappy)
 
     EXPECT_CALL(ipmiMock, sendPacket(Eq(request2))).WillOnce(Return(resp2));
 
+    /* A std::string is not nul-terminated by default. */
     std::vector<std::string> expectedList = {std::string{"abcd"}};
 
     EXPECT_EQ(expectedList, blob.getBlobList());
