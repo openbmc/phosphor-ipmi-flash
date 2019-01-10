@@ -15,7 +15,7 @@ using ::testing::Return;
 using ::testing::StrEq;
 using ::testing::StrictMock;
 
-TEST(FirmwareHandlerBlobTest, VerifyFirmareCounts)
+TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
 {
     /* Verify the firmware count must be greater than zero. */
 
