@@ -2,6 +2,7 @@
 
 #include "blob_interface.hpp"
 #include "interface.hpp"
+#include "internal/sys.hpp"
 
 namespace host_tool
 {
@@ -9,7 +10,10 @@ namespace host_tool
 class BtDataHandler : public DataInterface
 {
   public:
-    explicit BtDataHandler(BlobInterface* blob) : blob(blob){};
+    BtDataHandler(BlobInterface* blob,
+                  const internal::Sys* sys = &internal::sys_impl) :
+        blob(blob),
+        sys(sys){};
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
     blobs::FirmwareBlobHandler::UpdateFlags supportedType() const override
@@ -19,6 +23,7 @@ class BtDataHandler : public DataInterface
 
   private:
     BlobInterface* blob;
+    const internal::Sys* sys;
     blobs::FirmwareBlobHandler::UpdateFlags flags =
         blobs::FirmwareBlobHandler::UpdateFlags::ipmi;
 };
