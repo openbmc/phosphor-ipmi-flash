@@ -29,6 +29,11 @@ int SysImpl::open(const char* pathname, int flags) const
     return ::open(pathname, flags);
 }
 
+int SysImpl::read(int fd, void* buf, std::size_t count) const
+{
+    return static_cast<int>(::read(fd, buf, count));
+}
+
 int SysImpl::close(int fd) const
 {
     return ::close(fd);
