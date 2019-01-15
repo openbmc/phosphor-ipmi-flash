@@ -28,6 +28,7 @@ check_PROGRAMS = \
 	firmware_commit_unittest \
 	file_handler_unittest \
 	tools_blob_unittest \
+	tools_bt_unittest \
 	tools_updater_unittest \
 	tools_ipmi_unittest
 
@@ -71,6 +72,9 @@ file_handler_unittest_LDADD = $(top_builddir)/file_handler.o -lstdc++fs
 
 tools_blob_unittest_SOURCES = tools_blob_unittest.cpp
 tools_blob_unittest_LDADD = $(top_builddir)/tools/blob_handler.o
+
+tools_bt_unittest_SOURCES = tools_bt_unittest.cpp
+tools_bt_unittest_LDADD = $(top_builddir)/tools/bt.o
 
 tools_updater_unittest_SOURCES = tools_updater_unittest.cpp
 tools_updater_unittest_LDADD = $(top_builddir)/tools/updater.o
