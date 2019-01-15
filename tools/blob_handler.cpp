@@ -178,7 +178,6 @@ void BlobHandler::writeBytes(std::uint16_t session, std::uint32_t offset,
     std::copy(bytes.begin(), bytes.end(), std::back_inserter(payload));
 
     auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobWrite, payload);
-    return;
 }
 
 std::vector<std::string> BlobHandler::getBlobList()
