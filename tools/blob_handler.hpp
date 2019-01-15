@@ -54,6 +54,12 @@ class BlobHandler : public BlobInterface
      */
     std::string enumerateBlob(std::uint32_t index);
 
+    /**
+     * @throw BlobException.
+     */
+    void writeBytes(std::uint16_t session, std::uint32_t offset,
+                    const std::vector<std::uint8_t>& bytes) override;
+
     std::vector<std::string> getBlobList() override;
 
     /**

@@ -214,4 +214,27 @@ TEST_F(BlobHandlerTest, openBlobSucceeds)
     EXPECT_EQ(0xedfe, session);
 }
 
+TEST_F(BlobHandlerTest, writeBytesSucceeds)
+{
+    /* The write bytes succeeds. */
+    IpmiInterfaceMock ipmiMock;
+    BlobHandler blob(&ipmiMock);
+
+    std::vector<std::uint8_t> request = {
+        0xcf, 0xc2, 0x00, BlobHandler::BlobOEMCommands::bmcBlobWrite,
+        0x00, 0x00, 0x01, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        'a',  'b',  'c',  'd'};
+
+    std::vector<std::uint8_t> bytes = {'a', 'b', 'c', 'd'};
+    std::vector<std::uint8_t> resp = {0xcf, 0xc2, 0x00};
+    std::vector<std::uint8_t> reqCrc = {0x01, 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 'a',  'b',  'c',  'd'};
+    EXPECT_CALL(crcMock, generateCrc(Eq(reqCrc))).WillOnce(Return(0x00));
+
+    EXPECT_CALL(ipmiMock, sendPacket(Eq(request))).WillOnce(Return(resp));
+
+    blob.writeBytes(0x0001, 0, bytes);
+}
+
 } // namespace host_tool
