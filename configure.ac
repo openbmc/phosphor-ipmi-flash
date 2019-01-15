@@ -75,8 +75,8 @@ AS_IF([test "x$enable_lpc_bridge" = "xyes"], [
 # for PCI, this address is passed back to the host and is used directly.
 AC_ARG_VAR(MAPPED_ADDRESS, [The base address of the memory region reserved for mapping.])
 AS_IF([test "x$MAPPED_ADDRESS" == "x"],
-    [AC_DEFINE(MAPPED_ADDRESS, [0], [Default address to 0.])],
-    [AC_DEFINE(MAPPED_ADDRESS, [$MAPPED_ADDRESS], [Value for memory region mapping.])]
+    [AC_DEFINE_UNQUOTED(MAPPED_ADDRESS, [0], [Default address to 0.])],
+    [AC_DEFINE_UNQUOTED(MAPPED_ADDRESS, [$MAPPED_ADDRESS], [Value for memory region mapping.])]
 )
 
 AC_ARG_ENABLE([aspeed-lpc],
