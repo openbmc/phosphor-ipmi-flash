@@ -161,6 +161,26 @@ std::string BlobHandler::enumerateBlob(std::uint32_t index)
     }
 }
 
+void BlobHandler::writeBytes(std::uint16_t session, std::uint32_t offset,
+                             const std::vector<std::uint8_t>& bytes)
+{
+    std::vector<std::uint8_t> payload;
+
+    payload.reserve(sizeof(std::uint16_t) + sizeof(std::uint32_t) +
+                    bytes.size());
+
+    std::uint8_t* data = reinterpret_cast<std::uint8_t*>(&session);
+    std::copy(data, data + sizeof(std::uint16_t), std::back_inserter(payload));
+
+    data = reinterpret_cast<std::uint8_t*>(&offset);
+    std::copy(data, data + sizeof(std::uint32_t), std::back_inserter(payload));
+
+    std::copy(bytes.begin(), bytes.end(), std::back_inserter(payload));
+
+    auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobWrite, payload);
+    return;
+}
+
 std::vector<std::string> BlobHandler::getBlobList()
 {
     std::vector<std::string> list;

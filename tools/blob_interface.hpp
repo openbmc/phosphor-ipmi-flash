@@ -22,6 +22,17 @@ class BlobInterface
     virtual ~BlobInterface() = default;
 
     /**
+     * Write bytes to a blob.
+     *
+     * @param[in] session - the session id.
+     * @param[in] offset - the offset to which to write the bytes.
+     * @param[in] bytes - the bytes to send.
+     * @throws BlobException on failure.
+     */
+    virtual void writeBytes(std::uint16_t session, std::uint32_t offset,
+                            const std::vector<std::uint8_t>& bytes) = 0;
+
+    /**
      * Get a list of the blob_ids provided by the BMC.
      *
      * @return list of strings, each representing a blob_id returned.
