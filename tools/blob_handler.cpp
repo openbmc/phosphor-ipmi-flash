@@ -35,7 +35,7 @@ std::vector<std::uint8_t>
     BlobHandler::sendIpmiPayload(BlobOEMCommands command,
                                  const std::vector<std::uint8_t>& payload)
 {
-    std::vector<std::uint8_t> request, reply;
+    std::vector<std::uint8_t> request, reply, bytes;
 
     std::copy(ipmiPhosphorOen.begin(), ipmiPhosphorOen.end(),
               std::back_inserter(request));
@@ -73,12 +73,10 @@ std::vector<std::uint8_t>
         return reply;
     }
 
-    std::size_t headerSize = ipmiPhosphorOen.size() + sizeof(std::uint16_t);
-
     /* This cannot be a response because it's smaller than the smallest
      * response.
      */
-    if (reply.size() < headerSize)
+    if (reply.size() < ipmiPhosphorOen.size())
     {
         throw BlobException("Invalid response length");
     }
@@ -88,6 +86,13 @@ std::vector<std::uint8_t>
                     ipmiPhosphorOen.size()) != 0)
     {
         throw BlobException("Invalid OEN received");
+    }
+
+    /* In this case there was no data, as there was no CRC. */
+    std::size_t headerSize = ipmiPhosphorOen.size() + sizeof(std::uint16_t);
+    if (reply.size() < headerSize)
+    {
+        return {};
     }
 
     /* Validate CRC. */
@@ -101,7 +106,6 @@ std::vector<std::uint8_t>
     }
     std::fprintf(stderr, "\n");
 
-    std::vector<std::uint8_t> bytes;
     bytes.insert(bytes.begin(), reply.begin() + headerSize, reply.end());
 
     auto computed = generateCrc(bytes);
