@@ -1,5 +1,7 @@
 #pragma once
 
+#include "config.h"
+
 #include "data_handler.hpp"
 #include "image_handler.hpp"
 
@@ -7,7 +9,19 @@
 #include <cstdint>
 #include <map>
 #include <memory>
+#if HAVE_SDBUSPLUS
 #include <sdbusplus/bus.hpp>
+#else
+namespace sdbusplus
+{
+namespace bus
+{
+class bus
+{
+};
+} // namespace bus
+} // namespace sdbusplus
+#endif
 #include <string>
 #include <vector>
 
