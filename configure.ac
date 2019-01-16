@@ -24,7 +24,7 @@ LT_INIT # Required for systemd linking
 PKG_CHECK_MODULES(
     [SDBUSPLUS],
     [sdbusplus],
-    [],
+    [AC_DEFINE(HAVE_SDBUSPLUS, [1], [Found openbmc/sdbusplus package])],
     [AC_MSG_ERROR([The openbmc/sdbusplus package is required])]
 )
 PKG_CHECK_MODULES(
