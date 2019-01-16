@@ -30,7 +30,8 @@ check_PROGRAMS = \
 	tools_blob_unittest \
 	tools_bt_unittest \
 	tools_updater_unittest \
-	tools_ipmi_unittest
+	tools_ipmi_unittest \
+	tools_ipmi_error_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -81,3 +82,6 @@ tools_updater_unittest_LDADD = $(top_builddir)/tools/updater.o
 
 tools_ipmi_unittest_SOURCES = tools_ipmi_unittest.cpp
 tools_ipmi_unittest_LDADD = $(top_builddir)/tools/ipmi_handler.o
+
+tools_ipmi_error_unittest_SOURCES = tools_ipmi_error_unittest.cpp
+tools_ipmi_error_unittest_LDADD =
