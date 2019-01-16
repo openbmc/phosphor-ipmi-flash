@@ -24,7 +24,6 @@
 #include "lpc_nuvoton.hpp"
 #include "pci_handler.hpp"
 
-#include <blobs-ipmid/manager.hpp>
 #include <cstdint>
 #include <memory>
 #include <phosphor-logging/log.hpp>
