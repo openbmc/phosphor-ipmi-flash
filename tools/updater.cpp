@@ -89,6 +89,10 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
     /* Send over the firmware image. */
     if (!handler->sendContents(imagePath, session))
     {
+        /* Need to close the session on failure, or it's stuck open (until the
+         * blob handler timeout is implemented, and even then, why make it wait.
+         */
+        blob->closeBlob(session);
         throw ToolException("Failed to send contents of " + imagePath);
     }
 
