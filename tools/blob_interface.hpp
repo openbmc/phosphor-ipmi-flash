@@ -22,6 +22,17 @@ class BlobInterface
     virtual ~BlobInterface() = default;
 
     /**
+     * Write metadata to a blob.
+     *
+     * @param[in] session - the session id.
+     * @param[in] offset - the offset for the metadata to write.
+     * @param[in] bytes - the bytes to send.
+     * @throws BlobException on failure.
+     */
+    virtual void writeMeta(std::uint16_t session, std::uint32_t offset,
+                           const std::vector<std::uint8_t>& bytes) = 0;
+
+    /**
      * Write bytes to a blob.
      *
      * @param[in] session - the session id.
