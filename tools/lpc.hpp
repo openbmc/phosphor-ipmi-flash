@@ -6,6 +6,14 @@
 namespace host_tool
 {
 
+struct LpcRegion
+{
+    /* Host LPC address at which the chunk is to be mapped. */
+    std::uint32_t address;
+    /* Size of the chunk to be mapped. */
+    std::uint32_t length;
+};
+
 class LpcDataHandler : public DataInterface
 {
   public:
