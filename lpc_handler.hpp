@@ -29,13 +29,9 @@ class LpcDataHandler : public DataInterface
     /**
      * Create an LpcDataHandler.
      *
-     * @param[in] regionAddress - BMC address to point the map for the LPC
-     * memory region.
      * @param[in] mapper - pointer to a mapper implementation to use.
      */
-    LpcDataHandler(std::uint32_t regionAddress,
-                   std::unique_ptr<HardwareMapperInterface> mapper) :
-        regionAddress(regionAddress),
+    explicit LpcDataHandler(std::unique_ptr<HardwareMapperInterface> mapper) :
         mapper(std::move(mapper)), initialized(false)
     {
     }
@@ -53,7 +49,6 @@ class LpcDataHandler : public DataInterface
         return value;
     }
 
-    std::uint32_t regionAddress;
     std::unique_ptr<HardwareMapperInterface> mapper;
     bool initialized;
 };

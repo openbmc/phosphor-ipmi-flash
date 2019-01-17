@@ -14,15 +14,19 @@ namespace blobs
 class LpcMapperNuvoton : public HardwareMapperInterface
 {
   public:
-    static std::unique_ptr<HardwareMapperInterface> createNuvotonMapper();
+    static std::unique_ptr<HardwareMapperInterface>
+        createNuvotonMapper(std::uint32_t regionAddress);
 
     /**
      * Create an LpcMapper for Nuvoton.
      *
+     * @param[in] regionAddress - where to map the window into BMC memory.
      * @param[in] a sys call interface pointer.
      * @todo Needs reserved memory region's physical address and size.
      */
-    explicit LpcMapperNuvoton(const internal::Sys* sys = &internal::sys_impl) :
+    LpcMapperNuvoton(std::uint32_t regionAddress,
+                     const internal::Sys* sys = &internal::sys_impl) :
+        regionAddress(regionAddress),
         sys(sys){};
 
     std::pair<std::uint32_t, std::uint32_t>
@@ -31,6 +35,7 @@ class LpcMapperNuvoton : public HardwareMapperInterface
     std::vector<std::uint8_t> copyFrom(std::uint32_t length) override;
 
   private:
+    std::uint32_t regionAddress;
     const internal::Sys* sys;
 };
 

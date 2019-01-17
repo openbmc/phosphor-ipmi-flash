@@ -34,12 +34,13 @@ namespace blobs
 const std::string LpcMapperAspeed::lpcControlPath = "/dev/aspeed-lpc-ctrl";
 
 std::unique_ptr<HardwareMapperInterface>
-    LpcMapperAspeed::createAspeedMapper(std::size_t regionSize)
+    LpcMapperAspeed::createAspeedMapper(std::uint32_t regionAddress,
+                                        std::size_t regionSize)
 {
     /* NOTE: considered using a joint factory to create one or the other, for
      * now, separate factories.
      */
-    return std::make_unique<LpcMapperAspeed>(regionSize);
+    return std::make_unique<LpcMapperAspeed>(regionAddress, regionSize);
 }
 
 std::pair<std::uint32_t, std::uint32_t>

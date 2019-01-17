@@ -34,10 +34,11 @@ using std::uint16_t;
 using std::uint32_t;
 using std::uint8_t;
 
-std::unique_ptr<HardwareMapperInterface> LpcMapperNuvoton::createNuvotonMapper()
+std::unique_ptr<HardwareMapperInterface>
+    LpcMapperNuvoton::createNuvotonMapper(std::uint32_t regionAddress)
 {
     /* NOTE: Considered making one factory for both types. */
-    return std::make_unique<LpcMapperNuvoton>();
+    return std::make_unique<LpcMapperNuvoton>(regionAddress);
 }
 
 /*
