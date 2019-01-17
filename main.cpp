@@ -42,12 +42,11 @@ static constexpr std::size_t memoryRegionSize = 64 * 1024UL;
 
 #ifdef ENABLE_LPC_BRIDGE
 #if defined(ASPEED_LPC)
-LpcDataHandler
-    lpcDataHandler(MAPPED_ADDRESS,
-                   LpcMapperAspeed::createAspeedMapper(memoryRegionSize));
+LpcDataHandler lpcDataHandler(
+    LpcMapperAspeed::createAspeedMapper(MAPPED_ADDRESS, memoryRegionSize));
 #elif defined(NUVOTON_LPC)
-LpcDataHandler lpcDataHandler(MAPPED_ADDRESS,
-                              LpcMapperNuvoton::createNuvotonMapper());
+LpcDataHandler
+    lpcDataHandler(LpcMapperNuvoton::createNuvotonMapper(MAPPED_ADDRESS));
 #else
 #error "You must specify a hardware implementation."
 #endif
