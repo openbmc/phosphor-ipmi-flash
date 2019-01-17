@@ -43,6 +43,10 @@ std::unique_ptr<HardwareMapperInterface>
     return std::make_unique<LpcMapperAspeed>(regionAddress, regionSize);
 }
 
+void LpcMapperAspeed::close()
+{
+}
+
 std::pair<std::uint32_t, std::uint32_t>
     LpcMapperAspeed::mapWindow(std::uint32_t address, std::uint32_t length)
 {
