@@ -22,13 +22,11 @@ class LpcDataHandler : public DataInterface
     bool sendContents(const std::string& input, std::uint16_t session) override;
     blobs::FirmwareBlobHandler::UpdateFlags supportedType() const override
     {
-        return flags;
+        return blobs::FirmwareBlobHandler::UpdateFlags::lpc;
     }
 
   private:
     BlobInterface* blob;
-    blobs::FirmwareBlobHandler::UpdateFlags flags =
-        blobs::FirmwareBlobHandler::UpdateFlags::lpc;
 };
 
 } // namespace host_tool
