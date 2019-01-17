@@ -4,6 +4,7 @@
 #include "window_hw_interface.hpp"
 
 #include <memory>
+#include <vector>
 
 namespace blobs
 {
@@ -24,6 +25,8 @@ class LpcMapperNuvoton : public HardwareMapperInterface
 
     std::pair<std::uint32_t, std::uint32_t>
         mapWindow(std::uint32_t address, std::uint32_t length) override;
+
+    std::vector<std::uint8_t> copyFrom(std::uint32_t length) override;
 
   private:
     const internal::Sys* sys;

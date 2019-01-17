@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <utility>
+#include <vector>
 
 namespace blobs
 {
@@ -29,6 +30,14 @@ class HardwareMapperInterface
      */
     virtual std::pair<std::uint32_t, std::uint32_t>
         mapWindow(std::uint32_t address, std::uint32_t length) = 0;
+
+    /**
+     * Returns the bytes from the mapped window.
+     *
+     * @param[in] length - the number of bytes to copy.
+     * @return the bytes copied out of the region.
+     */
+    virtual std::vector<std::uint8_t> copyFrom(std::uint32_t length) = 0;
 };
 
 } // namespace blobs

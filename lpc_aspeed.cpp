@@ -96,4 +96,10 @@ std::pair<std::uint32_t, std::uint32_t>
     return std::make_pair(offset, length);
 }
 
+std::vector<std::uint8_t> LpcMapperAspeed::copyFrom(std::uint32_t length)
+{
+    /* TODO: Implement this. */
+    return {};
+}
+
 } // namespace blobs

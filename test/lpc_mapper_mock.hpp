@@ -15,6 +15,7 @@ class HardwareInterfaceMock : public HardwareMapperInterface
     MOCK_METHOD2(mapWindow,
                  std::pair<std::uint32_t, std::uint32_t>(std::uint32_t,
                                                          std::uint32_t));
+    MOCK_METHOD1(copyFrom, std::vector<std::uint8_t>(std::uint32_t));
 };
 
 } // namespace blobs

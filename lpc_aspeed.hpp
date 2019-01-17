@@ -22,6 +22,8 @@ class LpcMapperAspeed : public HardwareMapperInterface
     std::pair<std::uint32_t, std::uint32_t>
         mapWindow(std::uint32_t address, std::uint32_t length) override;
 
+    std::vector<std::uint8_t> copyFrom(std::uint32_t length) override;
+
   private:
     std::size_t regionSize;
     const internal::Sys* sys;

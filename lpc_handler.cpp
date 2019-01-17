@@ -56,7 +56,7 @@ std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
         return {};
     }
 
-    return {};
+    return mapper->copyFrom(length);
 }
 
 bool LpcDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)

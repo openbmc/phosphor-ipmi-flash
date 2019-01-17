@@ -129,4 +129,10 @@ std::pair<std::uint32_t, std::uint32_t>
     return std::make_pair(windowOffset, windowSize);
 }
 
+std::vector<std::uint8_t> LpcMapperNuvoton::copyFrom(std::uint32_t length)
+{
+    /* TODO: implement. */
+    return {};
+}
+
 } // namespace blobs
