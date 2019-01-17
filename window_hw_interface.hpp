@@ -18,6 +18,12 @@ class HardwareMapperInterface
     virtual ~HardwareMapperInterface() = default;
 
     /**
+     * Close the mapper.  This could mean, send an ioctl to turn off the region,
+     * or unmap anything mmapped.
+     */
+    virtual void close() = 0;
+
+    /**
      * Returns a windowOffset and windowSize if the requested window was mapped.
      *
      * TODO: If the length requested is too large, windowSize will be written

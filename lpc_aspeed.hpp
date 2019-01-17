@@ -23,6 +23,8 @@ class LpcMapperAspeed : public HardwareMapperInterface
         regionAddress(regionAddress),
         regionSize(regionSize), sys(sys){};
 
+    void close() override;
+
     std::pair<std::uint32_t, std::uint32_t>
         mapWindow(std::uint32_t address, std::uint32_t length) override;
 
