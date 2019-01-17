@@ -161,8 +161,9 @@ std::string BlobHandler::enumerateBlob(std::uint32_t index)
     }
 }
 
-void BlobHandler::writeBytes(std::uint16_t session, std::uint32_t offset,
-                             const std::vector<std::uint8_t>& bytes)
+void BlobHandler::writeGeneric(BlobOEMCommands command, std::uint16_t session,
+                               std::uint32_t offset,
+                               const std::vector<std::uint8_t>& bytes)
 {
     std::vector<std::uint8_t> payload;
 
@@ -177,7 +178,20 @@ void BlobHandler::writeBytes(std::uint16_t session, std::uint32_t offset,
 
     std::copy(bytes.begin(), bytes.end(), std::back_inserter(payload));
 
-    auto resp = sendIpmiPayload(BlobOEMCommands::bmcBlobWrite, payload);
+    auto resp = sendIpmiPayload(command, payload);
+}
+
+void BlobHandler::writeMeta(std::uint16_t session, std::uint32_t offset,
+                            const std::vector<std::uint8_t>& bytes)
+{
+    return writeGeneric(BlobOEMCommands::bmcBlobWriteMeta, session, offset,
+                        bytes);
+}
+
+void BlobHandler::writeBytes(std::uint16_t session, std::uint32_t offset,
+                             const std::vector<std::uint8_t>& bytes)
+{
+    return writeGeneric(BlobOEMCommands::bmcBlobWrite, session, offset, bytes);
 }
 
 std::vector<std::string> BlobHandler::getBlobList()
