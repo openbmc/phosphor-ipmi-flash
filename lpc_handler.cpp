@@ -33,7 +33,7 @@ bool LpcDataHandler::open()
 
 bool LpcDataHandler::close()
 {
-    /* TODO: implement ioctl call to close window. */
+    mapper->close();
 
     return setInitializedAndReturn(false);
 }
