@@ -29,6 +29,7 @@ check_PROGRAMS = \
 	file_handler_unittest \
 	tools_blob_unittest \
 	tools_bt_unittest \
+	tools_lpc_unittest \
 	tools_updater_unittest \
 	tools_ipmi_unittest \
 	tools_ipmi_error_unittest
@@ -76,6 +77,9 @@ tools_blob_unittest_LDADD = $(top_builddir)/tools/blob_handler.o
 
 tools_bt_unittest_SOURCES = tools_bt_unittest.cpp
 tools_bt_unittest_LDADD = $(top_builddir)/tools/bt.o
+
+tools_lpc_unittest_SOURCES = tools_lpc_unittest.cpp
+tools_lpc_unittest_LDADD = $(top_builddir)/tools/lpc.o
 
 tools_updater_unittest_SOURCES = tools_updater_unittest.cpp
 tools_updater_unittest_LDADD = $(top_builddir)/tools/updater.o
