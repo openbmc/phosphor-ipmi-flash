@@ -45,6 +45,17 @@ std::unique_ptr<HardwareMapperInterface>
 
 void LpcMapperAspeed::close()
 {
+    if (mappedRegion)
+    {
+        sys->munmap(mappedRegion, regionSize);
+        mappedRegion = nullptr;
+    }
+
+    if (mappedFd != -1)
+    {
+        sys->close(mappedFd);
+        mappedFd = -1;
+    }
 }
 
 std::pair<std::uint32_t, std::uint32_t>
