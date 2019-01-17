@@ -2,6 +2,10 @@
 
 #include "window_hw_interface.hpp"
 
+#include <cstdint>
+#include <utility>
+#include <vector>
+
 #include <gmock/gmock.h>
 
 namespace blobs

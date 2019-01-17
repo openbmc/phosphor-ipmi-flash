@@ -3,7 +3,10 @@
 #include "internal/sys.hpp"
 #include "window_hw_interface.hpp"
 
+#include <cstdint>
 #include <memory>
+#include <utility>
+#include <vector>
 
 namespace blobs
 {
