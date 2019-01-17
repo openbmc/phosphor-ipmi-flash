@@ -28,9 +28,17 @@ class LpcMapperAspeed : public HardwareMapperInterface
 
     std::vector<std::uint8_t> copyFrom(std::uint32_t length) override;
 
+    /**
+     * Attempt to mmap the region.
+     *
+     * @return true on success, false otherwise.
+     */
+    bool mapRegion();
+
   private:
     static const std::string lpcControlPath;
     int mappedFd = -1;
+    std::uint8_t* mappedRegion = nullptr;
     std::uint32_t regionAddress;
     std::size_t regionSize;
     const internal::Sys* sys;

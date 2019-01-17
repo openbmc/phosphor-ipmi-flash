@@ -98,8 +98,43 @@ std::pair<std::uint32_t, std::uint32_t>
     return std::make_pair(offset, length);
 }
 
+bool LpcMapperAspeed::mapRegion()
+{
+    /* Open the file to map. */
+    mappedFd = sys->open(lpcControlPath.c_str(), O_RDONLY | O_SYNC);
+
+    mappedRegion = reinterpret_cast<uint8_t*>(
+        sys->mmap(0, regionSize, PROT_READ, MAP_SHARED, mappedFd, 0));
+
+    if (mappedRegion == nullptr)
+    {
+        sys->close(mappedFd);
+        mappedFd = -1;
+        return false;
+    }
+
+    /* TOOD: There is no close() method here, to close mappedFd, or mappedRegion
+     * -- therefore, a good next step will be to evaluate whether or not the
+     * other pieces should go here...
+     */
+    return true;
+}
+
 std::vector<std::uint8_t> LpcMapperAspeed::copyFrom(std::uint32_t length)
 {
+    if (mappedFd < 0)
+    {
+        /* NOTE: may make more sense to do this in the open() */
+        if (!mapRegion())
+        {
+            /* Was unable to map region -- this call only required if using mmap
+             * and not ioctl.
+             */
+            /* TODO: have a better failure. */
+            return {};
+        }
+    }
+
     /* TODO: Implement this. */
     return {};
 }
