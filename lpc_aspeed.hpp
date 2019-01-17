@@ -1,17 +1,17 @@
 #pragma once
 
 #include "internal/sys.hpp"
-#include "lpc_interface.hpp"
+#include "window_hw_interface.hpp"
 
 #include <memory>
 
 namespace blobs
 {
 
-class LpcMapperAspeed : public LpcMapperInterface
+class LpcMapperAspeed : public HardwareMapperInterface
 {
   public:
-    static std::unique_ptr<LpcMapperInterface>
+    static std::unique_ptr<HardwareMapperInterface>
         createAspeedMapper(std::size_t regionSize);
 
     LpcMapperAspeed(std::size_t regionSize,

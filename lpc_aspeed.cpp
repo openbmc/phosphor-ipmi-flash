@@ -16,7 +16,7 @@
 
 #include "lpc_aspeed.hpp"
 
-#include "lpc_interface.hpp"
+#include "window_hw_interface.hpp"
 
 #include <fcntl.h>
 #include <linux/aspeed-lpc-ctrl.h>
@@ -30,7 +30,7 @@
 namespace blobs
 {
 
-std::unique_ptr<LpcMapperInterface>
+std::unique_ptr<HardwareMapperInterface>
     LpcMapperAspeed::createAspeedMapper(std::size_t regionSize)
 {
     /* NOTE: considered using a joint factory to create one or the other, for

@@ -1,17 +1,17 @@
 #pragma once
 
 #include "internal/sys.hpp"
-#include "lpc_interface.hpp"
+#include "window_hw_interface.hpp"
 
 #include <memory>
 
 namespace blobs
 {
 
-class LpcMapperNuvoton : public LpcMapperInterface
+class LpcMapperNuvoton : public HardwareMapperInterface
 {
   public:
-    static std::unique_ptr<LpcMapperInterface> createNuvotonMapper();
+    static std::unique_ptr<HardwareMapperInterface> createNuvotonMapper();
 
     /**
      * Create an LpcMapper for Nuvoton.

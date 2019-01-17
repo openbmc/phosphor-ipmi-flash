@@ -7,13 +7,14 @@ namespace blobs
 {
 
 /**
- * Different LPC memory map implementations may require different mechanisms for
- * specific tasks such as mapping the memory window.
+ * Different LPC (or P2a) memory map implementations may require different
+ * mechanisms for specific tasks such as mapping the memory window or copying
+ * out data.
  */
-class LpcMapperInterface
+class HardwareMapperInterface
 {
   public:
-    virtual ~LpcMapperInterface() = default;
+    virtual ~HardwareMapperInterface() = default;
 
     /**
      * Returns a windowOffset and windowSize if the requested window was mapped.

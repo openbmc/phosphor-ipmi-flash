@@ -1,16 +1,16 @@
 #pragma once
 
-#include "lpc_interface.hpp"
+#include "window_hw_interface.hpp"
 
 #include <gmock/gmock.h>
 
 namespace blobs
 {
 
-class LpcInterfaceMock : public LpcMapperInterface
+class HardwareInterfaceMock : public HardwareMapperInterface
 {
   public:
-    virtual ~LpcInterfaceMock() = default;
+    virtual ~HardwareInterfaceMock() = default;
 
     MOCK_METHOD2(mapWindow,
                  std::pair<std::uint32_t, std::uint32_t>(std::uint32_t,

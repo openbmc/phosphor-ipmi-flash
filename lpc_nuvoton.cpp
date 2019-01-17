@@ -16,7 +16,7 @@
 
 #include "lpc_nuvoton.hpp"
 
-#include "lpc_interface.hpp"
+#include "window_hw_interface.hpp"
 
 #include <fcntl.h>
 #include <sys/mman.h>
@@ -33,7 +33,7 @@ using std::uint16_t;
 using std::uint32_t;
 using std::uint8_t;
 
-std::unique_ptr<LpcMapperInterface> LpcMapperNuvoton::createNuvotonMapper()
+std::unique_ptr<HardwareMapperInterface> LpcMapperNuvoton::createNuvotonMapper()
 {
     /* NOTE: Considered making one factory for both types. */
     return std::make_unique<LpcMapperNuvoton>();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "data_handler.hpp"
-#include "lpc_interface.hpp"
+#include "window_hw_interface.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -34,7 +34,7 @@ class LpcDataHandler : public DataInterface
      * @param[in] mapper - pointer to a mapper implementation to use.
      */
     LpcDataHandler(std::uint32_t regionAddress,
-                   std::unique_ptr<LpcMapperInterface> mapper) :
+                   std::unique_ptr<HardwareMapperInterface> mapper) :
         regionAddress(regionAddress),
         mapper(std::move(mapper)), initialized(false)
     {
@@ -54,7 +54,7 @@ class LpcDataHandler : public DataInterface
     }
 
     std::uint32_t regionAddress;
-    std::unique_ptr<LpcMapperInterface> mapper;
+    std::unique_ptr<HardwareMapperInterface> mapper;
     bool initialized;
 };
 
