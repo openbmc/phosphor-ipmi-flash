@@ -55,6 +55,25 @@ class BlobHandler : public BlobInterface
     std::string enumerateBlob(std::uint32_t index);
 
     /**
+     * Generic blob byte writer.
+     *
+     * @param[in] command - the command associated with this write.
+     * @param[in] session - the session id.
+     * @param[in] offset - the offset for the metadata to write.
+     * @param[in] bytes - the bytes to send.
+     * @throws BlobException on failure.
+     */
+    void writeGeneric(BlobOEMCommands command, std::uint16_t session,
+                      std::uint32_t offset,
+                      const std::vector<std::uint8_t>& bytes);
+
+    /**
+     * @throws BlobException.
+     */
+    void writeMeta(std::uint16_t session, std::uint32_t offset,
+                   const std::vector<std::uint8_t>& bytes) override;
+
+    /**
      * @throw BlobException.
      */
     void writeBytes(std::uint16_t session, std::uint32_t offset,
