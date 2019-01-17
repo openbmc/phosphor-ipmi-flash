@@ -30,6 +30,7 @@ class LpcMapperAspeed : public HardwareMapperInterface
 
   private:
     static const std::string lpcControlPath;
+    int mappedFd = -1;
     std::uint32_t regionAddress;
     std::size_t regionSize;
     const internal::Sys* sys;
