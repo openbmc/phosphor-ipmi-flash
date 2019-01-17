@@ -604,6 +604,7 @@ bool FirmwareBlobHandler::triggerVerification()
     try
     {
         bus.call_noreply(method);
+        state = UpdateState::verificationStarted;
     }
     catch (const sdbusplus::exception::SdBusError& ex)
     {
@@ -613,9 +614,6 @@ bool FirmwareBlobHandler::triggerVerification()
         return false;
     }
 
-    state = UpdateState::verificationStarted;
-
-    /* TODO: implement this. */
     return true;
 }
 
