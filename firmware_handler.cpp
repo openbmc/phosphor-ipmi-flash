@@ -227,7 +227,7 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
     meta->metadata.clear();
     if (item->second->dataHandler)
     {
-        auto bytes = item->second->dataHandler->read();
+        auto bytes = item->second->dataHandler->readMeta();
         meta->metadata.insert(meta->metadata.begin(), bytes.begin(),
                               bytes.end());
     }
@@ -484,7 +484,7 @@ bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
         return false;
     }
 
-    return item->second->dataHandler->write(data);
+    return item->second->dataHandler->writeMeta(data);
 }
 
 /*

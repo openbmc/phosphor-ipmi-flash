@@ -26,7 +26,7 @@ namespace blobs
 bool LpcDataHandler::open()
 {
     /* For the ASPEED LPC CTRL driver, the ioctl is required to set up the
-     * window, with information from write() below.
+     * window, with information from writeMeta() below.
      */
     return true;
 }
@@ -59,7 +59,7 @@ std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
     return {};
 }
 
-bool LpcDataHandler::write(const std::vector<std::uint8_t>& configuration)
+bool LpcDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)
 {
     struct LpcRegion lpcRegion;
 
@@ -86,7 +86,7 @@ bool LpcDataHandler::write(const std::vector<std::uint8_t>& configuration)
     return setInitializedAndReturn(true);
 }
 
-std::vector<std::uint8_t> LpcDataHandler::read()
+std::vector<std::uint8_t> LpcDataHandler::readMeta()
 {
     return {};
 }

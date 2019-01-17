@@ -83,7 +83,7 @@ TEST(FirmwareSessionStateTest, DataTypeP2AReturnsMetadata)
     int size = 512;
     EXPECT_CALL(imageMock2, getSize()).WillOnce(Return(size));
     std::vector<std::uint8_t> mBytes = {0x01, 0x02};
-    EXPECT_CALL(dataMock, read()).WillOnce(Return(mBytes));
+    EXPECT_CALL(dataMock, readMeta()).WillOnce(Return(mBytes));
 
     struct BlobMeta meta;
     EXPECT_TRUE(handler->stat(0, &meta));

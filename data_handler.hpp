@@ -43,7 +43,7 @@ class DataInterface
      * @param[in] configuration - byte vector of data.
      * @return bool - returns true on success.
      */
-    virtual bool write(const std::vector<std::uint8_t>& configuration) = 0;
+    virtual bool writeMeta(const std::vector<std::uint8_t>& configuration) = 0;
 
     /**
      * read configuration.
@@ -51,7 +51,7 @@ class DataInterface
      * @return bytes - whatever bytes are required configuration information for
      * the mechanism.
      */
-    virtual std::vector<std::uint8_t> read() = 0;
+    virtual std::vector<std::uint8_t> readMeta() = 0;
 };
 
 struct DataHandlerPack
