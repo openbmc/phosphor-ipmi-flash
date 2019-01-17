@@ -18,14 +18,12 @@ class BtDataHandler : public DataInterface
     bool sendContents(const std::string& input, std::uint16_t session) override;
     blobs::FirmwareBlobHandler::UpdateFlags supportedType() const override
     {
-        return flags;
+        return blobs::FirmwareBlobHandler::UpdateFlags::ipmi;
     }
 
   private:
     BlobInterface* blob;
     const internal::Sys* sys;
-    blobs::FirmwareBlobHandler::UpdateFlags flags =
-        blobs::FirmwareBlobHandler::UpdateFlags::ipmi;
 };
 
 } // namespace host_tool
