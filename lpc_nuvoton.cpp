@@ -41,6 +41,10 @@ std::unique_ptr<HardwareMapperInterface>
     return std::make_unique<LpcMapperNuvoton>(regionAddress);
 }
 
+void LpcMapperNuvoton::close()
+{
+}
+
 /*
  * The host buffer address is configured by host through
  * SuperIO. On BMC side the max memory can be mapped is 4kB with the caveat that
