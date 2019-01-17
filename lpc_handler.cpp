@@ -88,6 +88,9 @@ bool LpcDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)
 
 std::vector<std::uint8_t> LpcDataHandler::readMeta()
 {
+    /* TODO: Implement this call, s.t. with lpc_aspeed or whatever, you can
+     * validate the region.
+     */
     return {};
 }
 
