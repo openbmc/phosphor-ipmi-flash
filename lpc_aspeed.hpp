@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -28,6 +29,7 @@ class LpcMapperAspeed : public HardwareMapperInterface
     std::vector<std::uint8_t> copyFrom(std::uint32_t length) override;
 
   private:
+    static const std::string lpcControlPath;
     std::size_t regionSize;
     const internal::Sys* sys;
 };

@@ -25,10 +25,13 @@
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <string>
 #include <utility>
 
 namespace blobs
 {
+
+const std::string LpcMapperAspeed::lpcControlPath = "/dev/aspeed-lpc-ctrl";
 
 std::unique_ptr<HardwareMapperInterface>
     LpcMapperAspeed::createAspeedMapper(std::size_t regionSize)
@@ -73,14 +76,12 @@ std::pair<std::uint32_t, std::uint32_t>
                  "\n",
                  map.addr, map.size);
 
-    static const char lpcControlPath[] = "/dev/aspeed-lpc-ctrl";
-
-    const auto lpcControlFd = sys->open(lpcControlPath, O_RDWR);
+    const auto lpcControlFd = sys->open(lpcControlPath.c_str(), O_RDWR);
     if (lpcControlFd == -1)
     {
         std::fprintf(stderr,
                      "cannot open Aspeed LPC kernel control dev \"%s\"\n",
-                     lpcControlPath);
+                     lpcControlPath.c_str());
         return std::make_pair(0, 0);
     }
 
