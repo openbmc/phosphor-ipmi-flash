@@ -150,8 +150,7 @@ std::vector<std::uint8_t> LpcMapperAspeed::copyFrom(std::uint32_t length)
         }
     }
 
-    /* TODO: Implement this. */
-    return {};
+    return std::vector<std::uint8_t>(mappedRegion, mappedRegion + length);
 }
 
 } // namespace blobs
