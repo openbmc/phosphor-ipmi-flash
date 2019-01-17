@@ -15,8 +15,8 @@ class DataHandlerMock : public DataInterface
     MOCK_METHOD0(open, bool());
     MOCK_METHOD0(close, bool());
     MOCK_METHOD1(copyFrom, std::vector<std::uint8_t>(std::uint32_t));
-    MOCK_METHOD1(write, bool(const std::vector<std::uint8_t>&));
-    MOCK_METHOD0(read, std::vector<std::uint8_t>());
+    MOCK_METHOD1(writeMeta, bool(const std::vector<std::uint8_t>&));
+    MOCK_METHOD0(readMeta, std::vector<std::uint8_t>());
 };
 
 } // namespace blobs

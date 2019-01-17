@@ -71,7 +71,7 @@ TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
 
     std::vector<std::uint8_t> bytes = {0x01, 0x02, 0x03, 0x04};
 
-    EXPECT_CALL(dataMock, write(Eq(bytes))).WillOnce(Return(true));
+    EXPECT_CALL(dataMock, writeMeta(Eq(bytes))).WillOnce(Return(true));
     EXPECT_TRUE(handler->writeMeta(0, 0, bytes));
 }
 

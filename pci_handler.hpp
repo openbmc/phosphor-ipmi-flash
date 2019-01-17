@@ -26,8 +26,8 @@ class PciDataHandler : public DataInterface
     bool open() override;
     bool close() override;
     std::vector<std::uint8_t> copyFrom(std::uint32_t length) override;
-    bool write(const std::vector<std::uint8_t>& configuration) override;
-    std::vector<std::uint8_t> read() override;
+    bool writeMeta(const std::vector<std::uint8_t>& configuration) override;
+    std::vector<std::uint8_t> readMeta() override;
 
   private:
     std::uint32_t regionAddress;
