@@ -16,6 +16,7 @@ class HardwareInterfaceMock : public HardwareMapperInterface
   public:
     virtual ~HardwareInterfaceMock() = default;
 
+    MOCK_METHOD0(close, ());
     MOCK_METHOD2(mapWindow,
                  std::pair<std::uint32_t, std::uint32_t>(std::uint32_t,
                                                          std::uint32_t));
