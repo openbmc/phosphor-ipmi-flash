@@ -355,20 +355,6 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     /* We found the transport handler they requested, no surprise since
      * above we verify they selected at least one we wanted.
      */
-    Session* curr;
-    const std::string* active;
-
-    if (path == hashBlobID)
-    {
-        /* 2c) are they opening the /flash/hash ? (to start the process) */
-        curr = &activeHash;
-        active = &activeHashBlobID;
-    }
-    else
-    {
-        curr = &activeImage;
-        active = &activeImageBlobID;
-    }
 
     /* Elsewhere I do this check by checking "if ::ipmi" because that's the
      * only non-external data pathway -- but this is just a more generic
@@ -383,9 +369,11 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         }
     }
 
-    /* 2d) are they opening the /flash/tarball ? (to start the UBI process)
-     * 2e) are they opening the /flash/image ? (to start the process)
-     * 2...) are they opening the /flash/... ? (to start the process)
+    /* Do we have a file handler for the type of file they're opening.
+     * Note: This should only fail if something is somehow crazy wrong.
+     * Since the canHandle() said yes, and that's tied into the list of explicit
+     * firmware handers (and file handlers, like this'll know where to write the
+     * tarball, etc).
      */
     auto h = std::find_if(
         handlers.begin(), handlers.end(),
@@ -399,6 +387,21 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     if (!h->handler->open(path))
     {
         return false;
+    }
+
+    Session* curr;
+    const std::string* active;
+
+    if (path == hashBlobID)
+    {
+        /* 2c) are they opening the /flash/hash ? (to start the process) */
+        curr = &activeHash;
+        active = &activeHashBlobID;
+    }
+    else
+    {
+        curr = &activeImage;
+        active = &activeImageBlobID;
     }
 
     curr->flags = flags;
