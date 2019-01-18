@@ -18,10 +18,18 @@ class LpcMapperAspeed : public HardwareMapperInterface
     static std::unique_ptr<HardwareMapperInterface>
         createAspeedMapper(std::uint32_t regionAddress, std::size_t regionSize);
 
+    /* NOTE: This object is created and then never destroyed (unless ipmid
+     * stops/crashes, etc)
+     */
     LpcMapperAspeed(std::uint32_t regionAddress, std::size_t regionSize,
                     const internal::Sys* sys = &internal::sys_impl) :
         regionAddress(regionAddress),
         regionSize(regionSize), sys(sys){};
+
+    LpcMapperAspeed(const LpcMapperAspeed&) = delete;
+    LpcMapperAspeed& operator=(const LpcMapperAspeed&) = delete;
+    LpcMapperAspeed(LpcMapperAspeed&&) = default;
+    LpcMapperAspeed& operator=(LpcMapperAspeed&&) = default;
 
     void close() override;
 
