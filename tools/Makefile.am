@@ -14,4 +14,5 @@ libupdater_la_SOURCES = \
 	blob_handler.cpp \
 	ipmi_handler.cpp \
 	crc.cpp \
+	io.cpp \
 	../internal/sys.cpp
