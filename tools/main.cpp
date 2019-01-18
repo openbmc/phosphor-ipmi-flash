@@ -16,6 +16,7 @@
 
 #include "blob_handler.hpp"
 #include "bt.hpp"
+#include "io.hpp"
 #include "ipmi_handler.hpp"
 #include "lpc.hpp"
 #include "tool_errors.hpp"
@@ -138,6 +139,7 @@ int main(int argc, char* argv[])
 
         host_tool::IpmiHandler ipmi;
         host_tool::BlobHandler blob(&ipmi);
+        host_tool::DevMemDevice devmem;
 
         std::unique_ptr<host_tool::DataInterface> handler;
 
@@ -148,7 +150,8 @@ int main(int argc, char* argv[])
         }
         else if (interface == IPMILPC)
         {
-            handler = std::make_unique<host_tool::LpcDataHandler>(&blob);
+            handler =
+                std::make_unique<host_tool::LpcDataHandler>(&blob, &devmem);
         }
 
         if (!handler)
