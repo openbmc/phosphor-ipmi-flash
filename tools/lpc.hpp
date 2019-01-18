@@ -16,7 +16,7 @@ struct LpcRegion
     std::uint32_t address;
     /* Size of the chunk to be mapped. */
     std::uint32_t length;
-};
+} __attribute__((packed));
 
 class LpcDataHandler : public DataInterface
 {
