@@ -13,9 +13,10 @@ using ::testing::ContainerEq;
 
 TEST(LpcHandleTest, verifySendsFileContents)
 {
+    internal::InternalSysMock sysMock;
     BlobInterfaceMock blobMock;
 
-    LpcDataHandler handler(&blobMock);
+    LpcDataHandler handler(&blobMock, &sysMock);
     std::uint16_t session = 0xbeef;
     std::string filePath = "/asdf";
 
