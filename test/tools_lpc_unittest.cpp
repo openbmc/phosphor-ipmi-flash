@@ -1,5 +1,6 @@
 #include "blob_interface_mock.hpp"
 #include "internal_sys_mock.hpp"
+#include "io_mock.hpp"
 #include "lpc.hpp"
 
 #include <cstring>
@@ -15,8 +16,9 @@ TEST(LpcHandleTest, verifySendsFileContents)
 {
     internal::InternalSysMock sysMock;
     BlobInterfaceMock blobMock;
+    HostIoInterfaceMock ioMock;
 
-    LpcDataHandler handler(&blobMock, &sysMock);
+    LpcDataHandler handler(&blobMock, &ioMock, &sysMock);
     std::uint16_t session = 0xbeef;
     std::string filePath = "/asdf";
 
