@@ -3,6 +3,7 @@
 #include "blob_interface.hpp"
 #include "interface.hpp"
 #include "internal/sys.hpp"
+#include "io.hpp"
 
 #include <cstdint>
 
@@ -20,10 +21,10 @@ struct LpcRegion
 class LpcDataHandler : public DataInterface
 {
   public:
-    LpcDataHandler(BlobInterface* blob,
+    LpcDataHandler(BlobInterface* blob, HostIoInterface* io,
                    const internal::Sys* sys = &internal::sys_impl) :
         blob(blob),
-        sys(sys){};
+        io(io), sys(sys){};
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
     blobs::FirmwareBlobHandler::UpdateFlags supportedType() const override
@@ -33,6 +34,7 @@ class LpcDataHandler : public DataInterface
 
   private:
     BlobInterface* blob;
+    HostIoInterface* io;
     const internal::Sys* sys;
 };
 
