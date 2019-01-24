@@ -214,6 +214,24 @@ TEST_F(BlobHandlerTest, openBlobSucceeds)
     EXPECT_EQ(0xedfe, session);
 }
 
+TEST_F(BlobHandlerTest, closeBlobSucceeds)
+{
+    /* The close succeeds. */
+    IpmiInterfaceMock ipmiMock;
+    BlobHandler blob(&ipmiMock);
+
+    std::vector<std::uint8_t> request = {
+        0xcf, 0xc2, 0x00, BlobHandler::BlobOEMCommands::bmcBlobClose,
+        0x00, 0x00, 0x01, 0x00};
+    std::vector<std::uint8_t> resp = {0xcf, 0xc2, 0x00};
+    std::vector<std::uint8_t> reqCrc = {0x01, 0x00};
+    EXPECT_CALL(crcMock, generateCrc(Eq(reqCrc))).WillOnce(Return(0x00));
+
+    EXPECT_CALL(ipmiMock, sendPacket(Eq(request))).WillOnce(Return(resp));
+
+    blob.closeBlob(0x0001);
+}
+
 TEST_F(BlobHandlerTest, writeBytesSucceeds)
 {
     /* The write bytes succeeds. */
