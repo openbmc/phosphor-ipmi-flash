@@ -27,19 +27,6 @@ class BlobHandler : public BlobInterface
     explicit BlobHandler(IpmiInterface* ipmi) : ipmi(ipmi){};
 
     /**
-     * Send the contents of the payload to IPMI, this method handles wrapping
-     * with the OEN, subcommand and CRC.
-     *
-     * @param[in] command - the blob command.
-     * @param[in] payload - the payload bytes.
-     * @return the bytes returned from the ipmi interface.
-     * @throws BlobException.
-     */
-    std::vector<std::uint8_t>
-        sendIpmiPayload(BlobOEMCommands command,
-                        const std::vector<std::uint8_t>& payload);
-
-    /**
      * Retrieve the blob count.
      *
      * @return the number of blob_ids found (0 on failure).
@@ -53,19 +40,6 @@ class BlobHandler : public BlobInterface
      * @return the name as a string or empty on failure.
      */
     std::string enumerateBlob(std::uint32_t index);
-
-    /**
-     * Generic blob byte writer.
-     *
-     * @param[in] command - the command associated with this write.
-     * @param[in] session - the session id.
-     * @param[in] offset - the offset for the metadata to write.
-     * @param[in] bytes - the bytes to send.
-     * @throws BlobException on failure.
-     */
-    void writeGeneric(BlobOEMCommands command, std::uint16_t session,
-                      std::uint32_t offset,
-                      const std::vector<std::uint8_t>& bytes);
 
     /**
      * @throws BlobException.
@@ -96,6 +70,32 @@ class BlobHandler : public BlobInterface
     void closeBlob(std::uint16_t session) override;
 
   private:
+    /**
+     * Send the contents of the payload to IPMI, this method handles wrapping
+     * with the OEN, subcommand and CRC.
+     *
+     * @param[in] command - the blob command.
+     * @param[in] payload - the payload bytes.
+     * @return the bytes returned from the ipmi interface.
+     * @throws BlobException.
+     */
+    std::vector<std::uint8_t>
+        sendIpmiPayload(BlobOEMCommands command,
+                        const std::vector<std::uint8_t>& payload);
+
+    /**
+     * Generic blob byte writer.
+     *
+     * @param[in] command - the command associated with this write.
+     * @param[in] session - the session id.
+     * @param[in] offset - the offset for the metadata to write.
+     * @param[in] bytes - the bytes to send.
+     * @throws BlobException on failure.
+     */
+    void writeGeneric(BlobOEMCommands command, std::uint16_t session,
+                      std::uint32_t offset,
+                      const std::vector<std::uint8_t>& bytes);
+
     IpmiInterface* ipmi;
 };
 
