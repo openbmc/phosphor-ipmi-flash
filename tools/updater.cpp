@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <cstring>
 #include <memory>
+#include <string>
 
 namespace host_tool
 {
@@ -41,7 +42,7 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
      */
     std::vector<std::string> blobs = blob->getBlobList();
     auto blobInst = std::find_if(
-        blobs.begin(), blobs.end(), [&goalFirmware](const auto& iter) {
+        blobs.begin(), blobs.end(), [&goalFirmware](const std::string& iter) {
             /* Running into weird scenarios where the string comparison doesn't
              * work.  TODO: revisit.
              */
