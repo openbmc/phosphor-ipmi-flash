@@ -48,7 +48,7 @@ std::vector<std::uint8_t>
 
         /* CRC required. */
         std::uint16_t crc = generateCrc(payload);
-        std::uint8_t* src = reinterpret_cast<std::uint8_t*>(&crc);
+        auto src = reinterpret_cast<const std::uint8_t*>(&crc);
 
         std::copy(src, src + sizeof(crc), std::back_inserter(request));
 
@@ -145,7 +145,7 @@ int BlobHandler::getBlobCount()
 std::string BlobHandler::enumerateBlob(std::uint32_t index)
 {
     std::vector<std::uint8_t> payload;
-    std::uint8_t* data = reinterpret_cast<std::uint8_t*>(&index);
+    auto data = reinterpret_cast<const std::uint8_t*>(&index);
 
     std::copy(data, data + sizeof(std::uint32_t), std::back_inserter(payload));
 
@@ -170,10 +170,10 @@ void BlobHandler::writeGeneric(BlobOEMCommands command, std::uint16_t session,
     payload.reserve(sizeof(std::uint16_t) + sizeof(std::uint32_t) +
                     bytes.size());
 
-    std::uint8_t* data = reinterpret_cast<std::uint8_t*>(&session);
+    auto data = reinterpret_cast<const std::uint8_t*>(&session);
     std::copy(data, data + sizeof(std::uint16_t), std::back_inserter(payload));
 
-    data = reinterpret_cast<std::uint8_t*>(&offset);
+    data = reinterpret_cast<const std::uint8_t*>(&offset);
     std::copy(data, data + sizeof(std::uint32_t), std::back_inserter(payload));
 
     std::copy(bytes.begin(), bytes.end(), std::back_inserter(payload));
@@ -250,7 +250,7 @@ std::uint16_t
     std::vector<std::uint8_t> request, resp;
     std::uint16_t flags =
         blobs::FirmwareBlobHandler::UpdateFlags::openWrite | handlerFlags;
-    auto addrFlags = reinterpret_cast<std::uint8_t*>(&flags);
+    auto addrFlags = reinterpret_cast<const std::uint8_t*>(&flags);
 
     std::copy(addrFlags, addrFlags + sizeof(flags),
               std::back_inserter(request));
@@ -278,7 +278,7 @@ std::uint16_t
 void BlobHandler::closeBlob(std::uint16_t session)
 {
     std::vector<std::uint8_t> request, resp;
-    auto addrSession = reinterpret_cast<std::uint8_t*>(&session);
+    auto addrSession = reinterpret_cast<const std::uint8_t*>(&session);
     std::copy(addrSession, addrSession + sizeof(session),
               std::back_inserter(request));
 
@@ -303,13 +303,13 @@ std::vector<std::uint8_t> BlobHandler::readBytes(std::uint16_t session,
     payload.reserve(sizeof(std::uint16_t) + sizeof(std::uint32_t) +
                     sizeof(std::uint32_t));
 
-    std::uint8_t* data = reinterpret_cast<std::uint8_t*>(&session);
+    auto data = reinterpret_cast<const std::uint8_t*>(&session);
     std::copy(data, data + sizeof(std::uint16_t), std::back_inserter(payload));
 
-    data = reinterpret_cast<std::uint8_t*>(&offset);
+    data = reinterpret_cast<const std::uint8_t*>(&offset);
     std::copy(data, data + sizeof(std::uint32_t), std::back_inserter(payload));
 
-    data = reinterpret_cast<std::uint8_t*>(&length);
+    data = reinterpret_cast<const std::uint8_t*>(&length);
     std::copy(data, data + sizeof(std::uint32_t), std::back_inserter(payload));
 
     return sendIpmiPayload(BlobOEMCommands::bmcBlobRead, payload);
