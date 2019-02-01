@@ -76,6 +76,19 @@ class BlobInterface
      * @param[in] session - the session to close.
      */
     virtual void closeBlob(std::uint16_t session) = 0;
+
+    /**
+     * Read bytes from a blob.
+     *
+     * @param[in] session - the session id.
+     * @param[in] offset - the offset to which to write the bytes.
+     * @param[in] length - the number of bytes to read.
+     * @return the bytes read
+     * @throws BlobException on failure.
+     */
+    virtual std::vector<std::uint8_t> readBytes(std::uint16_t session,
+                                                std::uint32_t offset,
+                                                std::uint32_t length) = 0;
 };
 
 } // namespace host_tool
