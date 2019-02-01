@@ -69,6 +69,13 @@ class BlobHandler : public BlobInterface
 
     void closeBlob(std::uint16_t session) override;
 
+    /**
+     * @throws BlobException.
+     */
+    std::vector<std::uint8_t> readBytes(std::uint16_t session,
+                                        std::uint32_t offset,
+                                        std::uint32_t length) override;
+
   private:
     /**
      * Send the contents of the payload to IPMI, this method handles wrapping

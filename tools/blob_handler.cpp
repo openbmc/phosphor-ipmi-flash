@@ -294,4 +294,25 @@ void BlobHandler::closeBlob(std::uint16_t session)
     return;
 }
 
+std::vector<std::uint8_t> BlobHandler::readBytes(std::uint16_t session,
+                                                 std::uint32_t offset,
+                                                 std::uint32_t length)
+{
+    std::vector<std::uint8_t> payload;
+
+    payload.reserve(sizeof(std::uint16_t) + sizeof(std::uint32_t) +
+                    sizeof(std::uint32_t));
+
+    std::uint8_t* data = reinterpret_cast<std::uint8_t*>(&session);
+    std::copy(data, data + sizeof(std::uint16_t), std::back_inserter(payload));
+
+    data = reinterpret_cast<std::uint8_t*>(&offset);
+    std::copy(data, data + sizeof(std::uint32_t), std::back_inserter(payload));
+
+    data = reinterpret_cast<std::uint8_t*>(&length);
+    std::copy(data, data + sizeof(std::uint32_t), std::back_inserter(payload));
+
+    return sendIpmiPayload(BlobOEMCommands::bmcBlobRead, payload);
+}
+
 } // namespace host_tool

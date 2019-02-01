@@ -255,4 +255,32 @@ TEST_F(BlobHandlerTest, writeBytesSucceeds)
     blob.writeBytes(0x0001, 0, bytes);
 }
 
+TEST_F(BlobHandlerTest, readBytesSucceeds)
+{
+    /* The reading of bytes succeeds. */
+
+    IpmiInterfaceMock ipmiMock;
+    BlobHandler blob(&ipmiMock);
+
+    std::vector<std::uint8_t> request = {
+        0xcf, 0xc2, 0x00, BlobHandler::BlobOEMCommands::bmcBlobRead,
+        0x00, 0x00, 0x01, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x04, 0x00, 0x00, 0x00};
+
+    std::vector<std::uint8_t> expectedBytes = {'a', 'b', 'c', 'd'};
+    std::vector<std::uint8_t> resp = {0xcf, 0xc2, 0x00, 0x00, 0x00,
+                                      'a',  'b',  'c',  'd'};
+    std::vector<std::uint8_t> reqCrc = {0x01, 0x00, 0x00, 0x00, 0x00,
+                                        0x00, 0x04, 0x00, 0x00, 0x00};
+    std::vector<std::uint8_t> respCrc = {'a', 'b', 'c', 'd'};
+
+    EXPECT_CALL(crcMock, generateCrc(Eq(reqCrc))).WillOnce(Return(0x00));
+    EXPECT_CALL(crcMock, generateCrc(Eq(respCrc))).WillOnce(Return(0x00));
+
+    EXPECT_CALL(ipmiMock, sendPacket(Eq(request))).WillOnce(Return(resp));
+
+    EXPECT_EQ(blob.readBytes(0x0001, 0, 4), expectedBytes);
+}
+
 } // namespace host_tool
