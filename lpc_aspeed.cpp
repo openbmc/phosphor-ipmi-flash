@@ -118,6 +118,9 @@ bool LpcMapperAspeed::mapRegion()
     /* Open the file to map. */
     mappedFd = sys->open(lpcControlPath.c_str(), O_RDONLY | O_SYNC);
 
+    /* TODO: The offset to use is the address we use for the map - the base
+     * address of the memory region we reserved in the device-tree.
+     */
     mappedRegion = reinterpret_cast<uint8_t*>(
         sys->mmap(0, regionSize, PROT_READ, MAP_SHARED, mappedFd, 0));
 
