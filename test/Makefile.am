@@ -1,14 +1,15 @@
-AM_CPPFLAGS = -I$(top_srcdir)/ \
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/ \
 	-I$(top_srcdir)/tools/ \
 	$(GTEST_CFLAGS) \
 	$(GMOCK_CFLAGS)
 AM_CXXFLAGS = \
-	$(GTEST_MAIN_CFLAGS) \
 	$(SDBUSPLUS_CFLAGS) \
 	$(PHOSPHOR_LOGGING_CFLAGS)
 AM_LDFLAGS = \
+	$(GTEST_LIBS) \
 	$(GMOCK_LIBS) \
-	$(GTEST_MAIN_LIBS) \
+	-lgmock_main \
 	$(OESDK_TESTCASE_FLAGS) \
 	$(SDBUSPLUS_LIBS) \
 	$(PHOSPHOR_LOGGING_LIBS)
