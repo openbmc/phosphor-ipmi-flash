@@ -28,6 +28,14 @@ PKG_CHECK_MODULES(
     [AC_MSG_ERROR([The openbmc/sdbusplus package is required])]
 )
 PKG_CHECK_MODULES([PHOSPHOR_LOGGING], [phosphor-logging])
+PKG_CHECK_MODULES(
+    [IPMIBLOB],
+    [ipmiblob],
+    [],
+    [AC_MSG_ERROR(
+        [Could not find ipmiblob...openbmc/ipmi-blob-tool package required])
+    ]
+)
 AC_CHECK_HEADER(
     [blobs-ipmid],
     [AC_MSG_ERROR(["phosphor-ipmi-blobs required and not found."])]
