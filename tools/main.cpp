@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-#include "blob_handler.hpp"
 #include "bt.hpp"
 #include "io.hpp"
-#include "ipmi_handler.hpp"
 #include "lpc.hpp"
 #include "tool_errors.hpp"
 #include "updater.hpp"
@@ -28,6 +26,8 @@
 #include <algorithm>
 #include <cstdio>
 #include <iostream>
+#include <ipmiblob/blob_handler.hpp>
+#include <ipmiblob/ipmi_handler.hpp>
 #include <iterator>
 #include <memory>
 #include <string>
@@ -137,8 +137,8 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
-        host_tool::IpmiHandler ipmi;
-        host_tool::BlobHandler blob(&ipmi);
+        ipmiblob::IpmiHandler ipmi;
+        ipmiblob::BlobHandler blob(&ipmi);
         host_tool::DevMemDevice devmem;
 
         std::unique_ptr<host_tool::DataInterface> handler;

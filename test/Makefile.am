@@ -28,12 +28,9 @@ check_PROGRAMS = \
 	firmware_sessionstat_unittest \
 	firmware_commit_unittest \
 	file_handler_unittest \
-	tools_blob_unittest \
 	tools_bt_unittest \
 	tools_lpc_unittest \
-	tools_updater_unittest \
-	tools_ipmi_unittest \
-	tools_ipmi_error_unittest
+	tools_updater_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -73,9 +70,6 @@ firmware_commit_unittest_LDADD = $(top_builddir)/firmware_handler.o
 file_handler_unittest_SOURCES = file_handler_unittest.cpp
 file_handler_unittest_LDADD = $(top_builddir)/file_handler.o -lstdc++fs
 
-tools_blob_unittest_SOURCES = tools_blob_unittest.cpp
-tools_blob_unittest_LDADD = $(top_builddir)/tools/blob_handler.o
-
 tools_bt_unittest_SOURCES = tools_bt_unittest.cpp
 tools_bt_unittest_LDADD = $(top_builddir)/tools/bt.o
 
@@ -84,9 +78,3 @@ tools_lpc_unittest_LDADD = $(top_builddir)/tools/lpc.o
 
 tools_updater_unittest_SOURCES = tools_updater_unittest.cpp
 tools_updater_unittest_LDADD = $(top_builddir)/tools/updater.o
-
-tools_ipmi_unittest_SOURCES = tools_ipmi_unittest.cpp
-tools_ipmi_unittest_LDADD = $(top_builddir)/tools/ipmi_handler.o
-
-tools_ipmi_error_unittest_SOURCES = tools_ipmi_error_unittest.cpp
-tools_ipmi_error_unittest_LDADD =

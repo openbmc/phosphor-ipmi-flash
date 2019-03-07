@@ -1,8 +1,8 @@
-#include "blob_interface_mock.hpp"
 #include "bt.hpp"
 #include "internal_sys_mock.hpp"
 
 #include <cstring>
+#include <ipmiblob/test/blob_interface_mock.hpp>
 
 #include <gtest/gtest.h>
 
@@ -22,7 +22,7 @@ TEST(BtHandlerTest, verifySendsFileContents)
      * syscall mock and catch the writes via the blob mock.
      */
     internal::InternalSysMock sysMock;
-    BlobInterfaceMock blobMock;
+    ipmiblob::BlobInterfaceMock blobMock;
 
     BtDataHandler handler(&blobMock, &sysMock);
     std::string filePath = "/asdf";

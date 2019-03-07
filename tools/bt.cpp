@@ -1,8 +1,7 @@
 #include "bt.hpp"
 
-#include "blob_errors.hpp"
-
 #include <cstdint>
+#include <ipmiblob/blob_errors.hpp>
 #include <vector>
 
 namespace host_tool
@@ -37,7 +36,7 @@ bool BtDataHandler::sendContents(const std::string& input,
             }
         } while (bytesRead > 0);
     }
-    catch (const BlobException& b)
+    catch (const ipmiblob::BlobException& b)
     {
         sys->close(inputFd);
         return false;
