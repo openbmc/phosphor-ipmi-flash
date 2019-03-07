@@ -16,18 +16,19 @@
 
 #include "updater.hpp"
 
-#include "blob_errors.hpp"
 #include "tool_errors.hpp"
 
 #include <algorithm>
+#include <blobs-ipmid/blobs.hpp>
 #include <cstring>
+#include <ipmiblob/blob_errors.hpp>
 #include <memory>
 #include <string>
 
 namespace host_tool
 {
 
-void updaterMain(BlobInterface* blob, DataInterface* handler,
+void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
                  const std::string& imagePath, const std::string& signaturePath)
 {
     /* TODO(venture): Add optional parameter to specify the flash type, default
@@ -58,12 +59,12 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
     /* Call stat on /flash/image (or /flash/tarball) and check if data interface
      * is supported.
      */
-    StatResponse stat;
+    ipmiblob::StatResponse stat;
     try
     {
         stat = blob->getStat(goalFirmware);
     }
-    catch (const BlobException& b)
+    catch (const ipmiblob::BlobException& b)
     {
         throw ToolException("blob exception received: " +
                             std::string(b.what()));
@@ -79,9 +80,12 @@ void updaterMain(BlobInterface* blob, DataInterface* handler,
     std::uint16_t session;
     try
     {
-        session = blob->openBlob(goalFirmware, supported);
+        session = blob->openBlob(
+            goalFirmware,
+            static_cast<std::uint16_t>(supported) |
+                static_cast<std::uint16_t>(blobs::OpenFlags::write));
     }
-    catch (const BlobException& b)
+    catch (const ipmiblob::BlobException& b)
     {
         throw ToolException("blob exception received: " +
                             std::string(b.what()));

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "blob_interface.hpp"
 #include "interface.hpp"
 #include "internal/sys.hpp"
 #include "io.hpp"
 
 #include <cstdint>
+#include <ipmiblob/blob_interface.hpp>
 
 namespace host_tool
 {
@@ -21,7 +21,7 @@ struct LpcRegion
 class LpcDataHandler : public DataInterface
 {
   public:
-    LpcDataHandler(BlobInterface* blob, HostIoInterface* io,
+    LpcDataHandler(ipmiblob::BlobInterface* blob, HostIoInterface* io,
                    const internal::Sys* sys = &internal::sys_impl) :
         blob(blob),
         io(io), sys(sys){};
@@ -33,7 +33,7 @@ class LpcDataHandler : public DataInterface
     }
 
   private:
-    BlobInterface* blob;
+    ipmiblob::BlobInterface* blob;
     HostIoInterface* io;
     const internal::Sys* sys;
 };
