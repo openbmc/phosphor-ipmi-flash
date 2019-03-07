@@ -1,9 +1,9 @@
-#include "blob_interface_mock.hpp"
 #include "internal_sys_mock.hpp"
 #include "io_mock.hpp"
 #include "lpc.hpp"
 
 #include <cstring>
+#include <ipmiblob/test/blob_interface_mock.hpp>
 
 #include <gtest/gtest.h>
 
@@ -15,7 +15,7 @@ using ::testing::ContainerEq;
 TEST(LpcHandleTest, verifySendsFileContents)
 {
     internal::InternalSysMock sysMock;
-    BlobInterfaceMock blobMock;
+    ipmiblob::BlobInterfaceMock blobMock;
     HostIoInterfaceMock ioMock;
 
     LpcDataHandler handler(&blobMock, &ioMock, &sysMock);

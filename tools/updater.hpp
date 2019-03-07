@@ -1,8 +1,8 @@
 #pragma once
 
-#include "blob_interface.hpp"
 #include "interface.hpp"
 
+#include <ipmiblob/blob_interface.hpp>
 #include <string>
 
 namespace host_tool
@@ -17,7 +17,7 @@ namespace host_tool
  * @param[in] signaturePath - the path to the signature file.
  * @throws ToolException on failures.
  */
-void updaterMain(BlobInterface* blob, DataInterface* handler,
+void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
                  const std::string& imagePath,
                  const std::string& signaturePath);
 
