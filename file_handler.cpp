@@ -17,14 +17,14 @@
 #include "file_handler.hpp"
 
 #include <cstdint>
-#include <experimental/filesystem>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace blobs
 {
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 bool FileHandler::open(const std::string& path)
 {
