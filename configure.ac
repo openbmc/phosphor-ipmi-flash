@@ -213,10 +213,13 @@ AS_IF([test "x$enable_tests" != "xno"], [
 
 # Code coverage
 AX_CODE_COVERAGE
-AM_EXTRA_RECURSIVE_TARGETS([check-code-coverage])
 AS_IF([test "x$CODE_COVERAGE_ENABLED" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DHAVE_GCOV], [CODE_COVERAGE_CPPFLAGS])
 ])
+m4_ifdef([_AX_CODE_COVERAGE_RULES],
+    [AM_CONDITIONAL(AUTOCONF_CODE_COVERAGE_2019_01_06, [true])],
+    [AM_CONDITIONAL(AUTOCONF_CODE_COVERAGE_2019_01_06, [false])])
+AX_ADD_AM_MACRO_STATIC([])
 
 # Add --enable-oe-sdk flag to configure script
 AC_ARG_ENABLE([oe-sdk],
