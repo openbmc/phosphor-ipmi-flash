@@ -38,46 +38,46 @@ check_PROGRAMS = \
 TESTS = $(check_PROGRAMS)
 
 firmware_createhandler_unittest_SOURCES = firmware_createhandler_unittest.cpp
-firmware_createhandler_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_createhandler_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_handler_unittest_SOURCES = firmware_handler_unittest.cpp
-firmware_handler_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_handler_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_stat_unittest_SOURCES = firmware_stat_unittest.cpp
-firmware_stat_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_stat_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_canhandle_unittest_SOURCES = firmware_canhandle_unittest.cpp
-firmware_canhandle_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_canhandle_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_open_unittest_SOURCES = firmware_open_unittest.cpp
-firmware_open_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_open_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_write_unittest_SOURCES = firmware_write_unittest.cpp
-firmware_write_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_write_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_writemeta_unittest_SOURCES = firmware_writemeta_unittest.cpp
-firmware_writemeta_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_writemeta_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_close_unittest_SOURCES = firmware_close_unittest.cpp
-firmware_close_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_close_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_delete_unittest_SOURCES = firmware_delete_unittest.cpp
-firmware_delete_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_delete_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_sessionstat_unittest_SOURCES = firmware_sessionstat_unittest.cpp
-firmware_sessionstat_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_sessionstat_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_commit_unittest_SOURCES = firmware_commit_unittest.cpp
-firmware_commit_unittest_LDADD = $(top_builddir)/firmware_handler.o
+firmware_commit_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 file_handler_unittest_SOURCES = file_handler_unittest.cpp
-file_handler_unittest_LDADD = $(top_builddir)/file_handler.o -lstdc++fs
+file_handler_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la -lstdc++fs
 
 tools_bt_unittest_SOURCES = tools_bt_unittest.cpp
-tools_bt_unittest_LDADD = $(top_builddir)/tools/bt.o
+tools_bt_unittest_LDADD = $(top_builddir)/tools/libupdater.la
 
 tools_lpc_unittest_SOURCES = tools_lpc_unittest.cpp
-tools_lpc_unittest_LDADD = $(top_builddir)/tools/lpc.o
+tools_lpc_unittest_LDADD = $(top_builddir)/tools/libupdater.la
 
 tools_updater_unittest_SOURCES = tools_updater_unittest.cpp
-tools_updater_unittest_LDADD = $(top_builddir)/tools/updater.o
+tools_updater_unittest_LDADD = $(top_builddir)/tools/libupdater.la
