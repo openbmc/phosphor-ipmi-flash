@@ -37,10 +37,8 @@ endif
 ACLOCAL_AMFLAGS = -I m4
 AM_DEFAULT_SOURCE_EXT = .cpp
 
-libfirmwareblobdir = ${libdir}/ipmid-providers
-libfirmwareblob_LTLIBRARIES = libfirmwareblob.la
-libfirmwareblob_la_SOURCES = \
-	main.cpp \
+noinst_LTLIBRARIES = libfirmwareblob_common.la
+libfirmwareblob_common_la_SOURCES = \
 	firmware_handler.cpp \
 	lpc_handler.cpp \
 	pci_handler.cpp \
@@ -48,6 +46,21 @@ libfirmwareblob_la_SOURCES = \
 	lpc_aspeed.cpp \
 	lpc_nuvoton.cpp \
 	internal/sys.cpp
+libfirmwareblob_common_la_CXXFLAGS = \
+	$(SDBUSPLUS_CFLAGS) \
+        $(PHOSPHOR_LOGGING_CFLAGS) \
+        $(CODE_COVERAGE_CXXFLAGS) \
+        -flto
+libfirmwareblob_common_la_LDFLAGS = \
+        $(SDBUSPLUS_LIBS) \
+        $(PHOSPHOR_LOGGING_LIBS) \
+        $(CODE_COVERAGE_LIBS) \
+        -lstdc++fs
+
+libfirmwareblobdir = ${libdir}/ipmid-providers
+libfirmwareblob_LTLIBRARIES = libfirmwareblob.la
+libfirmwareblob_la_SOURCES = main.cpp
+libfirmwareblob_la_LIBADD = libfirmwareblob_common.la
 libfirmwareblob_la_LDFLAGS = \
 	$(SDBUSPLUS_LIBS) \
 	$(PHOSPHOR_LOGGING_LIBS) \
