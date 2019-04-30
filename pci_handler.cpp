@@ -18,10 +18,13 @@
 
 #include <cstdint>
 #include <cstring>
+#include <string>
 #include <vector>
 
 namespace blobs
 {
+
+const std::string PciDataHandler::p2aControlPath = "/dev/aspeed-p2a-ctrl";
 
 bool PciDataHandler::open()
 {
