@@ -1,6 +1,7 @@
 #pragma once
 
 #include "data_handler.hpp"
+#include "internal/sys.hpp"
 
 #include <cstdint>
 #include <vector>
@@ -16,12 +17,16 @@ struct PciConfigResponse
 
 /**
  * Data handler for reading and writing data via the P2A bridge.
+ *
+ * @note: Currently implemented to support only aspeed-p2a-ctrl.
  */
 class PciDataHandler : public DataInterface
 {
   public:
-    explicit PciDataHandler(std::uint32_t regionAddress) :
-        regionAddress(regionAddress){};
+    PciDataHandler(std::uint32_t regionAddress,
+                   const internal::Sys* sys = &internal::sys_impl) :
+        regionAddress(regionAddress),
+        sys(sys){};
 
     bool open() override;
     bool close() override;
@@ -31,6 +36,7 @@ class PciDataHandler : public DataInterface
 
   private:
     std::uint32_t regionAddress;
+    const internal::Sys* sys;
 };
 
 } // namespace blobs
