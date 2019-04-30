@@ -52,7 +52,13 @@ LpcDataHandler
 #endif
 #endif
 
+#ifdef ENABLE_PCI_BRIDGE
+#if defined(ASPEED_P2A)
 PciDataHandler pciDataHandler(MAPPED_ADDRESS);
+#else
+#error "You must specify a hardware implementation."
+#endif
+#endif
 
 std::vector<HandlerPack> supportedFirmware = {
     {FirmwareBlobHandler::hashBlobID, &hashHandler},
