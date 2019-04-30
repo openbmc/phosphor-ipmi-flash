@@ -116,6 +116,21 @@ AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DNUVOTON_LPC], [CXXFLAGS])
 ])
 
+AC_ARG_ENABLE([aspeed-pci],
+    AS_HELP_STRING([--enable-aspeed-pci],
+                   [Enable external transers using Aspeed PCI-to-AHB]))
+AS_IF([test "x$enable_aspeed_pci" = "xyes"], [
+    AC_CHECK_HEADER(linux/aspeed-p2a-ctrl.h,
+                    [HAVE_UAPI_LINUX_P2A_CTRL_H=""],
+                    [HAVE_UAPI_LINUX_P2A_CTRL_H="-I linux/aspeed-p2a-ctrl.h"])
+    AS_IF([test "$HAVE_UAPI_LINUX_P2A_CTRL_H" != ""],
+        AC_MSG_WARN([Could not find linux/aspeed-p2a-ctrl.h: Attempting to download locally for building from openbmc/linux/+/dev-5.0])
+        AC_SUBST([PCI_BMC_DL],
+                 [`mkdir -p linux;wget https://raw.githubusercontent.com/openbmc/linux/dev-5.0/include/uapi/linux/aspeed-p2a-ctrl.h -O linux/aspeed-p2a-ctrl.h`])
+    )
+    AX_APPEND_COMPILE_FLAGS([-DASPEED_PCI], [CXXFLAGS])
+])
+
 AC_ARG_VAR(STATIC_HANDLER_STAGED_NAME, [The file to use for staging the firmware update.])
 AS_IF([test "x$STATIC_HANDLER_STAGED_NAME" == "x"], [STATIC_HANDLER_STAGED_NAME="/run/initramfs/bmc-image"])
 AC_DEFINE_UNQUOTED([STATIC_HANDLER_STAGED_NAME], ["$STATIC_HANDLER_STAGED_NAME"], [The file to use for staging the firmware update.])
