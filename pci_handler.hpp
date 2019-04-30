@@ -4,6 +4,7 @@
 #include "internal/sys.hpp"
 
 #include <cstdint>
+#include <string>
 #include <vector>
 
 namespace blobs
@@ -35,6 +36,7 @@ class PciDataHandler : public DataInterface
   private:
     std::uint32_t regionAddress;
     const internal::Sys* sys;
+    static const std::string p2aControlPath;
 };
 
 } // namespace blobs
