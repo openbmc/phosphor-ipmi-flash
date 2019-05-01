@@ -54,7 +54,7 @@ LpcDataHandler
 
 #ifdef ENABLE_PCI_BRIDGE
 #if defined(ASPEED_P2A)
-PciDataHandler pciDataHandler(MAPPED_ADDRESS);
+PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
 #else
 #error "You must specify a hardware implementation."
 #endif

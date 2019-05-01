@@ -24,8 +24,8 @@ struct PciConfigResponse
 class PciDataHandler : public DataInterface
 {
   public:
-    PciDataHandler(std::uint32_t regionAddress, const internal::Sys* sys = &internal::sys_impl) :
-        regionAddress(regionAddress), sys(sys){};
+    PciDataHandler(std::uint32_t regionAddress, std::size_t regionSize, const internal::Sys* sys = &internal::sys_impl) :
+        regionAddress(regionAddress), memoryRegionSize(regionSize), sys(sys){};
 
     bool open() override;
     bool close() override;
@@ -35,7 +35,11 @@ class PciDataHandler : public DataInterface
 
   private:
     std::uint32_t regionAddress;
+    std::uint32_t memoryRegionSize;
     const internal::Sys* sys;
+
+    int mappedFd = -1;
+    std::uint8_t *mapped = nullptr;
     static const std::string p2aControlPath;
 };
 
