@@ -17,6 +17,8 @@
 #include "bt.hpp"
 #include "io.hpp"
 #include "lpc.hpp"
+#include "p2a.hpp"
+#include "pci.hpp"
 #include "tool_errors.hpp"
 #include "updater.hpp"
 
@@ -34,11 +36,12 @@
 #include <vector>
 
 #define IPMILPC "ipmilpc"
+#define IPMIPCI "ipmipci"
 #define IPMIBT "ipmibt"
 
 namespace
 {
-const std::vector<std::string> interfaceList = {IPMIBT, IPMILPC};
+const std::vector<std::string> interfaceList = {IPMIBT, IPMILPC, IPMIPCI};
 }
 
 void usage(const char* program)
@@ -140,6 +143,7 @@ int main(int argc, char* argv[])
         ipmiblob::IpmiHandler ipmi;
         ipmiblob::BlobHandler blob(&ipmi);
         host_tool::DevMemDevice devmem;
+        host_tool::PciUtilImpl pci;
 
         std::unique_ptr<host_tool::DataInterface> handler;
 
@@ -152,6 +156,11 @@ int main(int argc, char* argv[])
         {
             handler =
                 std::make_unique<host_tool::LpcDataHandler>(&blob, &devmem);
+        }
+        else if (interface == IPMIPCI)
+        {
+            handler = std::make_unique<host_tool::P2aDataHandler>(
+                &blob, &devmem, &pci);
         }
 
         if (!handler)
