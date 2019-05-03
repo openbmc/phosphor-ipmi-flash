@@ -49,6 +49,12 @@ PKG_CHECK_MODULES(
         [Could not find ipmiblob...openbmc/ipmi-blob-tool package required])
     ]
 )
+PKG_CHECK_MODULES(
+    [PCILIB],
+    [libpci],
+    [],
+    [AC_MSG_ERROR([Could not find libpci... pciutils package required])]
+)
 AC_CHECK_HEADER(
     [blobs-ipmid],
     [AC_MSG_ERROR(["phosphor-ipmi-blobs required and not found."])]
