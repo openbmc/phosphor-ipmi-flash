@@ -14,6 +14,19 @@ class HostIoInterface
     virtual ~HostIoInterface() = default;
 
     /**
+     * Attempt to read bytes from offset to the destination from the host
+     * memory device.
+     *
+     * @param[in] offset - offset into the host memory device.
+     * @param[in] length - the number of bytes to copy from source.
+     * @param[in] destination - where to write the bytes.
+     * @return true on success, false on failure (such as unable to initialize
+     * device).
+     */
+    virtual bool read(const std::size_t offset, const std::size_t length,
+                      void* const destination) = 0;
+
+    /**
      * Attempt to write bytes from source to offset into the host memory device.
      *
      * @param[in] offset - offset into the host memory device.
@@ -48,6 +61,9 @@ class DevMemDevice : public HostIoInterface
     DevMemDevice& operator=(const DevMemDevice&) = delete;
     DevMemDevice(DevMemDevice&&) = default;
     DevMemDevice& operator=(DevMemDevice&&) = default;
+
+    bool read(const std::size_t offset, const std::size_t length,
+              void* const destination) override;
 
     bool write(const std::size_t offset, const std::size_t length,
                const void* const source) override;
