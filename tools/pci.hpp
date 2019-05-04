@@ -18,11 +18,12 @@ namespace host_tool
  */
 struct PciDevice
 {
-    int vid;
-    int did;
-    int bus;
-    int dev;
-    int func;
+    std::uint16_t vid;
+    std::uint16_t did;
+    std::uint8_t bus;
+    std::uint8_t dev;
+    std::uint8_t func;
+    pciaddr_t bars[6];
 };
 
 /**
@@ -31,8 +32,14 @@ struct PciDevice
  */
 struct PciFilter
 {
-    int vid;
-    int did;
+    std::uint16_t vid;
+    std::uint16_t did;
+};
+
+struct PciBarInfo
+{
+    std::uint64_t addr;
+    int type;
 };
 
 class PciUtilInterface

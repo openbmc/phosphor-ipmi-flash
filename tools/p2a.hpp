@@ -9,6 +9,9 @@
 
 constexpr std::uint16_t aspeedVendorId = 0x1a03;
 constexpr std::uint16_t aspeedDeviceId = 0x2000;
+constexpr std::size_t aspeedP2aConfig = 0x0f000;
+constexpr std::size_t aspeedP2aBridge = 0x0f004;
+constexpr std::uint32_t p2ABridgeEnabled = 0x1;
 
 namespace host_tool
 {
