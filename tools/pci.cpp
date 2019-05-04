@@ -20,6 +20,7 @@ extern "C" {
 #include <pci/pci.h>
 } // extern "C"
 
+#include <cstring>
 #include <optional>
 #include <vector>
 
@@ -53,6 +54,7 @@ std::vector<PciDevice>
         item.func = dev->func;
         item.vid = dev->vendor_id;
         item.did = dev->device_id;
+        std::memcpy(item.bars, dev->base_addr, sizeof(dev->base_addr));
 
         if (check)
         {
