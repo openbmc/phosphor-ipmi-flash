@@ -27,6 +27,7 @@ bool P2aDataHandler::sendContents(const std::string& input,
     PciDevice result;
     PciUtilImpl pci;
     PciFilter filter;
+    bool found = false;
 
     filter.vid = aspeedVendorId;
     filter.did = aspeedDeviceId;
@@ -46,7 +47,15 @@ bool P2aDataHandler::sendContents(const std::string& input,
         }
 
         result = d;
+        found = true;
+        break;
     }
+
+    if (!found)
+    {
+        return false;
+    }
+
     std::fprintf(stderr, "\n");
 
     /* We sent the open command before this, so the window should be open and
