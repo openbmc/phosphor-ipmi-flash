@@ -17,6 +17,9 @@
 #include "p2a.hpp"
 
 #include "pci.hpp"
+#include "pci_handler.hpp"
+
+#include <cstring>
 
 namespace host_tool
 {
@@ -74,6 +77,17 @@ bool P2aDataHandler::sendContents(const std::string& input,
     std::fprintf(stderr, "The bridge is enabled!\n");
 
     /* Read the configuration via blobs metadata (stat). */
+    ipmiblob::StatResponse stat = blob->getStat(session);
+    if (stat.metadata.size() != sizeof(blobs::PciConfigResponse))
+    {
+        std::fprintf(stderr, "Didn't receive expected size of metadata for "
+                             "PCI Configuration response\n");
+        return false;
+    }
+
+    blobs::PciConfigResponse pciResp;
+    std::memcpy(&pciResp, stat.metadata.data(), sizeof(pciResp));
+    std::fprintf(stderr, "Received address: 0x%x\n", pciResp.address);
 
 #if 0
     /* Configure the mmio to point there. */
