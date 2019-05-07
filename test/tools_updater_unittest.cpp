@@ -13,6 +13,7 @@ namespace host_tool
 using ::testing::Eq;
 using ::testing::Return;
 using ::testing::StrEq;
+using ::testing::TypedEq;
 
 TEST(UpdaterTest, NormalWalkthroughAllHappy)
 {
@@ -36,7 +37,8 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
 
     EXPECT_CALL(blobMock, getBlobList()).WillOnce(Return(blobList));
 
-    EXPECT_CALL(blobMock, getStat(Eq(expectedBlob))).WillOnce(Return(statObj));
+    EXPECT_CALL(blobMock, getStat(TypedEq<const std::string&>(expectedBlob)))
+        .WillOnce(Return(statObj));
 
     EXPECT_CALL(handlerMock, supportedType())
         .WillOnce(Return(blobs::FirmwareBlobHandler::UpdateFlags::lpc));
