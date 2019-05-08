@@ -20,6 +20,18 @@ AS_IF([test "x$enable_code_coverage" != "xno"], [
     ])
 ])
 
+# If building tests, enable both hardware options that are configuration controlled
+AS_IF([test "x$enable_tests" = "xyes"], [enable_static_layout=yes])
+AS_IF([test "x$enable_tests" = "xyes"], [enable_tarball_ubi=yes])
+
+AS_IF([test "x$enable_tests" = "xyes"], [enable_pci_bridge=yes])
+AS_IF([test "x$enable_tests" = "xyes"], [enable_aspeed_p2a=yes])
+
+# You can only build main.o with one of the lpc implementations, however, specify both.
+AS_IF([test "x$enable_tests" = "xyes"], [enable_lpc_bridge=yes])
+AS_IF([test "x$enable_tests" = "xyes"], [enable_aspeed_lpc=yes])
+AS_IF([test "x$enable_tests" = "xyes"], [enable_nuvoton_lpc=yes])
+
 # Checks for programs.
 AC_PROG_CXX
 AM_PROG_AR
@@ -81,12 +93,14 @@ AS_IF([test "x$enable_tarball_ubi" = "xyes"], [
 AC_ARG_ENABLE([pci-bridge],
     AS_HELP_STRING([--enable-pci-bridge],
                    [Enable pci-bridge transport mechanism]))
+AM_CONDITIONAL(ENABLE_PCI_BRIDGE, [test "x$enable_pci_bridge" = "xyes"])
 AS_IF([test "x$enable_pci_bridge" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_PCI_BRIDGE], [CXXFLAGS])
 ])
 AC_ARG_ENABLE([lpc-bridge],
     AS_HELP_STRING([--enable-lpc-bridge],
                    [Enable lpc-bridge transport mechanism]))
+AM_CONDITIONAL(ENABLE_LPC_BRIDGE, [test "x$enable_lpc_bridge" = "xyes"])
 AS_IF([test "x$enable_lpc_bridge" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_LPC_BRIDGE], [CXXFLAGS])
 ])
@@ -104,6 +118,7 @@ AS_IF([test "x$MAPPED_ADDRESS" == "x"],
 AC_ARG_ENABLE([aspeed-lpc],
     AS_HELP_STRING([--enable-aspeed-lpc],
                    [Enable external transfers using Aspeed LPC]))
+AM_CONDITIONAL(ENABLE_ASPEED_LPC, [test "x$enable_aspeed_lpc" = "xyes"])
 AS_IF([test "x$enable_aspeed_lpc" = "xyes"], [
     AC_CHECK_HEADER(
         [linux/aspeed-lpc-ctrl.h],
@@ -116,6 +131,7 @@ AS_IF([test "x$enable_aspeed_lpc" = "xyes"], [
 AC_ARG_ENABLE([nuvoton-lpc],
     AS_HELP_STRING([--enable-nuvoton-lpc],
                    [Enable external transfers using Nuvoton LPC SHM]))
+AM_CONDITIONAL(ENABLE_NUVOTON_LPC, [test "x$enable_nuvoton_lpc" = "xyes"])
 AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DNUVOTON_LPC], [CXXFLAGS])
 ])
@@ -123,6 +139,7 @@ AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
 AC_ARG_ENABLE([aspeed-p2a],
     AS_HELP_STRING([--enable-aspeed-p2a],
                    [Enable external transfers using Aspeed PCI-to-AHB]))
+AM_CONDITIONAL(ENABLE_ASPEED_P2A, [test "x$enable_aspeed_p2a" = "xyes"])
 AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
     AC_CHECK_HEADER(linux/aspeed-p2a-ctrl.h,
                     [HAVE_UAPI_LINUX_P2A_CTRL_H=""],
