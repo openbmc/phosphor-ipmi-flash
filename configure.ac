@@ -73,7 +73,7 @@ AS_IF([test "x$enable_static_layout" = "xyes"], [
 AC_ARG_ENABLE([tarball-ubi],
     AS_HELP_STRING([--enable-tarball-ubi],
                    [Enable tarball firmware update via Blobs]))
-AS_IF([test "x$enanble_tarball_ubi" = "xyes"], [
+AS_IF([test "x$enable_tarball_ubi" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_TARBALL_UBI], [CXXFLAGS])
 ])
 
