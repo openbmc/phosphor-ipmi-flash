@@ -40,12 +40,25 @@ AM_DEFAULT_SOURCE_EXT = .cpp
 noinst_LTLIBRARIES = libfirmwareblob_common.la
 libfirmwareblob_common_la_SOURCES = \
 	firmware_handler.cpp \
-	lpc_handler.cpp \
-	pci_handler.cpp \
 	file_handler.cpp \
-	lpc_aspeed.cpp \
-	lpc_nuvoton.cpp \
 	internal/sys.cpp
+
+if ENABLE_LPC_BRIDGE
+libfirmwareblob_common_la_SOURCES += lpc_handler.cpp
+if ENABLE_ASPEED_LPC
+libfirmwareblob_common_la_SOURCES += lpc_aspeed.cpp
+endif
+if ENABLE_NUVOTON_LPC
+libfirmwareblob_common_la_SOURCES += lpc_nuvoton.cpp
+endif
+endif
+
+if ENABLE_PCI_BRIDGE
+if ENABLE_ASPEED_P2A
+libfirmwareblob_common_la_SOURCES += pci_handler.cpp
+endif
+endif
+
 libfirmwareblob_common_la_CXXFLAGS = \
 	$(SDBUSPLUS_CFLAGS) \
         $(PHOSPHOR_LOGGING_CFLAGS) \
