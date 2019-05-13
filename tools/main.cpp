@@ -140,8 +140,8 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
-        ipmiblob::IpmiHandler ipmi;
-        ipmiblob::BlobHandler blob(&ipmi);
+        auto ipmi = ipmiblob::IpmiHandler::CreateIpmiHandler();
+        ipmiblob::BlobHandler blob(std::move(ipmi));
         host_tool::DevMemDevice devmem;
         host_tool::PciUtilImpl pci;
 
