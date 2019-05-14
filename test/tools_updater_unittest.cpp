@@ -23,6 +23,7 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
     std::string firmwareImage = "image.bin";
     std::string signatureFile = "image.sig";
     std::string expectedBlob = "/flash/image";
+    std::string expectedHash = "/flash/hash";
 
     std::vector<std::string> blobList = {expectedBlob};
     ipmiblob::StatResponse statObj;
@@ -48,6 +49,13 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
 
     EXPECT_CALL(handlerMock,
                 sendContents(StrEq(firmwareImage.c_str()), Eq(session)))
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(blobMock, openBlob(StrEq(expectedHash.c_str()), Eq(supported)))
+        .WillOnce(Return(session));
+
+    EXPECT_CALL(handlerMock,
+                sendContents(StrEq(signatureFile.c_str()), Eq(session)))
         .WillOnce(Return(true));
 
     updaterMain(&blobMock, &handlerMock, firmwareImage, signatureFile);
