@@ -50,10 +50,6 @@ class DevMemDevice : public HostIoInterface
     /* On destruction, close /dev/mem if it was open. */
     ~DevMemDevice()
     {
-        if (opened)
-        {
-            sys->close(devMemFd);
-        }
     }
 
     /* Don't allow copying or assignment, only moving. */
@@ -70,7 +66,6 @@ class DevMemDevice : public HostIoInterface
 
   private:
     static const std::string devMemPath;
-    bool opened = false;
     int devMemFd = -1;
     void* devMemMapped = nullptr;
     const internal::Sys* sys;
