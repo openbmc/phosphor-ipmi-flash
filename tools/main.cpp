@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <exception>
 #include <iostream>
 #include <ipmiblob/blob_handler.hpp>
 #include <ipmiblob/ipmi_handler.hpp>
@@ -180,6 +181,12 @@ int main(int argc, char* argv[])
         catch (const host_tool::ToolException& e)
         {
             std::fprintf(stderr, "Exception received: %s\n", e.what());
+            return -1;
+        }
+        catch (const std::exception& e)
+        {
+            std::fprintf(stderr, "Unexpected exception received: %s\n",
+                         e.what());
             return -1;
         }
     }
