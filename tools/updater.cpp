@@ -35,6 +35,7 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
      * to legacy for now.
      */
     std::string goalFirmware = "/flash/image";
+    std::string hashFilename = "/flash/hash";
 
     /* Get list of blob_ids, check for /flash/image, or /flash/tarball.
      * TODO(venture) the mechanism doesn't care, but the caller of burn_my_bmc
@@ -77,6 +78,9 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
     }
 
     /* Yay, our data handler is supported. */
+
+    /* Send over the firmware image. */
+    std::fprintf(stderr, "Sending over the firmware image.\n");
     std::uint16_t session;
     try
     {
@@ -91,7 +95,6 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
                             std::string(b.what()));
     }
 
-    /* Send over the firmware image. */
     if (!handler->sendContents(imagePath, session))
     {
         /* Need to close the session on failure, or it's stuck open (until the
@@ -104,6 +107,28 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
     blob->closeBlob(session);
 
     /* Send over the hash contents. */
+    std::fprintf(stderr, "Sending over the hash file.\n");
+    try
+    {
+        session = blob->openBlob(
+            hashFilename,
+            static_cast<std::uint16_t>(supported) |
+                static_cast<std::uint16_t>(blobs::OpenFlags::write));
+    }
+    catch (const ipmiblob::BlobException& b)
+    {
+        throw ToolException("blob exception received: " +
+                            std::string(b.what()));
+    }
+
+    if (!handler->sendContents(signaturePath, session))
+    {
+        blob->closeBlob(session);
+        throw ToolException("Failed to send contents of " + signaturePath);
+    }
+
+    blob->closeBlob(session);
+
     /* Trigger the verification. */
     /* Check the verification. */
 
