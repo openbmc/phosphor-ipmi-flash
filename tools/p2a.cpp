@@ -16,10 +16,12 @@
 
 #include "p2a.hpp"
 
+#include "firmware_handler.hpp"
 #include "pci.hpp"
 #include "pci_handler.hpp"
 
 #include <cstring>
+#include <ipmiblob/blob_errors.hpp>
 
 namespace host_tool
 {
@@ -31,6 +33,7 @@ bool P2aDataHandler::sendContents(const std::string& input,
     PciUtilImpl pci;
     PciFilter filter;
     bool found = false;
+    pciaddr_t bar1;
 
     filter.vid = aspeedVendorId;
     filter.did = aspeedDeviceId;
@@ -42,13 +45,14 @@ bool P2aDataHandler::sendContents(const std::string& input,
         std::fprintf(stderr, "[0x%x 0x%x] ", d.vid, d.did);
 
         /* Verify it's a memory-based bar -- we want bar1. */
-        pciaddr_t bar1 = d.bars[1];
+        bar1 = d.bars[1];
         if ((bar1 & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO)
         {
             /* We want it to not be IO-based access. */
             continue;
         }
 
+        /* For now capture the entire device even if we're only using BAR1 */
         result = d;
         found = true;
         break;
@@ -65,7 +69,7 @@ bool P2aDataHandler::sendContents(const std::string& input,
      * the bridge enabled.
      */
     std::uint32_t value;
-    if (!io->read(result.bars[1] | aspeedP2aConfig, sizeof(value), &value))
+    if (!io->read(bar1 | aspeedP2aConfig, sizeof(value), &value))
     {
         if (0 == (value & p2ABridgeEnabled))
         {
@@ -89,16 +93,75 @@ bool P2aDataHandler::sendContents(const std::string& input,
     std::memcpy(&pciResp, stat.metadata.data(), sizeof(pciResp));
     std::fprintf(stderr, "Received address: 0x%x\n", pciResp.address);
 
-#if 0
     /* Configure the mmio to point there. */
-    if (!io->IoWrite(bar | kAspeedP2aBridge, sizeof(phys), &phys)) {
+    if (!io->write(bar1 | aspeedP2aBridge, sizeof(pciResp.address),
+                   &pciResp.address))
+    {
         // Failed to set it up, so fall back.
         std::fprintf(stderr, "Failed to update the bridge address\n");
         return false;
     }
-#endif
 
-    return false;
+    /* For data blocks in 64kb, stage data, and send blob write command. */
+    int inputFd = sys->open(input.c_str(), 0);
+    if (inputFd < 0)
+    {
+        return false;
+    }
+
+    int bytesRead = 0;
+    std::uint32_t offset = 0;
+    const std::uint32_t p2aLength = aspeedP2aOffset;
+
+    auto readBuffer = std::make_unique<std::uint8_t[]>(p2aLength);
+    if (nullptr == readBuffer)
+    {
+        std::fprintf(stderr, "Unable to allocate memory for read buffer.\n");
+        return false;
+    }
+
+    try
+    {
+        do
+        {
+            bytesRead = sys->read(inputFd, readBuffer.get(), p2aLength);
+            if (bytesRead > 0)
+            {
+                std::fprintf(stderr, "bytesRead: %d\n", bytesRead);
+
+                /* TODO: Will likely need to store an rv somewhere to know when
+                 * we're exiting from failure.
+                 */
+                if (!io->write(bar1 | aspeedP2aOffset, bytesRead,
+                               readBuffer.get()))
+                {
+                    std::fprintf(stderr,
+                                 "Failed to write to region in memory!\n");
+                    break;
+                }
+
+                /* Ok, so the data is staged, now send the blob write with the
+                 * details.
+                 */
+                struct blobs::ExtChunkHdr chunk;
+                chunk.length = bytesRead;
+                std::vector<std::uint8_t> chunkBytes(sizeof(chunk));
+                std::memcpy(chunkBytes.data(), &chunk, sizeof(chunk));
+
+                /* This doesn't return anything on success. */
+                blob->writeBytes(session, offset, chunkBytes);
+                offset += bytesRead;
+            }
+        } while (bytesRead > 0);
+    }
+    catch (const ipmiblob::BlobException& b)
+    {
+        sys->close(inputFd);
+        return false;
+    }
+
+    sys->close(inputFd);
+    return true;
 }
 
 } // namespace host_tool

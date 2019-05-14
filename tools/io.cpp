@@ -16,15 +16,11 @@ const std::string DevMemDevice::devMemPath = "/dev/mem";
 bool DevMemDevice::read(const std::size_t offset, const std::size_t length,
                         void* const destination)
 {
-    if (!opened)
+    std::fprintf(stderr, "DevMemDevice::read->\n");
+    devMemFd = sys->open(devMemPath.c_str(), O_RDONLY);
+    if (devMemFd < 0)
     {
-        devMemFd = sys->open(devMemPath.c_str(), O_RDWR);
-        if (devMemFd < 0)
-        {
-            return false;
-        }
-
-        opened = true;
+        return false;
     }
 
     /* Map based on aligned addresses - behind the scenes. */
@@ -37,6 +33,8 @@ bool DevMemDevice::read(const std::size_t offset, const std::size_t length,
                              alignedOffset);
     if (devMemMapped == MAP_FAILED)
     {
+        std::fprintf(stderr, "Failed to mmap at offset: 0x%lx, length: %lu\n",
+                     offset, length);
         return false; /* but leave the file open. */
     }
 
@@ -48,6 +46,7 @@ bool DevMemDevice::read(const std::size_t offset, const std::size_t length,
 
     /* Close the map between reads for now. */
     sys->munmap(devMemMapped, length);
+    sys->close(devMemFd);
 
     return true;
 }
@@ -55,15 +54,11 @@ bool DevMemDevice::read(const std::size_t offset, const std::size_t length,
 bool DevMemDevice::write(const std::size_t offset, const std::size_t length,
                          const void* const source)
 {
-    if (!opened)
+    devMemFd = sys->open(devMemPath.c_str(), O_RDWR);
+    if (devMemFd < 0)
     {
-        devMemFd = sys->open(devMemPath.c_str(), O_RDWR);
-        if (devMemFd < 0)
-        {
-            return false;
-        }
-
-        opened = true;
+        std::fprintf(stderr, "Failed to open /dev/mem for writing\n");
+        return false;
     }
 
     /* Map based on aligned addresses - behind the scenes. */
@@ -77,6 +72,8 @@ bool DevMemDevice::write(const std::size_t offset, const std::size_t length,
 
     if (devMemMapped == MAP_FAILED)
     {
+        std::fprintf(stderr, "Failed to mmap at offset: 0x%lx, length: %lu\n",
+                     offset, length);
         return false; /* but leave the file open. */
     }
 
@@ -88,6 +85,7 @@ bool DevMemDevice::write(const std::size_t offset, const std::size_t length,
 
     /* Close the map between writes for now. */
     sys->munmap(devMemMapped, length);
+    sys->close(devMemFd);
 
     return true;
 }

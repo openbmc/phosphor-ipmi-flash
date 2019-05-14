@@ -98,8 +98,10 @@ bool PciDataHandler::close()
 
 std::vector<std::uint8_t> PciDataHandler::copyFrom(std::uint32_t length)
 {
-    /* TODO: implement this. */
-    return {};
+    std::vector<std::uint8_t> results(length);
+    std::memcpy(results.data(), mapped, length);
+
+    return results;
 }
 
 bool PciDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)
