@@ -251,11 +251,6 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
         return false;
     }
 
-    /* The blobState here relates to an active sesion, so we should return the
-     * flags used to open this session.
-     */
-    meta->blobState = item->second->flags;
-
     /* The size here refers to the size of the file -- of something analagous.
      */
     meta->size = (item->second->imageHandler)
@@ -270,11 +265,34 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
      */
     if (item->second->activePath == verifyBlobID)
     {
-        meta->metadata.push_back(
-            static_cast<std::uint8_t>(checkVerificationState()));
+        auto value = checkVerificationState();
 
-        return true;
+        meta->metadata.push_back(static_cast<std::uint8_t>(value));
+
+        /* Change the firmware handler's state and the blob's stat value
+         * depending.
+         */
+        if (value == VerifyCheckResponses::success ||
+            value == VerifyCheckResponses::failed)
+        {
+            state = UpdateState::verificationCompleted;
+            item->second->flags &= ~StateFlags::committing;
+
+            if (value == VerifyCheckResponses::success)
+            {
+                item->second->flags |= StateFlags::committed;
+            }
+            else
+            {
+                item->second->flags |= StateFlags::commit_error;
+            }
+        }
     }
+
+    /* The blobState here relates to an active sesion, so we should return the
+     * flags used to open this session.
+     */
+    meta->blobState = item->second->flags;
 
     /* The metadata blob returned comes from the data handler... it's used for
      * instance, in P2A bridging to get required information about the mapping,
