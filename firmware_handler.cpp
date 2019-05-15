@@ -168,17 +168,17 @@ bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
     /* We know we support this path because canHandle is called ahead */
     if (path == verifyBlobID)
     {
-        /* We need to return information for the verify state -- did they call
-         * commit() did things start?
+        /* TODO: We need to return information for the verify state -- did they
+         * call commit() did things start?
          */
     }
     else if (path == activeImageBlobID)
     {
-        /* We need to return information for the image that's staged. */
+        /* TODO: We need to return information for the image that's staged. */
     }
     else if (path == activeHashBlobID)
     {
-        /* We need to return information for the hash that's staged. */
+        /* TODO: We need to return information for the hash that's staged. */
     }
     else
     {
@@ -216,6 +216,12 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
      * flags used to open this session.
      */
     meta->blobState = item->second->flags;
+
+    /* TODO: Implement this for the verification blob, which is what we expect.
+     * Calling stat() on the verify blob without an active session should not
+     * provide insight.
+     */
+
     /* The size here refers to the size of the file -- of something analagous.
      */
     meta->size = item->second->imageHandler->getSize();
@@ -450,6 +456,10 @@ bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
         return false;
     }
 
+    /* TODO: Prevent writing to the verification blob before they trigger
+     * verification.
+     */
+
     std::vector<std::uint8_t> bytes;
 
     if (item->second->flags & UpdateFlags::ipmi)
@@ -495,6 +505,8 @@ bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
     {
         return false;
     }
+
+    /* TODO: Prevent writing meta to the verification blob. */
 
     return item->second->dataHandler->writeMeta(data);
 }
