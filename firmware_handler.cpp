@@ -456,9 +456,13 @@ bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
         return false;
     }
 
-    /* TODO: Prevent writing to the verification blob before they trigger
+    /* Prevent writing to the verification blob before they trigger
      * verification.
      */
+    if (item->second->activePath == verifyBlobID)
+    {
+        return false;
+    }
 
     std::vector<std::uint8_t> bytes;
 
