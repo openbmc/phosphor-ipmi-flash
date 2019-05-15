@@ -10,6 +10,7 @@
 namespace host_tool
 {
 
+using ::testing::_;
 using ::testing::Eq;
 using ::testing::Return;
 using ::testing::StrEq;
@@ -24,6 +25,7 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
     std::string signatureFile = "image.sig";
     std::string expectedBlob = "/flash/image";
     std::string expectedHash = "/flash/hash";
+    std::string expectedVerify = "/flash/verify";
 
     std::vector<std::string> blobList = {expectedBlob};
     ipmiblob::StatResponse statObj;
@@ -57,6 +59,12 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
     EXPECT_CALL(handlerMock,
                 sendContents(StrEq(signatureFile.c_str()), Eq(session)))
         .WillOnce(Return(true));
+
+    EXPECT_CALL(blobMock,
+                openBlob(StrEq(expectedVerify.c_str()), Eq(supported)))
+        .WillOnce(Return(session));
+
+    EXPECT_CALL(blobMock, commit(Eq(session), _)).WillOnce(Return());
 
     updaterMain(&blobMock, &handlerMock, firmwareImage, signatureFile);
 }
