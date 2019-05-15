@@ -96,7 +96,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
      * appropriately.
      */
     /** The state of the firmware update process. */
-    enum UpdateState
+    enum class UpdateState
     {
         /** The initial state. */
         notYetStarted = 0,
