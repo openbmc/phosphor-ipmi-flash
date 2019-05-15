@@ -32,7 +32,7 @@ bool DevMemDevice::read(const std::size_t offset, const std::size_t length,
                              alignedOffset);
     if (devMemMapped == MAP_FAILED)
     {
-        std::fprintf(stderr, "Failed to mmap at offset: 0x%lx, length: %lu\n",
+        std::fprintf(stderr, "Failed to mmap at offset: 0x%zx, length: %zu\n",
                      offset, length);
         sys->close(devMemFd);
         return false;
@@ -72,7 +72,7 @@ bool DevMemDevice::write(const std::size_t offset, const std::size_t length,
 
     if (devMemMapped == MAP_FAILED)
     {
-        std::fprintf(stderr, "Failed to mmap at offset: 0x%lx, length: %lu\n",
+        std::fprintf(stderr, "Failed to mmap at offset: 0x%zx, length: %zu\n",
                      offset, length);
         sys->close(devMemFd);
         return false;
