@@ -510,9 +510,14 @@ bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
         return false;
     }
 
-    /* TODO: Prevent writing meta to the verification blob. */
+    /* Prevent writing meta to the verification blob (it has no data handler).
+     */
+    if (item->second->dataHandler)
+    {
+        return item->second->dataHandler->writeMeta(data);
+    }
 
-    return item->second->dataHandler->writeMeta(data);
+    return false;
 }
 
 /*
