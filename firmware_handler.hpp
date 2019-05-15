@@ -111,7 +111,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
     };
 
     /** The return values for verification. */
-    enum VerifyCheckResponses : std::uint8_t
+    enum class VerifyCheckResponses : std::uint8_t
     {
         running = 0,
         success = 1,
