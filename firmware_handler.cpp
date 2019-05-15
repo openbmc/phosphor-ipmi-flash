@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
+#include <fstream>
 #include <memory>
 #include <phosphor-logging/log.hpp>
 #include <string>
@@ -35,12 +36,50 @@ static constexpr auto systemdService = "org.freedesktop.systemd1";
 static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
 static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
 static constexpr auto verifyTarget = "verify_image.service";
+static constexpr auto statusPath = "/tmp/bmc.verify";
 
 const std::string FirmwareBlobHandler::verifyBlobID = "/flash/verify";
 const std::string FirmwareBlobHandler::hashBlobID = "/flash/hash";
 const std::string FirmwareBlobHandler::activeImageBlobID =
     "/flash/active/image";
 const std::string FirmwareBlobHandler::activeHashBlobID = "/flash/active/hash";
+
+namespace
+{
+
+FirmwareBlobHandler::VerifyCheckResponses checkVerificationState()
+{
+    FirmwareBlobHandler::VerifyCheckResponses result =
+        FirmwareBlobHandler::VerifyCheckResponses::other;
+
+    std::ifstream ifs;
+    ifs.open(statusPath);
+    if (ifs.good())
+    {
+        /*
+         * Check for the contents of the file, accepting:
+         * running, success, or failed.
+         */
+        std::string status;
+        ifs >> status;
+        if (status == "running")
+        {
+            result = FirmwareBlobHandler::VerifyCheckResponses::running;
+        }
+        else if (status == "success")
+        {
+            result = FirmwareBlobHandler::VerifyCheckResponses::success;
+        }
+        else if (status == "failed")
+        {
+            result = FirmwareBlobHandler::VerifyCheckResponses::failed;
+        }
+    }
+
+    return result;
+}
+
+} // namespace
 
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
@@ -217,30 +256,36 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
      */
     meta->blobState = item->second->flags;
 
+    /* The size here refers to the size of the file -- of something analagous.
+     */
+    meta->size = (item->second->imageHandler)
+                     ? item->second->imageHandler->getSize()
+                     : 0;
+
+    meta->metadata.clear();
+
     /* TODO: Implement this for the verification blob, which is what we expect.
      * Calling stat() on the verify blob without an active session should not
      * provide insight.
      */
+    if (item->second->activePath == verifyBlobID)
+    {
+        meta->metadata.push_back(
+            static_cast<std::uint8_t>(checkVerificationState()));
 
-    /* The size here refers to the size of the file -- of something analagous.
-     */
-    meta->size = item->second->imageHandler->getSize();
+        return true;
+    }
 
     /* The metadata blob returned comes from the data handler... it's used for
      * instance, in P2A bridging to get required information about the mapping,
      * and is the "opposite" of the lpc writemeta requirement.
      */
-    meta->metadata.clear();
     if (item->second->dataHandler)
     {
         auto bytes = item->second->dataHandler->readMeta();
         meta->metadata.insert(meta->metadata.begin(), bytes.begin(),
                               bytes.end());
     }
-
-    /* TODO: During things like verification, etc, we can report the state as
-     * committed, etc, so we'll need to do that.
-     */
 
     return true;
 }
