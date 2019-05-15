@@ -86,4 +86,8 @@ libfirmwareblob_la_CXXFLAGS = \
 	$(CODE_COVERAGE_CXXFLAGS) \
 	-flto
 
-SUBDIRS = . test tools
+SUBDIRS = . test
+
+if BUILD_HOST_TOOL
+SUBDIRS += tools
+endif

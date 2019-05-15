@@ -74,6 +74,13 @@ AC_CHECK_HEADER(
 AX_PTHREAD([], [AC_MSG_ERROR(["pthread required and not found"])])
 
 # Configurability
+
+# Enable building the host tool (default: yes)
+AC_ARG_ENABLE([build-host-tool],
+    AC_HELP_STRING([--disable-build-host-tool], [Build host tool])
+)
+AM_CONDITIONAL([BUILD_HOST_TOOL], [test "x$enable_build_host_tool" != "xno"])
+
 # Enable static layout for firmware image staging.
 AC_ARG_ENABLE([static-layout],
     AS_HELP_STRING([--enable-static-layout],
