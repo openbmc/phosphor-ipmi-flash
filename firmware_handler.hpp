@@ -59,7 +59,7 @@ struct Session
     std::uint16_t flags;
 
     /** A sesion can be for an image (or tarball) or the hash. */
-    enum State
+    enum class State
     {
         open = 0,
         closed = 1,
