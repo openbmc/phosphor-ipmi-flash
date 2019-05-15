@@ -30,7 +30,6 @@ bool P2aDataHandler::sendContents(const std::string& input,
                                   std::uint16_t session)
 {
     PciDevice result;
-    PciUtilImpl pci;
     PciFilter filter;
     bool found = false;
     pciaddr_t bar1;
@@ -39,7 +38,7 @@ bool P2aDataHandler::sendContents(const std::string& input,
     filter.did = aspeedDeviceId;
 
     /* Find the ASPEED PCI device entry we want. */
-    auto output = pci.getPciDevices(filter);
+    auto output = pci->getPciDevices(filter);
     for (const auto& d : output)
     {
         std::fprintf(stderr, "[0x%x 0x%x] ", d.vid, d.did);
