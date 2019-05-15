@@ -66,6 +66,15 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
 
     EXPECT_CALL(blobMock, commit(Eq(session), _)).WillOnce(Return());
 
+    ipmiblob::StatResponse verificationResponse;
+    verificationResponse.blob_state = supported | blobs::StateFlags::committing;
+    verificationResponse.size = 0;
+    verificationResponse.metadata.push_back(static_cast<std::uint8_t>(
+        blobs::FirmwareBlobHandler::VerifyCheckResponses::success));
+
+    EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
+        .WillOnce(Return(verificationResponse));
+
     updaterMain(&blobMock, &handlerMock, firmwareImage, signatureFile);
 }
 

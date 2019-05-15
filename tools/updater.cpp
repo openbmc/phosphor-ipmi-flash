@@ -16,6 +16,7 @@
 
 #include "updater.hpp"
 
+#include "firmware_handler.hpp"
 #include "tool_errors.hpp"
 
 #include <algorithm>
@@ -24,9 +25,91 @@
 #include <ipmiblob/blob_errors.hpp>
 #include <memory>
 #include <string>
+#include <thread>
 
 namespace host_tool
 {
+
+/* Poll an open verification session.  Handling closing the session is not yet
+ * owned by this method. */
+bool pollVerificationStatus(std::uint16_t session,
+                            ipmiblob::BlobInterface* blob)
+{
+    using namespace std::chrono_literals;
+
+    static constexpr auto verificationSleep = 5s;
+    static constexpr int commandAttempts = 20;
+    int attempts = 0;
+    bool exitLoop = false;
+    blobs::FirmwareBlobHandler::VerifyCheckResponses result =
+        blobs::FirmwareBlobHandler::VerifyCheckResponses::other;
+
+    try
+    {
+        /* Reach back the current status from the verification service output.
+         */
+        while (attempts++ < commandAttempts)
+        {
+            ipmiblob::StatResponse resp = blob->getStat(session);
+
+            if (resp.metadata.size() != sizeof(std::uint8_t))
+            {
+                /* TODO: How do we want to handle the verification failures,
+                 * because closing the session to the verify blob has a special
+                 * as-of-yet not fully defined behavior.
+                 */
+                std::fprintf(stderr, "Received invalid metadata response!!!\n");
+            }
+
+            result =
+                static_cast<blobs::FirmwareBlobHandler::VerifyCheckResponses>(
+                    resp.metadata[0]);
+
+            switch (result)
+            {
+                case blobs::FirmwareBlobHandler::VerifyCheckResponses::failed:
+                    std::fprintf(stderr, "failed\n");
+                    exitLoop = true;
+                    break;
+                case blobs::FirmwareBlobHandler::VerifyCheckResponses::other:
+                    std::fprintf(stderr, "other\n");
+                    break;
+                case blobs::FirmwareBlobHandler::VerifyCheckResponses::running:
+                    std::fprintf(stderr, "running\n");
+                    break;
+                case blobs::FirmwareBlobHandler::VerifyCheckResponses::success:
+                    std::fprintf(stderr, "success\n");
+                    exitLoop = true;
+                    break;
+                default:
+                    std::fprintf(stderr, "wat\n");
+            }
+
+            if (exitLoop)
+            {
+                break;
+            }
+            std::this_thread::sleep_for(verificationSleep);
+        }
+    }
+    catch (const ipmiblob::BlobException& b)
+    {
+        throw ToolException("blob exception received: " +
+                            std::string(b.what()));
+    }
+
+    /* TODO: If this is reached and it's not success, it may be worth just
+     * throwing a ToolException with a timeout message specifying the final
+     * read's value.
+     *
+     * TODO: Given that excepting from certain points leaves the BMC update
+     * state machine in an inconsistent state, we need to carefully evaluate
+     * which exceptions from the lower layers allow one to try and delete the
+     * blobs to rollback the state and progress.
+     */
+    return (result ==
+            blobs::FirmwareBlobHandler::VerifyCheckResponses::success);
+}
 
 void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
                  const std::string& imagePath, const std::string& signaturePath)
@@ -162,9 +245,24 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
                             std::string(b.what()));
     }
 
-    /* TODO: Check the verification via stat(session). */
+    std::fprintf(stderr,
+                 "Calling stat on verification session to check status\n");
 
-    /* DO NOT CLOSE the verification session until it's done. */
+    if (pollVerificationStatus(session, blob))
+    {
+        std::fprintf(stderr, "Verification returned success\n");
+    }
+    else
+    {
+        std::fprintf(stderr, "Verification returned non-success (could still "
+                             "be running (unlikely))\n");
+    }
+
+    /* DO NOT CLOSE the verification session until it's done.
+     * TODO: Evaluate what closing verification should do?  If the process is
+     * complete, nothing bad, maybe reset the entire state machine?  This will
+     * benefit from a diagram.
+     */
     blob->closeBlob(session);
 
     return;
