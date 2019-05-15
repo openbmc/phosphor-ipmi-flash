@@ -33,9 +33,14 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
 {
     /* TODO(venture): Add optional parameter to specify the flash type, default
      * to legacy for now.
+     *
+     * TODO(venture): Move the strings from the FirmwareHandler object to a
+     * boring utils object so it will be more happly linked cleanly to both the
+     * BMC and host-side.
      */
     std::string goalFirmware = "/flash/image";
     std::string hashFilename = "/flash/hash";
+    std::string verifyFilename = "/flash/verify";
 
     /* Get list of blob_ids, check for /flash/image, or /flash/tarball.
      * TODO(venture) the mechanism doesn't care, but the caller of burn_my_bmc
@@ -129,8 +134,37 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
 
     blob->closeBlob(session);
 
-    /* Trigger the verification. */
-    /* Check the verification. */
+    /* Trigger the verification by opening the verify file. */
+    std::fprintf(stderr, "Opening the verification file\n");
+    try
+    {
+        session = blob->openBlob(
+            verifyFilename,
+            static_cast<std::uint16_t>(supported) |
+                static_cast<std::uint16_t>(blobs::OpenFlags::write));
+    }
+    catch (const ipmiblob::BlobException& b)
+    {
+        throw ToolException("blob exception received: " +
+                            std::string(b.what()));
+    }
+
+    std::fprintf(stderr,
+                 "Committing to verification file to trigger verification service\n");
+    try
+    {
+        blob->commit(session, {});
+    }
+    catch (const ipmiblob::BlobException& b)
+    {
+        throw ToolException("blob exception received: " +
+                            std::string(b.what()));
+    }
+
+    /* TODO: Check the verification via stat(session). */
+
+    /* DO NOT CLOSE the verification session until it's done. */
+    blob->closeBlob(session);
 
     return;
 }
