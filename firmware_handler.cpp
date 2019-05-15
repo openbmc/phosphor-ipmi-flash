@@ -538,10 +538,10 @@ bool FirmwareBlobHandler::commit(uint16_t session,
         return false;
     }
 
-    /* Can only be called once per verification. */
+    /* Calling repeatedly has no effect within an update process. */
     if (state == UpdateState::verificationStarted)
     {
-        return false;
+        return true;
     }
 
     /* Set state to committing. */

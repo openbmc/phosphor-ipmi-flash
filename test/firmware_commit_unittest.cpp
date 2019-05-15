@@ -103,9 +103,10 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
     EXPECT_TRUE(handler->commit(0, {}));
 }
 
-TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnce)
+TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
 {
-    /* Verify you cannot call the commit() command once verification is started.
+    /* Verify you cannot call the commit() command once verification is
+     * started, after which it will just return true.
      */
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
@@ -143,7 +144,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnce)
     EXPECT_CALL(sdbus_mock, sd_bus_call(_, _, _, _, _)).WillOnce(Return(0));
 
     EXPECT_TRUE(handler->commit(0, {}));
-    EXPECT_FALSE(handler->commit(0, {}));
+    EXPECT_TRUE(handler->commit(0, {}));
 }
 
 } // namespace blobs
