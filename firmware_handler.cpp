@@ -491,6 +491,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         blobIDs.push_back(*active);
     }
 
+    state = UpdateState::uploadInProgress;
     fileOpen = true;
 
     return true;
@@ -640,14 +641,32 @@ bool FirmwareBlobHandler::close(uint16_t session)
     /* Are you closing the verify blob? */
     if (item->second->activePath == verifyBlobID)
     {
-        /* If they close this blob before verification finishes, that's an
-         * abort.
-         * TODO: implement this, for now just let them close the file.
-         */
         if (state == UpdateState::verificationStarted)
         {
+            /* TODO: If they close this blob before verification finishes,
+             * that's an abort.
+             */
             return false;
         }
+        else if (state == UpdateState::verificationCompleted)
+        {
+            /* TODO: Should this delete the verification artifact? */
+            state = UpdateState::notYetStarted;
+
+            /* A this point, delete the active blob IDs from the blob_list. */
+            blobIDs.erase(
+                std::remove(blobIDs.begin(), blobIDs.end(), activeImageBlobID));
+            blobIDs.erase(
+                std::remove(blobIDs.begin(), blobIDs.end(), activeHashBlobID));
+        }
+        /* Must be verificationPending... not yet started, they may re-open and
+         * trigger verification.
+         */
+    }
+    else
+    {
+        /* They are closing a data pathway (image, tarball, hash). */
+        state = UpdateState::verificationPending;
     }
 
     if (item->second->dataHandler)
@@ -668,9 +687,6 @@ bool FirmwareBlobHandler::close(uint16_t session)
 
     fileOpen = false;
 
-    /* TODO: implement other aspects of closing out a session, such as changing
-     * global firmware state.
-     */
     return true;
 }
 

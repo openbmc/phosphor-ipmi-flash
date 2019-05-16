@@ -100,14 +100,14 @@ class FirmwareBlobHandler : public GenericBlobInterface
     {
         /** The initial state. */
         notYetStarted = 0,
-        /**
-         * The upload process has started, but verification has not started.
-         */
-        uploadInProgress = 1,
+        /** The BMC is expecting to receive bytes. */
+        uploadInProgress,
+        /** The BMC is ready for verification or more bytes. */
+        verificationPending,
         /** The verification process has started, no more writes allowed. */
-        verificationStarted = 2,
+        verificationStarted,
         /** The verification process has completed. */
-        verificationCompleted = 3,
+        verificationCompleted,
     };
 
     /** The return values for verification. */
