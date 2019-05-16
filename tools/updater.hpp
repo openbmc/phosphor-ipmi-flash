@@ -8,6 +8,50 @@
 namespace host_tool
 {
 
+/** Object that actually handles the update itself. */
+class UpdateHandler
+{
+  public:
+    UpdateHandler(ipmiblob::BlobInterface* blob, DataInterface* handler) :
+        blob(blob), handler(handler)
+    {
+    }
+
+    virtual ~UpdateHandler() = default;
+
+    /**
+     * Check if the goal firmware is listed in the blob_list and that the
+     * handler's supported data type is available.
+     *
+     * @param[in] goalFirmware - the firmware to check /flash/image
+     * /flash/tarball, etc.
+     */
+    virtual bool checkAvailable(const std::string& goalFirmware);
+
+    /**
+     * Send the file contents at path to the blob id, target.
+     *
+     * @param[in] target - the blob id
+     * @param[in] path - the source file path
+     * @throw ToolException on failure.
+     */
+    virtual void sendFile(const std::string& target, const std::string& path);
+
+    /**
+     * Trigger verification.
+     *
+     * @param[in] target - the verification blob id (may support multiple in the
+     * future.
+     * @return true if verified, false if verification errors.
+     * @throw ToolException on failure (TODO: throw on timeout.)
+     */
+    virtual bool verifyFile(const std::string& target);
+
+  private:
+    ipmiblob::BlobInterface* blob;
+    DataInterface* handler;
+};
+
 /**
  * Poll an open verification session.
  *
@@ -21,14 +65,12 @@ bool pollVerificationStatus(std::uint16_t session,
 /**
  * Attempt to update the BMC's firmware using the interface provided.
  *
- * @param[in] blob - pointer to blob interface implementation object.
- * @param[in] handler - pointer to the data interface implementation object.
+ * @param[in] updater - update handler object.
  * @param[in] imagePath - the path to the image file.
  * @param[in] signaturePath - the path to the signature file.
  * @throws ToolException on failures.
  */
-void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
-                 const std::string& imagePath,
+void updaterMain(UpdateHandler* updater, const std::string& imagePath,
                  const std::string& signaturePath);
 
 } // namespace host_tool

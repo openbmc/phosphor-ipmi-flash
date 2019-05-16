@@ -26,9 +26,83 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <vector>
 
 namespace host_tool
 {
+
+bool UpdateHandler::checkAvailable(const std::string& goalFirmware)
+{
+    std::vector<std::string> blobs = blob->getBlobList();
+
+    auto blobInst = std::find_if(
+        blobs.begin(), blobs.end(), [&goalFirmware](const std::string& iter) {
+            /* Running into weird scenarios where the string comparison doesn't
+             * work.  TODO: revisit.
+             */
+            return (0 == std::memcmp(goalFirmware.c_str(), iter.c_str(),
+                                     goalFirmware.length()));
+            // return (goalFirmware.compare(iter));
+        });
+    if (blobInst == blobs.end())
+    {
+        std::fprintf(stderr, "%s not found\n", goalFirmware.c_str());
+        return false;
+    }
+
+    /* Call stat on /flash/image (or /flash/tarball) and check if data interface
+     * is supported.
+     */
+    ipmiblob::StatResponse stat;
+
+    try
+    {
+        stat = blob->getStat(goalFirmware);
+    }
+    catch (const ipmiblob::BlobException& b)
+    {
+        std::fprintf(stderr, "Received exception '%s' on getStat\n", b.what());
+        return false;
+    }
+
+    auto supported = handler->supportedType();
+    if ((stat.blob_state & supported) == 0)
+    {
+        std::fprintf(stderr, "data interface selected not supported.\n");
+        return false;
+    }
+
+    return true;
+}
+
+void UpdateHandler::sendFile(const std::string& target, const std::string& path)
+{
+    std::uint16_t session;
+    auto supported = handler->supportedType();
+
+    try
+    {
+        session = blob->openBlob(
+            target, static_cast<std::uint16_t>(supported) |
+                        static_cast<std::uint16_t>(blobs::OpenFlags::write));
+    }
+    catch (const ipmiblob::BlobException& b)
+    {
+        throw ToolException("blob exception received: " +
+                            std::string(b.what()));
+    }
+
+    if (!handler->sendContents(path, session))
+    {
+        /* Need to close the session on failure, or it's stuck open (until the
+         * blob handler timeout is implemented, and even then, why make it wait.
+         */
+        blob->closeBlob(session);
+        throw ToolException("Failed to send contents of " + path);
+    }
+
+    blob->closeBlob(session);
+}
 
 /* Poll an open verification session.  Handling closing the session is not yet
  * owned by this method. */
@@ -111,120 +185,15 @@ bool pollVerificationStatus(std::uint16_t session,
             blobs::FirmwareBlobHandler::VerifyCheckResponses::success);
 }
 
-void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
-                 const std::string& imagePath, const std::string& signaturePath)
+bool UpdateHandler::verifyFile(const std::string& target)
 {
-    /* TODO(venture): Add optional parameter to specify the flash type, default
-     * to legacy for now.
-     *
-     * TODO(venture): Move the strings from the FirmwareHandler object to a
-     * boring utils object so it will be more happly linked cleanly to both the
-     * BMC and host-side.
-     */
-    std::string goalFirmware = "/flash/image";
-    std::string hashFilename = "/flash/hash";
-    std::string verifyFilename = "/flash/verify";
-
-    /* Get list of blob_ids, check for /flash/image, or /flash/tarball.
-     * TODO(venture) the mechanism doesn't care, but the caller of burn_my_bmc
-     * will have in mind which they're sending and we need to verify it's
-     * available and use it.
-     */
-    std::vector<std::string> blobs = blob->getBlobList();
-    auto blobInst = std::find_if(
-        blobs.begin(), blobs.end(), [&goalFirmware](const std::string& iter) {
-            /* Running into weird scenarios where the string comparison doesn't
-             * work.  TODO: revisit.
-             */
-            return (0 == std::memcmp(goalFirmware.c_str(), iter.c_str(),
-                                     goalFirmware.length()));
-            // return (goalFirmware.compare(iter));
-        });
-    if (blobInst == blobs.end())
-    {
-        throw ToolException(goalFirmware + " not found");
-    }
-
-    /* Call stat on /flash/image (or /flash/tarball) and check if data interface
-     * is supported.
-     */
-    ipmiblob::StatResponse stat;
-    try
-    {
-        stat = blob->getStat(goalFirmware);
-    }
-    catch (const ipmiblob::BlobException& b)
-    {
-        throw ToolException("blob exception received: " +
-                            std::string(b.what()));
-    }
-
-    auto supported = handler->supportedType();
-    if ((stat.blob_state & supported) == 0)
-    {
-        throw ToolException("data interface selected not supported.");
-    }
-
-    /* Yay, our data handler is supported. */
-
-    /* Send over the firmware image. */
-    std::fprintf(stderr, "Sending over the firmware image.\n");
     std::uint16_t session;
+    bool success = false;
+
     try
     {
         session = blob->openBlob(
-            goalFirmware,
-            static_cast<std::uint16_t>(supported) |
-                static_cast<std::uint16_t>(blobs::OpenFlags::write));
-    }
-    catch (const ipmiblob::BlobException& b)
-    {
-        throw ToolException("blob exception received: " +
-                            std::string(b.what()));
-    }
-
-    if (!handler->sendContents(imagePath, session))
-    {
-        /* Need to close the session on failure, or it's stuck open (until the
-         * blob handler timeout is implemented, and even then, why make it wait.
-         */
-        blob->closeBlob(session);
-        throw ToolException("Failed to send contents of " + imagePath);
-    }
-
-    blob->closeBlob(session);
-
-    /* Send over the hash contents. */
-    std::fprintf(stderr, "Sending over the hash file.\n");
-    try
-    {
-        session = blob->openBlob(
-            hashFilename,
-            static_cast<std::uint16_t>(supported) |
-                static_cast<std::uint16_t>(blobs::OpenFlags::write));
-    }
-    catch (const ipmiblob::BlobException& b)
-    {
-        throw ToolException("blob exception received: " +
-                            std::string(b.what()));
-    }
-
-    if (!handler->sendContents(signaturePath, session))
-    {
-        blob->closeBlob(session);
-        throw ToolException("Failed to send contents of " + signaturePath);
-    }
-
-    blob->closeBlob(session);
-
-    /* Trigger the verification by opening the verify file. */
-    std::fprintf(stderr, "Opening the verification file\n");
-    try
-    {
-        session = blob->openBlob(
-            verifyFilename,
-            static_cast<std::uint16_t>(supported) |
-                static_cast<std::uint16_t>(blobs::OpenFlags::write));
+            target, static_cast<std::uint16_t>(blobs::OpenFlags::write));
     }
     catch (const ipmiblob::BlobException& b)
     {
@@ -235,6 +204,7 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
     std::fprintf(
         stderr,
         "Committing to verification file to trigger verification service\n");
+
     try
     {
         blob->commit(session, {});
@@ -251,6 +221,7 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
     if (pollVerificationStatus(session, blob))
     {
         std::fprintf(stderr, "Verification returned success\n");
+        success = true;
     }
     else
     {
@@ -258,12 +229,50 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
                              "be running (unlikely))\n");
     }
 
-    /* DO NOT CLOSE the verification session until it's done.
-     * TODO: Evaluate what closing verification should do?  If the process is
-     * complete, nothing bad, maybe reset the entire state machine?  This will
-     * benefit from a diagram.
-     */
     blob->closeBlob(session);
+    return (success == true);
+}
+
+void updaterMain(UpdateHandler* updater, const std::string& imagePath,
+                 const std::string& signaturePath)
+{
+    /* TODO(venture): Add optional parameter to specify the flash type, default
+     * to legacy for now.
+     *
+     * TODO(venture): Move the strings from the FirmwareHandler object to a
+     * boring utils object so it will be more happly linked cleanly to both the
+     * BMC and host-side.
+     */
+    std::string goalFirmware = "/flash/image";
+    std::string hashFilename = "/flash/hash";
+    std::string verifyFilename = "/flash/verify";
+
+    bool goalSupported = updater->checkAvailable(goalFirmware);
+    if (!goalSupported)
+    {
+        throw ToolException("Goal firmware or interface not supported");
+    }
+
+    /* Yay, our data handler is supported. */
+
+    /* Send over the firmware image. */
+    std::fprintf(stderr, "Sending over the firmware image.\n");
+    updater->sendFile(goalFirmware, imagePath);
+
+    /* Send over the hash contents. */
+    std::fprintf(stderr, "Sending over the hash file.\n");
+    updater->sendFile(hashFilename, signaturePath);
+
+    /* Trigger the verification by opening the verify file. */
+    std::fprintf(stderr, "Opening the verification file\n");
+    if (updater->verifyFile(verifyFilename))
+    {
+        std::fprintf(stderr, "succeeded\n");
+    }
+    else
+    {
+        std::fprintf(stderr, "failed\n");
+    }
 }
 
 } // namespace host_tool

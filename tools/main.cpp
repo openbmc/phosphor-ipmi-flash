@@ -175,8 +175,8 @@ int main(int argc, char* argv[])
         /* The parameters are all filled out. */
         try
         {
-            host_tool::updaterMain(&blob, handler.get(), imagePath,
-                                   signaturePath);
+            host_tool::UpdateHandler updater(&blob, handler.get());
+            host_tool::updaterMain(&updater, imagePath, signaturePath);
         }
         catch (const host_tool::ToolException& e)
         {
