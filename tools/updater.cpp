@@ -264,8 +264,6 @@ void updaterMain(ipmiblob::BlobInterface* blob, DataInterface* handler,
      * benefit from a diagram.
      */
     blob->closeBlob(session);
-
-    return;
 }
 
 } // namespace host_tool
