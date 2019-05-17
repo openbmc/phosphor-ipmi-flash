@@ -32,55 +32,12 @@ using namespace phosphor::logging;
 
 namespace blobs
 {
-// systemd service to kick start a target.
-static constexpr auto systemdService = "org.freedesktop.systemd1";
-static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
-static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
-static constexpr auto verifyTarget = "verify_image.service";
-
-namespace
-{
-
-FirmwareBlobHandler::VerifyCheckResponses
-    checkVerificationState(const std::string& path)
-{
-    FirmwareBlobHandler::VerifyCheckResponses result =
-        FirmwareBlobHandler::VerifyCheckResponses::other;
-
-    std::ifstream ifs;
-    ifs.open(path);
-    if (ifs.good())
-    {
-        /*
-         * Check for the contents of the file, accepting:
-         * running, success, or failed.
-         */
-        std::string status;
-        ifs >> status;
-        if (status == "running")
-        {
-            result = FirmwareBlobHandler::VerifyCheckResponses::running;
-        }
-        else if (status == "success")
-        {
-            result = FirmwareBlobHandler::VerifyCheckResponses::success;
-        }
-        else if (status == "failed")
-        {
-            result = FirmwareBlobHandler::VerifyCheckResponses::failed;
-        }
-    }
-
-    return result;
-}
-
-} // namespace
 
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        sdbusplus::bus::bus&& bus, const std::vector<HandlerPack>& firmwares,
+        const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
-        const std::string& verificationPath)
+        std::unique_ptr<VerificationInterface> verification)
 {
     /* There must be at least one. */
     if (!firmwares.size())
@@ -112,9 +69,9 @@ std::unique_ptr<GenericBlobInterface>
         bitmask |= item.bitmask;
     }
 
-    return std::make_unique<FirmwareBlobHandler>(std::move(bus), firmwares,
+    return std::make_unique<FirmwareBlobHandler>(firmwares,
                                                  blobs, transports, bitmask,
-                                                 verificationPath);
+                                                 std::move(verification));
 }
 
 /* Check if the path is in our supported list (or active list). */
@@ -257,7 +214,7 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
      */
     if (item->second->activePath == verifyBlobId)
     {
-        auto value = checkVerificationState(verificationPath);
+        auto value = verification->checkVerificationState();
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
 
@@ -700,25 +657,12 @@ std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t session,
 
 bool FirmwareBlobHandler::triggerVerification()
 {
-    auto method = bus.new_method_call(systemdService, systemdRoot,
-                                      systemdInterface, "StartUnit");
-    method.append(verifyTarget);
-    method.append("replace");
-
-    try
-    {
-        bus.call_noreply(method);
+    bool result = verification->triggerVerification();
+    if (result) {
         state = UpdateState::verificationStarted;
     }
-    catch (const sdbusplus::exception::SdBusError& ex)
-    {
-        /* TODO: Once logging supports unit-tests, add a log message to test
-         * this failure.
-         */
-        return false;
-    }
 
-    return true;
+    return result;
 }
 
 } // namespace blobs
