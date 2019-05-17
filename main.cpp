@@ -23,6 +23,7 @@
 #include "lpc_handler.hpp"
 #include "lpc_nuvoton.hpp"
 #include "pci_handler.hpp"
+#include "util.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -63,10 +64,10 @@ PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
 std::vector<HandlerPack> supportedFirmware = {
     {FirmwareBlobHandler::hashBlobID, &hashHandler},
 #ifdef ENABLE_STATIC_LAYOUT
-    {"/flash/image", &staticLayoutHandler},
+    {staticLayoutBlobId, &staticLayoutHandler},
 #endif
 #ifdef ENABLE_TARBALL_UBI
-    {"/flash/tarball", &ubitarballHandler},
+    {ubiTarballBlobId, &ubitarballHandler},
 #endif
 };
 
