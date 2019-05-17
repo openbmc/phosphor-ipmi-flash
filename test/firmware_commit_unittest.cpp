@@ -2,8 +2,8 @@
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
+#include "verification_mock.hpp"
 
-#include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -32,11 +32,12 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    sdbusplus::SdBusMock sdbus_mock;
-    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+    /* Verify it doesn't get called by using StrictMock. */
+    std::unique_ptr<VerificationInterface> verifyMock =
+        std::make_unique<StrictMock<VerificationMock>>();
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data, "");
+        blobs, data, std::move(verifyMock));
 
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
@@ -61,11 +62,12 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    sdbusplus::SdBusMock sdbus_mock;
-    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+    /* Verify it doesn't get called by using StrictMock. */
+    std::unique_ptr<VerificationInterface> verifyMock =
+        std::make_unique<StrictMock<VerificationMock>>();
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data, "");
+        blobs, data, std::move(verifyMock));
 
     EXPECT_CALL(imageMock1, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
@@ -91,13 +93,16 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    sdbusplus::SdBusMock sdbus_mock;
-    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+    auto verifyMock = CreateVerifyMock();
+    auto verifyMockPtr = reinterpret_cast<VerificationMock*>(verifyMock.get());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data, "");
+        blobs, data, std::move(verifyMock));
 
     EXPECT_TRUE(handler->open(0, OpenFlags::write, verifyBlobId));
+
+    EXPECT_CALL(*verifyMockPtr, triggerVerification())
+        .WillRepeatedly(Return(true));
 
     EXPECT_TRUE(handler->commit(0, {}));
 }
@@ -117,29 +122,16 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    StrictMock<sdbusplus::SdBusMock> sdbus_mock;
-    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
+    auto verifyMock = CreateVerifyMock();
+    auto verifyMockPtr = reinterpret_cast<VerificationMock*>(verifyMock.get());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data, "");
+        blobs, data, std::move(verifyMock));
 
     EXPECT_TRUE(handler->open(0, OpenFlags::write, verifyBlobId));
 
-    /* Note: I used StrictMock<> here to just catch all the calls.  However, the
-     * unit-tests pass if we don't use StrictMock and ignore the calls.
-     */
-    EXPECT_CALL(sdbus_mock,
-                sd_bus_message_new_method_call(
-                    IsNull(), NotNull(), StrEq("org.freedesktop.systemd1"),
-                    StrEq("/org/freedesktop/systemd1"),
-                    StrEq("org.freedesktop.systemd1.Manager"),
-                    StrEq("StartUnit")))
-        .WillOnce(Return(0));
-    EXPECT_CALL(sdbus_mock,
-                sd_bus_message_append_basic(IsNull(), 's', NotNull()))
-        .Times(2)
-        .WillRepeatedly(Return(0));
-    EXPECT_CALL(sdbus_mock, sd_bus_call(_, _, _, _, _)).WillOnce(Return(0));
+    EXPECT_CALL(*verifyMockPtr, triggerVerification())
+        .WillRepeatedly(Return(true));
 
     EXPECT_TRUE(handler->commit(0, {}));
     EXPECT_TRUE(handler->commit(0, {}));

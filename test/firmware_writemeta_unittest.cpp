@@ -2,8 +2,7 @@
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
-
-#include <sdbusplus/test/sdbus_mock.hpp>
+#include "verification_mock.hpp"
 
 #include <gtest/gtest.h>
 
@@ -27,11 +26,8 @@ TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
         {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
-    sdbusplus::SdBusMock sdbus_mock;
-    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
-
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data, "");
+        blobs, data, CreateVerifyMock());
 
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
@@ -58,11 +54,8 @@ TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
         {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
-    sdbusplus::SdBusMock sdbus_mock;
-    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
-
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data, "");
+        blobs, data, CreateVerifyMock());
 
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));

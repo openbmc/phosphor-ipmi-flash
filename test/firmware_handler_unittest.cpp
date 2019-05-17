@@ -1,9 +1,9 @@
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
+#include "verification_mock.hpp"
 
 #include <algorithm>
-#include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -17,11 +17,8 @@ TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    sdbusplus::SdBusMock sdbus_mock;
-    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
-
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), {}, data, "");
+        {}, data, CreateVerifyMock());
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
@@ -33,11 +30,8 @@ TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
         {"asdf", &imageMock},
     };
 
-    sdbusplus::SdBusMock sdbus_mock;
-    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
-
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, {}, "");
+        blobs, {}, CreateVerifyMock());
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
@@ -52,17 +46,14 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
 
-    sdbusplus::SdBusMock sdbus_mock;
-    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
-
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data, "");
+        blobs, data, CreateVerifyMock());
     EXPECT_EQ(handler, nullptr);
 
     blobs.push_back({hashBlobId, &imageMock});
 
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data, "");
+        blobs, data, CreateVerifyMock());
     auto result = handler->getBlobIds();
     EXPECT_EQ(3, result.size());
     EXPECT_EQ(3, std::count(result.begin(), result.end(), "asdf") +

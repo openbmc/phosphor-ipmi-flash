@@ -2,13 +2,9 @@
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
-
-#include <phosphor-logging/test/sdjournal_mock.hpp>
-#include <sdbusplus/test/sdbus_mock.hpp>
+#include "verification_mock.hpp"
 
 #include <gtest/gtest.h>
-
-using namespace phosphor::logging;
 
 namespace blobs
 {
@@ -34,16 +30,8 @@ TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
         {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
-    sdbusplus::SdBusMock sdbus_mock;
-    auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
-
-    //    TODO: Once we can test across log<> paths again, re-enable this test
-    //    as a failure test instead of a success one. EXPECT_CALL(journalMock,
-    //    journal_send_call(StrEq("PRIORITY=%d")))
-    //        .WillOnce(Return(0));
-
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data, "");
+        blobs, data, CreateVerifyMock());
 
     //    EXPECT_EQ(handler, nullptr);
     EXPECT_FALSE(handler == nullptr);

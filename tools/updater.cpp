@@ -17,6 +17,7 @@
 #include "updater.hpp"
 
 #include "firmware_handler.hpp"
+#include "status.hpp"
 #include "tool_errors.hpp"
 #include "util.hpp"
 
@@ -116,8 +117,7 @@ bool pollVerificationStatus(std::uint16_t session,
     static constexpr int commandAttempts = 20;
     int attempts = 0;
     bool exitLoop = false;
-    blobs::FirmwareBlobHandler::VerifyCheckResponses result =
-        blobs::FirmwareBlobHandler::VerifyCheckResponses::other;
+    blobs::VerifyCheckResponses result = blobs::VerifyCheckResponses::other;
 
     try
     {
@@ -136,23 +136,21 @@ bool pollVerificationStatus(std::uint16_t session,
                 std::fprintf(stderr, "Received invalid metadata response!!!\n");
             }
 
-            result =
-                static_cast<blobs::FirmwareBlobHandler::VerifyCheckResponses>(
-                    resp.metadata[0]);
+            result = static_cast<blobs::VerifyCheckResponses>(resp.metadata[0]);
 
             switch (result)
             {
-                case blobs::FirmwareBlobHandler::VerifyCheckResponses::failed:
+                case blobs::VerifyCheckResponses::failed:
                     std::fprintf(stderr, "failed\n");
                     exitLoop = true;
                     break;
-                case blobs::FirmwareBlobHandler::VerifyCheckResponses::other:
+                case blobs::VerifyCheckResponses::other:
                     std::fprintf(stderr, "other\n");
                     break;
-                case blobs::FirmwareBlobHandler::VerifyCheckResponses::running:
+                case blobs::VerifyCheckResponses::running:
                     std::fprintf(stderr, "running\n");
                     break;
-                case blobs::FirmwareBlobHandler::VerifyCheckResponses::success:
+                case blobs::VerifyCheckResponses::success:
                     std::fprintf(stderr, "success\n");
                     exitLoop = true;
                     break;
@@ -182,8 +180,7 @@ bool pollVerificationStatus(std::uint16_t session,
      * which exceptions from the lower layers allow one to try and delete the
      * blobs to rollback the state and progress.
      */
-    return (result ==
-            blobs::FirmwareBlobHandler::VerifyCheckResponses::success);
+    return (result == blobs::VerifyCheckResponses::success);
 }
 
 bool UpdateHandler::verifyFile(const std::string& target)
