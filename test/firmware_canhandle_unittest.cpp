@@ -2,6 +2,7 @@
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
+#include "verification_mock.hpp"
 
 #include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
@@ -36,7 +37,7 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data, "");
+        std::move(bus_mock), blobs, data, CreateVerifyMock());
 
     for (const auto& item : items)
     {
