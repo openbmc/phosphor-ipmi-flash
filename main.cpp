@@ -36,8 +36,12 @@ namespace blobs
 namespace
 {
 FileHandler hashHandler(HASH_FILENAME);
+#ifdef ENABLE_STATIC_LAYOUT
 FileHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
+#endif
+#ifdef ENABLE_TARBALL_UBI
 FileHandler ubitarballHandler(TARBALL_STAGED_NAME);
+#endif
 
 /* The maximum external buffer size we expect is 64KB. */
 static constexpr std::size_t memoryRegionSize = 64 * 1024UL;
