@@ -34,7 +34,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValid)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
@@ -65,7 +65,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidHashFile)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
@@ -101,7 +101,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerAllSucceeds)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
@@ -136,7 +136,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerReturnsFailure)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(dataMock, open()).WillOnce(Return(false));
 
@@ -168,7 +168,7 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsVerifyOpenFileCheck)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
@@ -216,7 +216,7 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
@@ -258,7 +258,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidImageHandlerFails)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(false));
 
@@ -288,7 +288,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithoutWriteFails)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_FALSE(
         handler->open(0, FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
@@ -312,7 +312,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithInvalidTransportBit)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_FALSE(
         handler->open(0, FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));
@@ -336,7 +336,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithInvalidImageBlobId)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_FALSE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "bcdf"));

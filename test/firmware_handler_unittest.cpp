@@ -21,7 +21,7 @@ TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), {}, data);
+        std::move(bus_mock), {}, data, "");
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
@@ -37,7 +37,7 @@ TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, {});
+        std::move(bus_mock), blobs, {}, "");
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
@@ -56,13 +56,13 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
     EXPECT_EQ(handler, nullptr);
 
     blobs.push_back({hashBlobId, &imageMock});
 
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
     auto result = handler->getBlobIds();
     EXPECT_EQ(3, result.size());
     EXPECT_EQ(3, std::count(result.begin(), result.end(), "asdf") +

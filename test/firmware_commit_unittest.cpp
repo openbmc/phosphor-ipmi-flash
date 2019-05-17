@@ -36,7 +36,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
@@ -65,7 +65,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(imageMock1, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
@@ -95,7 +95,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_TRUE(handler->open(0, OpenFlags::write, verifyBlobId));
 
@@ -121,7 +121,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_TRUE(handler->open(0, OpenFlags::write, verifyBlobId));
 
