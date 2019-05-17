@@ -18,6 +18,7 @@
 
 #include "firmware_handler.hpp"
 #include "tool_errors.hpp"
+#include "util.hpp"
 
 #include <algorithm>
 #include <blobs-ipmid/blobs.hpp>
@@ -238,16 +239,8 @@ void updaterMain(UpdateHandler* updater, const std::string& imagePath,
 {
     /* TODO(venture): Add optional parameter to specify the flash type, default
      * to legacy for now.
-     *
-     * TODO(venture): Move the strings from the FirmwareHandler object to a
-     * boring utils object so it will be more happly linked cleanly to both the
-     * BMC and host-side.
      */
-    std::string goalFirmware = "/flash/image";
-    std::string hashFilename = "/flash/hash";
-    std::string verifyFilename = "/flash/verify";
-
-    bool goalSupported = updater->checkAvailable(goalFirmware);
+    bool goalSupported = updater->checkAvailable(blobs::staticLayoutBlobId);
     if (!goalSupported)
     {
         throw ToolException("Goal firmware or interface not supported");
@@ -257,15 +250,15 @@ void updaterMain(UpdateHandler* updater, const std::string& imagePath,
 
     /* Send over the firmware image. */
     std::fprintf(stderr, "Sending over the firmware image.\n");
-    updater->sendFile(goalFirmware, imagePath);
+    updater->sendFile(blobs::staticLayoutBlobId, imagePath);
 
     /* Send over the hash contents. */
     std::fprintf(stderr, "Sending over the hash file.\n");
-    updater->sendFile(hashFilename, signaturePath);
+    updater->sendFile(blobs::hashBlobId, signaturePath);
 
     /* Trigger the verification by opening the verify file. */
     std::fprintf(stderr, "Opening the verification file\n");
-    if (updater->verifyFile(verifyFilename))
+    if (updater->verifyFile(blobs::verifyBlobId))
     {
         std::fprintf(stderr, "succeeded\n");
     }

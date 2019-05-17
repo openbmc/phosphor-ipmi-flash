@@ -4,6 +4,7 @@
 
 #include "data_handler.hpp"
 #include "image_handler.hpp"
+#include "util.hpp"
 
 #include <blobs-ipmid/blobs.hpp>
 #include <cstdint>
@@ -146,8 +147,8 @@ class FirmwareBlobHandler : public GenericBlobInterface
                         std::uint16_t bitmask) :
         bus(std::move(bus)),
         handlers(firmwares), blobIDs(blobs), transports(transports),
-        bitmask(bitmask), activeImage(activeImageBlobID),
-        activeHash(activeHashBlobID), verifyImage(verifyBlobID), lookup(),
+        bitmask(bitmask), activeImage(activeImageBlobId),
+        activeHash(activeHashBlobId), verifyImage(verifyBlobId), lookup(),
         state(UpdateState::notYetStarted)
     {
     }
@@ -175,11 +176,6 @@ class FirmwareBlobHandler : public GenericBlobInterface
     bool expire(uint16_t session) override;
 
     bool triggerVerification();
-
-    static const std::string verifyBlobID;
-    static const std::string hashBlobID;
-    static const std::string activeImageBlobID;
-    static const std::string activeHashBlobID;
 
     /** Allow grabbing the current state. */
     UpdateState getCurrentState() const

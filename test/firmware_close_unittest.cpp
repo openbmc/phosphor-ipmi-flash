@@ -1,6 +1,7 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "util.hpp"
 
 #include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
@@ -23,7 +24,7 @@ TEST(FirmwareHandlerCloseTest, CloseSuceedsWithDataHandler)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -38,18 +39,17 @@ TEST(FirmwareHandlerCloseTest, CloseSuceedsWithDataHandler)
         std::move(bus_mock), blobs, data);
 
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(imageMock, open(Eq(FirmwareBlobHandler::hashBlobID)))
-        .WillOnce(Return(true));
+    EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
-        FirmwareBlobHandler::hashBlobID));
+        hashBlobId));
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
     EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
-                            FirmwareBlobHandler::activeHashBlobID));
+                            activeHashBlobId));
 
     /* Set up close() expectations. */
     EXPECT_CALL(dataMock, close());
@@ -70,7 +70,7 @@ TEST(FirmwareHandlerCloseTest, CloseSuceedsWithoutDataHandler)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -84,18 +84,17 @@ TEST(FirmwareHandlerCloseTest, CloseSuceedsWithoutDataHandler)
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(bus_mock), blobs, data);
 
-    EXPECT_CALL(imageMock, open(Eq(FirmwareBlobHandler::hashBlobID)))
-        .WillOnce(Return(true));
+    EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
-        FirmwareBlobHandler::hashBlobID));
+        hashBlobId));
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
     EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
-                            FirmwareBlobHandler::activeHashBlobID));
+                            activeHashBlobId));
 
     /* Set up close() expectations. */
     EXPECT_CALL(imageMock, close());

@@ -8,10 +8,11 @@ noinst_LTLIBRARIES = libupdater.la
 libupdater_la_LDFLAGS = -static $(CODE_COVERAGE_LIBS) $(IPMIBLOB_LIBS) $(PCILIB_LIBS)
 libupdater_la_CXXFLAGS = -I$(top_srcdir) $(CODE_COVERAGE_CXXFLAGS) $(IPMIBLOB_CFLAGS) $(PCILIB_CFLAGS)
 libupdater_la_SOURCES = \
+	$(top_srcdir)/util.cpp \
 	updater.cpp \
 	bt.cpp \
 	lpc.cpp \
 	io.cpp \
 	pci.cpp \
 	p2a.cpp \
-	../internal/sys.cpp
+	$(top_srcdir)/internal/sys.cpp

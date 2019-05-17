@@ -17,6 +17,7 @@
 #include "firmware_handler.hpp"
 
 #include "image_handler.hpp"
+#include "util.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -37,12 +38,6 @@ static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
 static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
 static constexpr auto verifyTarget = "verify_image.service";
 static constexpr auto statusPath = "/tmp/bmc.verify";
-
-const std::string FirmwareBlobHandler::verifyBlobID = "/flash/verify";
-const std::string FirmwareBlobHandler::hashBlobID = "/flash/hash";
-const std::string FirmwareBlobHandler::activeImageBlobID =
-    "/flash/active/image";
-const std::string FirmwareBlobHandler::activeHashBlobID = "/flash/active/hash";
 
 namespace
 {
@@ -102,9 +97,9 @@ std::unique_ptr<GenericBlobInterface>
     {
         blobs.push_back(item.blobName);
     }
-    blobs.push_back(verifyBlobID); /* Add blob_id to always exist. */
+    blobs.push_back(verifyBlobId); /* Add blob_id to always exist. */
 
-    if (0 == std::count(blobs.begin(), blobs.end(), hashBlobID))
+    if (0 == std::count(blobs.begin(), blobs.end(), hashBlobId))
     {
         return nullptr;
     }
@@ -160,20 +155,20 @@ bool FirmwareBlobHandler::deleteBlob(const std::string& path)
      * no impact.
      * TODO: Should trying to delete this cause an abort?
      */
-    if (path == verifyBlobID)
+    if (path == verifyBlobId)
     {
         return false;
     }
 
-    if (path == hashBlobID || path == activeHashBlobID)
+    if (path == hashBlobId || path == activeHashBlobId)
     {
         /* They're deleting the hash. */
-        toDelete = &activeHashBlobID;
+        toDelete = &activeHashBlobId;
     }
     else
     {
         /* They're deleting the image. */
-        toDelete = &activeImageBlobID;
+        toDelete = &activeImageBlobId;
     }
 
     auto it = std::find_if(
@@ -205,17 +200,17 @@ bool FirmwareBlobHandler::deleteBlob(const std::string& path)
 bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
 {
     /* We know we support this path because canHandle is called ahead */
-    if (path == verifyBlobID)
+    if (path == verifyBlobId)
     {
         /* TODO: We need to return information for the verify state -- did they
          * call commit() did things start?
          */
     }
-    else if (path == activeImageBlobID)
+    else if (path == activeImageBlobId)
     {
         /* TODO: We need to return information for the image that's staged. */
     }
-    else if (path == activeHashBlobID)
+    else if (path == activeHashBlobId)
     {
         /* TODO: We need to return information for the hash that's staged. */
     }
@@ -263,7 +258,7 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
      * Calling stat() on the verify blob without an active session should not
      * provide insight.
      */
-    if (item->second->activePath == verifyBlobID)
+    if (item->second->activePath == verifyBlobId)
     {
         auto value = checkVerificationState();
 
@@ -367,7 +362,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
      * The file must be opened for writing, but no transport mechanism specified
      * since it's irrelevant.
      */
-    if (path == verifyBlobID)
+    if (path == verifyBlobId)
     {
         /* In this case, there's no image handler to use, or data handler,
          * simply set up a session.
@@ -397,14 +392,14 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     }
 
     /* 2) there isn't, so what are they opening? */
-    if (path == activeImageBlobID)
+    if (path == activeImageBlobId)
     {
         /* 2a) are they opening the active image? this can only happen if they
          * already started one (due to canHandleBlob's behavior).
          */
         return false;
     }
-    else if (path == activeHashBlobID)
+    else if (path == activeHashBlobId)
     {
         /* 2b) are they opening the active hash? this can only happen if they
          * already started one (due to canHandleBlob's behavior).
@@ -461,16 +456,16 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     Session* curr;
     const std::string* active;
 
-    if (path == hashBlobID)
+    if (path == hashBlobId)
     {
         /* 2c) are they opening the /flash/hash ? (to start the process) */
         curr = &activeHash;
-        active = &activeHashBlobID;
+        active = &activeHashBlobId;
     }
     else
     {
         curr = &activeImage;
-        active = &activeImageBlobID;
+        active = &activeImageBlobId;
     }
 
     curr->flags = flags;
@@ -523,7 +518,7 @@ bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
     /* Prevent writing to the verification blob before they trigger
      * verification.
      */
-    if (item->second->activePath == verifyBlobID)
+    if (item->second->activePath == verifyBlobId)
     {
         return false;
     }
@@ -585,7 +580,7 @@ bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
 }
 
 /*
- * If this command is called on the session for the verifyBlobID, it'll
+ * If this command is called on the session for the verifyBlobId, it'll
  * trigger a systemd service `verify_image.service` to attempt to verify
  * the image.
  *
@@ -602,7 +597,7 @@ bool FirmwareBlobHandler::commit(uint16_t session,
     }
 
     /* You can only commit on the verifyBlodId */
-    if (item->second->activePath != verifyBlobID)
+    if (item->second->activePath != verifyBlobId)
     {
         return false;
     }
@@ -639,7 +634,7 @@ bool FirmwareBlobHandler::close(uint16_t session)
     }
 
     /* Are you closing the verify blob? */
-    if (item->second->activePath == verifyBlobID)
+    if (item->second->activePath == verifyBlobId)
     {
         if (state == UpdateState::verificationStarted)
         {
@@ -655,9 +650,9 @@ bool FirmwareBlobHandler::close(uint16_t session)
 
             /* A this point, delete the active blob IDs from the blob_list. */
             blobIDs.erase(
-                std::remove(blobIDs.begin(), blobIDs.end(), activeImageBlobID));
+                std::remove(blobIDs.begin(), blobIDs.end(), activeImageBlobId));
             blobIDs.erase(
-                std::remove(blobIDs.begin(), blobIDs.end(), activeHashBlobID));
+                std::remove(blobIDs.begin(), blobIDs.end(), activeHashBlobId));
         }
         /* Must be verificationPending... not yet started, they may re-open and
          * trigger verification.

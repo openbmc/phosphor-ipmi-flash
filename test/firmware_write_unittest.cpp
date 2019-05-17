@@ -1,6 +1,7 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "util.hpp"
 
 #include <cstdint>
 #include <cstring>
@@ -20,7 +21,7 @@ TEST(FirmwareHandlerWriteTest, DataTypeIpmiWriteSuccess)
 
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 
@@ -51,7 +52,7 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteSuccess)
 
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 
@@ -94,7 +95,7 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteFailsBadRequest)
 
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 
