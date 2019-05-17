@@ -29,6 +29,53 @@ class bus
 namespace blobs
 {
 
+class VerificationInterface {
+  public:
+  virtual ~VerificationInterface() = default;
+
+  /**
+   * Trigger verification service.
+   *
+   * @return true if successfully started, false otherwise.
+   */
+  virtual bool triggerVerification() = 0;
+
+  /** Abort the verification process. */
+  virtual void abortVerification() = 0;
+};
+
+/**
+ * Representation of what is used for verification.  Currently, this reduces the
+ * chance of error by using an object instead of two strings to control the
+ * verification step, however, it leaves room for a future possibility out
+ * something wholly configurable.
+ */
+class Verification : public VerificationInterface
+{
+  public:
+    /**
+     * Create a default Verification object that uses systemd to trigger the process.
+     *
+     * @param[in] bus - an sdbusplus handler for a bus to use.
+     * @param[in] path - the path to check for verification status.
+     * @param[in[ service - the systemd service to start to trigger verification.
+     */
+    static std::unique_ptr<VerificationInterface> CreateDefaultVerification(sdbusplus::bus::bus&& bus, const std::string& path, const std::string& service);
+
+    Verification(sdbusplus::bus::bus&& bus, const std::string& path, const std::string& service) :
+        bus(std::move(bus)), checkPath(path), triggerService(service)
+    {
+    }
+
+    bool triggerVerification() override;
+    void abortVerification() override;
+
+ private:
+    sdbusplus::bus::bus bus;
+    const std::string checkPath;
+    const std::string triggerService;
+};
+
 /**
  * Representation of a session, includes how to read/write data.
  */
@@ -123,36 +170,34 @@ class FirmwareBlobHandler : public GenericBlobInterface
     /**
      * Create a FirmwareBlobHandler.
      *
-     * @param[in] bus - an sdbusplus handler for a bus to use.
      * @param[in] firmwares - list of firmware blob_ids to support.
      * @param[in] transports - list of transports to support.
-     * @param[in[ verificationPath - path to check for verification output
+     * @param[in] verification - pointer to object for triggering verification
      */
     static std::unique_ptr<GenericBlobInterface> CreateFirmwareBlobHandler(
-        sdbusplus::bus::bus&& bus, const std::vector<HandlerPack>& firmwares,
+        const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
-        const std::string& verificationPath);
+        std::unique_ptr<VerificationInterface> verification);
 
     /**
      * Create a FirmwareBlobHandler.
      *
-     * @param[in] bus - an sdbusplus handler for a bus to use
      * @param[in] firmwares - list of firmware types and their handlers
      * @param[in] blobs - list of blobs_ids to support
      * @param[in] transports - list of transport types and their handlers
      * @param[in] bitmask - bitmask of transports to support
+     * @param[in] verification - pointer to object for triggering verification
      */
-    FirmwareBlobHandler(sdbusplus::bus::bus&& bus,
+    FirmwareBlobHandler(
                         const std::vector<HandlerPack>& firmwares,
                         const std::vector<std::string>& blobs,
                         const std::vector<DataHandlerPack>& transports,
                         std::uint16_t bitmask,
-                        const std::string& verificationPath) :
-        bus(std::move(bus)),
+                        std::unique_ptr<VerificationInterface> verification) :
         handlers(firmwares), blobIDs(blobs), transports(transports),
         bitmask(bitmask), activeImage(activeImageBlobId),
         activeHash(activeHashBlobId), verifyImage(verifyBlobId), lookup(),
-        state(UpdateState::notYetStarted), verificationPath(verificationPath)
+        state(UpdateState::notYetStarted), verification(std::move(verification))
     {
     }
     ~FirmwareBlobHandler() = default;
@@ -216,7 +261,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
     /** The firmware update state. */
     UpdateState state;
 
-    const std::string verificationPath;
+    std::unique_ptr<VerificationInterface> verification;
 
     /** Temporary variable to track whether a blob is open. */
     bool fileOpen = false;

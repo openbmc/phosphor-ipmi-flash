@@ -36,7 +36,6 @@ namespace blobs
 static constexpr auto systemdService = "org.freedesktop.systemd1";
 static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
 static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
-static constexpr auto verifyTarget = "verify_image.service";
 
 namespace
 {
@@ -80,7 +79,7 @@ std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
         sdbusplus::bus::bus&& bus, const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
-        const std::string& verificationPath)
+        const Verification& verification)
 {
     /* There must be at least one. */
     if (!firmwares.size())
@@ -114,7 +113,7 @@ std::unique_ptr<GenericBlobInterface>
 
     return std::make_unique<FirmwareBlobHandler>(std::move(bus), firmwares,
                                                  blobs, transports, bitmask,
-                                                 verificationPath);
+                                                 verification);
 }
 
 /* Check if the path is in our supported list (or active list). */
@@ -257,7 +256,7 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
      */
     if (item->second->activePath == verifyBlobId)
     {
-        auto value = checkVerificationState(verificationPath);
+        auto value = checkVerificationState(verification.checkPath);
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
 
@@ -702,7 +701,7 @@ bool FirmwareBlobHandler::triggerVerification()
 {
     auto method = bus.new_method_call(systemdService, systemdRoot,
                                       systemdInterface, "StartUnit");
-    method.append(verifyTarget);
+    method.append(verification.triggerService);
     method.append("replace");
 
     try
