@@ -24,6 +24,7 @@
 #include "lpc_nuvoton.hpp"
 #include "pci_handler.hpp"
 #include "util.hpp"
+#include "verify.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -94,8 +95,10 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
     using namespace phosphor::logging;
 
     auto handler = blobs::FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        sdbusplus::bus::new_default(), blobs::supportedFirmware,
-        blobs::supportedTransports, VERIFY_STATUS_FILENAME);
+        blobs::supportedFirmware, blobs::supportedTransports,
+        blobs::Verification::CreateDefaultVerification(
+            sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
+            VERIFY_DBUS_SERVICE));
 
     if (!handler)
     {

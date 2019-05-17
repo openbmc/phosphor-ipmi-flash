@@ -103,3 +103,4 @@ Variable                     | Default                    | Meaning
 `TARBALL_STAGED_NAME`        | `/tmp/image-update.tar`    | The filename where to write the UBI update tarball.
 `HASH_FILENAME`              | `/tmp/bmc.sig`             | The file to use for the hash provided.
 `VERIFY_STATUS_FILENAME`     | `/tmp/bmc.verify`          | The file checked for the verification status.
+`VERIFY_DBUS_SERVICE`        | `verify_image.service`     | The systemd service started for verification.
