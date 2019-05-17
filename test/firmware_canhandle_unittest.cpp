@@ -1,6 +1,7 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "util.hpp"
 
 #include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
@@ -23,7 +24,7 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
         {"bcdf", &imageMock},
     };

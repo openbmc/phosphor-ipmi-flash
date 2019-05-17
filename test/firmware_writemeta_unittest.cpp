@@ -1,6 +1,7 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "util.hpp"
 
 #include <sdbusplus/test/sdbus_mock.hpp>
 
@@ -15,7 +16,7 @@ TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
 {
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 
@@ -46,7 +47,7 @@ TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
 {
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 

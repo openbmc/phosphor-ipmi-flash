@@ -1,6 +1,7 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "util.hpp"
 
 #include <phosphor-logging/test/sdjournal_mock.hpp>
 #include <sdbusplus/test/sdbus_mock.hpp>
@@ -25,7 +26,7 @@ TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
     //    SwapJouralHandler(&journalMock);
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
     };
 
     std::vector<DataHandlerPack> data = {

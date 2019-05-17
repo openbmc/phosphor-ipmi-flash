@@ -1,6 +1,7 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "util.hpp"
 
 #include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
@@ -22,7 +23,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValid)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -44,7 +45,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValid)
     auto currentBlobs = handler->getBlobIds();
     EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
-                            FirmwareBlobHandler::activeImageBlobID));
+                            activeImageBlobId));
 }
 
 TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidHashFile)
@@ -53,7 +54,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidHashFile)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -66,18 +67,17 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidHashFile)
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(bus_mock), blobs, data);
 
-    EXPECT_CALL(imageMock, open(Eq(FirmwareBlobHandler::hashBlobID)))
-        .WillOnce(Return(true));
+    EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
-        FirmwareBlobHandler::hashBlobID));
+        hashBlobId));
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
     EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
-                            FirmwareBlobHandler::activeHashBlobID));
+                            activeHashBlobId));
 }
 
 TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerAllSucceeds)
@@ -89,7 +89,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerAllSucceeds)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -104,18 +104,17 @@ TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerAllSucceeds)
         std::move(bus_mock), blobs, data);
 
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(imageMock, open(Eq(FirmwareBlobHandler::hashBlobID)))
-        .WillOnce(Return(true));
+    EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
-        FirmwareBlobHandler::hashBlobID));
+        hashBlobId));
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
     EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
-                            FirmwareBlobHandler::activeHashBlobID));
+                            activeHashBlobId));
 }
 
 TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerReturnsFailure)
@@ -125,7 +124,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerReturnsFailure)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -143,7 +142,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithDataHandlerReturnsFailure)
 
     EXPECT_FALSE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
-        FirmwareBlobHandler::hashBlobID));
+        hashBlobId));
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
@@ -158,7 +157,7 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsVerifyOpenFileCheck)
     ImageHandlerMock imageMock1, imageMock2;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
     std::vector<DataHandlerPack> data = {
@@ -180,21 +179,20 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsVerifyOpenFileCheck)
     auto currentBlobs = handler->getBlobIds();
     EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
-                            FirmwareBlobHandler::activeImageBlobID));
+                            activeImageBlobId));
 
     /* Open the hash file (since we opened an image file). */
     EXPECT_FALSE(handler->open(
         1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
-        FirmwareBlobHandler::hashBlobID));
+        hashBlobId));
 
     EXPECT_TRUE(handler->close(0));
 
-    EXPECT_CALL(imageMock1, open(StrEq(FirmwareBlobHandler::hashBlobID)))
-        .WillOnce(Return(true));
+    EXPECT_CALL(imageMock1, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
-        FirmwareBlobHandler::hashBlobID));
+        hashBlobId));
 }
 
 TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
@@ -207,7 +205,7 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -229,7 +227,7 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
     auto currentBlobs = handler->getBlobIds();
     EXPECT_EQ(4, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
-                            FirmwareBlobHandler::activeImageBlobID));
+                            activeImageBlobId));
 
     /* Close only active session, to verify it's failing on attempt to open a
      * specific blob_id.
@@ -238,7 +236,7 @@ TEST(FirmwareHandlerOpenTest, OpenEverythingSucceedsOpenActiveFails)
 
     EXPECT_FALSE(handler->open(
         1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
-        FirmwareBlobHandler::activeImageBlobID));
+        activeImageBlobId));
 }
 
 TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidImageHandlerFails)
@@ -249,7 +247,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithEverythingValidImageHandlerFails)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -279,7 +277,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithoutWriteFails)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -303,7 +301,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithInvalidTransportBit)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
@@ -327,7 +325,7 @@ TEST(FirmwareHandlerOpenTest, OpenWithInvalidImageBlobId)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock},
+        {hashBlobId, &imageMock},
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {

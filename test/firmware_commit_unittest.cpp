@@ -1,6 +1,7 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "util.hpp"
 
 #include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
@@ -23,7 +24,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
      */
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 
@@ -52,7 +53,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
      */
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 
@@ -66,12 +67,11 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(bus_mock), blobs, data);
 
-    EXPECT_CALL(imageMock1, open(FirmwareBlobHandler::hashBlobID))
-        .WillOnce(Return(true));
+    EXPECT_CALL(imageMock1, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
-        FirmwareBlobHandler::hashBlobID));
+        hashBlobId));
 
     EXPECT_FALSE(handler->commit(0, {}));
 }
@@ -83,7 +83,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
      */
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 
@@ -97,8 +97,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(bus_mock), blobs, data);
 
-    EXPECT_TRUE(
-        handler->open(0, OpenFlags::write, FirmwareBlobHandler::verifyBlobID));
+    EXPECT_TRUE(handler->open(0, OpenFlags::write, verifyBlobId));
 
     EXPECT_TRUE(handler->commit(0, {}));
 }
@@ -110,7 +109,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
      */
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 
@@ -124,8 +123,7 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(bus_mock), blobs, data);
 
-    EXPECT_TRUE(
-        handler->open(0, OpenFlags::write, FirmwareBlobHandler::verifyBlobID));
+    EXPECT_TRUE(handler->open(0, OpenFlags::write, verifyBlobId));
 
     /* Note: I used StrictMock<> here to just catch all the calls.  However, the
      * unit-tests pass if we don't use StrictMock and ignore the calls.

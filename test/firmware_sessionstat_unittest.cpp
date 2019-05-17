@@ -1,6 +1,7 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "util.hpp"
 
 #include <sdbusplus/test/sdbus_mock.hpp>
 #include <vector>
@@ -19,7 +20,7 @@ TEST(FirmwareSessionStateTest, DataTypeIpmiNoMetadata)
      */
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 
@@ -57,7 +58,7 @@ TEST(FirmwareSessionStateTest, DataTypeP2AReturnsMetadata)
      */
     ImageHandlerMock imageMock1, imageMock2;
     std::vector<HandlerPack> blobs = {
-        {FirmwareBlobHandler::hashBlobID, &imageMock1},
+        {hashBlobId, &imageMock1},
         {"asdf", &imageMock2},
     };
 

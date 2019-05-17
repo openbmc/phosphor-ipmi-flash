@@ -1,6 +1,7 @@
 #include "data_interface_mock.hpp"
 #include "updater.hpp"
 #include "updater_mock.hpp"
+#include "util.hpp"
 
 #include <blobs-ipmid/blobs.hpp>
 #include <ipmiblob/test/blob_interface_mock.hpp>
@@ -23,23 +24,23 @@ TEST(UpdaterTest, CheckAvailableSuccess)
     DataInterfaceMock handlerMock;
     ipmiblob::BlobInterfaceMock blobMock;
 
-    std::string expectedBlob = "/flash/image";
-
     ipmiblob::StatResponse statObj;
     statObj.blob_state = blobs::FirmwareBlobHandler::UpdateFlags::ipmi |
                          blobs::FirmwareBlobHandler::UpdateFlags::lpc;
     statObj.size = 0;
 
     EXPECT_CALL(blobMock, getBlobList())
-        .WillOnce(Return(std::vector<std::string>({expectedBlob})));
-    EXPECT_CALL(blobMock, getStat(TypedEq<const std::string&>(expectedBlob)))
+        .WillOnce(
+            Return(std::vector<std::string>({blobs::staticLayoutBlobId})));
+    EXPECT_CALL(blobMock,
+                getStat(TypedEq<const std::string&>(blobs::staticLayoutBlobId)))
         .WillOnce(Return(statObj));
 
     EXPECT_CALL(handlerMock, supportedType())
         .WillOnce(Return(blobs::FirmwareBlobHandler::UpdateFlags::lpc));
 
     UpdateHandler updater(&blobMock, &handlerMock);
-    EXPECT_TRUE(updater.checkAvailable(expectedBlob));
+    EXPECT_TRUE(updater.checkAvailable(blobs::staticLayoutBlobId));
 }
 
 TEST(UpdaterTest, SendFileSuccess)
@@ -48,7 +49,6 @@ TEST(UpdaterTest, SendFileSuccess)
     DataInterfaceMock handlerMock;
     ipmiblob::BlobInterfaceMock blobMock;
 
-    std::string expectedBlob = "/flash/image";
     std::string firmwareImage = "image.bin";
 
     std::uint16_t supported =
@@ -60,7 +60,8 @@ TEST(UpdaterTest, SendFileSuccess)
     EXPECT_CALL(handlerMock, supportedType())
         .WillOnce(Return(blobs::FirmwareBlobHandler::UpdateFlags::lpc));
 
-    EXPECT_CALL(blobMock, openBlob(StrEq(expectedBlob.c_str()), supported))
+    EXPECT_CALL(blobMock,
+                openBlob(StrEq(blobs::staticLayoutBlobId.c_str()), supported))
         .WillOnce(Return(session));
 
     EXPECT_CALL(handlerMock,
@@ -70,7 +71,7 @@ TEST(UpdaterTest, SendFileSuccess)
     EXPECT_CALL(blobMock, closeBlob(session)).Times(1);
 
     UpdateHandler updater(&blobMock, &handlerMock);
-    updater.sendFile(expectedBlob, firmwareImage);
+    updater.sendFile(blobs::staticLayoutBlobId, firmwareImage);
 }
 
 #if 0 /* TODO: fix this up. */
@@ -84,11 +85,8 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
 
     std::string firmwareImage = "image.bin";
     std::string signatureFile = "image.sig";
-    std::string expectedBlob = "/flash/image";
-    std::string expectedHash = "/flash/hash";
-    std::string expectedVerify = "/flash/verify";
 
-    std::vector<std::string> blobList = {expectedBlob};
+    std::vector<std::string> blobList = {blobs::staticLayoutBlobId};
     ipmiblob::StatResponse statObj;
     statObj.blob_state = blobs::FirmwareBlobHandler::UpdateFlags::ipmi |
                          blobs::FirmwareBlobHandler::UpdateFlags::lpc;
@@ -101,20 +99,20 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
 
     EXPECT_CALL(blobMock, getBlobList()).WillOnce(Return(blobList));
 
-    EXPECT_CALL(blobMock, getStat(TypedEq<const std::string&>(expectedBlob)))
+    EXPECT_CALL(blobMock, getStat(TypedEq<const std::string&>(blobs::staticLayoutBlobId)))
         .WillOnce(Return(statObj));
 
     EXPECT_CALL(handlerMock, supportedType())
         .WillOnce(Return(blobs::FirmwareBlobHandler::UpdateFlags::lpc));
 
-    EXPECT_CALL(blobMock, openBlob(StrEq(expectedBlob.c_str()), Eq(supported)))
+    EXPECT_CALL(blobMock, openBlob(StrEq(blobs::staticLayoutBlobId.c_str()), Eq(supported)))
         .WillOnce(Return(session));
 
     EXPECT_CALL(handlerMock,
                 sendContents(StrEq(firmwareImage.c_str()), Eq(session)))
         .WillOnce(Return(true));
 
-    EXPECT_CALL(blobMock, openBlob(StrEq(expectedHash.c_str()), Eq(supported)))
+    EXPECT_CALL(blobMock, openBlob(StrEq(blobs::hashBlobId.c_str()), Eq(supported)))
         .WillOnce(Return(session));
 
     EXPECT_CALL(handlerMock,
@@ -122,7 +120,7 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
         .WillOnce(Return(true));
 
     EXPECT_CALL(blobMock,
-                openBlob(StrEq(expectedVerify.c_str()), Eq(supported)))
+                openBlob(StrEq(blobs::verifyBlobId.c_str()), Eq(supported)))
         .WillOnce(Return(session));
 
     EXPECT_CALL(blobMock, commit(session, _)).WillOnce(Return());

@@ -39,6 +39,7 @@ AM_DEFAULT_SOURCE_EXT = .cpp
 
 noinst_LTLIBRARIES = libfirmwareblob_common.la
 libfirmwareblob_common_la_SOURCES = \
+	util.cpp \
 	firmware_handler.cpp \
 	file_handler.cpp \
 	internal/sys.cpp
