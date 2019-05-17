@@ -175,6 +175,11 @@ AC_ARG_VAR(VERIFY_STATUS_FILENAME, [The file checked for the verification status
 AS_IF([test "xVERIFY_STATUS_FILENAME" == "x"], [VERIFY_STATUS_FILENAME="/tmp/bmc.verify"])
 AC_DEFINE_UNQUOTED([VERIFY_STATUS_FILENAME], ["$VERIFY_STATUS_FILENAME"], [The file checked for the verification status.])
 
+# VERIFY_DBUS_SERVICE
+AC_ARG_VAR(VERIFY_DBUS_SERVICE, [The systemd service started for verification.])
+AS_IF([test "xVERIFY_DBUS_SERVICE" == "x"], [VERIFY_DBUS_SERVICE="verify_image.service"])
+AC_DEFINE_UNQUOTED([VERIFY_DBUS_SERVICE], ["$VERIFY_DBUS_SERVICE"], [The systemd service started for verification.])
+
 AC_CHECK_HEADER(linux/ipmi.h, [HAVE_LINUX_IPMI_H=""], [HAVE_LINUX_IPMI_H="-I linux/ipmi.h"])
 AS_IF([test "$HAVE_LINUX_IPMI_H" != ""],
     AC_MSG_WARN([Could not find linux/ipmi.h: Attempting to download locally for building from openbmc/linux/+/dev-4.18])

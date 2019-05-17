@@ -5,24 +5,12 @@
 #include "data_handler.hpp"
 #include "image_handler.hpp"
 #include "util.hpp"
+#include "verify.hpp"
 
 #include <blobs-ipmid/blobs.hpp>
 #include <cstdint>
 #include <map>
 #include <memory>
-#if HAVE_SDBUSPLUS
-#include <sdbusplus/bus.hpp>
-#else
-namespace sdbusplus
-{
-namespace bus
-{
-class bus
-{
-};
-} // namespace bus
-} // namespace sdbusplus
-#endif
 #include <string>
 #include <vector>
 
@@ -111,48 +99,37 @@ class FirmwareBlobHandler : public GenericBlobInterface
         verificationCompleted,
     };
 
-    /** The return values for verification. */
-    enum class VerifyCheckResponses : std::uint8_t
-    {
-        running = 0,
-        success = 1,
-        failed = 2,
-        other = 3,
-    };
-
     /**
      * Create a FirmwareBlobHandler.
      *
-     * @param[in] bus - an sdbusplus handler for a bus to use.
      * @param[in] firmwares - list of firmware blob_ids to support.
      * @param[in] transports - list of transports to support.
-     * @param[in[ verificationPath - path to check for verification output
+     * @param[in] verification - pointer to object for triggering verification
      */
     static std::unique_ptr<GenericBlobInterface> CreateFirmwareBlobHandler(
-        sdbusplus::bus::bus&& bus, const std::vector<HandlerPack>& firmwares,
+        const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
-        const std::string& verificationPath);
+        std::unique_ptr<VerificationInterface> verification);
 
     /**
      * Create a FirmwareBlobHandler.
      *
-     * @param[in] bus - an sdbusplus handler for a bus to use
      * @param[in] firmwares - list of firmware types and their handlers
      * @param[in] blobs - list of blobs_ids to support
      * @param[in] transports - list of transport types and their handlers
      * @param[in] bitmask - bitmask of transports to support
+     * @param[in] verification - pointer to object for triggering verification
      */
-    FirmwareBlobHandler(sdbusplus::bus::bus&& bus,
+    FirmwareBlobHandler(
                         const std::vector<HandlerPack>& firmwares,
                         const std::vector<std::string>& blobs,
                         const std::vector<DataHandlerPack>& transports,
                         std::uint16_t bitmask,
-                        const std::string& verificationPath) :
-        bus(std::move(bus)),
+                        std::unique_ptr<VerificationInterface> verification) :
         handlers(firmwares), blobIDs(blobs), transports(transports),
         bitmask(bitmask), activeImage(activeImageBlobId),
         activeHash(activeHashBlobId), verifyImage(verifyBlobId), lookup(),
-        state(UpdateState::notYetStarted), verificationPath(verificationPath)
+        state(UpdateState::notYetStarted), verification(std::move(verification))
     {
     }
     ~FirmwareBlobHandler() = default;
@@ -216,7 +193,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
     /** The firmware update state. */
     UpdateState state;
 
-    const std::string verificationPath;
+    std::unique_ptr<VerificationInterface> verification;
 
     /** Temporary variable to track whether a blob is open. */
     bool fileOpen = false;
