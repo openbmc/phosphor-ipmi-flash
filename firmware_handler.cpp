@@ -120,12 +120,7 @@ std::unique_ptr<GenericBlobInterface>
 /* Check if the path is in our supported list (or active list). */
 bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
 {
-    if (std::count(blobIDs.begin(), blobIDs.end(), path))
-    {
-        return true;
-    }
-
-    return false;
+    return (std::count(blobIDs.begin(), blobIDs.end(), path) > 0);
 }
 
 /*
