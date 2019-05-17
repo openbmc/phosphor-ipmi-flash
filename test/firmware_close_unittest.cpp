@@ -36,7 +36,7 @@ TEST(FirmwareHandlerCloseTest, CloseSuceedsWithDataHandler)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
@@ -82,7 +82,7 @@ TEST(FirmwareHandlerCloseTest, CloseSuceedsWithoutDataHandler)
     auto bus_mock = sdbusplus::get_mocked_new(&sdbus_mock);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 

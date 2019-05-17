@@ -43,7 +43,7 @@ TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
     //        .WillOnce(Return(0));
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(bus_mock), blobs, data);
+        std::move(bus_mock), blobs, data, "");
 
     //    EXPECT_EQ(handler, nullptr);
     EXPECT_FALSE(handler == nullptr);

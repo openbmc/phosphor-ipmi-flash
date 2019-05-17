@@ -95,7 +95,7 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 
     auto handler = blobs::FirmwareBlobHandler::CreateFirmwareBlobHandler(
         sdbusplus::bus::new_default(), blobs::supportedFirmware,
-        blobs::supportedTransports);
+        blobs::supportedTransports, VERIFY_STATUS_FILENAME);
 
     if (!handler)
     {

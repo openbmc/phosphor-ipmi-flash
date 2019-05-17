@@ -102,3 +102,4 @@ Variable                     | Default                    | Meaning
 `STATIC_HANDLER_STAGED_NAME` | `/run/initramfs/bmc-image` | The filename where to write the staged firmware image for static updates.
 `TARBALL_STAGED_NAME`        | `/tmp/image-update.tar`    | The filename where to write the UBI update tarball.
 `HASH_FILENAME`              | `/tmp/bmc.sig`             | The file to use for the hash provided.
+`VERIFY_STATUS_FILENAME`     | `/tmp/bmc.verify`          | The file checked for the verification status.

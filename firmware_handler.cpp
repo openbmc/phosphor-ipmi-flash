@@ -37,18 +37,18 @@ static constexpr auto systemdService = "org.freedesktop.systemd1";
 static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
 static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
 static constexpr auto verifyTarget = "verify_image.service";
-static constexpr auto statusPath = "/tmp/bmc.verify";
 
 namespace
 {
 
-FirmwareBlobHandler::VerifyCheckResponses checkVerificationState()
+FirmwareBlobHandler::VerifyCheckResponses
+    checkVerificationState(const std::string& path)
 {
     FirmwareBlobHandler::VerifyCheckResponses result =
         FirmwareBlobHandler::VerifyCheckResponses::other;
 
     std::ifstream ifs;
-    ifs.open(statusPath);
+    ifs.open(path);
     if (ifs.good())
     {
         /*
@@ -79,7 +79,8 @@ FirmwareBlobHandler::VerifyCheckResponses checkVerificationState()
 std::unique_ptr<GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
         sdbusplus::bus::bus&& bus, const std::vector<HandlerPack>& firmwares,
-        const std::vector<DataHandlerPack>& transports)
+        const std::vector<DataHandlerPack>& transports,
+        const std::string& verificationPath)
 {
     /* There must be at least one. */
     if (!firmwares.size())
@@ -112,7 +113,8 @@ std::unique_ptr<GenericBlobInterface>
     }
 
     return std::make_unique<FirmwareBlobHandler>(std::move(bus), firmwares,
-                                                 blobs, transports, bitmask);
+                                                 blobs, transports, bitmask,
+                                                 verificationPath);
 }
 
 /* Check if the path is in our supported list (or active list). */
@@ -260,7 +262,7 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
      */
     if (item->second->activePath == verifyBlobId)
     {
-        auto value = checkVerificationState();
+        auto value = checkVerificationState(verificationPath);
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
 
