@@ -15,16 +15,24 @@ namespace blobs
 using ::testing::Eq;
 using ::testing::Return;
 
-TEST(FirmwareHandlerWriteTest, DataTypeIpmiWriteSuccess)
+class FirmwareHandlerWriteTest : public ::testing::Test
+{
+  protected:
+    ImageHandlerMock imageMock1, imageMock2;
+    std::vector<HandlerPack> blobs;
+
+    void SetUp() override
+    {
+        blobs = {
+            {hashBlobId, &imageMock1},
+            {"asdf", &imageMock2},
+        };
+    }
+};
+
+TEST_F(FirmwareHandlerWriteTest, DataTypeIpmiWriteSuccess)
 {
     /* Verify if data type ipmi, it calls write with the bytes. */
-
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
     std::vector<DataHandlerPack> data = {
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
@@ -43,16 +51,9 @@ TEST(FirmwareHandlerWriteTest, DataTypeIpmiWriteSuccess)
     EXPECT_TRUE(handler->write(0, 0, bytes));
 }
 
-TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteSuccess)
+TEST_F(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteSuccess)
 {
     /* Verify if data type non-ipmi, it calls write with the length. */
-
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
     DataHandlerMock dataMock;
 
     std::vector<DataHandlerPack> data = {
@@ -82,17 +83,10 @@ TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteSuccess)
     EXPECT_TRUE(handler->write(0, 0, ipmiRequest));
 }
 
-TEST(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteFailsBadRequest)
+TEST_F(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteFailsBadRequest)
 {
     /* Verify the data type non-ipmi, if the request's structure doesn't match,
      * return failure. */
-
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
     DataHandlerMock dataMock;
 
     std::vector<DataHandlerPack> data = {
