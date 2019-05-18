@@ -4,6 +4,7 @@
 #include "util.hpp"
 #include "verification_mock.hpp"
 
+#include <memory>
 #include <vector>
 
 #include <gmock/gmock.h>
@@ -15,11 +16,9 @@ using ::testing::Eq;
 using ::testing::Return;
 using ::testing::StrEq;
 
-TEST(FirmwareHandlerCloseTest, CloseSuceedsWithDataHandler)
+class FirmwareHandlerCloseTest : public ::testing::Test
 {
-    /* Boring test where you open a blob_id, then verify that when it's closed
-     * everything looks right.
-     */
+  protected:
     DataHandlerMock dataMock;
     ImageHandlerMock imageMock;
 
@@ -32,9 +31,20 @@ TEST(FirmwareHandlerCloseTest, CloseSuceedsWithDataHandler)
         {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
     };
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock());
+    std::unique_ptr<GenericBlobInterface> handler;
 
+    void SetUp() override
+    {
+        handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+            blobs, data, CreateVerifyMock());
+    }
+};
+
+TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithDataHandler)
+{
+    /* Boring test where you open a blob_id, then verify that when it's closed
+     * everything looks right.
+     */
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
@@ -58,26 +68,11 @@ TEST(FirmwareHandlerCloseTest, CloseSuceedsWithDataHandler)
      */
 }
 
-TEST(FirmwareHandlerCloseTest, CloseSuceedsWithoutDataHandler)
+TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithoutDataHandler)
 {
     /* Boring test where you open a blob_id using ipmi, so there's no data
      * handler, and it's closed and everything looks right.
      */
-    DataHandlerMock dataMock;
-    ImageHandlerMock imageMock;
-
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock},
-        {"asdf", &imageMock},
-    };
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
-    };
-
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock());
-
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
