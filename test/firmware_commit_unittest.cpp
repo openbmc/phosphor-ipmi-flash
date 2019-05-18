@@ -17,20 +17,31 @@ using ::testing::Return;
 using ::testing::StrEq;
 using ::testing::StrictMock;
 
-TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
+class FirmwareHandlerCommitTest : public ::testing::Test
+{
+  protected:
+    ImageHandlerMock imageMock1, imageMock2;
+    std::vector<HandlerPack> blobs;
+    std::vector<DataHandlerPack> data;
+
+    void SetUp() override
+    {
+        blobs = {
+            {hashBlobId, &imageMock1},
+            {"asdf", &imageMock2},
+        };
+
+        data = {
+            {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        };
+    }
+};
+
+TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
 {
     /* Verify the flash image returns failure on this command.  It's a fairly
      * artificial test.
      */
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-    };
 
     /* Verify it doesn't get called by using StrictMock. */
     std::unique_ptr<VerificationInterface> verifyMock =
@@ -47,20 +58,11 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
     EXPECT_FALSE(handler->commit(0, {}));
 }
 
-TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
+TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
 {
     /* Verify the hash file returns failure on this command.  It's a fairly
      * artificial test.
      */
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-    };
 
     /* Verify it doesn't get called by using StrictMock. */
     std::unique_ptr<VerificationInterface> verifyMock =
@@ -78,21 +80,11 @@ TEST(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
     EXPECT_FALSE(handler->commit(0, {}));
 }
 
-TEST(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
+TEST_F(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
 {
     /* Verify the verify blob lets you call this command, and it returns
      * success.
      */
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-    };
-
     auto verifyMock = CreateVerifyMock();
     auto verifyMockPtr = reinterpret_cast<VerificationMock*>(verifyMock.get());
 
@@ -107,21 +99,11 @@ TEST(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
     EXPECT_TRUE(handler->commit(0, {}));
 }
 
-TEST(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
+TEST_F(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
 {
     /* Verify you cannot call the commit() command once verification is
      * started, after which it will just return true.
      */
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-    };
-
     auto verifyMock = CreateVerifyMock();
     auto verifyMockPtr = reinterpret_cast<VerificationMock*>(verifyMock.get());
 
