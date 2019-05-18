@@ -13,17 +13,26 @@ namespace blobs
 using ::testing::Eq;
 using ::testing::Return;
 
-TEST(FirmwareSessionStateTest, DataTypeIpmiNoMetadata)
+class FirmwareSessionStateTest : public ::testing::Test
+{
+  protected:
+    ImageHandlerMock imageMock1, imageMock2;
+    std::vector<HandlerPack> blobs;
+
+    void SetUp() override
+    {
+        blobs = {
+            {hashBlobId, &imageMock1},
+            {"asdf", &imageMock2},
+        };
+    }
+};
+
+TEST_F(FirmwareSessionStateTest, DataTypeIpmiNoMetadata)
 {
     /* Verifying running stat if the type of data session is IPMI returns no
      * metadata.
      */
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
     std::vector<DataHandlerPack> data = {
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
     };
@@ -47,18 +56,12 @@ TEST(FirmwareSessionStateTest, DataTypeIpmiNoMetadata)
     EXPECT_EQ(meta.metadata.size(), 0);
 }
 
-TEST(FirmwareSessionStateTest, DataTypeP2AReturnsMetadata)
+TEST_F(FirmwareSessionStateTest, DataTypeP2AReturnsMetadata)
 {
     /* Really any type that isn't IPMI can return metadata, but we only expect
      * P2A to for now.  Later, LPC may have reason to provide data, and can by
      * simply implementing read().
      */
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
     DataHandlerMock dataMock;
 
     std::vector<DataHandlerPack> data = {
