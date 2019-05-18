@@ -6,29 +6,40 @@
 
 #include <gtest/gtest.h>
 
+#include <memory>
+#include <vector>
+
 namespace blobs
 {
 using ::testing::Eq;
 using ::testing::Return;
 
-TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
+class FirmwareHandlerWriteMetaTest : public ::testing::Test
 {
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
+  protected:
     DataHandlerMock dataMock;
+    ImageHandlerMock imageMock1, imageMock2;
+    std::vector<HandlerPack> blobs;
+    std::vector<DataHandlerPack> data;
+    std::unique_ptr<GenericBlobInterface> handler;
 
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
-    };
+    void SetUp() override
+    {
+        blobs = {
+            {hashBlobId, &imageMock1},
+            {"asdf", &imageMock2},
+        };
+        data = {
+            {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+            {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
+        };
+        handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+            blobs, data, CreateVerifyMock());
+    }
+};
 
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock());
-
+TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
+{
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
@@ -39,24 +50,8 @@ TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
     EXPECT_FALSE(handler->writeMeta(0, 0, bytes));
 }
 
-TEST(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
+TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
 {
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock1},
-        {"asdf", &imageMock2},
-    };
-
-    DataHandlerMock dataMock;
-
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
-    };
-
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock());
-
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
