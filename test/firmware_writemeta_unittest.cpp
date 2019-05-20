@@ -1,5 +1,6 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
+#include "firmware_unittest.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
 #include "verification_mock.hpp"
@@ -14,33 +15,13 @@ namespace blobs
 using ::testing::Eq;
 using ::testing::Return;
 
-class FirmwareHandlerWriteMetaTest : public ::testing::Test
+class FirmwareHandlerWriteMetaTest : public FakeLpcFirmwareTest
 {
-  protected:
-    DataHandlerMock dataMock;
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs;
-    std::vector<DataHandlerPack> data;
-    std::unique_ptr<GenericBlobInterface> handler;
-
-    void SetUp() override
-    {
-        blobs = {
-            {hashBlobId, &imageMock1},
-            {"asdf", &imageMock2},
-        };
-        data = {
-            {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-            {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
-        };
-        handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, CreateVerifyMock());
-    }
 };
 
 TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
 {
-    EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
@@ -53,7 +34,7 @@ TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
 TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
 {
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));

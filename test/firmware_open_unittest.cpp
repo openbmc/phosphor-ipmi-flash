@@ -1,5 +1,6 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
+#include "firmware_unittest.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
 #include "verification_mock.hpp"
@@ -16,51 +17,12 @@ using ::testing::Eq;
 using ::testing::Return;
 using ::testing::StrEq;
 
-class FirmwareHandlerOpenTestIpmiOnly : public ::testing::Test
+class FirmwareHandlerOpenTestIpmiOnly : public IpmiOnlyFirmwareTest
 {
-  protected:
-    ImageHandlerMock imageMock;
-    std::vector<HandlerPack> blobs;
-    std::vector<DataHandlerPack> data;
-    std::unique_ptr<GenericBlobInterface> handler;
-
-    void SetUp() override
-    {
-        blobs = {
-            {hashBlobId, &imageMock},
-            {"asdf", &imageMock},
-        };
-        data = {
-            {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-        };
-        handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, CreateVerifyMock());
-    }
 };
 
-class FirmwareHandlerOpenTestLpc : public ::testing::Test
+class FirmwareHandlerOpenTestLpc : public FakeLpcFirmwareTest
 {
-  protected:
-    DataHandlerMock dataMock;
-    ImageHandlerMock imageMock;
-    std::vector<HandlerPack> blobs;
-    std::vector<DataHandlerPack> data;
-    std::unique_ptr<GenericBlobInterface> handler;
-
-    void SetUp() override
-    {
-        blobs = {
-            {hashBlobId, &imageMock},
-            {"asdf", &imageMock},
-        };
-        data = {
-            {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-            {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
-        };
-
-        handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, CreateVerifyMock());
-    }
 };
 
 TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenWithEverythingValid)
