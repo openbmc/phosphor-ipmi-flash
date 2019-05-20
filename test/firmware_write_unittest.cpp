@@ -1,5 +1,6 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
+#include "firmware_unittest.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
 #include "verification_mock.hpp"
@@ -15,57 +16,33 @@ namespace blobs
 using ::testing::Eq;
 using ::testing::Return;
 
-class FirmwareHandlerWriteTest : public ::testing::Test
+class FirmwareHandlerWriteTestIpmiOnly : public IpmiOnlyFirmwareTest
 {
-  protected:
-    ImageHandlerMock imageMock1, imageMock2;
-    std::vector<HandlerPack> blobs;
-
-    void SetUp() override
-    {
-        blobs = {
-            {hashBlobId, &imageMock1},
-            {"asdf", &imageMock2},
-        };
-    }
 };
 
-TEST_F(FirmwareHandlerWriteTest, DataTypeIpmiWriteSuccess)
+class FirmwareHandlerWriteTestLpc : public FakeLpcFirmwareTest
+{
+};
+
+TEST_F(FirmwareHandlerWriteTestIpmiOnly, DataTypeIpmiWriteSuccess)
 {
     /* Verify if data type ipmi, it calls write with the bytes. */
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-    };
-
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock());
-
-    EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
 
     std::vector<std::uint8_t> bytes = {0xaa, 0x55};
 
-    EXPECT_CALL(imageMock2, write(0, Eq(bytes))).WillOnce(Return(true));
+    EXPECT_CALL(imageMock, write(0, Eq(bytes))).WillOnce(Return(true));
     EXPECT_TRUE(handler->write(0, 0, bytes));
 }
 
-TEST_F(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteSuccess)
+TEST_F(FirmwareHandlerWriteTestLpc, DataTypeNonIpmiWriteSuccess)
 {
     /* Verify if data type non-ipmi, it calls write with the length. */
-    DataHandlerMock dataMock;
-
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
-    };
-
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock());
-
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));
@@ -79,26 +56,16 @@ TEST_F(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteSuccess)
     std::vector<std::uint8_t> bytes = {0x01, 0x02, 0x03, 0x04};
 
     EXPECT_CALL(dataMock, copyFrom(request.length)).WillOnce(Return(bytes));
-    EXPECT_CALL(imageMock2, write(0, Eq(bytes))).WillOnce(Return(true));
+    EXPECT_CALL(imageMock, write(0, Eq(bytes))).WillOnce(Return(true));
     EXPECT_TRUE(handler->write(0, 0, ipmiRequest));
 }
 
-TEST_F(FirmwareHandlerWriteTest, DataTypeNonIpmiWriteFailsBadRequest)
+TEST_F(FirmwareHandlerWriteTestLpc, DataTypeNonIpmiWriteFailsBadRequest)
 {
     /* Verify the data type non-ipmi, if the request's structure doesn't match,
      * return failure. */
-    DataHandlerMock dataMock;
-
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
-    };
-
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock());
-
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));

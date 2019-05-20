@@ -1,5 +1,6 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
+#include "firmware_unittest.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
 #include "verification_mock.hpp"
@@ -16,28 +17,8 @@ using ::testing::Eq;
 using ::testing::Return;
 using ::testing::StrEq;
 
-class FirmwareHandlerCloseTest : public ::testing::Test
+class FirmwareHandlerCloseTest : public FakeLpcFirmwareTest
 {
-  protected:
-    DataHandlerMock dataMock;
-    ImageHandlerMock imageMock;
-
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock},
-        {"asdf", &imageMock},
-    };
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
-    };
-
-    std::unique_ptr<GenericBlobInterface> handler;
-
-    void SetUp() override
-    {
-        handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, CreateVerifyMock());
-    }
 };
 
 TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithDataHandler)
