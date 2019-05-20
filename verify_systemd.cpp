@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-#include "verify.hpp"
+#include "verify_systemd.hpp"
 
 #include "status.hpp"
+#include "verify.hpp"
 
 #include <fstream>
 #include <memory>
@@ -28,14 +29,14 @@ namespace blobs
 {
 
 std::unique_ptr<VerificationInterface>
-    Verification::CreateDefaultVerification(sdbusplus::bus::bus&& bus,
+    SystemdVerification::CreateVerification(sdbusplus::bus::bus&& bus,
                                             const std::string& path,
                                             const std::string& service)
 {
-    return std::make_unique<Verification>(std::move(bus), path, service);
+    return std::make_unique<SystemdVerification>(std::move(bus), path, service);
 }
 
-bool Verification::triggerVerification()
+bool SystemdVerification::triggerVerification()
 {
     static constexpr auto systemdService = "org.freedesktop.systemd1";
     static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
@@ -61,12 +62,12 @@ bool Verification::triggerVerification()
     return true;
 }
 
-void Verification::abortVerification()
+void SystemdVerification::abortVerification()
 {
     /* TODO: Implement this. */
 }
 
-VerifyCheckResponses Verification::checkVerificationState()
+VerifyCheckResponses SystemdVerification::checkVerificationState()
 {
     VerifyCheckResponses result = VerifyCheckResponses::other;
 

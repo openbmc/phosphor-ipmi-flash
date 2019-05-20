@@ -43,7 +43,7 @@ libfirmwareblob_common_la_SOURCES = \
 	firmware_handler.cpp \
 	file_handler.cpp \
 	internal/sys.cpp \
-	verify.cpp
+	verify_systemd.cpp
 
 if ENABLE_LPC_BRIDGE
 libfirmwareblob_common_la_SOURCES += lpc_handler.cpp

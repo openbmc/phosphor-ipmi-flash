@@ -25,6 +25,7 @@
 #include "pci_handler.hpp"
 #include "util.hpp"
 #include "verify.hpp"
+#include "verify_systemd.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -100,7 +101,7 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 
     auto handler = blobs::FirmwareBlobHandler::CreateFirmwareBlobHandler(
         blobs::supportedFirmware, blobs::supportedTransports,
-        blobs::Verification::CreateDefaultVerification(
+        blobs::SystemdVerification::CreateVerification(
             sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
             VERIFY_DBUS_SERVICE));
 

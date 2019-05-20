@@ -18,6 +18,7 @@
 
 #include "image_handler.hpp"
 #include "util.hpp"
+#include "verify.hpp"
 
 #include <algorithm>
 #include <cstdint>
