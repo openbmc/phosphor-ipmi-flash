@@ -1,6 +1,7 @@
 #pragma once
 
 #include "update.hpp"
+#include "update_systemd.hpp"
 
 #include <memory>
 #include <sdbusplus/bus.hpp>
@@ -12,15 +13,15 @@ namespace ipmi_flash
  * Implements the update interface by simply triggering a reboot via the systemd
  * reboot target.
  */
-class RebootUpdateMechanism : public UpdateInterface
+class RebootUpdateMechanism : public SystemdUpdateMechanism
 {
-
   public:
     static std::unique_ptr<UpdateInterface>
         CreateRebootUpdate(sdbusplus::bus::bus&& bus);
 
     explicit RebootUpdateMechanism(sdbusplus::bus::bus&& bus) :
-        bus(std::move(bus))
+        SystemdUpdateMechanism(std::move(bus), "reboot.target",
+                               "replace-irreversibly")
     {
     }
 
@@ -30,12 +31,8 @@ class RebootUpdateMechanism : public UpdateInterface
     RebootUpdateMechanism(RebootUpdateMechanism&&) = default;
     RebootUpdateMechanism& operator=(RebootUpdateMechanism&&) = default;
 
-    bool triggerUpdate() override;
     void abortUpdate() override;
     UpdateStatus status() override;
-
-  private:
-    sdbusplus::bus::bus bus;
 };
 
 } // namespace ipmi_flash

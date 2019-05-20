@@ -31,31 +31,6 @@ std::unique_ptr<UpdateInterface>
     return std::make_unique<UpdateInterface>(std::move(bus));
 }
 
-bool RebootUpdateMechanism::triggerUpdate()
-{
-    /* TODO: Add a util method for triggering a service with optional additional
-     * parameter. */
-    static constexpr auto systemdService = "org.freedesktop.systemd1";
-    static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
-    static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
-    static constexpr auto rebootTarget = "reboot.target";
-
-    auto method = bus.new_method_call(systemdService, systemdRoot,
-                                      systemdInterface, "StartUnit");
-    method.append(rebootTarget);
-    method.append("replace-irreversibly");
-
-    try
-    {
-        bus.call_noreply(method);
-        return true;
-    }
-    catch (const sdbusplus::exception::SdBusError& ex)
-    {
-        return false;
-    }
-}
-
 void RebootUpdateMechanism::abortUpdate()
 {
     return;
