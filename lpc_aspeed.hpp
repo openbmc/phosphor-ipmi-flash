@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 class LpcMapperAspeed : public HardwareMapperInterface
@@ -54,4 +54,4 @@ class LpcMapperAspeed : public HardwareMapperInterface
     const internal::Sys* sys;
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

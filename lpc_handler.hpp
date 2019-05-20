@@ -7,7 +7,7 @@
 #include <memory>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 struct LpcRegion
@@ -53,4 +53,4 @@ class LpcDataHandler : public DataInterface
     bool initialized;
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

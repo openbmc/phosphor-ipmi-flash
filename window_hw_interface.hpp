@@ -4,7 +4,7 @@
 #include <utility>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 /**
@@ -46,4 +46,4 @@ class HardwareMapperInterface
     virtual std::vector<std::uint8_t> copyFrom(std::uint32_t length) = 0;
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

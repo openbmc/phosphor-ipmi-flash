@@ -9,7 +9,7 @@
 
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 using ::testing::_;
 using ::testing::IsNull;
@@ -54,7 +54,8 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        "asdf"));
 
     EXPECT_FALSE(handler->commit(0, {}));
 }
@@ -75,7 +76,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
     EXPECT_CALL(imageMock1, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
         hashBlobId));
 
     EXPECT_FALSE(handler->commit(0, {}));
@@ -92,7 +93,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         blobs, data, std::move(verifyMock));
 
-    EXPECT_TRUE(handler->open(0, OpenFlags::write, verifyBlobId));
+    EXPECT_TRUE(handler->open(0, blobs::OpenFlags::write, verifyBlobId));
 
     EXPECT_CALL(*verifyMockPtr, triggerVerification())
         .WillRepeatedly(Return(true));
@@ -111,7 +112,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         blobs, data, std::move(verifyMock));
 
-    EXPECT_TRUE(handler->open(0, OpenFlags::write, verifyBlobId));
+    EXPECT_TRUE(handler->open(0, blobs::OpenFlags::write, verifyBlobId));
 
     EXPECT_CALL(*verifyMockPtr, triggerVerification())
         .WillRepeatedly(Return(true));
@@ -120,4 +121,4 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
     EXPECT_TRUE(handler->commit(0, {}));
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

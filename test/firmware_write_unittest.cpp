@@ -11,7 +11,7 @@
 
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 using ::testing::Eq;
 using ::testing::Return;
@@ -30,7 +30,8 @@ TEST_F(FirmwareHandlerWriteTestIpmiOnly, DataTypeIpmiWriteSuccess)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        "asdf"));
 
     std::vector<std::uint8_t> bytes = {0xaa, 0x55};
 
@@ -45,7 +46,8 @@ TEST_F(FirmwareHandlerWriteTestLpc, DataTypeNonIpmiWriteSuccess)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
+        "asdf"));
 
     struct ExtChunkHdr request;
     request.length = 4; /* number of bytes to read. */
@@ -68,7 +70,8 @@ TEST_F(FirmwareHandlerWriteTestLpc, DataTypeNonIpmiWriteFailsBadRequest)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
+        "asdf"));
 
     struct ExtChunkHdr request;
     request.length = 4; /* number of bytes to read. */
@@ -82,4 +85,4 @@ TEST_F(FirmwareHandlerWriteTestLpc, DataTypeNonIpmiWriteFailsBadRequest)
     EXPECT_FALSE(handler->write(0, 0, ipmiRequest));
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

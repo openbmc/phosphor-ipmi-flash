@@ -7,7 +7,7 @@
 
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 static constexpr auto TESTPATH = "test.output";
@@ -55,4 +55,4 @@ TEST_F(FileHandlerOpenTest, VerifyWriteDataWrites)
     /* annoyingly the memcmp was failing... but it's the same data. */
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

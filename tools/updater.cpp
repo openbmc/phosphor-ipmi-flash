@@ -117,7 +117,8 @@ bool pollVerificationStatus(std::uint16_t session,
     static constexpr int commandAttempts = 20;
     int attempts = 0;
     bool exitLoop = false;
-    blobs::VerifyCheckResponses result = blobs::VerifyCheckResponses::other;
+    ipmi_flash::VerifyCheckResponses result =
+        ipmi_flash::VerifyCheckResponses::other;
 
     try
     {
@@ -136,21 +137,22 @@ bool pollVerificationStatus(std::uint16_t session,
                 std::fprintf(stderr, "Received invalid metadata response!!!\n");
             }
 
-            result = static_cast<blobs::VerifyCheckResponses>(resp.metadata[0]);
+            result =
+                static_cast<ipmi_flash::VerifyCheckResponses>(resp.metadata[0]);
 
             switch (result)
             {
-                case blobs::VerifyCheckResponses::failed:
+                case ipmi_flash::VerifyCheckResponses::failed:
                     std::fprintf(stderr, "failed\n");
                     exitLoop = true;
                     break;
-                case blobs::VerifyCheckResponses::other:
+                case ipmi_flash::VerifyCheckResponses::other:
                     std::fprintf(stderr, "other\n");
                     break;
-                case blobs::VerifyCheckResponses::running:
+                case ipmi_flash::VerifyCheckResponses::running:
                     std::fprintf(stderr, "running\n");
                     break;
-                case blobs::VerifyCheckResponses::success:
+                case ipmi_flash::VerifyCheckResponses::success:
                     std::fprintf(stderr, "success\n");
                     exitLoop = true;
                     break;
@@ -180,7 +182,7 @@ bool pollVerificationStatus(std::uint16_t session,
      * which exceptions from the lower layers allow one to try and delete the
      * blobs to rollback the state and progress.
      */
-    return (result == blobs::VerifyCheckResponses::success);
+    return (result == ipmi_flash::VerifyCheckResponses::success);
 }
 
 bool UpdateHandler::verifyFile(const std::string& target)
@@ -237,7 +239,8 @@ void updaterMain(UpdateHandler* updater, const std::string& imagePath,
     /* TODO(venture): Add optional parameter to specify the flash type, default
      * to legacy for now.
      */
-    bool goalSupported = updater->checkAvailable(blobs::staticLayoutBlobId);
+    bool goalSupported =
+        updater->checkAvailable(ipmi_flash::staticLayoutBlobId);
     if (!goalSupported)
     {
         throw ToolException("Goal firmware or interface not supported");
@@ -247,15 +250,15 @@ void updaterMain(UpdateHandler* updater, const std::string& imagePath,
 
     /* Send over the firmware image. */
     std::fprintf(stderr, "Sending over the firmware image.\n");
-    updater->sendFile(blobs::staticLayoutBlobId, imagePath);
+    updater->sendFile(ipmi_flash::staticLayoutBlobId, imagePath);
 
     /* Send over the hash contents. */
     std::fprintf(stderr, "Sending over the hash file.\n");
-    updater->sendFile(blobs::hashBlobId, signaturePath);
+    updater->sendFile(ipmi_flash::hashBlobId, signaturePath);
 
     /* Trigger the verification by opening the verify file. */
     std::fprintf(stderr, "Opening the verification file\n");
-    if (updater->verifyFile(blobs::verifyBlobId))
+    if (updater->verifyFile(ipmi_flash::verifyBlobId))
     {
         std::fprintf(stderr, "succeeded\n");
     }

@@ -31,10 +31,10 @@
 
 using namespace phosphor::logging;
 
-namespace blobs
+namespace ipmi_flash
 {
 
-std::unique_ptr<GenericBlobInterface>
+std::unique_ptr<blobs::GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
         const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
@@ -151,7 +151,8 @@ bool FirmwareBlobHandler::deleteBlob(const std::string& path)
  * of the data cached, and any additional pertinent information.  The
  * blob_state on the active files will return the state of the update.
  */
-bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
+bool FirmwareBlobHandler::stat(const std::string& path,
+                               struct blobs::BlobMeta* meta)
 {
     /* We know we support this path because canHandle is called ahead */
     if (path == verifyBlobId)
@@ -192,7 +193,7 @@ bool FirmwareBlobHandler::stat(const std::string& path, struct BlobMeta* meta)
  *
  * TODO: combine the logic for stat and sessionstat().
  */
-bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
+bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
 {
     auto item = lookup.find(session);
     if (item == lookup.end())
@@ -225,15 +226,15 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct BlobMeta* meta)
             value == VerifyCheckResponses::failed)
         {
             state = UpdateState::verificationCompleted;
-            item->second->flags &= ~StateFlags::committing;
+            item->second->flags &= ~blobs::StateFlags::committing;
 
             if (value == VerifyCheckResponses::success)
             {
-                item->second->flags |= StateFlags::committed;
+                item->second->flags |= blobs::StateFlags::committed;
             }
             else
             {
-                item->second->flags |= StateFlags::commit_error;
+                item->second->flags |= blobs::StateFlags::commit_error;
             }
         }
     }
@@ -280,7 +281,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     /* Check that they've opened for writing - read back not currently
      * supported.
      */
-    if ((flags & OpenFlags::write) == 0)
+    if ((flags & blobs::OpenFlags::write) == 0)
     {
         return false;
     }
@@ -563,7 +564,7 @@ bool FirmwareBlobHandler::commit(uint16_t session,
     }
 
     /* Set state to committing. */
-    item->second->flags |= StateFlags::committing;
+    item->second->flags |= blobs::StateFlags::committing;
 
     return triggerVerification();
 }
@@ -666,4 +667,4 @@ bool FirmwareBlobHandler::triggerVerification()
     return result;
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

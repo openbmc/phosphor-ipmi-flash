@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 std::unique_ptr<VerificationInterface>
@@ -98,4 +98,4 @@ VerifyCheckResponses SystemdVerification::checkVerificationState()
     return result;
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

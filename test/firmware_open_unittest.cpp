@@ -11,7 +11,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 using ::testing::Eq;
 using ::testing::Return;
@@ -32,7 +32,8 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenWithEverythingValid)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        "asdf"));
 
     /* The active image blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
@@ -47,7 +48,7 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenWithEverythingValidHashFile)
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
         hashBlobId));
 
     /* The active hash blob_id was added. */
@@ -66,7 +67,7 @@ TEST_F(FirmwareHandlerOpenTestLpc, OpenWithDataHandlerAllSucceeds)
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
         hashBlobId));
 
     /* The active hash blob_id was added. */
@@ -82,7 +83,7 @@ TEST_F(FirmwareHandlerOpenTestLpc, OpenWithDataHandlerReturnsFailure)
     EXPECT_CALL(dataMock, open()).WillOnce(Return(false));
 
     EXPECT_FALSE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
         hashBlobId));
 
     /* The active hash blob_id was added. */
@@ -99,7 +100,8 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly,
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        "asdf"));
 
     /* The active image blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
@@ -109,7 +111,7 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly,
 
     /* Open the hash file (since we opened an image file). */
     EXPECT_FALSE(handler->open(
-        1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        1, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
         hashBlobId));
 
     EXPECT_TRUE(handler->close(0));
@@ -117,7 +119,7 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly,
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        1, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
         hashBlobId));
 }
 
@@ -131,7 +133,8 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenEverythingSucceedsOpenActiveFails)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        "asdf"));
 
     /* The active image blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
@@ -145,7 +148,7 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenEverythingSucceedsOpenActiveFails)
     EXPECT_TRUE(handler->close(0));
 
     EXPECT_FALSE(handler->open(
-        1, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        1, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
         activeImageBlobId));
 }
 
@@ -157,7 +160,8 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly,
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(false));
 
     EXPECT_FALSE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        "asdf"));
 
     /* Verify blob_id list doesn't grow. */
     auto currentBlobs = handler->getBlobIds();
@@ -182,7 +186,8 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenWithInvalidImageBlobId)
 {
     /* The client sends a request with an invalid image blob_id. */
     EXPECT_FALSE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "bcdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        "bcdf"));
 }
 
 /* TODO: The client sends a request during verification. */
@@ -192,4 +197,4 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenWithInvalidImageBlobId)
 /* TODO: The client sends a request to open active image. */
 /* TODO: The client sends a request to open active hash. */
 
-} // namespace blobs
+} // namespace ipmi_flash

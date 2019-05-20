@@ -10,7 +10,7 @@
 
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 using ::testing::Eq;
 using ::testing::Return;
@@ -24,7 +24,8 @@ TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        "asdf"));
 
     std::vector<std::uint8_t> bytes = {0xaa, 0x55};
 
@@ -37,7 +38,8 @@ TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
+        "asdf"));
 
     std::vector<std::uint8_t> bytes = {0x01, 0x02, 0x03, 0x04};
 
@@ -45,4 +47,4 @@ TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
     EXPECT_TRUE(handler->writeMeta(0, 0, bytes));
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

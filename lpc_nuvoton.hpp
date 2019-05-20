@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 class LpcMapperNuvoton : public HardwareMapperInterface
@@ -41,4 +41,4 @@ class LpcMapperNuvoton : public HardwareMapperInterface
     const internal::Sys* sys;
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

@@ -28,7 +28,7 @@
 #include <utility>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 using std::uint16_t;
 using std::uint32_t;
@@ -141,4 +141,4 @@ std::vector<std::uint8_t> LpcMapperNuvoton::copyFrom(std::uint32_t length)
     return {};
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

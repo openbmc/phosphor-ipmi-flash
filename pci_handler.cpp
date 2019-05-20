@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 const std::string PciDataHandler::p2aControlPath = "/dev/aspeed-p2a-ctrl";
@@ -123,4 +123,4 @@ std::vector<std::uint8_t> PciDataHandler::readMeta()
     return bytes;
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

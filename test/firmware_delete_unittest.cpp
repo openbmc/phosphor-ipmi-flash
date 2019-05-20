@@ -9,7 +9,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 using ::testing::Eq;
 using ::testing::Return;
@@ -36,7 +36,7 @@ TEST(FirmwareHandlerDeleteTest, DeleteActiveHashSucceeds)
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
         hashBlobId));
 
     /* The active hash blob_id was added. */
@@ -63,4 +63,4 @@ TEST(FirmwareHandlerDeleteTest, DeleteActiveHashSucceeds)
                             activeHashBlobId));
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 /** P2A configuration response. */
@@ -45,4 +45,4 @@ class PciDataHandler : public DataInterface
     static const std::string p2aControlPath;
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

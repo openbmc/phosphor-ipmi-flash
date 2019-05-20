@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 /**
@@ -54,4 +54,4 @@ struct HandlerPack
     ImageHandlerInterface* handler;
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

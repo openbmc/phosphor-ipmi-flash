@@ -4,7 +4,7 @@
 
 #include <gmock/gmock.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 class DataHandlerMock : public DataInterface
@@ -19,4 +19,4 @@ class DataHandlerMock : public DataInterface
     MOCK_METHOD0(readMeta, std::vector<std::uint8_t>());
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

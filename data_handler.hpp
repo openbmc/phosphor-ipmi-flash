@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 /**
@@ -60,4 +60,4 @@ struct DataHandlerPack
     DataInterface* handler;
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

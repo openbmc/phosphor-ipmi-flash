@@ -8,7 +8,7 @@
 
 #include <gmock/gmock.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 class HardwareInterfaceMock : public HardwareMapperInterface
@@ -23,4 +23,4 @@ class HardwareInterfaceMock : public HardwareMapperInterface
     MOCK_METHOD1(copyFrom, std::vector<std::uint8_t>(std::uint32_t));
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

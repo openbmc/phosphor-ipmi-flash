@@ -4,7 +4,7 @@
 
 #include <gmock/gmock.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 class ImageHandlerMock : public ImageHandlerInterface
@@ -18,4 +18,4 @@ class ImageHandlerMock : public ImageHandlerInterface
     MOCK_METHOD0(getSize, int());
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

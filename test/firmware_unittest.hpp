@@ -11,7 +11,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 class IpmiOnlyFirmwareTest : public ::testing::Test
@@ -21,7 +21,7 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr}};
-    std::unique_ptr<GenericBlobInterface> handler;
+    std::unique_ptr<blobs::GenericBlobInterface> handler;
 
     void SetUp() override
     {
@@ -41,7 +41,7 @@ class FakeLpcFirmwareTest : public ::testing::Test
     ImageHandlerMock imageMock;
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data;
-    std::unique_ptr<GenericBlobInterface> handler;
+    std::unique_ptr<blobs::GenericBlobInterface> handler;
 
     void SetUp() override
     {
@@ -58,4 +58,4 @@ class FakeLpcFirmwareTest : public ::testing::Test
     }
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

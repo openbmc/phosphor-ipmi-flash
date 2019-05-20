@@ -81,14 +81,14 @@ bool P2aDataHandler::sendContents(const std::string& input,
 
     /* Read the configuration via blobs metadata (stat). */
     ipmiblob::StatResponse stat = blob->getStat(session);
-    if (stat.metadata.size() != sizeof(blobs::PciConfigResponse))
+    if (stat.metadata.size() != sizeof(ipmi_flash::PciConfigResponse))
     {
         std::fprintf(stderr, "Didn't receive expected size of metadata for "
                              "PCI Configuration response\n");
         return false;
     }
 
-    blobs::PciConfigResponse pciResp;
+    ipmi_flash::PciConfigResponse pciResp;
     std::memcpy(&pciResp, stat.metadata.data(), sizeof(pciResp));
     std::fprintf(stderr, "Received address: 0x%x\n", pciResp.address);
 
@@ -140,7 +140,7 @@ bool P2aDataHandler::sendContents(const std::string& input,
                 /* Ok, so the data is staged, now send the blob write with the
                  * details.
                  */
-                struct blobs::ExtChunkHdr chunk;
+                struct ipmi_flash::ExtChunkHdr chunk;
                 chunk.length = bytesRead;
                 std::vector<std::uint8_t> chunkBytes(sizeof(chunk));
                 std::memcpy(chunkBytes.data(), &chunk, sizeof(chunk));

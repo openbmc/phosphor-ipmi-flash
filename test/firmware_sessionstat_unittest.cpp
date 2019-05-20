@@ -9,7 +9,7 @@
 
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 using ::testing::Eq;
 using ::testing::Return;
@@ -30,15 +30,16 @@ TEST_F(FirmwareSessionStateTestIpmiOnly, DataTypeIpmiNoMetadata)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        "asdf"));
 
     int size = 512;
     EXPECT_CALL(imageMock, getSize()).WillOnce(Return(size));
 
-    struct BlobMeta meta;
+    struct blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat(0, &meta));
     EXPECT_EQ(meta.blobState,
-              OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi);
+              blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi);
     EXPECT_EQ(meta.size, size);
     EXPECT_EQ(meta.metadata.size(), 0);
 }
@@ -53,21 +54,22 @@ TEST_F(FirmwareSessionStateTestLpc, DataTypeP2AReturnsMetadata)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc, "asdf"));
+        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
+        "asdf"));
 
     int size = 512;
     EXPECT_CALL(imageMock, getSize()).WillOnce(Return(size));
     std::vector<std::uint8_t> mBytes = {0x01, 0x02};
     EXPECT_CALL(dataMock, readMeta()).WillOnce(Return(mBytes));
 
-    struct BlobMeta meta;
+    struct blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat(0, &meta));
     EXPECT_EQ(meta.blobState,
-              OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc);
+              blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc);
     EXPECT_EQ(meta.size, size);
     EXPECT_EQ(meta.metadata.size(), mBytes.size());
     EXPECT_EQ(meta.metadata[0], mBytes[0]);
     EXPECT_EQ(meta.metadata[1], mBytes[1]);
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

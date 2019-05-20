@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 class FileHandler : public ImageHandlerInterface
@@ -41,4 +41,4 @@ class FileHandler : public ImageHandlerInterface
     std::string filename;
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

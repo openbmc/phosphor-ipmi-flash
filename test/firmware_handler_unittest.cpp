@@ -8,7 +8,7 @@
 
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
@@ -60,4 +60,4 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
                      std::count(result.begin(), result.end(), hashBlobId) +
                      std::count(result.begin(), result.end(), verifyBlobId));
 }
-} // namespace blobs
+} // namespace ipmi_flash

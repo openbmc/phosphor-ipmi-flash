@@ -30,9 +30,9 @@ class P2aDataHandler : public DataInterface
     }
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
-    blobs::FirmwareBlobHandler::UpdateFlags supportedType() const override
+    ipmi_flash::FirmwareBlobHandler::UpdateFlags supportedType() const override
     {
-        return blobs::FirmwareBlobHandler::UpdateFlags::p2a;
+        return ipmi_flash::FirmwareBlobHandler::UpdateFlags::p2a;
     }
 
   private:

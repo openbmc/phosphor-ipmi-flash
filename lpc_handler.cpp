@@ -20,7 +20,7 @@
 #include <cstring>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 bool LpcDataHandler::open()
@@ -94,4 +94,4 @@ std::vector<std::uint8_t> LpcDataHandler::readMeta()
     return {};
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

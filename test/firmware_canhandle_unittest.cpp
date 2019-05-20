@@ -8,7 +8,7 @@
 
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
 {
@@ -40,4 +40,4 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
         EXPECT_EQ(item.expected, handler->canHandleBlob(item.name));
     }
 }
-} // namespace blobs
+} // namespace ipmi_flash

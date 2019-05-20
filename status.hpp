@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 enum class VerifyCheckResponses : std::uint8_t

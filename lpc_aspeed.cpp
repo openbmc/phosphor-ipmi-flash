@@ -28,7 +28,7 @@
 #include <string>
 #include <utility>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 const std::string LpcMapperAspeed::lpcControlPath = "/dev/aspeed-lpc-ctrl";
@@ -157,4 +157,4 @@ std::vector<std::uint8_t> LpcMapperAspeed::copyFrom(std::uint32_t length)
     return std::vector<std::uint8_t>(mappedRegion, mappedRegion + length);
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

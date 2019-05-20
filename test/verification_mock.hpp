@@ -8,7 +8,7 @@
 
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 class VerificationMock : public VerificationInterface
@@ -24,4 +24,4 @@ std::unique_ptr<VerificationInterface> CreateVerifyMock()
     return std::make_unique<VerificationMock>();
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

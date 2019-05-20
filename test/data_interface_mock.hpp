@@ -15,7 +15,7 @@ class DataInterfaceMock : public DataInterface
 
     MOCK_METHOD2(sendContents, bool(const std::string&, std::uint16_t));
     MOCK_CONST_METHOD0(supportedType,
-                       blobs::FirmwareBlobHandler::UpdateFlags());
+                       ipmi_flash::FirmwareBlobHandler::UpdateFlags());
 };
 
 } // namespace host_tool

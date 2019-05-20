@@ -7,7 +7,7 @@
 
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
 {
@@ -31,9 +31,9 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         blobs, data, CreateVerifyMock());
 
-    struct BlobMeta meta;
+    struct blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));
     EXPECT_EQ(FirmwareBlobHandler::UpdateFlags::ipmi, meta.blobState);
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

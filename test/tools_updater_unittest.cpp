@@ -25,22 +25,22 @@ TEST(UpdaterTest, CheckAvailableSuccess)
     ipmiblob::BlobInterfaceMock blobMock;
 
     ipmiblob::StatResponse statObj;
-    statObj.blob_state = blobs::FirmwareBlobHandler::UpdateFlags::ipmi |
-                         blobs::FirmwareBlobHandler::UpdateFlags::lpc;
+    statObj.blob_state = ipmi_flash::FirmwareBlobHandler::UpdateFlags::ipmi |
+                         ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc;
     statObj.size = 0;
 
     EXPECT_CALL(blobMock, getBlobList())
         .WillOnce(
-            Return(std::vector<std::string>({blobs::staticLayoutBlobId})));
-    EXPECT_CALL(blobMock,
-                getStat(TypedEq<const std::string&>(blobs::staticLayoutBlobId)))
+            Return(std::vector<std::string>({ipmi_flash::staticLayoutBlobId})));
+    EXPECT_CALL(blobMock, getStat(TypedEq<const std::string&>(
+                              ipmi_flash::staticLayoutBlobId)))
         .WillOnce(Return(statObj));
 
     EXPECT_CALL(handlerMock, supportedType())
-        .WillOnce(Return(blobs::FirmwareBlobHandler::UpdateFlags::lpc));
+        .WillOnce(Return(ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc));
 
     UpdateHandler updater(&blobMock, &handlerMock);
-    EXPECT_TRUE(updater.checkAvailable(blobs::staticLayoutBlobId));
+    EXPECT_TRUE(updater.checkAvailable(ipmi_flash::staticLayoutBlobId));
 }
 
 TEST(UpdaterTest, SendFileSuccess)
@@ -53,15 +53,16 @@ TEST(UpdaterTest, SendFileSuccess)
 
     std::uint16_t supported =
         static_cast<std::uint16_t>(
-            blobs::FirmwareBlobHandler::UpdateFlags::lpc) |
+            ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc) |
         static_cast<std::uint16_t>(blobs::OpenFlags::write);
     std::uint16_t session = 0xbeef;
 
     EXPECT_CALL(handlerMock, supportedType())
-        .WillOnce(Return(blobs::FirmwareBlobHandler::UpdateFlags::lpc));
+        .WillOnce(Return(ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc));
 
-    EXPECT_CALL(blobMock,
-                openBlob(StrEq(blobs::staticLayoutBlobId.c_str()), supported))
+    EXPECT_CALL(
+        blobMock,
+        openBlob(StrEq(ipmi_flash::staticLayoutBlobId.c_str()), supported))
         .WillOnce(Return(session));
 
     EXPECT_CALL(handlerMock,
@@ -71,7 +72,7 @@ TEST(UpdaterTest, SendFileSuccess)
     EXPECT_CALL(blobMock, closeBlob(session)).Times(1);
 
     UpdateHandler updater(&blobMock, &handlerMock);
-    updater.sendFile(blobs::staticLayoutBlobId, firmwareImage);
+    updater.sendFile(ipmi_flash::staticLayoutBlobId, firmwareImage);
 }
 
 #if 0 /* TODO: fix this up. */
@@ -86,26 +87,26 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
     std::string firmwareImage = "image.bin";
     std::string signatureFile = "image.sig";
 
-    std::vector<std::string> blobList = {blobs::staticLayoutBlobId};
+    std::vector<std::string> blobList = {ipmi_flash::staticLayoutBlobId};
     ipmiblob::StatResponse statObj;
-    statObj.blob_state = blobs::FirmwareBlobHandler::UpdateFlags::ipmi |
-                         blobs::FirmwareBlobHandler::UpdateFlags::lpc;
+    statObj.blob_state = ipmi_flash::FirmwareBlobHandler::UpdateFlags::ipmi |
+                         ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc;
     statObj.size = 0;
     std::uint16_t supported =
         static_cast<std::uint16_t>(
-            blobs::FirmwareBlobHandler::UpdateFlags::lpc) |
+            ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc) |
         static_cast<std::uint16_t>(blobs::OpenFlags::write);
     std::uint16_t session = 0xbeef;
 
     EXPECT_CALL(blobMock, getBlobList()).WillOnce(Return(blobList));
 
-    EXPECT_CALL(blobMock, getStat(TypedEq<const std::string&>(blobs::staticLayoutBlobId)))
+    EXPECT_CALL(blobMock, getStat(TypedEq<const std::string&>(ipmi_flash::staticLayoutBlobId)))
         .WillOnce(Return(statObj));
 
     EXPECT_CALL(handlerMock, supportedType())
-        .WillOnce(Return(blobs::FirmwareBlobHandler::UpdateFlags::lpc));
+        .WillOnce(Return(ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc));
 
-    EXPECT_CALL(blobMock, openBlob(StrEq(blobs::staticLayoutBlobId.c_str()), Eq(supported)))
+    EXPECT_CALL(blobMock, openBlob(StrEq(ipmi_flash::staticLayoutBlobId.c_str()), Eq(supported)))
         .WillOnce(Return(session));
 
     EXPECT_CALL(handlerMock,
@@ -129,7 +130,7 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
     verificationResponse.blob_state = supported | blobs::StateFlags::committing;
     verificationResponse.size = 0;
     verificationResponse.metadata.push_back(static_cast<std::uint8_t>(
-        blobs::FirmwareBlobHandler::VerifyCheckResponses::success));
+        ipmi_flash::FirmwareBlobHandler::VerifyCheckResponses::success));
 
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(verificationResponse));

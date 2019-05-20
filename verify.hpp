@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 class VerificationInterface
@@ -27,4 +27,4 @@ class VerificationInterface
     virtual VerifyCheckResponses checkVerificationState() = 0;
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

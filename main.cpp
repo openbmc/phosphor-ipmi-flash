@@ -32,7 +32,7 @@
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus.hpp>
 
-namespace blobs
+namespace ipmi_flash
 {
 namespace
 {
@@ -89,7 +89,7 @@ std::vector<DataHandlerPack> supportedTransports = {
 
 } // namespace
 
-} // namespace blobs
+} // namespace ipmi_flash
 
 extern "C" {
 std::unique_ptr<blobs::GenericBlobInterface> createHandler();
@@ -99,9 +99,9 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
     using namespace phosphor::logging;
 
-    auto handler = blobs::FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs::supportedFirmware, blobs::supportedTransports,
-        blobs::SystemdVerification::CreateVerification(
+    auto handler = ipmi_flash::FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        ipmi_flash::supportedFirmware, ipmi_flash::supportedTransports,
+        ipmi_flash::SystemdVerification::CreateVerification(
             sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
             VERIFY_DBUS_SERVICE));
 

@@ -7,7 +7,7 @@
 #include <sdbusplus/bus.hpp>
 #include <string>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 /**
@@ -54,4 +54,4 @@ class SystemdVerification : public VerificationInterface
     const std::string checkPath;
     const std::string triggerService;
 };
-} // namespace blobs
+} // namespace ipmi_flash

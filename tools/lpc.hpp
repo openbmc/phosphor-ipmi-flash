@@ -27,9 +27,9 @@ class LpcDataHandler : public DataInterface
         io(io), sys(sys){};
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
-    blobs::FirmwareBlobHandler::UpdateFlags supportedType() const override
+    ipmi_flash::FirmwareBlobHandler::UpdateFlags supportedType() const override
     {
-        return blobs::FirmwareBlobHandler::UpdateFlags::lpc;
+        return ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc;
     }
 
   private:

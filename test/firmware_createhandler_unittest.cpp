@@ -6,7 +6,7 @@
 
 #include <gtest/gtest.h>
 
-namespace blobs
+namespace ipmi_flash
 {
 using ::testing::Return;
 using ::testing::StrEq;
@@ -37,4 +37,4 @@ TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
     EXPECT_FALSE(handler == nullptr);
 }
 
-} // namespace blobs
+} // namespace ipmi_flash

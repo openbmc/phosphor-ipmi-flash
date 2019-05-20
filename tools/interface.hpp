@@ -30,7 +30,8 @@ class DataInterface
      *
      * @return the enum value corresponding to the supported type.
      */
-    virtual blobs::FirmwareBlobHandler::UpdateFlags supportedType() const = 0;
+    virtual ipmi_flash::FirmwareBlobHandler::UpdateFlags
+        supportedType() const = 0;
 };
 
 } // namespace host_tool

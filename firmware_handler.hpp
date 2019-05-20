@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 
 /**
@@ -69,7 +69,7 @@ struct ExtChunkHdr
 /**
  * Register only one firmware blob handler that will manage all sessions.
  */
-class FirmwareBlobHandler : public GenericBlobInterface
+class FirmwareBlobHandler : public blobs::GenericBlobInterface
 {
   public:
     enum UpdateFlags : std::uint16_t
@@ -141,7 +141,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
     bool canHandleBlob(const std::string& path) override;
     std::vector<std::string> getBlobIds() override;
     bool deleteBlob(const std::string& path) override;
-    bool stat(const std::string& path, struct BlobMeta* meta) override;
+    bool stat(const std::string& path, struct blobs::BlobMeta* meta) override;
     bool open(uint16_t session, uint16_t flags,
               const std::string& path) override;
     std::vector<uint8_t> read(uint16_t session, uint32_t offset,
@@ -152,7 +152,7 @@ class FirmwareBlobHandler : public GenericBlobInterface
                    const std::vector<uint8_t>& data) override;
     bool commit(uint16_t session, const std::vector<uint8_t>& data) override;
     bool close(uint16_t session) override;
-    bool stat(uint16_t session, struct BlobMeta* meta) override;
+    bool stat(uint16_t session, struct blobs::BlobMeta* meta) override;
     bool expire(uint16_t session) override;
 
     bool triggerVerification();
@@ -197,4 +197,4 @@ class FirmwareBlobHandler : public GenericBlobInterface
     bool fileOpen = false;
 };
 
-} // namespace blobs
+} // namespace ipmi_flash

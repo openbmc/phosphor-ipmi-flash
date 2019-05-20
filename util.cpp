@@ -16,7 +16,7 @@
 
 #include "util.hpp"
 
-namespace blobs
+namespace ipmi_flash
 {
 
 const std::string verifyBlobId = "/flash/verify";
@@ -26,4 +26,4 @@ const std::string activeHashBlobId = "/flash/active/hash";
 const std::string staticLayoutBlobId = "/flash/image";
 const std::string ubiTarballBlobId = "/flash/tarball";
 
-} // namespace blobs
+} // namespace ipmi_flash

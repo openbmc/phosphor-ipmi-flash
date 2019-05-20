@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-namespace blobs
+namespace ipmi_flash
 {
 namespace fs = std::filesystem;
 
@@ -103,4 +103,4 @@ int FileHandler::getSize()
     return 0;
 }
 
-} // namespace blobs
+} // namespace ipmi_flash
