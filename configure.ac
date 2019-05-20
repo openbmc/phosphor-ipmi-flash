@@ -81,6 +81,14 @@ AC_ARG_ENABLE([build-host-tool],
 )
 AM_CONDITIONAL([BUILD_HOST_TOOL], [test "x$enable_build_host_tool" != "xno"])
 
+# Enable the reboot update mechanism
+AC_ARG_ENABLE([reboot-update],
+    AS_HELP_STRING([--enable-reboot-update],
+                   [Enable use of reboot update mechanism.]))
+AS_IF([test "x$enable_reboot_update" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_REBOOT_UPDATE], [CXXFLAGS])
+])
+
 # Enable static layout for firmware image staging.
 AC_ARG_ENABLE([static-layout],
     AS_HELP_STRING([--enable-static-layout],
@@ -175,10 +183,14 @@ AC_ARG_VAR(VERIFY_STATUS_FILENAME, [The file checked for the verification status
 AS_IF([test "xVERIFY_STATUS_FILENAME" == "x"], [VERIFY_STATUS_FILENAME="/tmp/bmc.verify"])
 AC_DEFINE_UNQUOTED([VERIFY_STATUS_FILENAME], ["$VERIFY_STATUS_FILENAME"], [The file checked for the verification status.])
 
-# VERIFY_DBUS_SERVICE
 AC_ARG_VAR(VERIFY_DBUS_SERVICE, [The systemd service started for verification.])
 AS_IF([test "xVERIFY_DBUS_SERVICE" == "x"], [VERIFY_DBUS_SERVICE="verify_image.service"])
 AC_DEFINE_UNQUOTED([VERIFY_DBUS_SERVICE], ["$VERIFY_DBUS_SERVICE"], [The systemd service started for verification.])
+
+AC_ARG_VAR(UPDATE_DBUS_SERVICE, [The systemd service started for updating the BMC.])
+AS_IF([test "xUPDATE_DBUS_SERVICE" == "x"], [UPDATE_DBUS_SERVICE="update-bmc.service"])
+AC_DEFINE_UNQUOTED([UPDATE_DBUS_SERVICE], ["$UPDATE_DBUS_SERVICE"], [The systemd service started for updating the BMC.])
+
 
 AC_CHECK_HEADER(linux/ipmi.h, [HAVE_LINUX_IPMI_H=""], [HAVE_LINUX_IPMI_H="-I linux/ipmi.h"])
 AS_IF([test "$HAVE_LINUX_IPMI_H" != ""],
