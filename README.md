@@ -104,3 +104,4 @@ Variable                     | Default                    | Meaning
 `HASH_FILENAME`              | `/tmp/bmc.sig`             | The file to use for the hash provided.
 `VERIFY_STATUS_FILENAME`     | `/tmp/bmc.verify`          | The file checked for the verification status.
 `VERIFY_DBUS_SERVICE`        | `verify_image.service`     | The systemd service started for verification.
+`UPDATE_DBUS_SERVICE`        | `update-bmc.service`       | The systemd service started for updating the BMC.

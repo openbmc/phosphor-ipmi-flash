@@ -23,6 +23,7 @@
 #include "lpc_handler.hpp"
 #include "lpc_nuvoton.hpp"
 #include "pci_handler.hpp"
+#include "update_systemd.hpp"
 #include "util.hpp"
 #include "verify.hpp"
 #include "verify_systemd.hpp"
@@ -98,6 +99,17 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler();
 std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
     using namespace phosphor::logging;
+
+#ifdef ENABLE_REBOOT_UPDATE
+    static constexpr auto rebootTarget = "reboot.target";
+    static constexpr auto rebootMode = "replace-irreversibly";
+
+    auto updater = ipmi_flash::SystemdUpdateMechanism::CreateSystemdUpdate(
+        sdbusplus::bus::new_default(), rebootTarget, rebootMode);
+#else
+    auto updater = ipmi_flash::SystemdUpdateMechanism::CreateSystemdUpdate(
+        sdbusplus::bus::new_default(), UPDATE_DBUS_SERVICE);
+#endif
 
     auto handler = ipmi_flash::FirmwareBlobHandler::CreateFirmwareBlobHandler(
         ipmi_flash::supportedFirmware, ipmi_flash::supportedTransports,
