@@ -1,3 +1,4 @@
+#include "bmc_update_mock.hpp"
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
@@ -49,7 +50,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
         std::make_unique<StrictMock<VerificationMock>>();
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(verifyMock));
+        blobs, data, std::move(verifyMock), CreateUpdateMock());
 
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
@@ -71,7 +72,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
         std::make_unique<StrictMock<VerificationMock>>();
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(verifyMock));
+        blobs, data, std::move(verifyMock), CreateUpdateMock());
 
     EXPECT_CALL(imageMock1, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
@@ -91,7 +92,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
     auto verifyMockPtr = reinterpret_cast<VerificationMock*>(verifyMock.get());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(verifyMock));
+        blobs, data, std::move(verifyMock), CreateUpdateMock());
 
     EXPECT_TRUE(handler->open(0, blobs::OpenFlags::write, verifyBlobId));
 
@@ -110,7 +111,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
     auto verifyMockPtr = reinterpret_cast<VerificationMock*>(verifyMock.get());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(verifyMock));
+        blobs, data, std::move(verifyMock), CreateUpdateMock());
 
     EXPECT_TRUE(handler->open(0, blobs::OpenFlags::write, verifyBlobId));
 

@@ -4,6 +4,7 @@
 
 #include "data_handler.hpp"
 #include "image_handler.hpp"
+#include "update.hpp"
 #include "util.hpp"
 #include "verify.hpp"
 
@@ -105,11 +106,13 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
      * @param[in] firmwares - list of firmware blob_ids to support.
      * @param[in] transports - list of transports to support.
      * @param[in] verification - pointer to object for triggering verification
+     * @param[in] update - point to object for triggering the update
      */
     static std::unique_ptr<GenericBlobInterface> CreateFirmwareBlobHandler(
         const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
-        std::unique_ptr<VerificationInterface> verification);
+        std::unique_ptr<VerificationInterface> verification,
+        std::unique_ptr<UpdateInterface> update);
 
     /**
      * Create a FirmwareBlobHandler.
@@ -119,17 +122,19 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
      * @param[in] transports - list of transport types and their handlers
      * @param[in] bitmask - bitmask of transports to support
      * @param[in] verification - pointer to object for triggering verification
+     * @param[in] update - point to object for triggering the update
      */
     FirmwareBlobHandler(const std::vector<HandlerPack>& firmwares,
                         const std::vector<std::string>& blobs,
                         const std::vector<DataHandlerPack>& transports,
                         std::uint16_t bitmask,
-                        std::unique_ptr<VerificationInterface> verification) :
+                        std::unique_ptr<VerificationInterface> verification,
+                        std::unique_ptr<UpdateInterface> update) :
         handlers(firmwares),
         blobIDs(blobs), transports(transports), bitmask(bitmask),
         activeImage(activeImageBlobId), activeHash(activeHashBlobId),
         verifyImage(verifyBlobId), lookup(), state(UpdateState::notYetStarted),
-        verification(std::move(verification))
+        verification(std::move(verification)), update(std::move(update))
     {
     }
     ~FirmwareBlobHandler() = default;
@@ -192,6 +197,8 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
     UpdateState state;
 
     std::unique_ptr<VerificationInterface> verification;
+
+    std::unique_ptr<UpdateInterface> update;
 
     /** Temporary variable to track whether a blob is open. */
     bool fileOpen = false;

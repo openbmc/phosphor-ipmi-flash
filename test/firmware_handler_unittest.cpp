@@ -1,3 +1,4 @@
+#include "bmc_update_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
@@ -18,7 +19,7 @@ TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        {}, data, CreateVerifyMock());
+        {}, data, CreateVerifyMock(), CreateUpdateMock());
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
@@ -31,7 +32,7 @@ TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, {}, CreateVerifyMock());
+        blobs, {}, CreateVerifyMock(), CreateUpdateMock());
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
@@ -47,13 +48,13 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock());
+        blobs, data, CreateVerifyMock(), CreateUpdateMock());
     EXPECT_EQ(handler, nullptr);
 
     blobs.push_back({hashBlobId, &imageMock});
 
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock());
+        blobs, data, CreateVerifyMock(), CreateUpdateMock());
     auto result = handler->getBlobIds();
     EXPECT_EQ(3, result.size());
     EXPECT_EQ(3, std::count(result.begin(), result.end(), "asdf") +

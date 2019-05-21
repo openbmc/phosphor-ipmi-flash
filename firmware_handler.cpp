@@ -38,7 +38,8 @@ std::unique_ptr<blobs::GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
         const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
-        std::unique_ptr<VerificationInterface> verification)
+        std::unique_ptr<VerificationInterface> verification,
+        std::unique_ptr<UpdateInterface> update)
 {
     /* There must be at least one. */
     if (!firmwares.size())
@@ -71,7 +72,8 @@ std::unique_ptr<blobs::GenericBlobInterface>
     }
 
     return std::make_unique<FirmwareBlobHandler>(
-        firmwares, blobs, transports, bitmask, std::move(verification));
+        firmwares, blobs, transports, bitmask, std::move(verification),
+        std::move(update));
 }
 
 /* Check if the path is in our supported list (or active list). */

@@ -115,7 +115,8 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
         ipmi_flash::supportedFirmware, ipmi_flash::supportedTransports,
         ipmi_flash::SystemdVerification::CreateVerification(
             sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
-            VERIFY_DBUS_SERVICE));
+            VERIFY_DBUS_SERVICE),
+        std::move(updater));
 
     if (!handler)
     {

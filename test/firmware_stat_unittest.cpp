@@ -1,3 +1,4 @@
+#include "bmc_update_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
@@ -29,7 +30,7 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock());
+        blobs, data, CreateVerifyMock(), CreateUpdateMock());
 
     struct blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));

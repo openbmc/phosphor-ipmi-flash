@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 namespace ipmi_flash
 {
@@ -18,5 +18,10 @@ class UpdateMock : public UpdateInterface
     MOCK_METHOD0(abortUpdate, void());
     MOCK_METHOD0(status, UpdateStatus());
 };
+
+std::unique_ptr<UpdateInterface> CreateUpdateMock()
+{
+    return std::make_unique<UpdateMock>();
+}
 
 } // namespace ipmi_flash
