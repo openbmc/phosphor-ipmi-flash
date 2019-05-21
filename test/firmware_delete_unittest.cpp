@@ -1,6 +1,7 @@
 #include "bmc_update_mock.hpp"
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
+#include "firmware_unittest.hpp"
 #include "image_mock.hpp"
 #include "util.hpp"
 #include "verification_mock.hpp"
@@ -16,24 +17,13 @@ using ::testing::Eq;
 using ::testing::Return;
 using ::testing::StrEq;
 
-TEST(FirmwareHandlerDeleteTest, DeleteActiveHashSucceeds)
+class FirmwareHandlerDeleteTest : public FakeLpcFirmwareTest
+{
+};
+
+TEST_F(FirmwareHandlerDeleteTest, DeleteActiveHashSucceeds)
 {
     /* Delete active image succeeds. */
-    DataHandlerMock dataMock;
-    ImageHandlerMock imageMock;
-
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock},
-        {"asdf", &imageMock},
-    };
-    std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
-    };
-
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock(), CreateUpdateMock());
-
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
