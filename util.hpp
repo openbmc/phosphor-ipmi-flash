@@ -5,6 +5,7 @@
 namespace ipmi_flash
 {
 
+extern const std::string updateBlobId;
 extern const std::string verifyBlobId;
 extern const std::string hashBlobId;
 extern const std::string activeImageBlobId;

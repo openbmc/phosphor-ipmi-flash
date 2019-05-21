@@ -19,6 +19,7 @@
 namespace ipmi_flash
 {
 
+const std::string updateBlobId = "/flash/update";
 const std::string verifyBlobId = "/flash/verify";
 const std::string hashBlobId = "/flash/hash";
 const std::string activeImageBlobId = "/flash/active/image";

@@ -133,7 +133,8 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
         handlers(firmwares),
         blobIDs(blobs), transports(transports), bitmask(bitmask),
         activeImage(activeImageBlobId), activeHash(activeHashBlobId),
-        verifyImage(verifyBlobId), lookup(), state(UpdateState::notYetStarted),
+        verifyImage(verifyBlobId), updateImage(updateBlobId), lookup(),
+        state(UpdateState::notYetStarted),
         verification(std::move(verification)), update(std::move(update))
     {
     }
@@ -189,6 +190,9 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
 
     /** Session for verification. */
     Session verifyImage;
+
+    /** Session for update. */
+    Session updateImage;
 
     /** A quick method for looking up a session's mechanisms and details. */
     std::map<std::uint16_t, Session*> lookup;
