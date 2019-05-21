@@ -16,13 +16,13 @@ bool BtDataHandler::sendContents(const std::string& input,
         return false;
     }
 
-    static constexpr int btBufferLen = 50;
-    std::uint8_t readBuffer[btBufferLen];
-    int bytesRead;
-    std::uint32_t offset = 0;
-
     try
     {
+        static constexpr int btBufferLen = 50;
+        std::uint8_t readBuffer[btBufferLen];
+        int bytesRead;
+        std::uint32_t offset = 0;
+
         do
         {
             bytesRead = sys->read(inputFd, readBuffer, sizeof(readBuffer));

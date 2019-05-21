@@ -108,8 +108,6 @@ bool P2aDataHandler::sendContents(const std::string& input,
         return false;
     }
 
-    int bytesRead = 0;
-    std::uint32_t offset = 0;
     const std::uint32_t p2aLength = aspeedP2aOffset;
 
     auto readBuffer = std::make_unique<std::uint8_t[]>(p2aLength);
@@ -121,6 +119,9 @@ bool P2aDataHandler::sendContents(const std::string& input,
 
     try
     {
+        int bytesRead = 0;
+        std::uint32_t offset = 0;
+
         do
         {
             bytesRead = sys->read(inputFd, readBuffer.get(), p2aLength);
