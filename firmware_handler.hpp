@@ -98,8 +98,6 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
         verificationStarted,
         /** The verification process has completed. */
         verificationCompleted,
-        /** The update process is pending. */
-        updatePending,
         /** The update process has started. */
         updateStarted,
         /** The update has completed (optional state to reach) */
