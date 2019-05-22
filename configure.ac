@@ -68,7 +68,8 @@ PKG_CHECK_MODULES(
     [AC_MSG_ERROR([Could not find libpci... pciutils package required])]
 )
 AC_CHECK_HEADER(
-    [blobs-ipmid],
+    [blobs-ipmid/blobs.hpp],
+    [],
     [AC_MSG_ERROR(["phosphor-ipmi-blobs required and not found."])]
 )
 AX_PTHREAD([], [AC_MSG_ERROR(["pthread required and not found"])])
