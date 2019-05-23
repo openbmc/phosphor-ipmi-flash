@@ -38,7 +38,7 @@ class FirmwareHandlerNotYetStartedTest : public IpmiOnlyFirmwareStaticTest
 
 TEST_F(FirmwareHandlerNotYetStartedTest, GetBlobListValidateListContents)
 {
-    /* TODO: Presently /flash/verify is present from the beginning, however,
+    /* TODO: Presently, /flash/verify is present from the beginning, however,
      * this is going to change to simplify handling of open().
      */
     std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId,
@@ -47,6 +47,34 @@ TEST_F(FirmwareHandlerNotYetStartedTest, GetBlobListValidateListContents)
     EXPECT_THAT(handler->getBlobIds(),
                 UnorderedElementsAreArray(expectedBlobs));
 }
+
+/* TODO: Try deleting some blobs -- in this state it should just return failure,
+ * but it's not yet implemented
+ */
+
+/* stat(blob_id) */
+TEST_F(FirmwareHandlerNotYetStartedTest, StatEachBlobIdVerifyResults)
+{
+    /* In this original state, calling stat() on the blob ids will return the
+     * transported supported.
+     */
+    blobs::BlobMeta expected;
+    expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
+    expected.size = 0;
+
+    /* TODO: note, once verifyblobid isn't present in this state we can use
+     * getblobids()'s output as input
+     */
+    std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
+    for (const auto& blob : testBlobs)
+    {
+        blobs::BlobMeta meta = {};
+        EXPECT_TRUE(handler->stat(blob, &meta));
+        EXPECT_EQ(expected, meta);
+    }
+}
+
+/* open(each blob id) */
 
 } // namespace
 } // namespace ipmi_flash
