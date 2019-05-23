@@ -15,6 +15,26 @@
 namespace ipmi_flash
 {
 
+class IpmiOnlyFirmwareStaticTest : public ::testing::Test
+{
+  protected:
+    ImageHandlerMock imageMock;
+    std::vector<HandlerPack> blobs;
+    std::vector<DataHandlerPack> data = {
+        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr}};
+    std::unique_ptr<blobs::GenericBlobInterface> handler;
+
+    void SetUp() override
+    {
+        blobs = {
+            {hashBlobId, &imageMock},
+            {staticLayoutBlobId, &imageMock},
+        };
+        handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+            blobs, data, CreateVerifyMock(), CreateUpdateMock());
+    }
+};
+
 class IpmiOnlyFirmwareTest : public ::testing::Test
 {
   protected:
