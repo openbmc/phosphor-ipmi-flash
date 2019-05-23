@@ -96,11 +96,6 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnActiveImageReturnsFailure)
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
-    std::vector<std::string> expectedAfterImage = {
-        staticLayoutBlobId, hashBlobId, verifyBlobId, activeImageBlobId};
-    EXPECT_THAT(handler->getBlobIds(),
-                UnorderedElementsAreArray(expectedAfterImage));
-
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
 }
@@ -119,11 +114,6 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnActiveHashReturnsFailure)
     EXPECT_TRUE(handler->open(1, flags, hashBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
-
-    std::vector<std::string> expectedAfterImage = {
-        staticLayoutBlobId, hashBlobId, verifyBlobId, activeHashBlobId};
-    EXPECT_THAT(handler->getBlobIds(),
-                UnorderedElementsAreArray(expectedAfterImage));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(activeHashBlobId, &meta));
@@ -164,6 +154,35 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnNormalBlobsReturnsSuccess)
 
 /*
  * stat(session)
+ */
+TEST_F(FirmwareHandlerUploadInProgressTest,
+       CallingStatOnActiveImageOrHashSessionReturnsDetails)
+{
+    /* This test will verify that the underlying image handler is called with
+     * this stat, in addition to the normal information.
+     */
+    std::uint16_t session = 1;
+    std::uint16_t flags =
+        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+
+    EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
+              realHandler->getCurrentState());
+
+    EXPECT_CALL(imageMock, getSize()).WillOnce(Return(32));
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 32;
+    expectedMeta.blobState =
+        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+}
+
+/*
  * open(blob)
  * close(session)
  * writemeta(session)
