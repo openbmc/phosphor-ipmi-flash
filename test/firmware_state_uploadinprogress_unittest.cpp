@@ -28,6 +28,7 @@ using ::testing::UnorderedElementsAreArray;
  * writemeta(session)
  * write(session)
  * read(session)
+ * commit(session)
  *
  * Testing canHandleBlob is uninteresting in this state.  Getting the BlobIDs
  * will inform what canHandleBlob will return.
