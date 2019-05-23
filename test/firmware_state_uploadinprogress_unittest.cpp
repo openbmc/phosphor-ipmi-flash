@@ -35,18 +35,20 @@ using ::testing::UnorderedElementsAreArray;
  */
 class FirmwareHandlerUploadInProgressTest : public IpmiOnlyFirmwareStaticTest
 {
+  protected:
+    std::uint16_t session = 1;
+    std::uint16_t flags =
+        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
 };
 
 TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveImage)
 {
     /* Opening the image file will add the active image blob id */
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(1, flags, staticLayoutBlobId));
+    EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
@@ -59,13 +61,11 @@ TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveImage)
 TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveHash)
 {
     /* Opening the image file will add the active image blob id */
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     EXPECT_CALL(imageMock, open(hashBlobId)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(1, flags, hashBlobId));
+    EXPECT_TRUE(handler->open(session, flags, hashBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
@@ -87,13 +87,11 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnActiveImageReturnsFailure)
     /* you cannot call stat() on the active image or the active hash or the
      * verify blob.
      */
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(1, flags, staticLayoutBlobId));
+    EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
@@ -106,13 +104,11 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnActiveHashReturnsFailure)
     /* this test is separate from the active image one so that the state doesn't
      * change from close.
      */
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     EXPECT_CALL(imageMock, open(hashBlobId)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(1, flags, hashBlobId));
+    EXPECT_TRUE(handler->open(session, flags, hashBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
@@ -129,13 +125,11 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnNormalBlobsReturnsSuccess)
     expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
     expected.size = 0;
 
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(1, flags, staticLayoutBlobId));
+    EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
@@ -162,9 +156,6 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
     /* This test will verify that the underlying image handler is called with
      * this stat, in addition to the normal information.
      */
-    std::uint16_t session = 1;
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
@@ -192,13 +183,11 @@ TEST_F(FirmwareHandlerUploadInProgressTest, OpeningHashFileWhileImageOpenFails)
      * active image (or tarball) or the hash file. Also verifies you can't just
      * re-open the currently open file.
      */
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(1, flags, staticLayoutBlobId));
+    EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
@@ -212,13 +201,11 @@ TEST_F(FirmwareHandlerUploadInProgressTest, OpeningHashFileWhileImageOpenFails)
 
 TEST_F(FirmwareHandlerUploadInProgressTest, OpeningImageFileWhileHashOpenFails)
 {
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     EXPECT_CALL(imageMock, open(hashBlobId)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(1, flags, hashBlobId));
+    EXPECT_TRUE(handler->open(session, flags, hashBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
@@ -242,8 +229,6 @@ TEST_F(FirmwareHandlerUploadInProgressTest, OpeningImageFileWhileHashOpenFails)
 TEST_F(FirmwareHandlerUploadInProgressTest,
        ClosingImageFileTransitionsToVerificationPending)
 {
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     /* TODO: uncomment this when verify is properly added. */
@@ -251,7 +236,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
 
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(1, flags, staticLayoutBlobId));
+    EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
@@ -265,8 +250,6 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
 TEST_F(FirmwareHandlerUploadInProgressTest,
        ClosingHashFileTransitionsToVerificationPending)
 {
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     /* TODO: uncomment this when verify is properly added. */
@@ -274,7 +257,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
 
     EXPECT_CALL(imageMock, open(hashBlobId)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(1, flags, hashBlobId));
+    EXPECT_TRUE(handler->open(session, flags, hashBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
@@ -294,25 +277,24 @@ TEST_F(FirmwareHandlerUploadInProgressTest, WriteMetaAgainstImageReturnsSuccess)
      * this case because the blob will just pass the call along.  Whereas
      * calling against the verify or update blob may be more interesting.
      */
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(1, flags, staticLayoutBlobId));
+    EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
     /* Note: with IPMI as the transport there's no data handler, so this should
      * fail nicely. */
     std::vector<std::uint8_t> bytes = {0x01, 0x02};
-    EXPECT_FALSE(handler->writeMeta(1, 0, bytes));
+    EXPECT_FALSE(handler->writeMeta(session, 0, bytes));
 }
 
 /*
  * write(session)
  * read(session)
+ * commit(session)
  */
 
 } // namespace
