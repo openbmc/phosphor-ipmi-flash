@@ -78,5 +78,70 @@ TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveHash)
  * blob id is, but it's not yet implemented
  */
 
+/*
+ * stat(blob)
+ */
+TEST_F(FirmwareHandlerUploadInProgressTest, StatOnActiveImageReturnsFailure)
+{
+    /* you cannot call stat() on the active image or the active hash or the
+     * verify blob.
+     */
+    std::uint16_t flags =
+        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+
+    EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(1, flags, staticLayoutBlobId));
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
+              realHandler->getCurrentState());
+
+    std::vector<std::string> expectedAfterImage = {
+        staticLayoutBlobId, hashBlobId, verifyBlobId, activeImageBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedAfterImage));
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerUploadInProgressTest, StatOnActiveHashReturnsFailure)
+{
+    /* this test is separate from the active image one so that the state doesn't
+     * change from close.
+     */
+    std::uint16_t flags =
+        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+
+    EXPECT_CALL(imageMock, open(hashBlobId)).WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(1, flags, hashBlobId));
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
+              realHandler->getCurrentState());
+
+    std::vector<std::string> expectedAfterImage = {
+        staticLayoutBlobId, hashBlobId, verifyBlobId, activeHashBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedAfterImage));
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(activeHashBlobId, &meta));
+}
+
+/* TODO: stat(verifyblobid) only should exist once both /image and /hash have
+ * closed, so add this test when this is the case. NOTE: /image or /tarball
+ * should have the same effect.
+ */
+
+/*
+ * stat(session)
+ * open(blob)
+ * close(session)
+ * writemeta(session)
+ * write(session)
+ * read(session)
+ */
+
 } // namespace
 } // namespace ipmi_flash
