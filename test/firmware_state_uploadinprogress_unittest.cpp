@@ -74,5 +74,9 @@ TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveHash)
                 UnorderedElementsAreArray(expectedAfterImage));
 }
 
+/* TODO: Try deleting some blobs -- in this state it will depend on what the
+ * blob id is, but it's not yet implemented
+ */
+
 } // namespace
 } // namespace ipmi_flash
