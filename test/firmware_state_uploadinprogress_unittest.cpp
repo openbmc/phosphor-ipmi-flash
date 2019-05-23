@@ -183,7 +183,53 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
 }
 
 /*
- * open(blob)
+ * open(blob) - While any blob is open, all other fail.
+ */
+TEST_F(FirmwareHandlerUploadInProgressTest, OpeningHashFileWhileImageOpenFails)
+{
+    /* To be in this state, something must be open (and specifically either an
+     * active image (or tarball) or the hash file. Also verifies you can't just
+     * re-open the currently open file.
+     */
+    std::uint16_t flags =
+        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+
+    EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(1, flags, staticLayoutBlobId));
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
+              realHandler->getCurrentState());
+
+    std::vector<std::string> blobsToTry = {
+        hashBlobId, activeImageBlobId, activeHashBlobId, staticLayoutBlobId};
+    for (const auto& blob : blobsToTry)
+    {
+        EXPECT_FALSE(handler->open(2, flags, blob));
+    }
+}
+
+TEST_F(FirmwareHandlerUploadInProgressTest, OpeningImageFileWhileHashOpenFails)
+{
+    std::uint16_t flags =
+        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+
+    EXPECT_CALL(imageMock, open(hashBlobId)).WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(1, flags, hashBlobId));
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
+              realHandler->getCurrentState());
+
+    std::vector<std::string> blobsToTry = {
+        hashBlobId, activeImageBlobId, activeHashBlobId, staticLayoutBlobId};
+    for (const auto& blob : blobsToTry)
+    {
+        EXPECT_FALSE(handler->open(2, flags, blob));
+    }
+}
+
+/*
  * close(session)
  * writemeta(session)
  * write(session)
