@@ -286,6 +286,30 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
 
 /*
  * writemeta(session)
+ */
+TEST_F(FirmwareHandlerUploadInProgressTest, WriteMetaAgainstImageReturnsSuccess)
+{
+    /* Calling write/read/writeMeta are uninteresting against the open blob in
+     * this case because the blob will just pass the call along.  Whereas
+     * calling against the verify or update blob may be more interesting.
+     */
+    std::uint16_t flags =
+        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+
+    EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->open(1, flags, staticLayoutBlobId));
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
+              realHandler->getCurrentState());
+
+    /* Note: with IPMI as the transport there's no data handler, so this should
+     * fail nicely. */
+    std::vector<std::uint8_t> bytes = {0x01, 0x02};
+    EXPECT_FALSE(handler->writeMeta(1, 0, bytes));
+}
+
+/*
  * write(session)
  * read(session)
  */
