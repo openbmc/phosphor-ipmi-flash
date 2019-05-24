@@ -223,7 +223,19 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 
 /*
  * open(blob) - there is nothing you can open, this state has an open file.
- *
+ */
+TEST_F(FirmwareHandlerVerificationStartedTest,
+       AttemptToOpenImageFileReturnsFailure)
+{
+    /* Attempt to open a file one normally can open, however, as there is
+     * already a file open, this will fail.
+     */
+    getToVerificationStarted(staticLayoutBlobId);
+
+    EXPECT_FALSE(handler->open(session + 1, flags, staticLayoutBlobId));
+}
+
+/*
  * close(session) - close while state if verificationStarted without calling
  * stat first will abort.
  *
