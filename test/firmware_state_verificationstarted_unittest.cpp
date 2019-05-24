@@ -212,6 +212,14 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 /*
  * write(session)
  */
+TEST_F(FirmwareHandlerVerificationStartedTest,
+       WriteOnVerifySessionReturnsFailure)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+
+    std::vector<std::uint8_t> bytes = {0x01, 0x02};
+    EXPECT_FALSE(handler->write(session, 0, bytes));
+}
 
 /*
  * open(blob) - there is nothing you can open, this state has an open file.
