@@ -19,6 +19,7 @@ namespace ipmi_flash
 namespace
 {
 
+using ::testing::IsEmpty;
 using ::testing::Return;
 
 /*
@@ -247,6 +248,14 @@ TEST_F(FirmwareHandlerVerificationPendingTest, WriteAgainstVerifyBlobIdFails)
 /*
  * read(session)
  */
+TEST_F(FirmwareHandlerVerificationPendingTest,
+       ReadAgainstVerifyBlobIdReturnsEmpty)
+{
+    getToVerificationPending(staticLayoutBlobId);
+
+    EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+    EXPECT_THAT(handler->read(session, 0, 32), IsEmpty());
+}
 
 } // namespace
 } // namespace ipmi_flash
