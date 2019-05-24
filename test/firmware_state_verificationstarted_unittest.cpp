@@ -18,6 +18,7 @@ namespace ipmi_flash
 namespace
 {
 
+using ::testing::IsEmpty;
 using ::testing::Return;
 
 /*
@@ -236,10 +237,17 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 }
 
 /*
+ * read(session)
+ */
+TEST_F(FirmwareHandlerVerificationStartedTest, ReadOfVerifyBlobReturnsEmpty)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+    EXPECT_THAT(handler->read(session, 0, 32), IsEmpty());
+}
+
+/*
  * close(session) - close while state if verificationStarted without calling
  * stat first will abort.
- *
- * read(session)
  *
  * commit(session)
  */
