@@ -234,6 +234,16 @@ TEST_F(FirmwareHandlerVerificationPendingTest, WriteMetaAgainstVerifyFails)
 /*
  * write(session)
  */
+TEST_F(FirmwareHandlerVerificationPendingTest, WriteAgainstVerifyBlobIdFails)
+{
+    getToVerificationPending(staticLayoutBlobId);
+
+    EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+
+    std::vector<std::uint8_t> bytes = {0x01, 0x02};
+    EXPECT_FALSE(handler->write(session, 0, bytes));
+}
+
 /*
  * read(session)
  */
