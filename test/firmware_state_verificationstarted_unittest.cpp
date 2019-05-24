@@ -246,10 +246,20 @@ TEST_F(FirmwareHandlerVerificationStartedTest, ReadOfVerifyBlobReturnsEmpty)
 }
 
 /*
+ * commit(session)
+ */
+TEST_F(FirmwareHandlerVerificationStartedTest,
+       CommitOnVerifyDuringVerificationHasNoImpact)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+    EXPECT_TRUE(handler->commit(session, {}));
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationStarted,
+              realHandler->getCurrentState());
+}
+
+/*
  * close(session) - close while state if verificationStarted without calling
  * stat first will abort.
- *
- * commit(session)
  */
 
 } // namespace
