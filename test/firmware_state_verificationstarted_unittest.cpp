@@ -141,14 +141,69 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 
 /* TODO:
  * canHandleBlob(blob)
+ *
  * getBlobIds
+ *
  * deleteBlob(blob)
+ */
+
+/*
  * stat(blob)
+ */
+TEST_F(FirmwareHandlerVerificationStartedTest, StatOnActiveImageReturnsFailure)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerVerificationStartedTest, StatOnActiveHashReturnsFailure)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(activeHashBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerVerificationStartedTest, StatOnVerifyBlobReturnsFailure)
+{
+    /* the verifyBlobId is available starting at verificationPending. */
+    getToVerificationStarted(staticLayoutBlobId);
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(verifyBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerVerificationStartedTest, StatOnNormalBlobsReturnsSuccess)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+
+    blobs::BlobMeta expected;
+    expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
+    expected.size = 0;
+
+    std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
+    for (const auto& blob : testBlobs)
+    {
+        blobs::BlobMeta meta = {};
+        EXPECT_TRUE(handler->stat(blob, &meta));
+        EXPECT_EQ(expected, meta);
+    }
+}
+
+/*
  * open(blob) - there is nothing you can open, this state has an open file.
- * close(session)
+ *
+ * close(session) - close while state if verificationStarted without calling
+ * stat first will abort.
+ *
  * writemeta(session)
+ *
  * write(session)
+ *
  * read(session)
+ *
  * commit(session)
  */
 
