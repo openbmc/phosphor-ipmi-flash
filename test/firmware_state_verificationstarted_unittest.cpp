@@ -261,6 +261,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 /*
  * close(session) - close while state if verificationStarted without calling
  * stat first will abort.
+ * TODO: implement this test when we implement abort.
  */
 
 } // namespace
