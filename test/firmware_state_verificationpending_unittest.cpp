@@ -312,6 +312,17 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
 /*
  * writemeta(session)
  */
+TEST_F(FirmwareHandlerVerificationPendingTest, WriteMetaAgainstVerifyFails)
+{
+    /* The verifyBlobId has no data handler, which means write meta fails. */
+    getToVerificationPending(staticLayoutBlobId);
+
+    EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+
+    std::vector<std::uint8_t> bytes = {0x01, 0x02};
+    EXPECT_FALSE(handler->writeMeta(session, 0, bytes));
+}
+
 /*
  * write(session)
  */
