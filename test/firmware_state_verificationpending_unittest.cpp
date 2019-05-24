@@ -176,6 +176,23 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
 }
 
 /*
+ * commit(session)
+ */
+TEST_F(FirmwareHandlerVerificationPendingTest,
+       CommitOnVerifyBlobTriggersVerificationAndStateTransition)
+{
+    getToVerificationPending(staticLayoutBlobId);
+    EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+    EXPECT_CALL(*verifyMockPtr, triggerVerification()).WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->commit(session, {}));
+
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationStarted,
+              realHandler->getCurrentState());
+}
+
+/*
  * stat(session) - in this state, you can only open(verifyBlobId) without
  * changing state.
  */
@@ -188,9 +205,6 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
  */
 /*
  * read(session)
- */
-/*
- * commit(session)
  */
 
 } // namespace
