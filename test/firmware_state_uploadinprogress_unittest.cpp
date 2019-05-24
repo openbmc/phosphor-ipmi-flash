@@ -238,7 +238,8 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
 /*
  * writemeta(session)
  */
-TEST_F(FirmwareHandlerUploadInProgressTest, WriteMetaAgainstImageReturnsSuccess)
+TEST_F(FirmwareHandlerUploadInProgressTest,
+       WriteMetaAgainstImageReturnsFailureIfNoDataHandler)
 {
     /* Calling write/read/writeMeta are uninteresting against the open blob in
      * this case because the blob will just pass the call along.  Whereas
@@ -246,6 +247,9 @@ TEST_F(FirmwareHandlerUploadInProgressTest, WriteMetaAgainstImageReturnsSuccess)
      */
     openToInProgress(staticLayoutBlobId);
 
+    /* TODO: Consider adding a test that has a data handler, but that test
+     * already exists under the general writeMeta test suite.
+     */
     /* Note: with IPMI as the transport there's no data handler, so this should
      * fail nicely. */
     std::vector<std::uint8_t> bytes = {0x01, 0x02};
