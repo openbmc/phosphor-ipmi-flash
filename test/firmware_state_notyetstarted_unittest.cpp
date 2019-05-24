@@ -55,6 +55,11 @@ TEST_F(FirmwareHandlerNotYetStartedTest, GetBlobListValidateListContents)
 
     EXPECT_THAT(handler->getBlobIds(),
                 UnorderedElementsAreArray(expectedBlobs));
+
+    for (const auto& blob : expectedBlobs)
+    {
+        EXPECT_TRUE(handler->canHandleBlob(blob));
+    }
 }
 
 /* TODO: Try deleting some blobs -- in this state it should just return failure,
