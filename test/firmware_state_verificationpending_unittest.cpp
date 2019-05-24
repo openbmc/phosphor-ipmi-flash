@@ -157,13 +157,29 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
 }
 
 /*
+ * close(session)
+ */
+TEST_F(FirmwareHandlerVerificationPendingTest,
+       ClosingVerifyBlobDoesNotChangeState)
+{
+    getToVerificationPending(staticLayoutBlobId);
+    EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
+              realHandler->getCurrentState());
+
+    handler->close(session);
+
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
+              realHandler->getCurrentState());
+}
+
+/*
  * stat(session) - in this state, you can only open(verifyBlobId) without
  * changing state.
  */
 
-/*
- * close(session)
- */
 /*
  * writemeta(session)
  */
