@@ -5,6 +5,7 @@
  */
 #include "firmware_handler.hpp"
 #include "firmware_unittest.hpp"
+#include "status.hpp"
 #include "util.hpp"
 
 #include <cstdint>
@@ -195,6 +196,117 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
 /*
  * stat(session) - in this state, you can only open(verifyBlobId) without
  * changing state.
+ */
+TEST_F(FirmwareHandlerVerificationPendingTest, StatOnVerifyBlobIdReturnsState)
+{
+    /* If this is called before commit(), it's still verificationPending, so it
+     * just returns the state is other
+     */
+    getToVerificationPending(staticLayoutBlobId);
+    EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+    EXPECT_CALL(*verifyMockPtr, triggerVerification()).Times(0);
+    EXPECT_CALL(*verifyMockPtr, checkVerificationState()).Times(0);
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(VerifyCheckResponses::other));
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest,
+       StatOnVerifyBlobIdAfterCommitChecksStateAndReturnsRunning)
+{
+    getToVerificationPending(staticLayoutBlobId);
+    EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+    EXPECT_CALL(*verifyMockPtr, triggerVerification()).WillOnce(Return(true));
+    EXPECT_CALL(*verifyMockPtr, checkVerificationState())
+        .WillOnce(Return(VerifyCheckResponses::running));
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::committing;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(VerifyCheckResponses::running));
+
+    EXPECT_TRUE(handler->commit(session, {}));
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest,
+       StatOnVerifyBlobIdAfterCommitCheckStateAndReturnsFailed)
+{
+    /* If the returned state from the verification handler is failed, it sets
+     * commit_error and transitions to verificationCompleted.
+     */
+    getToVerificationPending(staticLayoutBlobId);
+    EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+    EXPECT_CALL(*verifyMockPtr, triggerVerification()).WillOnce(Return(true));
+    EXPECT_CALL(*verifyMockPtr, checkVerificationState())
+        .WillOnce(Return(VerifyCheckResponses::failed));
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::commit_error;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(VerifyCheckResponses::failed));
+
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
+              realHandler->getCurrentState());
+
+    EXPECT_TRUE(handler->commit(session, {}));
+
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationStarted,
+              realHandler->getCurrentState());
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationCompleted,
+              realHandler->getCurrentState());
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest,
+       StatOnVerifyBlobIdAfterCommitCheckStateAndReturnsSuccess)
+{
+    /* If the returned state from the verification handler is success, it sets
+     * committed and transitions to verificationCompleted.
+     */
+    getToVerificationPending(staticLayoutBlobId);
+    EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+    EXPECT_CALL(*verifyMockPtr, triggerVerification()).WillOnce(Return(true));
+    EXPECT_CALL(*verifyMockPtr, checkVerificationState())
+        .WillOnce(Return(VerifyCheckResponses::success));
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::committed;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(VerifyCheckResponses::success));
+
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
+              realHandler->getCurrentState());
+
+    EXPECT_TRUE(handler->commit(session, {}));
+
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationStarted,
+              realHandler->getCurrentState());
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationCompleted,
+              realHandler->getCurrentState());
+}
+
+/* TODO: Once verificationCompleted is the state, canHandleBlob should accept
+ * updateBlobId.
  */
 
 /*

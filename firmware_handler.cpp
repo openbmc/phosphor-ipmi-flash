@@ -217,7 +217,16 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
      */
     if (item->second->activePath == verifyBlobId)
     {
-        auto value = verification->checkVerificationState();
+        VerifyCheckResponses value;
+
+        if (state == UpdateState::verificationPending)
+        {
+            value = VerifyCheckResponses::other;
+        }
+        else
+        {
+            value = verification->checkVerificationState();
+        }
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
 
