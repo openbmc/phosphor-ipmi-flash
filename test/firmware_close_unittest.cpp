@@ -13,6 +13,9 @@
 
 namespace ipmi_flash
 {
+namespace
+{
+
 using ::testing::Eq;
 using ::testing::Return;
 using ::testing::StrEq;
@@ -35,7 +38,7 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithDataHandler)
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(4, currentBlobs.size());
+    EXPECT_EQ(3, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             activeHashBlobId));
 
@@ -62,7 +65,7 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithoutDataHandler)
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(4, currentBlobs.size());
+    EXPECT_EQ(3, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             activeHashBlobId));
 
@@ -71,4 +74,5 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithoutDataHandler)
     EXPECT_TRUE(handler->close(0));
 }
 
+} // namespace
 } // namespace ipmi_flash

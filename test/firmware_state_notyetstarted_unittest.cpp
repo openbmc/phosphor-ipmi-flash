@@ -50,8 +50,7 @@ TEST_F(FirmwareHandlerNotYetStartedTest, GetBlobListValidateListContents)
     /* TODO: Presently, /flash/verify is present from the beginning, however,
      * this is going to change to simplify handling of open().
      */
-    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId,
-                                              verifyBlobId};
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
 
     EXPECT_THAT(handler->getBlobIds(),
                 UnorderedElementsAreArray(expectedBlobs));
@@ -76,11 +75,8 @@ TEST_F(FirmwareHandlerNotYetStartedTest, StatEachBlobIdVerifyResults)
     expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
     expected.size = 0;
 
-    /* TODO: note, once verifyblobid isn't present in this state we can use
-     * getblobids()'s output as input
-     */
-    std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
-    for (const auto& blob : testBlobs)
+    auto blobs = handler->getBlobIds();
+    for (const auto& blob : blobs)
     {
         blobs::BlobMeta meta = {};
         EXPECT_TRUE(handler->stat(blob, &meta));

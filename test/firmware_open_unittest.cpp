@@ -13,6 +13,9 @@
 
 namespace ipmi_flash
 {
+namespace
+{
+
 using ::testing::Eq;
 using ::testing::Return;
 using ::testing::StrEq;
@@ -37,7 +40,7 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenWithEverythingValid)
 
     /* The active image blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(4, currentBlobs.size());
+    EXPECT_EQ(3, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             activeImageBlobId));
 }
@@ -53,7 +56,7 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenWithEverythingValidHashFile)
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(4, currentBlobs.size());
+    EXPECT_EQ(3, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             activeHashBlobId));
 }
@@ -72,7 +75,7 @@ TEST_F(FirmwareHandlerOpenTestLpc, OpenWithDataHandlerAllSucceeds)
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(4, currentBlobs.size());
+    EXPECT_EQ(3, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             activeHashBlobId));
 }
@@ -86,9 +89,9 @@ TEST_F(FirmwareHandlerOpenTestLpc, OpenWithDataHandlerReturnsFailure)
         0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
         hashBlobId));
 
-    /* The active hash blob_id was added. */
+    /* The active hash blob_id was not added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(2, currentBlobs.size());
 }
 
 TEST_F(FirmwareHandlerOpenTestIpmiOnly,
@@ -105,7 +108,7 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly,
 
     /* The active image blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(4, currentBlobs.size());
+    EXPECT_EQ(3, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             activeImageBlobId));
 
@@ -138,7 +141,7 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenEverythingSucceedsOpenActiveFails)
 
     /* The active image blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(4, currentBlobs.size());
+    EXPECT_EQ(3, currentBlobs.size());
     EXPECT_EQ(1, std::count(currentBlobs.begin(), currentBlobs.end(),
                             activeImageBlobId));
 
@@ -165,7 +168,7 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly,
 
     /* Verify blob_id list doesn't grow. */
     auto currentBlobs = handler->getBlobIds();
-    EXPECT_EQ(3, currentBlobs.size());
+    EXPECT_EQ(2, currentBlobs.size());
 }
 
 TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenWithoutWriteFails)
@@ -197,4 +200,5 @@ TEST_F(FirmwareHandlerOpenTestIpmiOnly, OpenWithInvalidImageBlobId)
 /* TODO: The client sends a request to open active image. */
 /* TODO: The client sends a request to open active hash. */
 
+} // namespace
 } // namespace ipmi_flash

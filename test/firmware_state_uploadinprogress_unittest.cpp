@@ -62,7 +62,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveImage)
     openToInProgress(staticLayoutBlobId);
 
     std::vector<std::string> expectedAfterImage = {
-        staticLayoutBlobId, hashBlobId, verifyBlobId, activeImageBlobId};
+        staticLayoutBlobId, hashBlobId, activeImageBlobId};
     EXPECT_THAT(handler->getBlobIds(),
                 UnorderedElementsAreArray(expectedAfterImage));
 }
@@ -73,7 +73,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveHash)
     openToInProgress(hashBlobId);
 
     std::vector<std::string> expectedAfterImage = {
-        staticLayoutBlobId, hashBlobId, verifyBlobId, activeHashBlobId};
+        staticLayoutBlobId, hashBlobId, activeHashBlobId};
     EXPECT_THAT(handler->getBlobIds(),
                 UnorderedElementsAreArray(expectedAfterImage));
 }
@@ -91,6 +91,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnActiveImageReturnsFailure)
      * verify blob.
      */
     openToInProgress(staticLayoutBlobId);
+    ASSERT_TRUE(handler->canHandleBlob(activeImageBlobId));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
@@ -102,6 +103,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnActiveHashReturnsFailure)
      * change from close.
      */
     openToInProgress(hashBlobId);
+    ASSERT_TRUE(handler->canHandleBlob(activeHashBlobId));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(activeHashBlobId, &meta));
@@ -126,11 +128,6 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnNormalBlobsReturnsSuccess)
         EXPECT_EQ(expected, meta);
     }
 }
-
-/* TODO: stat(verifyblobid) only should exist once both /image and /hash have
- * closed, so add this test when this is the case. NOTE: /image or /tarball
- * should have the same effect.
- */
 
 /*
  * stat(session)
@@ -187,8 +184,6 @@ TEST_F(FirmwareHandlerUploadInProgressTest, OpeningImageFileWhileHashOpenFails)
 /*
  * close(session) - closing the hash or image will trigger a state transition to
  * verificationPending.
- * TODO: This state transition should add the verifyBlobId.  This will test that
- * it's there, but this test doesn't verify that it only just now appeared.
  *
  * NOTE: Re-opening /flash/image will transition back to uploadInProgress, but
  * that is verified in the verificationPending::open tests.
@@ -198,8 +193,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
 {
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
-    /* TODO: uncomment this when verify is properly added. */
-    // EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
+    EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
 
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
 
@@ -219,8 +213,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
 {
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
 
-    /* TODO: uncomment this when verify is properly added. */
-    // EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
+    EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
 
     EXPECT_CALL(imageMock, open(hashBlobId)).WillOnce(Return(true));
 

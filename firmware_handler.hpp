@@ -188,6 +188,12 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
         }
     }
 
+    void removeBlobId(const std::string& blob)
+    {
+        blobIDs.erase(std::remove(blobIDs.begin(), blobIDs.end(), blob),
+                      blobIDs.end());
+    }
+
     /** List of handlers by type. */
     std::vector<HandlerPack> handlers;
 

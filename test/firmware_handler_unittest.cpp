@@ -11,6 +11,10 @@
 
 namespace ipmi_flash
 {
+namespace
+{
+
+using ::testing::UnorderedElementsAreArray;
 
 TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
 {
@@ -56,9 +60,9 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         blobs, data, CreateVerifyMock(), CreateUpdateMock());
     auto result = handler->getBlobIds();
-    EXPECT_EQ(3, result.size());
-    EXPECT_EQ(3, std::count(result.begin(), result.end(), "asdf") +
-                     std::count(result.begin(), result.end(), hashBlobId) +
-                     std::count(result.begin(), result.end(), verifyBlobId));
+    std::vector<std::string> expectedBlobs = {"asdf", hashBlobId};
+    EXPECT_THAT(result, UnorderedElementsAreArray(expectedBlobs));
 }
+
+} // namespace
 } // namespace ipmi_flash

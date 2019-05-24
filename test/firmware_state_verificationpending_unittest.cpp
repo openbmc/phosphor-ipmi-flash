@@ -8,6 +8,7 @@
 #include "status.hpp"
 #include "util.hpp"
 
+#include <algorithm>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -70,9 +71,10 @@ TEST_F(FirmwareHandlerVerificationPendingTest, VerifyBlobIdAvailableInState)
     /* Only in the verificationPending state (and later), should the
      * verifyBlobId be present. */
 
-    /* TODO: Add this test in when the change is made. */
-    // EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
+    EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
+
     getToVerificationPending(staticLayoutBlobId);
+
     EXPECT_TRUE(handler->canHandleBlob(verifyBlobId));
     EXPECT_TRUE(handler->canHandleBlob(activeImageBlobId));
 }
@@ -87,6 +89,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest, VerifyBlobIdAvailableInState)
 TEST_F(FirmwareHandlerVerificationPendingTest, StatOnActiveImageReturnsFailure)
 {
     getToVerificationPending(staticLayoutBlobId);
+    ASSERT_TRUE(handler->canHandleBlob(activeImageBlobId));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
@@ -95,6 +98,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest, StatOnActiveImageReturnsFailure)
 TEST_F(FirmwareHandlerVerificationPendingTest, StatOnActiveHashReturnsFailure)
 {
     getToVerificationPending(hashBlobId);
+    ASSERT_TRUE(handler->canHandleBlob(activeHashBlobId));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(activeHashBlobId, &meta));
@@ -104,6 +108,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
        StatOnVerificationBlobReturnsFailure)
 {
     getToVerificationPending(hashBlobId);
+    ASSERT_TRUE(handler->canHandleBlob(activeHashBlobId));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(verifyBlobId, &meta));
@@ -120,6 +125,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest, StatOnNormalBlobsReturnsSuccess)
     std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
     for (const auto& blob : testBlobs)
     {
+        ASSERT_TRUE(handler->canHandleBlob(blob));
         blobs::BlobMeta meta = {};
         EXPECT_TRUE(handler->stat(blob, &meta));
         EXPECT_EQ(expected, meta);
@@ -168,7 +174,12 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
 
-    /* Verify the active blob ID was not added to the list twice. */
+    expectedBlobs.erase(
+        std::remove(expectedBlobs.begin(), expectedBlobs.end(), verifyBlobId));
+
+    /* Verify the active blob ID was not added to the list twice and
+     * verifyBlobId is removed
+     */
     EXPECT_THAT(handler->getBlobIds(),
                 UnorderedElementsAreArray(expectedBlobs));
 }

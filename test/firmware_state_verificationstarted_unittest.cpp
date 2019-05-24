@@ -153,6 +153,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 TEST_F(FirmwareHandlerVerificationStartedTest, StatOnActiveImageReturnsFailure)
 {
     getToVerificationStarted(staticLayoutBlobId);
+    ASSERT_TRUE(handler->canHandleBlob(activeImageBlobId));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
@@ -160,7 +161,8 @@ TEST_F(FirmwareHandlerVerificationStartedTest, StatOnActiveImageReturnsFailure)
 
 TEST_F(FirmwareHandlerVerificationStartedTest, StatOnActiveHashReturnsFailure)
 {
-    getToVerificationStarted(staticLayoutBlobId);
+    getToVerificationStarted(hashBlobId);
+    ASSERT_TRUE(handler->canHandleBlob(activeHashBlobId));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(activeHashBlobId, &meta));
@@ -170,6 +172,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest, StatOnVerifyBlobReturnsFailure)
 {
     /* the verifyBlobId is available starting at verificationPending. */
     getToVerificationStarted(staticLayoutBlobId);
+    ASSERT_TRUE(handler->canHandleBlob(verifyBlobId));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(verifyBlobId, &meta));
@@ -186,6 +189,8 @@ TEST_F(FirmwareHandlerVerificationStartedTest, StatOnNormalBlobsReturnsSuccess)
     std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
     for (const auto& blob : testBlobs)
     {
+        ASSERT_TRUE(handler->canHandleBlob(blob));
+
         blobs::BlobMeta meta = {};
         EXPECT_TRUE(handler->stat(blob, &meta));
         EXPECT_EQ(expected, meta);

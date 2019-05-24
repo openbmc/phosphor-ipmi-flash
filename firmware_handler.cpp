@@ -57,7 +57,6 @@ std::unique_ptr<blobs::GenericBlobInterface>
     {
         blobs.push_back(item.blobName);
     }
-    blobs.push_back(verifyBlobId); /* Add blob_id to always exist. */
 
     if (0 == std::count(blobs.begin(), blobs.end(), hashBlobId))
     {
@@ -442,6 +441,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     lookup[session] = curr;
 
     addBlobId(*active);
+    removeBlobId(verifyBlobId);
 
     state = UpdateState::uploadInProgress;
     fileOpen = true;
@@ -606,10 +606,8 @@ bool FirmwareBlobHandler::close(uint16_t session)
             state = UpdateState::notYetStarted;
 
             /* A this point, delete the active blob IDs from the blob_list. */
-            blobIDs.erase(
-                std::remove(blobIDs.begin(), blobIDs.end(), activeImageBlobId));
-            blobIDs.erase(
-                std::remove(blobIDs.begin(), blobIDs.end(), activeHashBlobId));
+            removeBlobId(activeImageBlobId);
+            removeBlobId(activeHashBlobId);
         }
         /* Must be verificationPending... not yet started, they may re-open and
          * trigger verification.
@@ -619,6 +617,9 @@ bool FirmwareBlobHandler::close(uint16_t session)
     {
         /* They are closing a data pathway (image, tarball, hash). */
         state = UpdateState::verificationPending;
+
+        /* Add verify blob ID now that we can expect it. */
+        addBlobId(verifyBlobId);
     }
 
     if (item->second->dataHandler)
