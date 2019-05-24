@@ -18,6 +18,7 @@ namespace
 {
 
 using ::testing::ContainerEq;
+using ::testing::IsEmpty;
 using ::testing::Return;
 using ::testing::UnorderedElementsAreArray;
 
@@ -273,6 +274,12 @@ TEST_F(FirmwareHandlerUploadInProgressTest, WriteToHashReturnsSuccess)
 /*
  * read(session)
  */
+TEST_F(FirmwareHandlerUploadInProgressTest, ReadImageFileReturnsFailure)
+{
+    /* Read is not supported. */
+    openToInProgress(staticLayoutBlobId);
+    EXPECT_THAT(handler->read(session, 0, 32), IsEmpty());
+}
 
 /*
  * commit(session)
