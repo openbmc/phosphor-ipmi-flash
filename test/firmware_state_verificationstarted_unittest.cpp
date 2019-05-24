@@ -198,14 +198,26 @@ TEST_F(FirmwareHandlerVerificationStartedTest, StatOnNormalBlobsReturnsSuccess)
 }
 
 /*
+ * writemeta(session)
+ */
+TEST_F(FirmwareHandlerVerificationStartedTest,
+       WriteMetaOnVerifySessionReturnsFailure)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+
+    std::vector<std::uint8_t> bytes = {0x01, 0x02};
+    EXPECT_FALSE(handler->writeMeta(session, 0, bytes));
+}
+
+/*
+ * write(session)
+ */
+
+/*
  * open(blob) - there is nothing you can open, this state has an open file.
  *
  * close(session) - close while state if verificationStarted without calling
  * stat first will abort.
- *
- * writemeta(session)
- *
- * write(session)
  *
  * read(session)
  *
