@@ -44,8 +44,11 @@ class FirmwareHandlerVerificationCompletedTest
     : public IpmiOnlyFirmwareStaticTest
 {
   protected:
-    void getToVerificationCompleted()
+    void getToVerificationCompleted(VerifyCheckResponses checkResponse)
     {
+        /* The hash was not sent up, as it's technically optional.  Therefore,
+         * there is no active hash file.
+         */
         auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
         EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
         EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
@@ -65,7 +68,7 @@ class FirmwareHandlerVerificationCompletedTest
                   realHandler->getCurrentState());
 
         EXPECT_CALL(*verifyMockPtr, checkVerificationState())
-            .WillOnce(Return(VerifyCheckResponses::success));
+            .WillOnce(Return(checkResponse));
         blobs::BlobMeta meta;
         EXPECT_TRUE(handler->stat(session, &meta));
         EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationCompleted,
@@ -77,7 +80,7 @@ class FirmwareHandlerVerificationCompletedTest
         blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
 };
 
-/*
+/* TODO:
  * canHandleBlob(blob)
  * getBlobIds
  * deleteBlob(blob)
@@ -87,9 +90,28 @@ class FirmwareHandlerVerificationCompletedTest
 /*
  * stat(blob)
  */
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       StatOnActiveImageReturnsFailure)
+{
+    getToVerificationCompleted(VerifyCheckResponses::success);
+    ASSERT_TRUE(handler->canHandleBlob(activeImageBlobId));
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerVerificationCompletedTest, StatOnVerifyBlobReturnsFailure)
+{
+    getToVerificationCompleted(VerifyCheckResponses::success);
+    ASSERT_TRUE(handler->canHandleBlob(verifyBlobId));
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(verifyBlobId, &meta));
+}
 
 /*
- * stat(session) - the verify blobid is open in this state, so stat on that once completed should have no effect.
+ * stat(session) - the verify blobid is open in this state, so stat on that once
+ * completed should have no effect.
  *
  * open(blob) - all open should fail
  *
