@@ -8,6 +8,7 @@
 #include "util.hpp"
 #include "verify.hpp"
 
+#include <algorithm>
 #include <blobs-ipmid/blobs.hpp>
 #include <cstdint>
 #include <map>
@@ -176,6 +177,17 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
     };
 
   private:
+    void addBlobId(const std::string& blob)
+    {
+        auto blobIdMatch =
+            std::find_if(blobIDs.begin(), blobIDs.end(),
+                         [&blob](const auto& iter) { return (iter == blob); });
+        if (blobIdMatch == blobIDs.end())
+        {
+            blobIDs.push_back(blob);
+        }
+    }
+
     /** List of handlers by type. */
     std::vector<HandlerPack> handlers;
 

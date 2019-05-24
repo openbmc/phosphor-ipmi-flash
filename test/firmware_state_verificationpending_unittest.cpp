@@ -21,6 +21,7 @@ namespace
 
 using ::testing::IsEmpty;
 using ::testing::Return;
+using ::testing::UnorderedElementsAreArray;
 
 /*
  * There are the following calls (parameters may vary):
@@ -150,12 +151,26 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
        OpenImageBlobTransitionsToUploadInProgress)
 {
     getToVerificationPending(staticLayoutBlobId);
+
+    /* Verify the active blob for the image is in the list once to start.
+     * Note: This is truly tested under the notYetStarted::open() test.
+     */
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId,
+                                              verifyBlobId, activeImageBlobId};
+
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
     EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
 
     auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
+
+    /* Verify the active blob ID was not added to the list twice. */
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
 }
 
 /*

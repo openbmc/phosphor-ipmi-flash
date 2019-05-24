@@ -441,16 +441,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
 
     lookup[session] = curr;
 
-    /* This may be them re-opening a blob, so let's only push it onto the list
-     * when appropriate.
-     */
-    auto blobIdMatch =
-        std::find_if(blobIDs.begin(), blobIDs.end(),
-                     [active](const auto& iter) { return (iter == *active); });
-    if (blobIdMatch == blobIDs.end())
-    {
-        blobIDs.push_back(*active);
-    }
+    addBlobId(*active);
 
     state = UpdateState::uploadInProgress;
     fileOpen = true;

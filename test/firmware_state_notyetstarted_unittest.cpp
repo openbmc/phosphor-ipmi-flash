@@ -99,6 +99,8 @@ TEST_F(FirmwareHandlerNotYetStartedTest, OpenStaticImageFileVerifyStateChange)
     EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
+
+    EXPECT_TRUE(handler->canHandleBlob(activeImageBlobId));
 }
 
 TEST_F(FirmwareHandlerNotYetStartedTest, OpenHashFileVerifyStateChange)
@@ -110,6 +112,8 @@ TEST_F(FirmwareHandlerNotYetStartedTest, OpenHashFileVerifyStateChange)
     EXPECT_TRUE(handler->open(session, flags, hashBlobId));
     EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
               realHandler->getCurrentState());
+
+    EXPECT_TRUE(handler->canHandleBlob(activeHashBlobId));
 }
 
 } // namespace
