@@ -284,6 +284,19 @@ TEST_F(FirmwareHandlerUploadInProgressTest, ReadImageFileReturnsFailure)
 /*
  * commit(session)
  */
+TEST_F(FirmwareHandlerUploadInProgressTest,
+       CommitAgainstImageFileReturnsFailure)
+{
+    /* Commit is only valid against specific blobs. */
+    openToInProgress(staticLayoutBlobId);
+    EXPECT_FALSE(handler->commit(session, {}));
+}
+
+TEST_F(FirmwareHandlerUploadInProgressTest, CommitAgainstHashFileReturnsFailure)
+{
+    openToInProgress(hashBlobId);
+    EXPECT_FALSE(handler->commit(session, {}));
+}
 
 } // namespace
 } // namespace ipmi_flash
