@@ -62,7 +62,6 @@ class FirmwareHandlerVerificationPendingTest : public IpmiOnlyFirmwareStaticTest
 /*
  * getBlobIds
  */
-
 TEST_F(FirmwareHandlerVerificationPendingTest, VerifyBlobIdAvailableInState)
 {
     /* Only in the verificationPending state (and later), should the
@@ -125,11 +124,43 @@ TEST_F(FirmwareHandlerVerificationPendingTest, StatOnNormalBlobsReturnsSuccess)
 }
 
 /*
- * stat(session)
- */
-/*
  * open(blob)
  */
+TEST_F(FirmwareHandlerVerificationPendingTest, OpenVerifyBlobSucceeds)
+{
+    getToVerificationPending(staticLayoutBlobId);
+
+    /* the session is safe because it was already closed to get to this state.
+     */
+    EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest, OpenActiveImageBlobFails)
+{
+    /* Try opening the active blob Id.  This test is equivalent to trying to
+     * open the active hash blob id, in that neither are ever allowed.
+     */
+    getToVerificationPending(staticLayoutBlobId);
+    EXPECT_FALSE(handler->open(session, flags, activeImageBlobId));
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest,
+       OpenImageBlobTransitionsToUploadInProgress)
+{
+    getToVerificationPending(staticLayoutBlobId);
+    EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
+    EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
+
+    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+    EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
+              realHandler->getCurrentState());
+}
+
+/*
+ * stat(session) - in this state, you can only open(verifyBlobId) without
+ * changing state.
+ */
+
 /*
  * close(session)
  */
