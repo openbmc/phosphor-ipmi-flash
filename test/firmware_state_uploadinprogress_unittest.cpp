@@ -6,6 +6,10 @@
 #include "firmware_handler.hpp"
 #include "firmware_unittest.hpp"
 
+#include <cstdint>
+#include <string>
+#include <vector>
+
 #include <gtest/gtest.h>
 
 namespace ipmi_flash
@@ -13,6 +17,7 @@ namespace ipmi_flash
 namespace
 {
 
+using ::testing::ContainerEq;
 using ::testing::Return;
 using ::testing::UnorderedElementsAreArray;
 
@@ -248,7 +253,28 @@ TEST_F(FirmwareHandlerUploadInProgressTest, WriteMetaAgainstImageReturnsSuccess)
 
 /*
  * write(session)
+ */
+TEST_F(FirmwareHandlerUploadInProgressTest, WriteToImageReturnsSuccess)
+{
+    openToInProgress(staticLayoutBlobId);
+    std::vector<std::uint8_t> bytes = {0x01, 0x02};
+    EXPECT_CALL(imageMock, write(0, ContainerEq(bytes))).WillOnce(Return(true));
+    EXPECT_TRUE(handler->write(session, 0, bytes));
+}
+
+TEST_F(FirmwareHandlerUploadInProgressTest, WriteToHashReturnsSuccess)
+{
+    openToInProgress(hashBlobId);
+    std::vector<std::uint8_t> bytes = {0x01, 0x02};
+    EXPECT_CALL(imageMock, write(0, ContainerEq(bytes))).WillOnce(Return(true));
+    EXPECT_TRUE(handler->write(session, 0, bytes));
+}
+
+/*
  * read(session)
+ */
+
+/*
  * commit(session)
  */
 
