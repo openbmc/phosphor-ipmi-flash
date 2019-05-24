@@ -61,15 +61,6 @@ class FirmwareHandlerVerificationPendingTest : public IpmiOnlyFirmwareStaticTest
 
 /*
  * getBlobIds
- * deleteBlob(blob)
- * stat(blob)
- * stat(session)
- * open(blob)
- * close(session)
- * writemeta(session)
- * write(session)
- * read(session)
- * commit(session)
  */
 
 TEST_F(FirmwareHandlerVerificationPendingTest, VerifyBlobIdAvailableInState)
@@ -81,7 +72,79 @@ TEST_F(FirmwareHandlerVerificationPendingTest, VerifyBlobIdAvailableInState)
     // EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
     getToVerificationPending(staticLayoutBlobId);
     EXPECT_TRUE(handler->canHandleBlob(verifyBlobId));
+    EXPECT_TRUE(handler->canHandleBlob(activeImageBlobId));
 }
+
+/*
+ * delete(blob) TODO: Implement this.
+ */
+
+/*
+ * stat(blob)
+ */
+TEST_F(FirmwareHandlerVerificationPendingTest, StatOnActiveImageReturnsFailure)
+{
+    getToVerificationPending(staticLayoutBlobId);
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest, StatOnActiveHashReturnsFailure)
+{
+    getToVerificationPending(hashBlobId);
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(activeHashBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest,
+       StatOnVerificationBlobReturnsFailure)
+{
+    getToVerificationPending(hashBlobId);
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(verifyBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest, StatOnNormalBlobsReturnsSuccess)
+{
+    getToVerificationPending(staticLayoutBlobId);
+
+    blobs::BlobMeta expected;
+    expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
+    expected.size = 0;
+
+    std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
+    for (const auto& blob : testBlobs)
+    {
+        blobs::BlobMeta meta = {};
+        EXPECT_TRUE(handler->stat(blob, &meta));
+        EXPECT_EQ(expected, meta);
+    }
+}
+
+/*
+ * stat(session)
+ */
+/*
+ * open(blob)
+ */
+/*
+ * close(session)
+ */
+/*
+ * writemeta(session)
+ */
+/*
+ * write(session)
+ */
+/*
+ * read(session)
+ */
+/*
+ * commit(session)
+ */
 
 } // namespace
 } // namespace ipmi_flash
