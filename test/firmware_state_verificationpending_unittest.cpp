@@ -47,15 +47,13 @@ class FirmwareHandlerVerificationPendingTest : public IpmiOnlyFirmwareStaticTest
   protected:
     void getToVerificationPending(const std::string& blobId)
     {
-        auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
         EXPECT_CALL(imageMock, open(blobId)).WillOnce(Return(true));
         EXPECT_TRUE(handler->open(session, flags, blobId));
-        EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
-                  realHandler->getCurrentState());
+        expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
+
         EXPECT_CALL(imageMock, close()).WillRepeatedly(Return());
         handler->close(session);
-        EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
-                  realHandler->getCurrentState());
+        expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
     }
 
     std::uint16_t session = 1;
@@ -169,13 +167,11 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
 
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
     EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
-
-    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
-              realHandler->getCurrentState());
+    expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
 
     expectedBlobs.erase(
-        std::remove(expectedBlobs.begin(), expectedBlobs.end(), verifyBlobId));
+        std::remove(expectedBlobs.begin(), expectedBlobs.end(), verifyBlobId),
+        expectedBlobs.end());
 
     /* Verify the active blob ID was not added to the list twice and
      * verifyBlobId is removed
@@ -188,19 +184,17 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
  * close(session)
  */
 TEST_F(FirmwareHandlerVerificationPendingTest,
-       ClosingVerifyBlobDoesNotChangeState)
+       ClosingVerifyBlobWithoutCommitDoesNotChangeState)
 {
+    /* commit() will change the state, closing post-commit is part of
+     * verificationStarted testing.
+     */
     getToVerificationPending(staticLayoutBlobId);
     EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
-
-    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
-              realHandler->getCurrentState());
+    expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 
     handler->close(session);
-
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
-              realHandler->getCurrentState());
+    expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 }
 
 /*
@@ -214,10 +208,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
     EXPECT_CALL(*verifyMockPtr, triggerVerification()).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->commit(session, {}));
-
-    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationStarted,
-              realHandler->getCurrentState());
+    expectedState(FirmwareBlobHandler::UpdateState::verificationStarted);
 }
 
 /*

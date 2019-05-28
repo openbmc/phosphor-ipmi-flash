@@ -33,6 +33,12 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
             blobs, data, std::move(verifyMock), CreateUpdateMock());
     }
 
+    void expectedState(FirmwareBlobHandler::UpdateState state)
+    {
+        auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
+        EXPECT_EQ(state, realHandler->getCurrentState());
+    }
+
     ImageHandlerMock imageMock;
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {

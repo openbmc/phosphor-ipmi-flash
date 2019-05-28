@@ -44,11 +44,9 @@ class FirmwareHandlerUploadInProgressTest : public IpmiOnlyFirmwareStaticTest
   protected:
     void openToInProgress(const std::string& blobId)
     {
-        auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
         EXPECT_CALL(imageMock, open(blobId)).WillOnce(Return(true));
         EXPECT_TRUE(handler->open(session, flags, blobId));
-        EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
-                  realHandler->getCurrentState());
+        expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
     }
 
     std::uint16_t session = 1;
@@ -191,19 +189,11 @@ TEST_F(FirmwareHandlerUploadInProgressTest, OpeningImageFileWhileHashOpenFails)
 TEST_F(FirmwareHandlerUploadInProgressTest,
        ClosingImageFileTransitionsToVerificationPending)
 {
-    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
-
     EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
+    openToInProgress(staticLayoutBlobId);
 
-    EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
-
-    EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
-              realHandler->getCurrentState());
-
-    handler->close(1);
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
-              realHandler->getCurrentState());
+    handler->close(session);
+    expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 
     EXPECT_TRUE(handler->canHandleBlob(verifyBlobId));
 }
@@ -211,19 +201,11 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
 TEST_F(FirmwareHandlerUploadInProgressTest,
        ClosingHashFileTransitionsToVerificationPending)
 {
-    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
-
     EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
+    openToInProgress(hashBlobId);
 
-    EXPECT_CALL(imageMock, open(hashBlobId)).WillOnce(Return(true));
-
-    EXPECT_TRUE(handler->open(session, flags, hashBlobId));
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
-              realHandler->getCurrentState());
-
-    handler->close(1);
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
-              realHandler->getCurrentState());
+    handler->close(session);
+    expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 
     EXPECT_TRUE(handler->canHandleBlob(verifyBlobId));
 }

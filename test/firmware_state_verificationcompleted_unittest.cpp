@@ -49,30 +49,26 @@ class FirmwareHandlerVerificationCompletedTest
         /* The hash was not sent up, as it's technically optional.  Therefore,
          * there is no active hash file.
          */
-        auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
         EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
         EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
-        EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
-                  realHandler->getCurrentState());
+        expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
+
         EXPECT_CALL(imageMock, close()).WillRepeatedly(Return());
         handler->close(session);
-        EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
-                  realHandler->getCurrentState());
+        expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 
         EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
         EXPECT_CALL(*verifyMockPtr, triggerVerification())
             .WillOnce(Return(true));
 
         EXPECT_TRUE(handler->commit(session, {}));
-        EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationStarted,
-                  realHandler->getCurrentState());
+        expectedState(FirmwareBlobHandler::UpdateState::verificationStarted);
 
         EXPECT_CALL(*verifyMockPtr, checkVerificationState())
             .WillOnce(Return(checkResponse));
         blobs::BlobMeta meta;
         EXPECT_TRUE(handler->stat(session, &meta));
-        EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationCompleted,
-                  realHandler->getCurrentState());
+        expectedState(FirmwareBlobHandler::UpdateState::verificationCompleted);
     }
 
     std::uint16_t session = 1;

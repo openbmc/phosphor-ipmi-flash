@@ -44,23 +44,20 @@ class FirmwareHandlerVerificationStartedTest : public IpmiOnlyFirmwareStaticTest
   protected:
     void getToVerificationStarted(const std::string& blobId)
     {
-        auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
         EXPECT_CALL(imageMock, open(blobId)).WillOnce(Return(true));
         EXPECT_TRUE(handler->open(session, flags, blobId));
-        EXPECT_EQ(FirmwareBlobHandler::UpdateState::uploadInProgress,
-                  realHandler->getCurrentState());
+        expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
+
         EXPECT_CALL(imageMock, close()).WillRepeatedly(Return());
         handler->close(session);
-        EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationPending,
-                  realHandler->getCurrentState());
+        expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 
         EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
         EXPECT_CALL(*verifyMockPtr, triggerVerification())
             .WillOnce(Return(true));
 
         EXPECT_TRUE(handler->commit(session, {}));
-        EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationStarted,
-                  realHandler->getCurrentState());
+        expectedState(FirmwareBlobHandler::UpdateState::verificationStarted);
     }
 
     std::uint16_t session = 1;
@@ -104,12 +101,9 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
     expectedMeta.metadata.push_back(
         static_cast<std::uint8_t>(VerifyCheckResponses::failed));
 
-    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
-
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationCompleted,
-              realHandler->getCurrentState());
+    expectedState(FirmwareBlobHandler::UpdateState::verificationCompleted);
 }
 
 TEST_F(FirmwareHandlerVerificationStartedTest,
@@ -128,12 +122,9 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
     expectedMeta.metadata.push_back(
         static_cast<std::uint8_t>(VerifyCheckResponses::success));
 
-    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
-
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationCompleted,
-              realHandler->getCurrentState());
+    expectedState(FirmwareBlobHandler::UpdateState::verificationCompleted);
 }
 
 /* TODO: Once verificationCompleted is the state, canHandleBlob should accept
@@ -253,9 +244,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 {
     getToVerificationStarted(staticLayoutBlobId);
     EXPECT_TRUE(handler->commit(session, {}));
-    auto realHandler = dynamic_cast<FirmwareBlobHandler*>(handler.get());
-    EXPECT_EQ(FirmwareBlobHandler::UpdateState::verificationStarted,
-              realHandler->getCurrentState());
+    expectedState(FirmwareBlobHandler::UpdateState::verificationStarted);
 }
 
 /*
