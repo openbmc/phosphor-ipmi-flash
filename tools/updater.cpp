@@ -114,14 +114,15 @@ bool pollVerificationStatus(std::uint16_t session,
     using namespace std::chrono_literals;
 
     static constexpr auto verificationSleep = 5s;
-    static constexpr int commandAttempts = 20;
-    int attempts = 0;
-    bool exitLoop = false;
     ipmi_flash::VerifyCheckResponses result =
         ipmi_flash::VerifyCheckResponses::other;
 
     try
     {
+        static constexpr int commandAttempts = 20;
+        int attempts = 0;
+        bool exitLoop = false;
+
         /* Reach back the current status from the verification service output.
          */
         while (attempts++ < commandAttempts)
