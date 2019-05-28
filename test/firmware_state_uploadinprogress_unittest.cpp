@@ -150,7 +150,14 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
 
 /*
  * open(blob) - While any blob is open, all other fail.
+ *
+ * The fullBlobsList is all the blob_ids present if both /flash/image and
+ * /flash/hash are opened, and one is left open (so there's no verify blob). if
+ * left closed, we'd be in verificationPending, not uploadInProgress.
  */
+const std::vector<std::string> fullBlobsList = {
+    activeHashBlobId, activeImageBlobId, hashBlobId, staticLayoutBlobId};
+
 TEST_F(FirmwareHandlerUploadInProgressTest, OpeningHashFileWhileImageOpenFails)
 {
     /* To be in this state, something must be open (and specifically either an
@@ -159,9 +166,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest, OpeningHashFileWhileImageOpenFails)
      */
     openToInProgress(staticLayoutBlobId);
 
-    std::vector<std::string> blobsToTry = {
-        hashBlobId, activeImageBlobId, activeHashBlobId, staticLayoutBlobId};
-    for (const auto& blob : blobsToTry)
+    for (const auto& blob : fullBlobsList)
     {
         EXPECT_FALSE(handler->open(2, flags, blob));
     }
@@ -171,9 +176,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest, OpeningImageFileWhileHashOpenFails)
 {
     openToInProgress(hashBlobId);
 
-    std::vector<std::string> blobsToTry = {
-        hashBlobId, activeImageBlobId, activeHashBlobId, staticLayoutBlobId};
-    for (const auto& blob : blobsToTry)
+    for (const auto& blob : fullBlobsList)
     {
         EXPECT_FALSE(handler->open(2, flags, blob));
     }
