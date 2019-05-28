@@ -45,16 +45,18 @@ class FirmwareHandlerNotYetStartedTest : public IpmiOnlyFirmwareStaticTest
  * returned by getBlobIds.  It is tested in firmware_canhandle_unittest
  */
 
+/* canHandleBlob, getBlobIds */
 TEST_F(FirmwareHandlerNotYetStartedTest, GetBlobListValidateListContents)
 {
-    /* TODO: Presently, /flash/verify is present from the beginning, however,
-     * this is going to change to simplify handling of open().
+    /* By only checking that the hash and static blob ids are present to start
+     * with, we're also verifying others aren't.
      */
     std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
 
     EXPECT_THAT(handler->getBlobIds(),
                 UnorderedElementsAreArray(expectedBlobs));
 
+    /* Verify canHandleBlob is reading from the same list (basically) */
     for (const auto& blob : expectedBlobs)
     {
         EXPECT_TRUE(handler->canHandleBlob(blob));
