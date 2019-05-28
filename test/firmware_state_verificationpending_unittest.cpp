@@ -67,14 +67,15 @@ class FirmwareHandlerVerificationPendingTest : public IpmiOnlyFirmwareStaticTest
 TEST_F(FirmwareHandlerVerificationPendingTest, VerifyBlobIdAvailableInState)
 {
     /* Only in the verificationPending state (and later), should the
-     * verifyBlobId be present. */
-
+     * verifyBlobId be present.
+     */
     EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
 
     getToVerificationPending(staticLayoutBlobId);
 
     EXPECT_TRUE(handler->canHandleBlob(verifyBlobId));
     EXPECT_TRUE(handler->canHandleBlob(activeImageBlobId));
+    EXPECT_FALSE(handler->canHandleBlob(updateBlobId));
 }
 
 /*
@@ -106,7 +107,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
        StatOnVerificationBlobReturnsFailure)
 {
     getToVerificationPending(hashBlobId);
-    ASSERT_TRUE(handler->canHandleBlob(activeHashBlobId));
+    ASSERT_TRUE(handler->canHandleBlob(verifyBlobId));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(verifyBlobId, &meta));
@@ -149,6 +150,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest, OpenActiveImageBlobFails)
      */
     getToVerificationPending(staticLayoutBlobId);
     EXPECT_FALSE(handler->open(session, flags, activeImageBlobId));
+    EXPECT_FALSE(handler->open(session, flags, activeHashBlobId));
 }
 
 TEST_F(FirmwareHandlerVerificationPendingTest,
@@ -271,7 +273,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
     getToVerificationPending(staticLayoutBlobId);
 
     EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
-    EXPECT_THAT(handler->read(session, 0, 32), IsEmpty());
+    EXPECT_THAT(handler->read(session, 0, 1), IsEmpty());
 }
 
 } // namespace
