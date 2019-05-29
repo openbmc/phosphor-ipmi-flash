@@ -183,6 +183,14 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 /*
  * writemeta(session) - write meta should fail.
  */
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       WriteMetaToVerifyBlobReturnsFailure)
+{
+    getToVerificationCompleted(VerifyCheckResponses::success);
+
+    std::vector<std::uint8_t> bytes = {0x01, 0x02};
+    EXPECT_FALSE(handler->writeMeta(session, 0, bytes));
+}
 
 /*
  * write(session) - write should fail.
