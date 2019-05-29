@@ -175,6 +175,42 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
  * stat(session) - the verify blobid is open in this state, so stat on that once
  * completed should have no effect.
  */
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       SessionStatOnVerifyAfterSuccessDoesNothing)
+{
+    /* Every time you stat() once it's triggered, it checks the state again
+     * until it's completed.
+     */
+    getToVerificationCompleted(VerifyCheckResponses::success);
+    EXPECT_CALL(*verifyMockPtr, checkVerificationState()).Times(0);
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::committed;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(VerifyCheckResponses::success));
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+    expectedState(FirmwareBlobHandler::UpdateState::verificationCompleted);
+}
+
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       SessionStatOnVerifyAfterFailureDoesNothing)
+{
+    getToVerificationCompleted(VerifyCheckResponses::failed);
+    EXPECT_CALL(*verifyMockPtr, checkVerificationState()).Times(0);
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::commit_error;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(VerifyCheckResponses::failed));
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+    expectedState(FirmwareBlobHandler::UpdateState::verificationCompleted);
+}
 
 /*
  * open(blob) - all open should fail

@@ -230,6 +230,8 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
 
     /** Temporary variable to track whether a blob is open. */
     bool fileOpen = false;
+
+    VerifyCheckResponses lastVerificationResponse = VerifyCheckResponses::other;
 };
 
 } // namespace ipmi_flash

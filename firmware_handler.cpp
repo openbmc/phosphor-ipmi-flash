@@ -212,9 +212,14 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
         {
             value = VerifyCheckResponses::other;
         }
+        else if (state == UpdateState::verificationCompleted)
+        {
+            value = lastVerificationResponse;
+        }
         else
         {
             value = verification->checkVerificationState();
+            lastVerificationResponse = value;
         }
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
