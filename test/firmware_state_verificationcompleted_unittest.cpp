@@ -20,6 +20,7 @@ namespace
 {
 
 using ::testing::Return;
+using ::testing::UnorderedElementsAreArray;
 
 /*
  * There are the following calls (parameters may vary):
@@ -76,12 +77,39 @@ class FirmwareHandlerVerificationCompletedTest
         blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
 };
 
-/* TODO:
- * canHandleBlob(blob)
- * getBlobIds
- * deleteBlob(blob)
- *
+/* TODO: deleteBlob(blob) */
+
+/*
+ * canHandleBlob
  */
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       OnVerificationCompleteSuccessUpdateBlobIdNotPresent)
+{
+    /* the uploadBlobId is only added on close() of the verifyBlobId.  This is a
+     * consistent behavior with verifyBlobId only added when closing the image
+     * or hash.
+     */
+    getToVerificationCompleted(VerifyCheckResponses::success);
+    EXPECT_FALSE(handler->canHandleBlob(updateBlobId));
+}
+
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       OnVerificationCompleteFailureUpdateBlobIdNotPresent)
+{
+    getToVerificationCompleted(VerifyCheckResponses::failed);
+    EXPECT_FALSE(handler->canHandleBlob(updateBlobId));
+}
+
+/*
+ * getBlobIds
+ */
+TEST_F(FirmwareHandlerVerificationCompletedTest, GetBlobIdsReturnsExpectedList)
+{
+    getToVerificationCompleted(VerifyCheckResponses::success);
+    std::vector<std::string> expected = {verifyBlobId, hashBlobId,
+                                         activeImageBlobId, staticLayoutBlobId};
+    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+}
 
 /*
  * stat(blob)
