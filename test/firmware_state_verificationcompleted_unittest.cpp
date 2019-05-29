@@ -96,6 +96,16 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
     EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
 }
 
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       VerifyActiveHashIdMissingInThisCase)
+{
+    /* The path taken to get to this state never opened the hash blob Id, which
+     * is fine.  But let's verify it behaved as intended.
+     */
+    getToVerificationCompleted(VerifyCheckResponses::success);
+    EXPECT_FALSE(handler->canHandleBlob(activeHashBlobId));
+}
+
 TEST_F(FirmwareHandlerVerificationCompletedTest, StatOnVerifyBlobReturnsFailure)
 {
     getToVerificationCompleted(VerifyCheckResponses::success);
