@@ -20,6 +20,7 @@ namespace
 
 using ::testing::IsEmpty;
 using ::testing::Return;
+using ::testing::UnorderedElementsAreArray;
 
 /*
  * There are the following calls (parameters may vary):
@@ -64,6 +65,25 @@ class FirmwareHandlerVerificationStartedTest : public IpmiOnlyFirmwareStaticTest
     std::uint16_t flags =
         blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
 };
+
+/*
+ * canHandleBlob(blob)
+ * getBlobIds()
+ */
+TEST_F(FirmwareHandlerVerificationStartedTest, GetBlobIdsReturnsExpectedList)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+
+    std::vector<std::string> expectedList = {
+        activeImageBlobId, staticLayoutBlobId, hashBlobId, verifyBlobId};
+
+    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expectedList));
+
+    for (const auto& blob : expectedList)
+    {
+        EXPECT_TRUE(handler->canHandleBlob(blob));
+    }
+}
 
 /*
  * stat(session)
@@ -131,13 +151,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
  * updateBlobId.
  */
 
-/* TODO:
- * canHandleBlob(blob)
- *
- * getBlobIds
- *
- * deleteBlob(blob)
- */
+/* TODO: deleteBlob(blob) */
 
 /*
  * stat(blob)
@@ -224,7 +238,11 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
      */
     getToVerificationStarted(staticLayoutBlobId);
 
-    EXPECT_FALSE(handler->open(session + 1, flags, staticLayoutBlobId));
+    auto blobsToOpen = handler->getBlobIds();
+    for (const auto& blob : blobsToOpen)
+    {
+        EXPECT_FALSE(handler->open(session + 1, flags, blob));
+    }
 }
 
 /*
@@ -233,7 +251,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 TEST_F(FirmwareHandlerVerificationStartedTest, ReadOfVerifyBlobReturnsEmpty)
 {
     getToVerificationStarted(staticLayoutBlobId);
-    EXPECT_THAT(handler->read(session, 0, 32), IsEmpty());
+    EXPECT_THAT(handler->read(session, 0, 1), IsEmpty());
 }
 
 /*
