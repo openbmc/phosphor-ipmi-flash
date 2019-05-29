@@ -96,6 +96,23 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
     EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
 }
 
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       VerifyActiveHashIdMissingInThisCase)
+{
+    /* The path taken to get to this state never opened the hash blob Id, which
+     * is fine.  But let's verify it behaved as intended.
+     */
+    getToVerificationCompleted(VerifyCheckResponses::success);
+    EXPECT_FALSE(handler->canHandleBlob(activeHashBlobId));
+}
+
+/* TODO: Add sufficient warning that you can get to verificationCompleted
+ * without ever opening the image blob id (or the tarball one).
+ *
+ * Although in this case, it's expected that any verification triggered would
+ * certainly fail.  So, although it's possible, it's uninteresting.
+ */
+
 TEST_F(FirmwareHandlerVerificationCompletedTest, StatOnVerifyBlobReturnsFailure)
 {
     getToVerificationCompleted(VerifyCheckResponses::success);
