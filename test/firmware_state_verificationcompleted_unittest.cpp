@@ -179,6 +179,29 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 /*
  * open(blob) - all open should fail
  */
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       OpeningAnyBlobAvailableFailsAfterSuccess)
+{
+    getToVerificationCompleted(VerifyCheckResponses::success);
+
+    auto blobs = handler->getBlobIds();
+    for (const auto& blob : blobs)
+    {
+        EXPECT_FALSE(handler->open(session + 1, flags, blob));
+    }
+}
+
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       OpeningAnyBlobAvailableFailsAfterFailure)
+{
+    getToVerificationCompleted(VerifyCheckResponses::failed);
+
+    auto blobs = handler->getBlobIds();
+    for (const auto& blob : blobs)
+    {
+        EXPECT_FALSE(handler->open(session + 1, flags, blob));
+    }
+}
 
 /*
  * writemeta(session) - write meta should fail.
