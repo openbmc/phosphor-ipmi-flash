@@ -19,6 +19,7 @@ namespace ipmi_flash
 namespace
 {
 
+using ::testing::IsEmpty;
 using ::testing::Return;
 using ::testing::UnorderedElementsAreArray;
 
@@ -173,19 +174,34 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 /*
  * stat(session) - the verify blobid is open in this state, so stat on that once
  * completed should have no effect.
- *
+ */
+
+/*
  * open(blob) - all open should fail
- *
- * close(session) - close on the verify blobid:
- *   1. if successful adds update blob id, changes state to UpdatePending
- *   2. if unsuccessful doesn't add update blob id, changes state to?
  */
 
 /*
  * writemeta(session) - write meta should fail.
  * write(session) - write should fail.
+ */
+
+/*
  * read(session) - read returns empty.
+ */
+TEST_F(FirmwareHandlerVerificationCompletedTest, ReadOfVerifyBlobReturnsEmpty)
+{
+    getToVerificationCompleted(VerifyCheckResponses::success);
+    EXPECT_THAT(handler->read(session, 0, 1), IsEmpty());
+}
+
+/*
  * commit(session) - ?
+ */
+
+/*
+ * close(session) - close on the verify blobid:
+ *   1. if successful adds update blob id, changes state to UpdatePending
+ *   2. if unsuccessful doesn't add update blob id, changes state to?
  */
 
 } // namespace
