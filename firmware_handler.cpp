@@ -156,33 +156,23 @@ bool FirmwareBlobHandler::stat(const std::string& path,
                                struct blobs::BlobMeta* meta)
 {
     /* We know we support this path because canHandle is called ahead */
-    if (path == verifyBlobId)
+    if (path == verifyBlobId || path == activeImageBlobId ||
+        path == activeHashBlobId)
     {
-        /* TODO: We need to return information for the verify state -- did they
-         * call commit() did things start?
+        /* These blobs are placeholders that indicate things, or allow actions,
+         * but are not stat-able as-is.
          */
-    }
-    else if (path == activeImageBlobId)
-    {
-        /* TODO: We need to return information for the image that's staged. */
-    }
-    else if (path == activeHashBlobId)
-    {
-        /* TODO: We need to return information for the hash that's staged. */
-    }
-    else
-    {
-        /* They are requesting information about the generic blob_id. */
-        meta->blobState = bitmask;
-        meta->size = 0;
-
-        /* The generic blob_ids state is only the bits related to the transport
-         * mechanisms.
-         */
-        return true;
+        return false;
     }
 
-    return false;
+    /* They are requesting information about the generic blob_id. */
+    meta->blobState = bitmask;
+    meta->size = 0;
+
+    /* The generic blob_ids state is only the bits related to the transport
+     * mechanisms.
+     */
+    return true;
 }
 
 /*
