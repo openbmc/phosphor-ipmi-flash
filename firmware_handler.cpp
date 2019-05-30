@@ -554,16 +554,20 @@ bool FirmwareBlobHandler::commit(uint16_t session,
         return false;
     }
 
-    /* Calling repeatedly has no effect within an update process. */
-    if (state == UpdateState::verificationStarted)
+    switch (state)
     {
-        return true;
+        case UpdateState::verificationStarted:
+            /* Calling repeatedly has no effect within an update process. */
+            return true;
+        case UpdateState::verificationCompleted:
+            /* Calling after the verification process has completed returns
+             * failure. */
+            return false;
+        default:
+            /* Set state to committing. */
+            item->second->flags |= blobs::StateFlags::committing;
+            return triggerVerification();
     }
-
-    /* Set state to committing. */
-    item->second->flags |= blobs::StateFlags::committing;
-
-    return triggerVerification();
 }
 
 /*

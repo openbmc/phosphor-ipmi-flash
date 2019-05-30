@@ -273,8 +273,28 @@ TEST_F(FirmwareHandlerVerificationCompletedTest, ReadOfVerifyBlobReturnsEmpty)
 }
 
 /*
- * commit(session) - ?
+ * commit(session) - returns failure
  */
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       CommitOnVerifyBlobAfterSuccessReturnsFailure)
+{
+    /* If you've started this'll return success, but if it's finished, it won't
+     * let you try-again.
+     */
+    getToVerificationCompleted(VerifyCheckResponses::success);
+    EXPECT_CALL(*verifyMockPtr, triggerVerification()).Times(0);
+
+    EXPECT_FALSE(handler->commit(session, {}));
+}
+
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       CommitOnVerifyBlobAfterFailureReturnsFailure)
+{
+    getToVerificationCompleted(VerifyCheckResponses::failed);
+    EXPECT_CALL(*verifyMockPtr, triggerVerification()).Times(0);
+
+    EXPECT_FALSE(handler->commit(session, {}));
+}
 
 /*
  * close(session) - close on the verify blobid:
