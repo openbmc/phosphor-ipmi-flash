@@ -604,6 +604,7 @@ bool FirmwareBlobHandler::close(uint16_t session)
                 {
                     state = UpdateState::updatePending;
                     addBlobId(updateBlobId);
+                    removeBlobId(verifyBlobId);
                 }
                 else
                 {
