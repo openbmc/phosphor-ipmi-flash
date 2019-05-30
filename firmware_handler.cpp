@@ -592,21 +592,26 @@ bool FirmwareBlobHandler::close(uint16_t session)
     /* Are you closing the verify blob? */
     if (item->second->activePath == verifyBlobId)
     {
-        if (state == UpdateState::verificationStarted)
+        switch (state)
         {
-            /* TODO: If they close this blob before verification finishes,
-             * that's an abort.
-             */
-            return false;
-        }
-        else if (state == UpdateState::verificationCompleted)
-        {
-            /* TODO: Should this delete the verification artifact? */
-            state = UpdateState::notYetStarted;
-
-            /* A this point, delete the active blob IDs from the blob_list. */
-            removeBlobId(activeImageBlobId);
-            removeBlobId(activeHashBlobId);
+            case UpdateState::verificationStarted:
+                /* TODO: If they close this blob before verification finishes,
+                 * that's an abort.
+                 */
+                return false;
+            case UpdateState::verificationCompleted:
+                if (lastVerificationResponse == VerifyCheckResponses::success)
+                {
+                    state = UpdateState::updatePending;
+                    addBlobId(updateBlobId);
+                }
+                else
+                {
+                    /* TODO: Verification failed, what now? */
+                    state = UpdateState::notYetStarted;
+                }
+            default:
+                [[fallthrough]];
         }
         /* Must be verificationPending... not yet started, they may re-open and
          * trigger verification.
@@ -631,14 +636,8 @@ bool FirmwareBlobHandler::close(uint16_t session)
     }
 
     item->second->state = Session::State::closed;
-    /* Do not delete the active blob_id from the list of blob_ids, because that
-     * blob_id indicates there is data stored.  Delete will destroy it.
-     */
-
     lookup.erase(item);
-
     fileOpen = false;
-
     return true;
 }
 

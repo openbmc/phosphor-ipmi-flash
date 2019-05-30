@@ -299,7 +299,21 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 /*
  * close(session) - close on the verify blobid:
  *   1. if successful adds update blob id, changes state to UpdatePending
- *   2. if unsuccessful doesn't add update blob id, changes state to?
+ */
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       CloseAfterSuccessChangesStateAddsUpdateBlob)
+{
+    getToVerificationCompleted(VerifyCheckResponses::success);
+    ASSERT_FALSE(handler->canHandleBlob(updateBlobId));
+
+    handler->close(session);
+    EXPECT_TRUE(handler->canHandleBlob(updateBlobId));
+    expectedState(FirmwareBlobHandler::UpdateState::updatePending);
+}
+
+/*
+ * close(session) - close on the verify blobid:
+ * TODO:  2. if unsuccessful doesn't add update blob id, changes state to?
  */
 
 } // namespace
