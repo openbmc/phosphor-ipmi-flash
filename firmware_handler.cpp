@@ -633,6 +633,10 @@ bool FirmwareBlobHandler::close(uint16_t session)
          * trigger verification.
          */
     }
+    else if (item->second->activePath == updateBlobId)
+    {
+        /* nothing interesting. */
+    }
     else
     {
         /* They are closing a data pathway (image, tarball, hash). */

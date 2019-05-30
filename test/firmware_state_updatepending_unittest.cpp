@@ -105,6 +105,7 @@ TEST_F(FirmwareHandlerUpdatePendingTest,
      * commit() which triggers the update process.
      */
     EXPECT_TRUE(handler->open(session, flags, updateBlobId));
+    expectedState(FirmwareBlobHandler::UpdateState::updatePending);
 }
 
 TEST_F(FirmwareHandlerUpdatePendingTest, OpenAnyBlobOtherThanUpdateFails)
@@ -123,6 +124,23 @@ TEST_F(FirmwareHandlerUpdatePendingTest, OpenAnyBlobOtherThanUpdateFails)
 }
 
 /*
+ * close(session) - close from this state is uninteresting.
+ */
+TEST_F(FirmwareHandlerUpdatePendingTest, CloseUpdateBlobDoesNotChangeState)
+{
+    /* Verify nothing changes when one just opens, then closes the updateBlobId.
+     */
+    getToUpdatePending();
+
+    EXPECT_TRUE(handler->open(session, flags, updateBlobId));
+
+    handler->close(session);
+
+    expectedState(FirmwareBlobHandler::UpdateState::updatePending);
+    EXPECT_TRUE(handler->canHandleBlob(updateBlobId));
+}
+
+/*
  * TODO: deleteBlob(blob)
  */
 
@@ -132,10 +150,6 @@ TEST_F(FirmwareHandlerUpdatePendingTest, OpenAnyBlobOtherThanUpdateFails)
 
 /*
  * stat(session)
- */
-
-/*
- * close(session)
  */
 
 /*
