@@ -157,7 +157,7 @@ bool FirmwareBlobHandler::stat(const std::string& path,
 {
     /* We know we support this path because canHandle is called ahead */
     if (path == verifyBlobId || path == activeImageBlobId ||
-        path == activeHashBlobId)
+        path == activeHashBlobId || path == updateBlobId)
     {
         /* These blobs are placeholders that indicate things, or allow actions,
          * but are not stat-able as-is.
