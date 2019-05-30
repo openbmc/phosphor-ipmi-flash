@@ -37,7 +37,8 @@ check_PROGRAMS = \
 	firmware_state_uploadinprogress_unittest \
 	firmware_state_verificationpending_unittest \
 	firmware_state_verificationstarted_unittest \
-	firmware_state_verificationcompleted_unittest
+	firmware_state_verificationcompleted_unittest \
+	firmware_state_updatepending_unittest
 
 if BUILD_HOST_TOOL
 check_PROGRAMS += \
@@ -98,6 +99,9 @@ firmware_state_verificationstarted_unittest_LDADD = $(top_builddir)/libfirmwareb
 
 firmware_state_verificationcompleted_unittest_SOURCES = firmware_state_verificationcompleted_unittest.cpp
 firmware_state_verificationcompleted_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
+
+firmware_state_updatepending_unittest_SOURCES = firmware_state_updatepending_unittest.cpp
+firmware_state_updatepending_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 if BUILD_HOST_TOOL
 tools_bt_unittest_SOURCES = tools_bt_unittest.cpp
