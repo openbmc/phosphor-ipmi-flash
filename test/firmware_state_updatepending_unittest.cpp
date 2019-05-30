@@ -92,7 +92,38 @@ TEST_F(FirmwareHandlerUpdatePendingTest, GetBlobsListHasExpectedValues)
 }
 
 /*
- * deleteBlob(blob)
+ * open(blob) - because updatePending is in a fileOpen==false state, one can
+ * then open blobs. However, because we're in a special state, we will restrict
+ * them s.t. they can only open the updateBlobId.
+ */
+TEST_F(FirmwareHandlerUpdatePendingTest,
+       OpenUpdateBlobIdIsSuccessfulAndDoesNotChangeState)
+{
+    getToUpdatePending();
+
+    /* Opening the update blob isn't interesting, except it's required for
+     * commit() which triggers the update process.
+     */
+    EXPECT_TRUE(handler->open(session, flags, updateBlobId));
+}
+
+TEST_F(FirmwareHandlerUpdatePendingTest, OpenAnyBlobOtherThanUpdateFails)
+{
+    getToUpdatePending();
+
+    auto blobs = handler->getBlobIds();
+    for (const auto& blob : blobs)
+    {
+        if (blob == updateBlobId)
+        {
+            continue;
+        }
+        EXPECT_FALSE(handler->open(session, flags, blob));
+    }
+}
+
+/*
+ * TODO: deleteBlob(blob)
  */
 
 /*
@@ -101,10 +132,6 @@ TEST_F(FirmwareHandlerUpdatePendingTest, GetBlobsListHasExpectedValues)
 
 /*
  * stat(session)
- */
-
-/*
- * open(blob)
  */
 
 /*

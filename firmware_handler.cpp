@@ -316,6 +316,26 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         return false;
     }
 
+    /* When in this state, they can only open the updateBlobId */
+    if (state == UpdateState::updatePending)
+    {
+        if (path != updateBlobId)
+        {
+            return false;
+        }
+        else
+        {
+            /* Similarly to verifyBlodId, this is special. */
+            updateImage.flags = flags;
+            updateImage.state = Session::State::open;
+
+            lookup[session] = &updateImage;
+
+            fileOpen = true;
+            return true;
+        }
+    }
+
     /* Handle opening the verifyBlobId --> we know the image and hash aren't
      * open because of the fileOpen check.
      *
@@ -333,7 +353,6 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         lookup[session] = &verifyImage;
 
         fileOpen = true;
-
         return true;
     }
 
@@ -343,27 +362,23 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
      * layout flash update or a UBI tarball.
      */
 
+    /* 2) there isn't, so what are they opening? */
+    if (path == activeImageBlobId || path == activeHashBlobId)
+    {
+        /* 2a) are they opening the active image? this can only happen if they
+         * already started one (due to canHandleBlob's behavior).
+         */
+        /* 2b) are they opening the active hash? this can only happen if they
+         * already started one (due to canHandleBlob's behavior).
+         */
+        return false;
+    }
+
     /* Check the flags for the transport mechanism: if none match we don't
      * support what they request.
      */
     if ((flags & bitmask) == 0)
     {
-        return false;
-    }
-
-    /* 2) there isn't, so what are they opening? */
-    if (path == activeImageBlobId)
-    {
-        /* 2a) are they opening the active image? this can only happen if they
-         * already started one (due to canHandleBlob's behavior).
-         */
-        return false;
-    }
-    else if (path == activeHashBlobId)
-    {
-        /* 2b) are they opening the active hash? this can only happen if they
-         * already started one (due to canHandleBlob's behavior).
-         */
         return false;
     }
 
