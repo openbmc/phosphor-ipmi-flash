@@ -141,6 +141,17 @@ TEST_F(FirmwareHandlerUpdatePendingTest, CloseUpdateBlobDoesNotChangeState)
 }
 
 /*
+ * writemeta(session) - this will return failure.
+ */
+TEST_F(FirmwareHandlerUpdatePendingTest, WriteMetaToUpdateBlobReturnsFailure)
+{
+    getToUpdatePending();
+
+    EXPECT_TRUE(handler->open(session, flags, updateBlobId));
+    EXPECT_FALSE(handler->writeMeta(session, 0, {0x01}));
+}
+
+/*
  * TODO: deleteBlob(blob)
  */
 
@@ -150,10 +161,6 @@ TEST_F(FirmwareHandlerUpdatePendingTest, CloseUpdateBlobDoesNotChangeState)
 
 /*
  * stat(session)
- */
-
-/*
- * writemeta(session)
  */
 
 /*
