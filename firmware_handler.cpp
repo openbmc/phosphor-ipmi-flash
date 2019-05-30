@@ -482,10 +482,9 @@ bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
         return false;
     }
 
-    /* Prevent writing to the verification blob before they trigger
-     * verification.
-     */
-    if (item->second->activePath == verifyBlobId)
+    /* Prevent writing to the verification or update blobs. */
+    if (item->second->activePath == verifyBlobId ||
+        item->second->activePath == updateBlobId)
     {
         return false;
     }
