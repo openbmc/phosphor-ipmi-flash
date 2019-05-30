@@ -19,6 +19,7 @@ namespace
 {
 
 using ::testing::Return;
+using ::testing::UnorderedElementsAreArray;
 
 /*
  * There are the following calls (parameters may vary):
@@ -81,6 +82,13 @@ class FirmwareHandlerUpdatePendingTest : public IpmiOnlyFirmwareStaticTest
  * canHandleBlob(blob)
  * getBlobIds
  */
+TEST_F(FirmwareHandlerUpdatePendingTest, GetBlobsListHasExpectedValues)
+{
+    std::vector<std::string> expected = {updateBlobId, activeImageBlobId,
+                                         hashBlobId, staticLayoutBlobId};
+    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+}
+
 /*
  * deleteBlob(blob)
  */
