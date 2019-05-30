@@ -18,6 +18,7 @@ namespace ipmi_flash
 namespace
 {
 
+using ::testing::IsEmpty;
 using ::testing::Return;
 using ::testing::UnorderedElementsAreArray;
 
@@ -163,6 +164,15 @@ TEST_F(FirmwareHandlerUpdatePendingTest, WriteToUpdateBlobReturnsFailure)
 }
 
 /*
+ * read(session)
+ */
+TEST_F(FirmwareHandlerUpdatePendingTest, ReadFromUpdateBlobIdReturnsEmpty)
+{
+    getToUpdatePending();
+    EXPECT_THAT(handler->read(session, 0, 1), IsEmpty());
+}
+
+/*
  * TODO: deleteBlob(blob)
  */
 
@@ -172,10 +182,6 @@ TEST_F(FirmwareHandlerUpdatePendingTest, WriteToUpdateBlobReturnsFailure)
 
 /*
  * stat(session)
- */
-
-/*
- * read(session)
  */
 
 /*
