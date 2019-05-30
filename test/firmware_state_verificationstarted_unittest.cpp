@@ -106,6 +106,23 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 }
 
 TEST_F(FirmwareHandlerVerificationStartedTest,
+       StatOnVerifyBlobIdAfterCommitChecksStateAndReturnsOther)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+    EXPECT_CALL(*verifyMockPtr, checkVerificationState())
+        .WillOnce(Return(VerifyCheckResponses::other));
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::committing;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(VerifyCheckResponses::other));
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+}
+
+TEST_F(FirmwareHandlerVerificationStartedTest,
        StatOnVerifyBlobIdAfterCommitCheckStateAndReturnsFailed)
 {
     /* If the returned state from the verification handler is failed, it sets
