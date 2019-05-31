@@ -19,6 +19,7 @@ namespace
 {
 
 using ::testing::Return;
+using ::testing::UnorderedElementsAreArray;
 
 /*
  * There are the following calls (parameters may vary):
@@ -57,6 +58,14 @@ TEST_F(FirmwareHandlerUpdateStartedTest, AttemptToOpenFilesReturnsFailure)
 /* canHandleBlob(blob)
  * getBlobIds
  */
+TEST_F(FirmwareHandlerUpdateStartedTest, VerifyListOfBlobs)
+{
+    getToUpdateStarted();
+
+    std::vector<std::string> expected = {updateBlobId, hashBlobId,
+                                         activeImageBlobId, staticLayoutBlobId};
+    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+}
 
 /*
  * TODO: deleteBlob(blob)
