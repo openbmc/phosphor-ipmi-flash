@@ -200,26 +200,21 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
 
     meta->metadata.clear();
 
-    /* TODO: Implement this for the verification blob, which is what we expect.
-     * Calling stat() on the verify blob without an active session should not
-     * provide insight.
-     */
     if (item->second->activePath == verifyBlobId)
     {
         VerifyCheckResponses value;
 
-        if (state == UpdateState::verificationPending)
+        switch (state)
         {
-            value = VerifyCheckResponses::other;
-        }
-        else if (state == UpdateState::verificationCompleted)
-        {
-            value = lastVerificationResponse;
-        }
-        else
-        {
-            value = verification->checkVerificationState();
-            lastVerificationResponse = value;
+            case UpdateState::verificationPending:
+                value = VerifyCheckResponses::other;
+                break;
+            case UpdateState::verificationCompleted:
+                value = lastVerificationResponse;
+                break;
+            default:
+                value = verification->checkVerificationState();
+                lastVerificationResponse = value;
         }
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
@@ -242,6 +237,21 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
                 item->second->flags |= blobs::StateFlags::commit_error;
             }
         }
+    }
+    else if (item->second->activePath == updateBlobId)
+    {
+        UpdateStatus value;
+
+        switch (state)
+        {
+            case UpdateState::updatePending:
+                value = UpdateStatus::unknown;
+                break;
+            default:
+                break;
+        }
+
+        meta->metadata.push_back(static_cast<std::uint8_t>(value));
     }
 
     /* The blobState here relates to an active sesion, so we should return the
@@ -625,8 +635,9 @@ bool FirmwareBlobHandler::close(uint16_t session)
                     /* TODO: Verification failed, what now? */
                     state = UpdateState::notYetStarted;
                 }
+                break;
             default:
-                [[fallthrough]];
+                break;
         }
         /* Must be verificationPending... not yet started, they may re-open and
          * trigger verification.

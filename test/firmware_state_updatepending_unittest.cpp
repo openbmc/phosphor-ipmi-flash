@@ -213,11 +213,31 @@ TEST_F(FirmwareHandlerUpdatePendingTest, StatOnNormalBlobsReturnsSuccess)
 }
 
 /*
- * TODO: deleteBlob(blob)
+ * stat(session)
+ * In this case, you can open updateBlobId without changing state, therefore,
+ * let's call stat() against a session against this file. This done, ahead of
+ * commit() should report the state as "other."
  */
+TEST_F(FirmwareHandlerUpdatePendingTest,
+       SessionStatOnUpdateBlobIdReturnsFailure)
+{
+    getToUpdatePending();
+    EXPECT_TRUE(handler->open(session, flags, updateBlobId));
+    expectedState(FirmwareBlobHandler::UpdateState::updatePending);
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(UpdateStatus::unknown));
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+    expectedState(FirmwareBlobHandler::UpdateState::updatePending);
+}
 
 /*
- * stat(session)
+ * TODO: deleteBlob(blob)
  */
 
 /*
