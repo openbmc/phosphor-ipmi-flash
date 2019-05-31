@@ -597,6 +597,9 @@ bool FirmwareBlobHandler::commit(uint16_t session,
         case UpdateState::updatePending:
             item->second->flags |= blobs::StateFlags::committing;
             return triggerUpdate();
+        case UpdateState::updateStarted:
+            /* Calling repeatedly has no effect within an update process. */
+            return true;
         default:
             return false;
     }

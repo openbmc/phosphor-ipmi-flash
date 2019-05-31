@@ -142,15 +142,24 @@ TEST_F(FirmwareHandlerUpdateStartedTest, ReadFromUpdateBlobReturnsEmpty)
 }
 
 /*
+ * commit(session)
+ */
+TEST_F(FirmwareHandlerUpdateStartedTest,
+       CallingCommitShouldReturnTrueAndHaveNoEffect)
+{
+    getToUpdateStarted();
+    EXPECT_CALL(*updateMockPtr, triggerUpdate()).Times(0);
+
+    EXPECT_TRUE(handler->commit(session, {}));
+    expectedState(FirmwareBlobHandler::UpdateState::updateStarted);
+}
+
+/*
  * stat(session) - this will trigger a check, and the state may change.
  */
 
 /*
  * TODO: close(session) - this will abort.
- */
-
-/*
- * commit(session)
  */
 
 } // namespace
