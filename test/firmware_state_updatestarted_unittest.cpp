@@ -18,6 +18,7 @@ namespace ipmi_flash
 namespace
 {
 
+using ::testing::IsEmpty;
 using ::testing::Return;
 using ::testing::UnorderedElementsAreArray;
 
@@ -134,6 +135,11 @@ TEST_F(FirmwareHandlerUpdateStartedTest, WriteToUpdateBlobReturnsFailure)
 /*
  * read(session)
  */
+TEST_F(FirmwareHandlerUpdateStartedTest, ReadFromUpdateBlobReturnsEmpty)
+{
+    getToUpdateStarted();
+    EXPECT_THAT(handler->read(session, 0, 1), IsEmpty());
+}
 
 /*
  * stat(session) - this will trigger a check, and the state may change.
