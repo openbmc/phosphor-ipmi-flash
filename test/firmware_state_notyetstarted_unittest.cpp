@@ -21,10 +21,6 @@ using ::testing::UnorderedElementsAreArray;
 
 class FirmwareHandlerNotYetStartedTest : public IpmiOnlyFirmwareStaticTest
 {
-  protected:
-    std::uint16_t session = 1;
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
 };
 
 /*
