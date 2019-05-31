@@ -14,6 +14,10 @@
 
 namespace ipmi_flash
 {
+namespace
+{
+
+using ::testing::Return;
 
 class IpmiOnlyFirmwareStaticTest : public ::testing::Test
 {
@@ -43,6 +47,63 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         EXPECT_EQ(state, realHandler->getCurrentState());
     }
 
+    void openToInProgress(const std::string& blobId)
+    {
+        EXPECT_CALL(imageMock, open(blobId)).WillOnce(Return(true));
+        EXPECT_TRUE(handler->open(session, flags, blobId));
+        expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
+    }
+
+    void getToVerificationPending(const std::string& blobId)
+    {
+        openToInProgress(blobId);
+
+        EXPECT_CALL(imageMock, close()).WillRepeatedly(Return());
+        handler->close(session);
+        expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
+    }
+
+    void getToVerificationStarted(const std::string& blobId)
+    {
+        getToVerificationPending(blobId);
+
+        EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+        EXPECT_CALL(*verifyMockPtr, triggerVerification())
+            .WillOnce(Return(true));
+
+        EXPECT_TRUE(handler->commit(session, {}));
+        expectedState(FirmwareBlobHandler::UpdateState::verificationStarted);
+    }
+
+    void getToVerificationCompleted(VerifyCheckResponses checkResponse)
+    {
+        getToVerificationStarted(staticLayoutBlobId);
+
+        EXPECT_CALL(*verifyMockPtr, checkVerificationState())
+            .WillOnce(Return(checkResponse));
+        blobs::BlobMeta meta;
+        EXPECT_TRUE(handler->stat(session, &meta));
+        expectedState(FirmwareBlobHandler::UpdateState::verificationCompleted);
+    }
+
+    void getToUpdatePending()
+    {
+        getToVerificationCompleted(VerifyCheckResponses::success);
+
+        handler->close(session);
+        expectedState(FirmwareBlobHandler::UpdateState::updatePending);
+    }
+
+    void getToUpdateStarted()
+    {
+        getToUpdatePending();
+        EXPECT_TRUE(handler->open(session, flags, updateBlobId));
+
+        EXPECT_CALL(*updateMockPtr, triggerUpdate()).WillOnce(Return(true));
+        EXPECT_TRUE(handler->commit(session, {}));
+        expectedState(FirmwareBlobHandler::UpdateState::updateStarted);
+    }
+
     ImageHandlerMock imageMock;
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {
@@ -50,6 +111,10 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     std::unique_ptr<blobs::GenericBlobInterface> handler;
     VerificationMock* verifyMockPtr;
     UpdateMock* updateMockPtr;
+
+    std::uint16_t session = 1;
+    std::uint16_t flags =
+        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
 };
 
 class IpmiOnlyFirmwareTest : public ::testing::Test
@@ -96,4 +161,5 @@ class FakeLpcFirmwareTest : public ::testing::Test
     }
 };
 
+} // namespace
 } // namespace ipmi_flash

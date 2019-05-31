@@ -42,40 +42,6 @@ using ::testing::UnorderedElementsAreArray;
 
 class FirmwareHandlerUpdatePendingTest : public IpmiOnlyFirmwareStaticTest
 {
-  protected:
-    void getToUpdatePending()
-    {
-        /* The hash was not sent up, as it's technically optional.  Therefore,
-         * there is no active hash file.
-         */
-        EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
-        EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
-        expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
-
-        EXPECT_CALL(imageMock, close()).WillRepeatedly(Return());
-        handler->close(session);
-        expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
-
-        EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
-        EXPECT_CALL(*verifyMockPtr, triggerVerification())
-            .WillOnce(Return(true));
-
-        EXPECT_TRUE(handler->commit(session, {}));
-        expectedState(FirmwareBlobHandler::UpdateState::verificationStarted);
-
-        EXPECT_CALL(*verifyMockPtr, checkVerificationState())
-            .WillOnce(Return(VerifyCheckResponses::success));
-        blobs::BlobMeta meta;
-        EXPECT_TRUE(handler->stat(session, &meta));
-        expectedState(FirmwareBlobHandler::UpdateState::verificationCompleted);
-
-        handler->close(session);
-        expectedState(FirmwareBlobHandler::UpdateState::updatePending);
-    }
-
-    std::uint16_t session = 1;
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
 };
 
 /*
