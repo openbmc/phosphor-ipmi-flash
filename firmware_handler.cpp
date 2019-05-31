@@ -572,14 +572,21 @@ bool FirmwareBlobHandler::commit(uint16_t session,
         return false;
     }
 
-    /* You can only commit on the verifyBlodId */
-    if (item->second->activePath != verifyBlobId)
+    /* You can only commit on the verifyBlodId or updateBlobId */
+    if (item->second->activePath != verifyBlobId &&
+        item->second->activePath != updateBlobId)
     {
+        std::fprintf(stderr, "path: '%s' not expected for commit\n",
+                     item->second->activePath.c_str());
         return false;
     }
 
     switch (state)
     {
+        case UpdateState::verificationPending:
+            /* Set state to committing. */
+            item->second->flags |= blobs::StateFlags::committing;
+            return triggerVerification();
         case UpdateState::verificationStarted:
             /* Calling repeatedly has no effect within an update process. */
             return true;
@@ -587,10 +594,11 @@ bool FirmwareBlobHandler::commit(uint16_t session,
             /* Calling after the verification process has completed returns
              * failure. */
             return false;
-        default:
-            /* Set state to committing. */
+        case UpdateState::updatePending:
             item->second->flags |= blobs::StateFlags::committing;
-            return triggerVerification();
+            return triggerUpdate();
+        default:
+            return false;
     }
 }
 
@@ -693,6 +701,17 @@ bool FirmwareBlobHandler::triggerVerification()
     if (result)
     {
         state = UpdateState::verificationStarted;
+    }
+
+    return result;
+}
+
+bool FirmwareBlobHandler::triggerUpdate()
+{
+    bool result = update->triggerUpdate();
+    if (result)
+    {
+        state = UpdateState::updateStarted;
     }
 
     return result;

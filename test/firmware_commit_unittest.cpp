@@ -83,43 +83,4 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
     EXPECT_FALSE(handler->commit(0, {}));
 }
 
-TEST_F(FirmwareHandlerCommitTest, VerifyCommitAcceptedOnVerifyBlob)
-{
-    /* Verify the verify blob lets you call this command, and it returns
-     * success.
-     */
-    auto verifyMock = CreateVerifyMock();
-    auto verifyMockPtr = reinterpret_cast<VerificationMock*>(verifyMock.get());
-
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(verifyMock), CreateUpdateMock());
-
-    EXPECT_TRUE(handler->open(0, blobs::OpenFlags::write, verifyBlobId));
-
-    EXPECT_CALL(*verifyMockPtr, triggerVerification())
-        .WillRepeatedly(Return(true));
-
-    EXPECT_TRUE(handler->commit(0, {}));
-}
-
-TEST_F(FirmwareHandlerCommitTest, VerifyCommitCanOnlyBeCalledOnceForEffect)
-{
-    /* Verify you cannot call the commit() command once verification is
-     * started, after which it will just return true.
-     */
-    auto verifyMock = CreateVerifyMock();
-    auto verifyMockPtr = reinterpret_cast<VerificationMock*>(verifyMock.get());
-
-    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(verifyMock), CreateUpdateMock());
-
-    EXPECT_TRUE(handler->open(0, blobs::OpenFlags::write, verifyBlobId));
-
-    EXPECT_CALL(*verifyMockPtr, triggerVerification())
-        .WillRepeatedly(Return(true));
-
-    EXPECT_TRUE(handler->commit(0, {}));
-    EXPECT_TRUE(handler->commit(0, {}));
-}
-
 } // namespace ipmi_flash

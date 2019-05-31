@@ -169,6 +169,7 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
     bool expire(uint16_t session) override;
 
     bool triggerVerification();
+    bool triggerUpdate();
 
     /** Allow grabbing the current state. */
     UpdateState getCurrentState() const

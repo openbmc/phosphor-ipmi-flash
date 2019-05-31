@@ -237,11 +237,39 @@ TEST_F(FirmwareHandlerUpdatePendingTest,
 }
 
 /*
- * TODO: deleteBlob(blob)
+ * commit(session)
  */
+TEST_F(FirmwareHandlerUpdatePendingTest,
+       CommitOnUpdateBlobTriggersUpdateAndChangesState)
+{
+    /* Commit triggers the update mechanism (similarly for the verifyBlobId) and
+     * changes state to updateStarted.
+     */
+    getToUpdatePending();
+    EXPECT_TRUE(handler->open(session, flags, updateBlobId));
+    expectedState(FirmwareBlobHandler::UpdateState::updatePending);
+
+    EXPECT_CALL(*updateMockPtr, triggerUpdate()).WillOnce(Return(true));
+
+    EXPECT_TRUE(handler->commit(session, {}));
+    expectedState(FirmwareBlobHandler::UpdateState::updateStarted);
+}
+
+TEST_F(FirmwareHandlerUpdatePendingTest,
+       CommitOnUpdateBlobTriggersUpdateAndReturnsFailureDoesNotChangeState)
+{
+    getToUpdatePending();
+    EXPECT_TRUE(handler->open(session, flags, updateBlobId));
+    expectedState(FirmwareBlobHandler::UpdateState::updatePending);
+
+    EXPECT_CALL(*updateMockPtr, triggerUpdate()).WillOnce(Return(false));
+
+    EXPECT_FALSE(handler->commit(session, {}));
+    expectedState(FirmwareBlobHandler::UpdateState::updatePending);
+}
 
 /*
- * commit(session)
+ * TODO: deleteBlob(blob)
  */
 
 } // namespace

@@ -29,8 +29,12 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
             std::make_unique<VerificationMock>();
         verifyMockPtr = reinterpret_cast<VerificationMock*>(verifyMock.get());
 
+        std::unique_ptr<UpdateInterface> updateMock =
+            std::make_unique<UpdateMock>();
+        updateMockPtr = reinterpret_cast<UpdateMock*>(updateMock.get());
+
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, std::move(verifyMock), CreateUpdateMock());
+            blobs, data, std::move(verifyMock), std::move(updateMock));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)
@@ -45,6 +49,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr}};
     std::unique_ptr<blobs::GenericBlobInterface> handler;
     VerificationMock* verifyMockPtr;
+    UpdateMock* updateMockPtr;
 };
 
 class IpmiOnlyFirmwareTest : public ::testing::Test
