@@ -125,6 +125,11 @@ TEST_F(FirmwareHandlerUpdateStartedTest, WriteMetaToUpdateBlobReturnsFailure)
 /*
  * write(session)
  */
+TEST_F(FirmwareHandlerUpdateStartedTest, WriteToUpdateBlobReturnsFailure)
+{
+    getToUpdateStarted();
+    EXPECT_FALSE(handler->write(session, 0, {0x01}));
+}
 
 /*
  * read(session)
