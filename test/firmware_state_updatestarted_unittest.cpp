@@ -74,6 +74,44 @@ TEST_F(FirmwareHandlerUpdateStartedTest, VerifyListOfBlobs)
 /*
  * stat(blob)
  */
+TEST_F(FirmwareHandlerUpdateStartedTest, StatOnActiveImageReturnsFailure)
+{
+    getToUpdateStarted();
+
+    ASSERT_TRUE(handler->canHandleBlob(activeImageBlobId));
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerUpdateStartedTest, StatOnUpdateBlobReturnsFailure)
+{
+    getToUpdateStarted();
+
+    ASSERT_TRUE(handler->canHandleBlob(updateBlobId));
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(updateBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerUpdateStartedTest, StatOnNormalBlobsReturnsSuccess)
+{
+    getToUpdateStarted();
+
+    blobs::BlobMeta expected;
+    expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
+    expected.size = 0;
+
+    std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
+    for (const auto& blob : testBlobs)
+    {
+        ASSERT_TRUE(handler->canHandleBlob(blob));
+
+        blobs::BlobMeta meta = {};
+        EXPECT_TRUE(handler->stat(blob, &meta));
+        EXPECT_EQ(expected, meta);
+    }
+}
 
 /*
  * stat(session)
