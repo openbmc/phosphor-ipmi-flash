@@ -44,21 +44,6 @@ using ::testing::UnorderedElementsAreArray;
 
 class FirmwareHandlerVerificationPendingTest : public IpmiOnlyFirmwareStaticTest
 {
-  protected:
-    void getToVerificationPending(const std::string& blobId)
-    {
-        EXPECT_CALL(imageMock, open(blobId)).WillOnce(Return(true));
-        EXPECT_TRUE(handler->open(session, flags, blobId));
-        expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
-
-        EXPECT_CALL(imageMock, close()).WillRepeatedly(Return());
-        handler->close(session);
-        expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
-    }
-
-    std::uint16_t session = 1;
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
 };
 
 /*
