@@ -39,6 +39,21 @@ class FirmwareHandlerUpdateStartedTest : public IpmiOnlyFirmwareStaticTest
 {
 };
 
+/*
+ * open(blob)
+ */
+TEST_F(FirmwareHandlerUpdateStartedTest, AttemptToOpenFilesReturnsFailure)
+{
+    /* In state updateStarted a file is open, which means no others can be. */
+    getToUpdateStarted();
+
+    auto blobsToOpen = handler->getBlobIds();
+    for (const auto& blob : blobsToOpen)
+    {
+        EXPECT_FALSE(handler->open(session + 1, flags, blob));
+    }
+}
+
 /* canHandleBlob(blob)
  * getBlobIds
  */
@@ -53,9 +68,6 @@ class FirmwareHandlerUpdateStartedTest : public IpmiOnlyFirmwareStaticTest
 
 /*
  * stat(session)
- */
-/*
- * open(blob)
  */
 
 /*
