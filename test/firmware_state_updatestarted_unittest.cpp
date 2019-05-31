@@ -114,16 +114,13 @@ TEST_F(FirmwareHandlerUpdateStartedTest, StatOnNormalBlobsReturnsSuccess)
 }
 
 /*
- * stat(session)
- */
-
-/*
- * close(session)
- */
-
-/*
  * writemeta(session)
  */
+TEST_F(FirmwareHandlerUpdateStartedTest, WriteMetaToUpdateBlobReturnsFailure)
+{
+    getToUpdateStarted();
+    EXPECT_FALSE(handler->writeMeta(session, 0, {0x01}));
+}
 
 /*
  * write(session)
@@ -131,6 +128,14 @@ TEST_F(FirmwareHandlerUpdateStartedTest, StatOnNormalBlobsReturnsSuccess)
 
 /*
  * read(session)
+ */
+
+/*
+ * stat(session) - this will trigger a check, and the state may change.
+ */
+
+/*
+ * TODO: close(session) - this will abort.
  */
 
 /*
