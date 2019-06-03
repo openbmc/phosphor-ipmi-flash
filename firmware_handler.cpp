@@ -175,14 +175,55 @@ bool FirmwareBlobHandler::stat(const std::string& path,
     return true;
 }
 
+VerifyCheckResponses FirmwareBlobHandler::getVerifyStatus()
+{
+    VerifyCheckResponses value = VerifyCheckResponses::other;
+
+    switch (state)
+    {
+        case UpdateState::verificationPending:
+            value = VerifyCheckResponses::other;
+            break;
+        case UpdateState::verificationStarted:
+            value = verification->status();
+            lastVerificationResponse = value;
+            break;
+        case UpdateState::verificationCompleted:
+            value = lastVerificationResponse;
+            break;
+        default:
+            break;
+    }
+
+    return value;
+}
+
+UpdateStatus FirmwareBlobHandler::getUpdateStatus()
+{
+    UpdateStatus value = UpdateStatus::unknown;
+
+    switch (state)
+    {
+        case UpdateState::updatePending:
+            value = UpdateStatus::unknown;
+            break;
+        case UpdateState::updateStarted:
+            value = update->status();
+            lastUpdateStatus = value;
+            break;
+        case UpdateState::updateCompleted:
+            value = lastUpdateStatus;
+            break;
+        default:
+            break;
+    }
+
+    return value;
+}
+
 /*
  * Return stat information on an open session.  It therefore must be an active
  * handle to either the active image or active hash.
- *
- * The stat() and sessionstat() commands will return the same information in
- * many cases, therefore the logic will be combined.
- *
- * TODO: combine the logic for stat and sessionstat().
  */
 bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
 {
@@ -202,23 +243,7 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
 
     if (item->second->activePath == verifyBlobId)
     {
-        VerifyCheckResponses value = VerifyCheckResponses::other;
-
-        switch (state)
-        {
-            case UpdateState::verificationPending:
-                value = VerifyCheckResponses::other;
-                break;
-            case UpdateState::verificationStarted:
-                value = verification->status();
-                lastVerificationResponse = value;
-                break;
-            case UpdateState::verificationCompleted:
-                value = lastVerificationResponse;
-                break;
-            default:
-                break;
-        }
+        VerifyCheckResponses value = getVerifyStatus();
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
 
@@ -243,19 +268,7 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
     }
     else if (item->second->activePath == updateBlobId)
     {
-        UpdateStatus value = UpdateStatus::unknown;
-
-        switch (state)
-        {
-            case UpdateState::updatePending:
-                value = UpdateStatus::unknown;
-                break;
-            case UpdateState::updateStarted:
-                value = update->status();
-                break;
-            default:
-                break;
-        }
+        UpdateStatus value = getUpdateStatus();
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
 

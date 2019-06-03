@@ -56,12 +56,48 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
 }
 
 /*
+ * stat(session)
+ */
+TEST_F(FirmwareHandlerUpdateCompletedTest,
+       CallingStatSessionAfterCompletedSuccessReturnsStateWithoutRechecking)
+{
+    getToUpdateCompleted(UpdateStatus::success);
+    EXPECT_CALL(*updateMockPtr, status()).Times(0);
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::committed;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(UpdateStatus::success));
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+    expectedState(FirmwareBlobHandler::UpdateState::updateCompleted);
+}
+
+TEST_F(FirmwareHandlerUpdateCompletedTest,
+       CallingStatSessionAfterCompletedFailureReturnsStateWithoutRechecking)
+{
+    getToUpdateCompleted(UpdateStatus::failed);
+    EXPECT_CALL(*updateMockPtr, status()).Times(0);
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::commit_error;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(UpdateStatus::failed));
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+    expectedState(FirmwareBlobHandler::UpdateState::updateCompleted);
+}
+
+/*
  * There are the following calls (parameters may vary):
  * canHandleBlob(blob)
  * getBlobIds
  * deleteBlob(blob)
  * stat(blob)
- * stat(session)
  * close(session)
  * writemeta(session)
  * write(session)
