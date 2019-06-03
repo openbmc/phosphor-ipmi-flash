@@ -1,10 +1,9 @@
-#include "bmc_update_mock.hpp"
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "firmware_unittest.hpp"
 #include "image_mock.hpp"
+#include "triggerable_mock.hpp"
 #include "util.hpp"
-#include "verification_mock.hpp"
 
 #include <vector>
 

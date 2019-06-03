@@ -1,7 +1,6 @@
 #pragma once
 
 #include "status.hpp"
-#include "verify.hpp"
 
 #include <memory>
 #include <sdbusplus/bus.hpp>
@@ -16,7 +15,7 @@ namespace ipmi_flash
  * verification step, however, it leaves room for a future possibility out
  * something wholly configurable.
  */
-class SystemdVerification : public VerificationInterface
+class SystemdVerification : public TriggerableActionInterface
 {
   public:
     /**
@@ -28,7 +27,7 @@ class SystemdVerification : public VerificationInterface
      * @param[in[ service - the systemd service to start to trigger
      * verification.
      */
-    static std::unique_ptr<VerificationInterface>
+    static std::unique_ptr<TriggerableActionInterface>
         CreateVerification(sdbusplus::bus::bus&& bus, const std::string& path,
                            const std::string& service);
 
@@ -45,8 +44,8 @@ class SystemdVerification : public VerificationInterface
     SystemdVerification(SystemdVerification&&) = default;
     SystemdVerification& operator=(SystemdVerification&&) = default;
 
-    bool triggerVerification() override;
-    void abortVerification() override;
+    bool trigger() override;
+    void abort() override;
     ActionStatus status() override;
 
   private:

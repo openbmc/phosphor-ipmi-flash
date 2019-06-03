@@ -1,8 +1,7 @@
-#include "bmc_update_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "triggerable_mock.hpp"
 #include "util.hpp"
-#include "verification_mock.hpp"
 
 #include <algorithm>
 #include <vector>
@@ -23,7 +22,7 @@ TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        {}, data, CreateVerifyMock(), CreateUpdateMock());
+        {}, data, CreateTriggerMock(), CreateTriggerMock());
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
@@ -36,7 +35,7 @@ TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, {}, CreateVerifyMock(), CreateUpdateMock());
+        blobs, {}, CreateTriggerMock(), CreateTriggerMock());
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
@@ -52,13 +51,13 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock(), CreateUpdateMock());
+        blobs, data, CreateTriggerMock(), CreateTriggerMock());
     EXPECT_EQ(handler, nullptr);
 
     blobs.push_back({hashBlobId, &imageMock});
 
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock(), CreateUpdateMock());
+        blobs, data, CreateTriggerMock(), CreateTriggerMock());
     auto result = handler->getBlobIds();
     std::vector<std::string> expectedBlobs = {"asdf", hashBlobId};
     EXPECT_THAT(result, UnorderedElementsAreArray(expectedBlobs));

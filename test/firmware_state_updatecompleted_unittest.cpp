@@ -162,7 +162,7 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
 {
     getToUpdateCompleted(ActionStatus::success);
 
-    EXPECT_CALL(*updateMockPtr, triggerUpdate()).Times(0);
+    EXPECT_CALL(*updateMockPtr, trigger()).Times(0);
     EXPECT_FALSE(handler->commit(session, {}));
 }
 
@@ -171,7 +171,7 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
 {
     getToUpdateCompleted(ActionStatus::failed);
 
-    EXPECT_CALL(*updateMockPtr, triggerUpdate()).Times(0);
+    EXPECT_CALL(*updateMockPtr, trigger()).Times(0);
     EXPECT_FALSE(handler->commit(session, {}));
 }
 

@@ -17,7 +17,6 @@
 #include "update_systemd.hpp"
 
 #include "status.hpp"
-#include "update.hpp"
 
 #include <memory>
 #include <sdbusplus/bus.hpp>
@@ -26,7 +25,7 @@
 namespace ipmi_flash
 {
 
-std::unique_ptr<UpdateInterface>
+std::unique_ptr<TriggerableActionInterface>
     SystemdUpdateMechanism::CreateSystemdUpdate(sdbusplus::bus::bus&& bus,
                                                 const std::string& target,
                                                 const std::string& mode)
@@ -35,7 +34,7 @@ std::unique_ptr<UpdateInterface>
                                                     mode);
 }
 
-bool SystemdUpdateMechanism::triggerUpdate()
+bool SystemdUpdateMechanism::trigger()
 {
     /* TODO: Add a util method for triggering a service with optional additional
      * parameter. */
@@ -63,7 +62,7 @@ bool SystemdUpdateMechanism::triggerUpdate()
     }
 }
 
-void SystemdUpdateMechanism::abortUpdate()
+void SystemdUpdateMechanism::abort()
 {
     return;
 }

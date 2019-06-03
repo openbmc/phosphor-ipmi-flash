@@ -251,7 +251,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
      * let you try-again.
      */
     getToVerificationCompleted(ActionStatus::success);
-    EXPECT_CALL(*verifyMockPtr, triggerVerification()).Times(0);
+    EXPECT_CALL(*verifyMockPtr, trigger()).Times(0);
 
     EXPECT_FALSE(handler->commit(session, {}));
 }
@@ -260,7 +260,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
        CommitOnVerifyBlobAfterFailureReturnsFailure)
 {
     getToVerificationCompleted(ActionStatus::failed);
-    EXPECT_CALL(*verifyMockPtr, triggerVerification()).Times(0);
+    EXPECT_CALL(*verifyMockPtr, trigger()).Times(0);
 
     EXPECT_FALSE(handler->commit(session, {}));
 }

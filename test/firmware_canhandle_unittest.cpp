@@ -1,9 +1,8 @@
-#include "bmc_update_mock.hpp"
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "triggerable_mock.hpp"
 #include "util.hpp"
-#include "verification_mock.hpp"
 
 #include <vector>
 
@@ -34,7 +33,7 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock(), CreateUpdateMock());
+        blobs, data, CreateTriggerMock(), CreateTriggerMock());
 
     for (const auto& item : items)
     {

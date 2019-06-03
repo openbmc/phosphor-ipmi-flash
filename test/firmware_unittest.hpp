@@ -1,10 +1,9 @@
 #pragma once
 
-#include "bmc_update_mock.hpp"
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
-#include "verification_mock.hpp"
+#include "triggerable_mock.hpp"
 
 #include <memory>
 #include <vector>
@@ -29,13 +28,13 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
             {staticLayoutBlobId, &imageMock},
         };
 
-        std::unique_ptr<VerificationInterface> verifyMock =
-            std::make_unique<VerificationMock>();
-        verifyMockPtr = reinterpret_cast<VerificationMock*>(verifyMock.get());
+        std::unique_ptr<TriggerableActionInterface> verifyMock =
+            std::make_unique<TriggerMock>();
+        verifyMockPtr = reinterpret_cast<TriggerMock*>(verifyMock.get());
 
-        std::unique_ptr<UpdateInterface> updateMock =
-            std::make_unique<UpdateMock>();
-        updateMockPtr = reinterpret_cast<UpdateMock*>(updateMock.get());
+        std::unique_ptr<TriggerableActionInterface> updateMock =
+            std::make_unique<TriggerMock>();
+        updateMockPtr = reinterpret_cast<TriggerMock*>(updateMock.get());
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
             blobs, data, std::move(verifyMock), std::move(updateMock));
@@ -68,8 +67,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         getToVerificationPending(blobId);
 
         EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
-        EXPECT_CALL(*verifyMockPtr, triggerVerification())
-            .WillOnce(Return(true));
+        EXPECT_CALL(*verifyMockPtr, trigger()).WillOnce(Return(true));
 
         EXPECT_TRUE(handler->commit(session, {}));
         expectedState(FirmwareBlobHandler::UpdateState::verificationStarted);
@@ -98,7 +96,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         getToUpdatePending();
         EXPECT_TRUE(handler->open(session, flags, updateBlobId));
 
-        EXPECT_CALL(*updateMockPtr, triggerUpdate()).WillOnce(Return(true));
+        EXPECT_CALL(*updateMockPtr, trigger()).WillOnce(Return(true));
         EXPECT_TRUE(handler->commit(session, {}));
         expectedState(FirmwareBlobHandler::UpdateState::updateStarted);
     }
@@ -118,8 +116,8 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     std::vector<DataHandlerPack> data = {
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr}};
     std::unique_ptr<blobs::GenericBlobInterface> handler;
-    VerificationMock* verifyMockPtr;
-    UpdateMock* updateMockPtr;
+    TriggerMock* verifyMockPtr;
+    TriggerMock* updateMockPtr;
 
     std::uint16_t session = 1;
     std::uint16_t flags =
@@ -142,7 +140,7 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
             {"asdf", &imageMock},
         };
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, CreateVerifyMock(), CreateUpdateMock());
+            blobs, data, CreateTriggerMock(), CreateTriggerMock());
     }
 };
 
@@ -166,7 +164,7 @@ class FakeLpcFirmwareTest : public ::testing::Test
             {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
         };
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, CreateVerifyMock(), CreateUpdateMock());
+            blobs, data, CreateTriggerMock(), CreateTriggerMock());
     }
 };
 

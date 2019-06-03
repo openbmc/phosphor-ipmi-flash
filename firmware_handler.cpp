@@ -17,8 +17,8 @@
 #include "firmware_handler.hpp"
 
 #include "image_handler.hpp"
+#include "status.hpp"
 #include "util.hpp"
-#include "verify.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -38,8 +38,8 @@ std::unique_ptr<blobs::GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
         const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
-        std::unique_ptr<VerificationInterface> verification,
-        std::unique_ptr<UpdateInterface> update)
+        std::unique_ptr<TriggerableActionInterface> verification,
+        std::unique_ptr<TriggerableActionInterface> update)
 {
     /* There must be at least one. */
     if (!firmwares.size())
@@ -709,7 +709,7 @@ std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t session,
 
 bool FirmwareBlobHandler::triggerVerification()
 {
-    bool result = verification->triggerVerification();
+    bool result = verification->trigger();
     if (result)
     {
         state = UpdateState::verificationStarted;
@@ -720,7 +720,7 @@ bool FirmwareBlobHandler::triggerVerification()
 
 bool FirmwareBlobHandler::triggerUpdate()
 {
-    bool result = update->triggerUpdate();
+    bool result = update->trigger();
     if (result)
     {
         state = UpdateState::updateStarted;

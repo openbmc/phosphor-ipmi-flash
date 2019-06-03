@@ -148,7 +148,7 @@ TEST_F(FirmwareHandlerUpdateStartedTest,
        CallingCommitShouldReturnTrueAndHaveNoEffect)
 {
     getToUpdateStarted();
-    EXPECT_CALL(*updateMockPtr, triggerUpdate()).Times(0);
+    EXPECT_CALL(*updateMockPtr, trigger()).Times(0);
 
     EXPECT_TRUE(handler->commit(session, {}));
     expectedState(FirmwareBlobHandler::UpdateState::updateStarted);
