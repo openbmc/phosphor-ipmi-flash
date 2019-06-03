@@ -1,9 +1,8 @@
-#include "bmc_update_mock.hpp"
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "triggerable_mock.hpp"
 #include "util.hpp"
-#include "verification_mock.hpp"
 
 #include <gtest/gtest.h>
 
@@ -32,7 +31,7 @@ TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock(), CreateUpdateMock());
+        blobs, data, CreateTriggerMock(), CreateTriggerMock());
 
     //    EXPECT_EQ(handler, nullptr);
     EXPECT_FALSE(handler == nullptr);

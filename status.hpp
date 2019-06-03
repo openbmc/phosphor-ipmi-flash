@@ -14,4 +14,23 @@ enum class ActionStatus : std::uint8_t
     unknown = 3,
 };
 
+class TriggerableActionInterface
+{
+  public:
+    virtual ~TriggerableActionInterface() = default;
+
+    /**
+     * Trigger action.
+     *
+     * @return true if successfully started, false otherwise.
+     */
+    virtual bool trigger() = 0;
+
+    /** Abort the action if possible. */
+    virtual void abort() = 0;
+
+    /** Check the current state of the action. */
+    virtual ActionStatus status() = 0;
+};
+
 } // namespace ipmi_flash

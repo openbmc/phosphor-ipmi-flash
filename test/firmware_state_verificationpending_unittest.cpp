@@ -192,7 +192,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
 {
     getToVerificationPending(staticLayoutBlobId);
     EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
-    EXPECT_CALL(*verifyMockPtr, triggerVerification()).WillOnce(Return(true));
+    EXPECT_CALL(*verifyMockPtr, trigger()).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->commit(session, {}));
     expectedState(FirmwareBlobHandler::UpdateState::verificationStarted);
@@ -209,7 +209,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest, StatOnVerifyBlobIdReturnsState)
      */
     getToVerificationPending(staticLayoutBlobId);
     EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
-    EXPECT_CALL(*verifyMockPtr, triggerVerification()).Times(0);
+    EXPECT_CALL(*verifyMockPtr, trigger()).Times(0);
     EXPECT_CALL(*verifyMockPtr, status()).Times(0);
 
     blobs::BlobMeta meta, expectedMeta = {};

@@ -1,8 +1,7 @@
-#include "bmc_update_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "triggerable_mock.hpp"
 #include "util.hpp"
-#include "verification_mock.hpp"
 
 #include <vector>
 
@@ -30,7 +29,7 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateVerifyMock(), CreateUpdateMock());
+        blobs, data, CreateTriggerMock(), CreateTriggerMock());
 
     blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));

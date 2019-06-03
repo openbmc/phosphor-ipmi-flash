@@ -1,6 +1,6 @@
 #pragma once
 
-#include "update.hpp"
+#include "status.hpp"
 
 #include <memory>
 #include <sdbusplus/bus.hpp>
@@ -12,10 +12,10 @@ namespace ipmi_flash
 /**
  * Implements the update interface by simply triggering a systemd unit.
  */
-class SystemdUpdateMechanism : public UpdateInterface
+class SystemdUpdateMechanism : public TriggerableActionInterface
 {
   public:
-    static std::unique_ptr<UpdateInterface>
+    static std::unique_ptr<TriggerableActionInterface>
         CreateSystemdUpdate(sdbusplus::bus::bus&& bus,
                             const std::string& target,
                             const std::string& mode = "");
@@ -33,8 +33,8 @@ class SystemdUpdateMechanism : public UpdateInterface
     SystemdUpdateMechanism(SystemdUpdateMechanism&&) = default;
     SystemdUpdateMechanism& operator=(SystemdUpdateMechanism&&) = default;
 
-    bool triggerUpdate() override;
-    void abortUpdate() override;
+    bool trigger() override;
+    void abort() override;
     ActionStatus status() override;
 
   private:

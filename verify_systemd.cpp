@@ -17,7 +17,6 @@
 #include "verify_systemd.hpp"
 
 #include "status.hpp"
-#include "verify.hpp"
 
 #include <fstream>
 #include <memory>
@@ -28,7 +27,7 @@
 namespace ipmi_flash
 {
 
-std::unique_ptr<VerificationInterface>
+std::unique_ptr<TriggerableActionInterface>
     SystemdVerification::CreateVerification(sdbusplus::bus::bus&& bus,
                                             const std::string& path,
                                             const std::string& service)
@@ -36,7 +35,7 @@ std::unique_ptr<VerificationInterface>
     return std::make_unique<SystemdVerification>(std::move(bus), path, service);
 }
 
-bool SystemdVerification::triggerVerification()
+bool SystemdVerification::trigger()
 {
     static constexpr auto systemdService = "org.freedesktop.systemd1";
     static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
@@ -62,7 +61,7 @@ bool SystemdVerification::triggerVerification()
     return true;
 }
 
-void SystemdVerification::abortVerification()
+void SystemdVerification::abort()
 {
     /* TODO: Implement this. */
 }

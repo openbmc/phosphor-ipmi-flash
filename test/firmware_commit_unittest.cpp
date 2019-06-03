@@ -1,9 +1,8 @@
-#include "bmc_update_mock.hpp"
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "image_mock.hpp"
+#include "triggerable_mock.hpp"
 #include "util.hpp"
-#include "verification_mock.hpp"
 
 #include <memory>
 #include <vector>
@@ -46,11 +45,11 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
      */
 
     /* Verify it doesn't get called by using StrictMock. */
-    std::unique_ptr<VerificationInterface> verifyMock =
-        std::make_unique<StrictMock<VerificationMock>>();
+    std::unique_ptr<TriggerableActionInterface> verifyMock =
+        std::make_unique<StrictMock<TriggerMock>>();
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(verifyMock), CreateUpdateMock());
+        blobs, data, std::move(verifyMock), CreateTriggerMock());
 
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
@@ -68,11 +67,11 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
      */
 
     /* Verify it doesn't get called by using StrictMock. */
-    std::unique_ptr<VerificationInterface> verifyMock =
-        std::make_unique<StrictMock<VerificationMock>>();
+    std::unique_ptr<TriggerableActionInterface> verifyMock =
+        std::make_unique<StrictMock<TriggerMock>>();
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(verifyMock), CreateUpdateMock());
+        blobs, data, std::move(verifyMock), CreateTriggerMock());
 
     EXPECT_CALL(imageMock1, open(StrEq(hashBlobId))).WillOnce(Return(true));
 

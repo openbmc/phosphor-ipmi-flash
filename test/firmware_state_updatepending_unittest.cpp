@@ -215,7 +215,7 @@ TEST_F(FirmwareHandlerUpdatePendingTest,
     EXPECT_TRUE(handler->open(session, flags, updateBlobId));
     expectedState(FirmwareBlobHandler::UpdateState::updatePending);
 
-    EXPECT_CALL(*updateMockPtr, triggerUpdate()).WillOnce(Return(true));
+    EXPECT_CALL(*updateMockPtr, trigger()).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->commit(session, {}));
     expectedState(FirmwareBlobHandler::UpdateState::updateStarted);
@@ -228,7 +228,7 @@ TEST_F(FirmwareHandlerUpdatePendingTest,
     EXPECT_TRUE(handler->open(session, flags, updateBlobId));
     expectedState(FirmwareBlobHandler::UpdateState::updatePending);
 
-    EXPECT_CALL(*updateMockPtr, triggerUpdate()).WillOnce(Return(false));
+    EXPECT_CALL(*updateMockPtr, trigger()).WillOnce(Return(false));
 
     EXPECT_FALSE(handler->commit(session, {}));
     expectedState(FirmwareBlobHandler::UpdateState::updatePending);

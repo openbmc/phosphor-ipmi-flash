@@ -4,9 +4,8 @@
 
 #include "data_handler.hpp"
 #include "image_handler.hpp"
-#include "update.hpp"
+#include "status.hpp"
 #include "util.hpp"
-#include "verify.hpp"
 
 #include <algorithm>
 #include <blobs-ipmid/blobs.hpp>
@@ -118,8 +117,8 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
     static std::unique_ptr<GenericBlobInterface> CreateFirmwareBlobHandler(
         const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
-        std::unique_ptr<VerificationInterface> verification,
-        std::unique_ptr<UpdateInterface> update);
+        std::unique_ptr<TriggerableActionInterface> verification,
+        std::unique_ptr<TriggerableActionInterface> update);
 
     /**
      * Create a FirmwareBlobHandler.
@@ -131,12 +130,12 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
      * @param[in] verification - pointer to object for triggering verification
      * @param[in] update - point to object for triggering the update
      */
-    FirmwareBlobHandler(const std::vector<HandlerPack>& firmwares,
-                        const std::vector<std::string>& blobs,
-                        const std::vector<DataHandlerPack>& transports,
-                        std::uint16_t bitmask,
-                        std::unique_ptr<VerificationInterface> verification,
-                        std::unique_ptr<UpdateInterface> update) :
+    FirmwareBlobHandler(
+        const std::vector<HandlerPack>& firmwares,
+        const std::vector<std::string>& blobs,
+        const std::vector<DataHandlerPack>& transports, std::uint16_t bitmask,
+        std::unique_ptr<TriggerableActionInterface> verification,
+        std::unique_ptr<TriggerableActionInterface> update) :
         handlers(firmwares),
         blobIDs(blobs), transports(transports), bitmask(bitmask),
         activeImage(activeImageBlobId), activeHash(activeHashBlobId),
@@ -228,9 +227,9 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
     /** The firmware update state. */
     UpdateState state;
 
-    std::unique_ptr<VerificationInterface> verification;
+    std::unique_ptr<TriggerableActionInterface> verification;
 
-    std::unique_ptr<UpdateInterface> update;
+    std::unique_ptr<TriggerableActionInterface> update;
 
     /** Temporary variable to track whether a blob is open. */
     bool fileOpen = false;
