@@ -79,8 +79,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     {
         getToVerificationStarted(staticLayoutBlobId);
 
-        EXPECT_CALL(*verifyMockPtr, checkVerificationState())
-            .WillOnce(Return(checkResponse));
+        EXPECT_CALL(*verifyMockPtr, status()).WillOnce(Return(checkResponse));
         blobs::BlobMeta meta;
         EXPECT_TRUE(handler->stat(session, &meta));
         expectedState(FirmwareBlobHandler::UpdateState::verificationCompleted);

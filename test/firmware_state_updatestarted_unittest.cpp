@@ -157,6 +157,59 @@ TEST_F(FirmwareHandlerUpdateStartedTest,
 /*
  * stat(session) - this will trigger a check, and the state may change.
  */
+TEST_F(FirmwareHandlerUpdateStartedTest,
+       CallStatChecksUpdateStatusReturnsRunningDoesNotChangeState)
+{
+    getToUpdateStarted();
+    EXPECT_CALL(*updateMockPtr, status())
+        .WillOnce(Return(UpdateStatus::running));
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::committing;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(UpdateStatus::running));
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+    expectedState(FirmwareBlobHandler::UpdateState::updateStarted);
+}
+
+TEST_F(FirmwareHandlerUpdateStartedTest,
+       CallStatChecksUpdateStatusReturnsFailedChangesStateToCompleted)
+{
+    getToUpdateStarted();
+    EXPECT_CALL(*updateMockPtr, status())
+        .WillOnce(Return(UpdateStatus::failed));
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::commit_error;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(UpdateStatus::failed));
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+    expectedState(FirmwareBlobHandler::UpdateState::updateCompleted);
+}
+
+TEST_F(FirmwareHandlerUpdateStartedTest,
+       CallStatChecksUpdateStatusReturnsSuccessChangesStateToCompleted)
+{
+    getToUpdateStarted();
+    EXPECT_CALL(*updateMockPtr, status())
+        .WillOnce(Return(UpdateStatus::success));
+
+    blobs::BlobMeta meta, expectedMeta = {};
+    expectedMeta.size = 0;
+    expectedMeta.blobState = flags | blobs::StateFlags::committed;
+    expectedMeta.metadata.push_back(
+        static_cast<std::uint8_t>(UpdateStatus::success));
+
+    EXPECT_TRUE(handler->stat(session, &meta));
+    EXPECT_EQ(expectedMeta, meta);
+    expectedState(FirmwareBlobHandler::UpdateState::updateCompleted);
+}
 
 /*
  * TODO: close(session) - this will abort.

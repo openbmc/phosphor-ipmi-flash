@@ -151,7 +151,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
      * until it's completed.
      */
     getToVerificationCompleted(VerifyCheckResponses::success);
-    EXPECT_CALL(*verifyMockPtr, checkVerificationState()).Times(0);
+    EXPECT_CALL(*verifyMockPtr, status()).Times(0);
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
@@ -168,7 +168,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
        SessionStatOnVerifyAfterFailureDoesNothing)
 {
     getToVerificationCompleted(VerifyCheckResponses::failed);
-    EXPECT_CALL(*verifyMockPtr, checkVerificationState()).Times(0);
+    EXPECT_CALL(*verifyMockPtr, status()).Times(0);
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;

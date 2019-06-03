@@ -210,7 +210,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest, StatOnVerifyBlobIdReturnsState)
     getToVerificationPending(staticLayoutBlobId);
     EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
     EXPECT_CALL(*verifyMockPtr, triggerVerification()).Times(0);
-    EXPECT_CALL(*verifyMockPtr, checkVerificationState()).Times(0);
+    EXPECT_CALL(*verifyMockPtr, status()).Times(0);
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;

@@ -67,7 +67,7 @@ void SystemdVerification::abortVerification()
     /* TODO: Implement this. */
 }
 
-VerifyCheckResponses SystemdVerification::checkVerificationState()
+VerifyCheckResponses SystemdVerification::status()
 {
     VerifyCheckResponses result = VerifyCheckResponses::other;
 

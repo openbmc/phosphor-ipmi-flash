@@ -70,7 +70,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
        StatOnVerifyBlobIdAfterCommitChecksStateAndReturnsRunning)
 {
     getToVerificationStarted(staticLayoutBlobId);
-    EXPECT_CALL(*verifyMockPtr, checkVerificationState())
+    EXPECT_CALL(*verifyMockPtr, status())
         .WillOnce(Return(VerifyCheckResponses::running));
 
     blobs::BlobMeta meta, expectedMeta = {};
@@ -87,7 +87,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
        StatOnVerifyBlobIdAfterCommitChecksStateAndReturnsOther)
 {
     getToVerificationStarted(staticLayoutBlobId);
-    EXPECT_CALL(*verifyMockPtr, checkVerificationState())
+    EXPECT_CALL(*verifyMockPtr, status())
         .WillOnce(Return(VerifyCheckResponses::other));
 
     blobs::BlobMeta meta, expectedMeta = {};
@@ -107,7 +107,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
      * commit_error and transitions to verificationCompleted.
      */
     getToVerificationStarted(staticLayoutBlobId);
-    EXPECT_CALL(*verifyMockPtr, checkVerificationState())
+    EXPECT_CALL(*verifyMockPtr, status())
         .WillOnce(Return(VerifyCheckResponses::failed));
 
     blobs::BlobMeta meta, expectedMeta = {};
@@ -128,7 +128,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
      * committed and transitions to verificationCompleted.
      */
     getToVerificationStarted(staticLayoutBlobId);
-    EXPECT_CALL(*verifyMockPtr, checkVerificationState())
+    EXPECT_CALL(*verifyMockPtr, status())
         .WillOnce(Return(VerifyCheckResponses::success));
 
     blobs::BlobMeta meta, expectedMeta = {};

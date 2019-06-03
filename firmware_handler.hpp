@@ -104,7 +104,7 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
         /** The update process has started. */
         updateStarted,
         /** The update has completed (optional state to reach) */
-        updatedCompleted,
+        updateCompleted,
     };
 
     /**

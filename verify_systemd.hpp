@@ -47,7 +47,7 @@ class SystemdVerification : public VerificationInterface
 
     bool triggerVerification() override;
     void abortVerification() override;
-    VerifyCheckResponses checkVerificationState() override;
+    VerifyCheckResponses status() override;
 
   private:
     sdbusplus::bus::bus bus;

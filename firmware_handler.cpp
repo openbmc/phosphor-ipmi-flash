@@ -202,19 +202,22 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
 
     if (item->second->activePath == verifyBlobId)
     {
-        VerifyCheckResponses value;
+        VerifyCheckResponses value = VerifyCheckResponses::other;
 
         switch (state)
         {
             case UpdateState::verificationPending:
                 value = VerifyCheckResponses::other;
                 break;
+            case UpdateState::verificationStarted:
+                value = verification->status();
+                lastVerificationResponse = value;
+                break;
             case UpdateState::verificationCompleted:
                 value = lastVerificationResponse;
                 break;
             default:
-                value = verification->checkVerificationState();
-                lastVerificationResponse = value;
+                break;
         }
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
@@ -240,18 +243,36 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
     }
     else if (item->second->activePath == updateBlobId)
     {
-        UpdateStatus value;
+        UpdateStatus value = UpdateStatus::unknown;
 
         switch (state)
         {
             case UpdateState::updatePending:
                 value = UpdateStatus::unknown;
                 break;
+            case UpdateState::updateStarted:
+                value = update->status();
+                break;
             default:
                 break;
         }
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
+
+        if (value == UpdateStatus::success || value == UpdateStatus::failed)
+        {
+            state = UpdateState::updateCompleted;
+            item->second->flags &= ~blobs::StateFlags::committing;
+
+            if (value == UpdateStatus::success)
+            {
+                item->second->flags |= blobs::StateFlags::committed;
+            }
+            else
+            {
+                item->second->flags |= blobs::StateFlags::commit_error;
+            }
+        }
     }
 
     /* The blobState here relates to an active sesion, so we should return the
