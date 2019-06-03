@@ -130,7 +130,7 @@ TEST(UpdaterTest, NormalWalkthroughAllHappy)
     verificationResponse.blob_state = supported | blobs::StateFlags::committing;
     verificationResponse.size = 0;
     verificationResponse.metadata.push_back(static_cast<std::uint8_t>(
-        ipmi_flash::FirmwareBlobHandler::VerifyCheckResponses::success));
+        ipmi_flash::FirmwareBlobHandler::ActionStatus::success));
 
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(verificationResponse));

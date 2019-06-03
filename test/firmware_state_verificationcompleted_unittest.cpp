@@ -59,14 +59,14 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
      * consistent behavior with verifyBlobId only added when closing the image
      * or hash.
      */
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
     EXPECT_FALSE(handler->canHandleBlob(updateBlobId));
 }
 
 TEST_F(FirmwareHandlerVerificationCompletedTest,
        OnVerificationCompleteFailureUpdateBlobIdNotPresent)
 {
-    getToVerificationCompleted(VerifyCheckResponses::failed);
+    getToVerificationCompleted(ActionStatus::failed);
     EXPECT_FALSE(handler->canHandleBlob(updateBlobId));
 }
 
@@ -75,7 +75,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
  */
 TEST_F(FirmwareHandlerVerificationCompletedTest, GetBlobIdsReturnsExpectedList)
 {
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
     std::vector<std::string> expected = {verifyBlobId, hashBlobId,
                                          activeImageBlobId, staticLayoutBlobId};
     EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
@@ -87,7 +87,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest, GetBlobIdsReturnsExpectedList)
 TEST_F(FirmwareHandlerVerificationCompletedTest,
        StatOnActiveImageReturnsFailure)
 {
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
     ASSERT_TRUE(handler->canHandleBlob(activeImageBlobId));
 
     blobs::BlobMeta meta;
@@ -100,7 +100,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
     /* The path taken to get to this state never opened the hash blob Id, which
      * is fine.  But let's verify it behaved as intended.
      */
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
     EXPECT_FALSE(handler->canHandleBlob(activeHashBlobId));
 }
 
@@ -113,7 +113,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 
 TEST_F(FirmwareHandlerVerificationCompletedTest, StatOnVerifyBlobReturnsFailure)
 {
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
     ASSERT_TRUE(handler->canHandleBlob(verifyBlobId));
 
     blobs::BlobMeta meta;
@@ -123,7 +123,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest, StatOnVerifyBlobReturnsFailure)
 TEST_F(FirmwareHandlerVerificationCompletedTest,
        StatOnNormalBlobsReturnsSuccess)
 {
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
 
     blobs::BlobMeta expected;
     expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
@@ -150,14 +150,14 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
     /* Every time you stat() once it's triggered, it checks the state again
      * until it's completed.
      */
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
     EXPECT_CALL(*verifyMockPtr, status()).Times(0);
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::committed;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(VerifyCheckResponses::success));
+        static_cast<std::uint8_t>(ActionStatus::success));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
@@ -167,14 +167,14 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 TEST_F(FirmwareHandlerVerificationCompletedTest,
        SessionStatOnVerifyAfterFailureDoesNothing)
 {
-    getToVerificationCompleted(VerifyCheckResponses::failed);
+    getToVerificationCompleted(ActionStatus::failed);
     EXPECT_CALL(*verifyMockPtr, status()).Times(0);
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::commit_error;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(VerifyCheckResponses::failed));
+        static_cast<std::uint8_t>(ActionStatus::failed));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
@@ -187,7 +187,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 TEST_F(FirmwareHandlerVerificationCompletedTest,
        OpeningAnyBlobAvailableFailsAfterSuccess)
 {
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
 
     auto blobs = handler->getBlobIds();
     for (const auto& blob : blobs)
@@ -199,7 +199,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 TEST_F(FirmwareHandlerVerificationCompletedTest,
        OpeningAnyBlobAvailableFailsAfterFailure)
 {
-    getToVerificationCompleted(VerifyCheckResponses::failed);
+    getToVerificationCompleted(ActionStatus::failed);
 
     auto blobs = handler->getBlobIds();
     for (const auto& blob : blobs)
@@ -214,7 +214,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 TEST_F(FirmwareHandlerVerificationCompletedTest,
        WriteMetaToVerifyBlobReturnsFailure)
 {
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
 
     std::vector<std::uint8_t> bytes = {0x01, 0x02};
     EXPECT_FALSE(handler->writeMeta(session, 0, bytes));
@@ -226,7 +226,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 TEST_F(FirmwareHandlerVerificationCompletedTest,
        WriteToVerifyBlobReturnsFailure)
 {
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
 
     std::vector<std::uint8_t> bytes = {0x01, 0x02};
     EXPECT_FALSE(handler->write(session, 0, bytes));
@@ -237,7 +237,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
  */
 TEST_F(FirmwareHandlerVerificationCompletedTest, ReadOfVerifyBlobReturnsEmpty)
 {
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
     EXPECT_THAT(handler->read(session, 0, 1), IsEmpty());
 }
 
@@ -250,7 +250,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
     /* If you've started this'll return success, but if it's finished, it won't
      * let you try-again.
      */
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
     EXPECT_CALL(*verifyMockPtr, triggerVerification()).Times(0);
 
     EXPECT_FALSE(handler->commit(session, {}));
@@ -259,7 +259,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 TEST_F(FirmwareHandlerVerificationCompletedTest,
        CommitOnVerifyBlobAfterFailureReturnsFailure)
 {
-    getToVerificationCompleted(VerifyCheckResponses::failed);
+    getToVerificationCompleted(ActionStatus::failed);
     EXPECT_CALL(*verifyMockPtr, triggerVerification()).Times(0);
 
     EXPECT_FALSE(handler->commit(session, {}));
@@ -272,7 +272,7 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 TEST_F(FirmwareHandlerVerificationCompletedTest,
        CloseAfterSuccessChangesStateAddsUpdateBlob)
 {
-    getToVerificationCompleted(VerifyCheckResponses::success);
+    getToVerificationCompleted(ActionStatus::success);
     ASSERT_FALSE(handler->canHandleBlob(updateBlobId));
 
     handler->close(session);

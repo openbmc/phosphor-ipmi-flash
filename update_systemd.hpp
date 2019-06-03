@@ -35,7 +35,7 @@ class SystemdUpdateMechanism : public UpdateInterface
 
     bool triggerUpdate() override;
     void abortUpdate() override;
-    UpdateStatus status() override;
+    ActionStatus status() override;
 
   private:
     sdbusplus::bus::bus bus;

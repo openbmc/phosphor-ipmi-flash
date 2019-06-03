@@ -16,7 +16,7 @@ class UpdateMock : public UpdateInterface
   public:
     MOCK_METHOD0(triggerUpdate, bool());
     MOCK_METHOD0(abortUpdate, void());
-    MOCK_METHOD0(status, UpdateStatus());
+    MOCK_METHOD0(status, ActionStatus());
 };
 
 std::unique_ptr<UpdateInterface> CreateUpdateMock()

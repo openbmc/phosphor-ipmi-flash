@@ -195,8 +195,8 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
                       blobIDs.end());
     }
 
-    VerifyCheckResponses getVerifyStatus();
-    UpdateStatus getUpdateStatus();
+    ActionStatus getVerifyStatus();
+    ActionStatus getActionStatus();
 
     /** List of handlers by type. */
     std::vector<HandlerPack> handlers;
@@ -235,9 +235,9 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
     /** Temporary variable to track whether a blob is open. */
     bool fileOpen = false;
 
-    VerifyCheckResponses lastVerificationResponse = VerifyCheckResponses::other;
+    ActionStatus lastVerificationStatus = ActionStatus::unknown;
 
-    UpdateStatus lastUpdateStatus = UpdateStatus::unknown;
+    ActionStatus lastUpdateStatus = ActionStatus::unknown;
 };
 
 } // namespace ipmi_flash

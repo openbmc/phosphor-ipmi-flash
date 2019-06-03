@@ -175,37 +175,24 @@ bool FirmwareBlobHandler::stat(const std::string& path,
     return true;
 }
 
-VerifyCheckResponses FirmwareBlobHandler::getVerifyStatus()
+ActionStatus FirmwareBlobHandler::getActionStatus()
 {
-    VerifyCheckResponses value = VerifyCheckResponses::other;
+    ActionStatus value = ActionStatus::unknown;
 
     switch (state)
     {
         case UpdateState::verificationPending:
-            value = VerifyCheckResponses::other;
+            value = ActionStatus::unknown;
             break;
         case UpdateState::verificationStarted:
             value = verification->status();
-            lastVerificationResponse = value;
+            lastVerificationStatus = value;
             break;
         case UpdateState::verificationCompleted:
-            value = lastVerificationResponse;
+            value = lastVerificationStatus;
             break;
-        default:
-            break;
-    }
-
-    return value;
-}
-
-UpdateStatus FirmwareBlobHandler::getUpdateStatus()
-{
-    UpdateStatus value = UpdateStatus::unknown;
-
-    switch (state)
-    {
         case UpdateState::updatePending:
-            value = UpdateStatus::unknown;
+            value = ActionStatus::unknown;
             break;
         case UpdateState::updateStarted:
             value = update->status();
@@ -241,43 +228,31 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
 
     meta->metadata.clear();
 
-    if (item->second->activePath == verifyBlobId)
+    if (item->second->activePath == verifyBlobId ||
+        item->second->activePath == updateBlobId)
     {
-        VerifyCheckResponses value = getVerifyStatus();
+        ActionStatus value = getActionStatus();
 
         meta->metadata.push_back(static_cast<std::uint8_t>(value));
 
         /* Change the firmware handler's state and the blob's stat value
          * depending.
          */
-        if (value == VerifyCheckResponses::success ||
-            value == VerifyCheckResponses::failed)
+        if (value == ActionStatus::success || value == ActionStatus::failed)
         {
-            state = UpdateState::verificationCompleted;
-            item->second->flags &= ~blobs::StateFlags::committing;
-
-            if (value == VerifyCheckResponses::success)
+            if (item->second->activePath == verifyBlobId)
             {
-                item->second->flags |= blobs::StateFlags::committed;
+                state = UpdateState::verificationCompleted;
             }
             else
             {
-                item->second->flags |= blobs::StateFlags::commit_error;
+                /* item->second->activePath == updateBlobId */
+                state = UpdateState::updateCompleted;
             }
-        }
-    }
-    else if (item->second->activePath == updateBlobId)
-    {
-        UpdateStatus value = getUpdateStatus();
 
-        meta->metadata.push_back(static_cast<std::uint8_t>(value));
-
-        if (value == UpdateStatus::success || value == UpdateStatus::failed)
-        {
-            state = UpdateState::updateCompleted;
             item->second->flags &= ~blobs::StateFlags::committing;
 
-            if (value == UpdateStatus::success)
+            if (value == ActionStatus::success)
             {
                 item->second->flags |= blobs::StateFlags::committed;
             }
@@ -669,7 +644,7 @@ bool FirmwareBlobHandler::close(uint16_t session)
                  */
                 return false;
             case UpdateState::verificationCompleted:
-                if (lastVerificationResponse == VerifyCheckResponses::success)
+                if (lastVerificationStatus == ActionStatus::success)
                 {
                     state = UpdateState::updatePending;
                     addBlobId(updateBlobId);

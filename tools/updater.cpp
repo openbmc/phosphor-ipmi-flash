@@ -114,8 +114,7 @@ bool pollVerificationStatus(std::uint16_t session,
     using namespace std::chrono_literals;
 
     static constexpr auto verificationSleep = 5s;
-    ipmi_flash::VerifyCheckResponses result =
-        ipmi_flash::VerifyCheckResponses::other;
+    ipmi_flash::ActionStatus result = ipmi_flash::ActionStatus::unknown;
 
     try
     {
@@ -138,22 +137,21 @@ bool pollVerificationStatus(std::uint16_t session,
                 std::fprintf(stderr, "Received invalid metadata response!!!\n");
             }
 
-            result =
-                static_cast<ipmi_flash::VerifyCheckResponses>(resp.metadata[0]);
+            result = static_cast<ipmi_flash::ActionStatus>(resp.metadata[0]);
 
             switch (result)
             {
-                case ipmi_flash::VerifyCheckResponses::failed:
+                case ipmi_flash::ActionStatus::failed:
                     std::fprintf(stderr, "failed\n");
                     exitLoop = true;
                     break;
-                case ipmi_flash::VerifyCheckResponses::other:
+                case ipmi_flash::ActionStatus::unknown:
                     std::fprintf(stderr, "other\n");
                     break;
-                case ipmi_flash::VerifyCheckResponses::running:
+                case ipmi_flash::ActionStatus::running:
                     std::fprintf(stderr, "running\n");
                     break;
-                case ipmi_flash::VerifyCheckResponses::success:
+                case ipmi_flash::ActionStatus::success:
                     std::fprintf(stderr, "success\n");
                     exitLoop = true;
                     break;
@@ -183,7 +181,7 @@ bool pollVerificationStatus(std::uint16_t session,
      * which exceptions from the lower layers allow one to try and delete the
      * blobs to rollback the state and progress.
      */
-    return (result == ipmi_flash::VerifyCheckResponses::success);
+    return (result == ipmi_flash::ActionStatus::success);
 }
 
 bool UpdateHandler::verifyFile(const std::string& target)

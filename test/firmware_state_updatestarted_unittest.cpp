@@ -158,17 +158,17 @@ TEST_F(FirmwareHandlerUpdateStartedTest,
  * stat(session) - this will trigger a check, and the state may change.
  */
 TEST_F(FirmwareHandlerUpdateStartedTest,
-       CallStatChecksUpdateStatusReturnsRunningDoesNotChangeState)
+       CallStatChecksActionStatusReturnsRunningDoesNotChangeState)
 {
     getToUpdateStarted();
     EXPECT_CALL(*updateMockPtr, status())
-        .WillOnce(Return(UpdateStatus::running));
+        .WillOnce(Return(ActionStatus::running));
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::committing;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(UpdateStatus::running));
+        static_cast<std::uint8_t>(ActionStatus::running));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
@@ -176,17 +176,17 @@ TEST_F(FirmwareHandlerUpdateStartedTest,
 }
 
 TEST_F(FirmwareHandlerUpdateStartedTest,
-       CallStatChecksUpdateStatusReturnsFailedChangesStateToCompleted)
+       CallStatChecksActionStatusReturnsFailedChangesStateToCompleted)
 {
     getToUpdateStarted();
     EXPECT_CALL(*updateMockPtr, status())
-        .WillOnce(Return(UpdateStatus::failed));
+        .WillOnce(Return(ActionStatus::failed));
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::commit_error;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(UpdateStatus::failed));
+        static_cast<std::uint8_t>(ActionStatus::failed));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
@@ -194,17 +194,17 @@ TEST_F(FirmwareHandlerUpdateStartedTest,
 }
 
 TEST_F(FirmwareHandlerUpdateStartedTest,
-       CallStatChecksUpdateStatusReturnsSuccessChangesStateToCompleted)
+       CallStatChecksActionStatusReturnsSuccessChangesStateToCompleted)
 {
     getToUpdateStarted();
     EXPECT_CALL(*updateMockPtr, status())
-        .WillOnce(Return(UpdateStatus::success));
+        .WillOnce(Return(ActionStatus::success));
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::committed;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(UpdateStatus::success));
+        static_cast<std::uint8_t>(ActionStatus::success));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);

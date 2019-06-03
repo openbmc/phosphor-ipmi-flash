@@ -68,10 +68,10 @@ void SystemdUpdateMechanism::abortUpdate()
     return;
 }
 
-UpdateStatus SystemdUpdateMechanism::status()
+ActionStatus SystemdUpdateMechanism::status()
 {
     /* For now, don't check if the target failed. */
-    return UpdateStatus::running;
+    return ActionStatus::running;
 }
 
 } // namespace ipmi_flash

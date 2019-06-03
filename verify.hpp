@@ -24,7 +24,7 @@ class VerificationInterface
     virtual void abortVerification() = 0;
 
     /** Check the current state of the verification process. */
-    virtual VerifyCheckResponses status() = 0;
+    virtual ActionStatus status() = 0;
 };
 
 } // namespace ipmi_flash

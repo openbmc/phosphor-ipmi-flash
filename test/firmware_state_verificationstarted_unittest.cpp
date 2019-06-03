@@ -71,13 +71,13 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 {
     getToVerificationStarted(staticLayoutBlobId);
     EXPECT_CALL(*verifyMockPtr, status())
-        .WillOnce(Return(VerifyCheckResponses::running));
+        .WillOnce(Return(ActionStatus::running));
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::committing;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(VerifyCheckResponses::running));
+        static_cast<std::uint8_t>(ActionStatus::running));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
@@ -88,13 +88,13 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 {
     getToVerificationStarted(staticLayoutBlobId);
     EXPECT_CALL(*verifyMockPtr, status())
-        .WillOnce(Return(VerifyCheckResponses::other));
+        .WillOnce(Return(ActionStatus::unknown));
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::committing;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(VerifyCheckResponses::other));
+        static_cast<std::uint8_t>(ActionStatus::unknown));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
@@ -108,13 +108,13 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
      */
     getToVerificationStarted(staticLayoutBlobId);
     EXPECT_CALL(*verifyMockPtr, status())
-        .WillOnce(Return(VerifyCheckResponses::failed));
+        .WillOnce(Return(ActionStatus::failed));
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::commit_error;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(VerifyCheckResponses::failed));
+        static_cast<std::uint8_t>(ActionStatus::failed));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
@@ -129,13 +129,13 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
      */
     getToVerificationStarted(staticLayoutBlobId);
     EXPECT_CALL(*verifyMockPtr, status())
-        .WillOnce(Return(VerifyCheckResponses::success));
+        .WillOnce(Return(ActionStatus::success));
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::committed;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(VerifyCheckResponses::success));
+        static_cast<std::uint8_t>(ActionStatus::success));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);

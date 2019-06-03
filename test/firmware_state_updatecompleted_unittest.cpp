@@ -46,7 +46,7 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
        AttemptToOpenFilesReturnsFailureAfterSuccess)
 {
     /* In state updateCompleted a file is open, which means no others can be. */
-    getToUpdateCompleted(UpdateStatus::success);
+    getToUpdateCompleted(ActionStatus::success);
 
     auto blobsToOpen = handler->getBlobIds();
     for (const auto& blob : blobsToOpen)
@@ -61,14 +61,14 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
 TEST_F(FirmwareHandlerUpdateCompletedTest,
        CallingStatSessionAfterCompletedSuccessReturnsStateWithoutRechecking)
 {
-    getToUpdateCompleted(UpdateStatus::success);
+    getToUpdateCompleted(ActionStatus::success);
     EXPECT_CALL(*updateMockPtr, status()).Times(0);
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::committed;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(UpdateStatus::success));
+        static_cast<std::uint8_t>(ActionStatus::success));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
@@ -78,14 +78,14 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
 TEST_F(FirmwareHandlerUpdateCompletedTest,
        CallingStatSessionAfterCompletedFailureReturnsStateWithoutRechecking)
 {
-    getToUpdateCompleted(UpdateStatus::failed);
+    getToUpdateCompleted(ActionStatus::failed);
     EXPECT_CALL(*updateMockPtr, status()).Times(0);
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 0;
     expectedMeta.blobState = flags | blobs::StateFlags::commit_error;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(UpdateStatus::failed));
+        static_cast<std::uint8_t>(ActionStatus::failed));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);

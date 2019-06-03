@@ -67,9 +67,9 @@ void SystemdVerification::abortVerification()
     /* TODO: Implement this. */
 }
 
-VerifyCheckResponses SystemdVerification::status()
+ActionStatus SystemdVerification::status()
 {
-    VerifyCheckResponses result = VerifyCheckResponses::other;
+    ActionStatus result = ActionStatus::unknown;
 
     std::ifstream ifs;
     ifs.open(checkPath);
@@ -83,15 +83,15 @@ VerifyCheckResponses SystemdVerification::status()
         ifs >> status;
         if (status == "running")
         {
-            result = VerifyCheckResponses::running;
+            result = ActionStatus::running;
         }
         else if (status == "success")
         {
-            result = VerifyCheckResponses::success;
+            result = ActionStatus::success;
         }
         else if (status == "failed")
         {
-            result = VerifyCheckResponses::failed;
+            result = ActionStatus::failed;
         }
     }
 

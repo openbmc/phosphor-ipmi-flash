@@ -21,7 +21,7 @@ class UpdateInterface
     virtual void abortUpdate() = 0;
 
     /** Check the current state of the update process. */
-    virtual UpdateStatus status() = 0;
+    virtual ActionStatus status() = 0;
 };
 
 } // namespace ipmi_flash

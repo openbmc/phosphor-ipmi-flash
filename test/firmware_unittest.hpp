@@ -75,7 +75,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         expectedState(FirmwareBlobHandler::UpdateState::verificationStarted);
     }
 
-    void getToVerificationCompleted(VerifyCheckResponses checkResponse)
+    void getToVerificationCompleted(ActionStatus checkResponse)
     {
         getToVerificationStarted(staticLayoutBlobId);
 
@@ -87,7 +87,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
 
     void getToUpdatePending()
     {
-        getToVerificationCompleted(VerifyCheckResponses::success);
+        getToVerificationCompleted(ActionStatus::success);
 
         handler->close(session);
         expectedState(FirmwareBlobHandler::UpdateState::updatePending);
@@ -103,7 +103,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         expectedState(FirmwareBlobHandler::UpdateState::updateStarted);
     }
 
-    void getToUpdateCompleted(UpdateStatus result)
+    void getToUpdateCompleted(ActionStatus result)
     {
         getToUpdateStarted();
         EXPECT_CALL(*updateMockPtr, status()).WillOnce(Return(result));

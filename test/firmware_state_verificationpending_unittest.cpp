@@ -216,7 +216,7 @@ TEST_F(FirmwareHandlerVerificationPendingTest, StatOnVerifyBlobIdReturnsState)
     expectedMeta.size = 0;
     expectedMeta.blobState = flags;
     expectedMeta.metadata.push_back(
-        static_cast<std::uint8_t>(VerifyCheckResponses::other));
+        static_cast<std::uint8_t>(ActionStatus::unknown));
 
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
