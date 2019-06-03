@@ -240,12 +240,15 @@ bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
     }
     else if (item->second->activePath == updateBlobId)
     {
-        UpdateStatus value;
+        UpdateStatus value = UpdateStatus::unknown;
 
         switch (state)
         {
             case UpdateState::updatePending:
                 value = UpdateStatus::unknown;
+                break;
+            case UpdateState::updateStarted:
+                value = update->status();
                 break;
             default:
                 break;
