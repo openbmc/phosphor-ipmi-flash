@@ -93,11 +93,52 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
 }
 
 /*
+ * stat(blob)
+ */
+TEST_F(FirmwareHandlerUpdateCompletedTest, StatOnActiveImageReturnsFailure)
+{
+    getToUpdateCompleted(ActionStatus::success);
+
+    ASSERT_TRUE(handler->canHandleBlob(activeImageBlobId));
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(activeImageBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerUpdateCompletedTest, StatOnUpdateBlobReturnsFailure)
+{
+    getToUpdateCompleted(ActionStatus::success);
+
+    ASSERT_TRUE(handler->canHandleBlob(updateBlobId));
+
+    blobs::BlobMeta meta;
+    EXPECT_FALSE(handler->stat(updateBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerUpdateCompletedTest, StatOnNormalBlobsReturnsSuccess)
+{
+    getToUpdateCompleted(ActionStatus::success);
+
+    blobs::BlobMeta expected;
+    expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
+    expected.size = 0;
+
+    std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
+    for (const auto& blob : testBlobs)
+    {
+        ASSERT_TRUE(handler->canHandleBlob(blob));
+
+        blobs::BlobMeta meta = {};
+        EXPECT_TRUE(handler->stat(blob, &meta));
+        EXPECT_EQ(expected, meta);
+    }
+}
+
+/*
  * There are the following calls (parameters may vary):
  * canHandleBlob(blob)
  * getBlobIds
  * deleteBlob(blob)
- * stat(blob)
  * close(session)
  * writemeta(session)
  * write(session)
