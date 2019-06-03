@@ -135,12 +135,21 @@ TEST_F(FirmwareHandlerUpdateCompletedTest, StatOnNormalBlobsReturnsSuccess)
 }
 
 /*
+ * writemeta(session)
+ */
+TEST_F(FirmwareHandlerUpdateCompletedTest, WriteMetaToUpdateBlobReturnsFailure)
+{
+    getToUpdateCompleted(ActionStatus::success);
+
+    EXPECT_FALSE(handler->writeMeta(session, 0, {0x01}));
+}
+
+/*
  * There are the following calls (parameters may vary):
  * canHandleBlob(blob)
  * getBlobIds
  * deleteBlob(blob)
  * close(session)
- * writemeta(session)
  * write(session)
  * read(session)
  * commit(session)
