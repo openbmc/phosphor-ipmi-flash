@@ -103,6 +103,16 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         expectedState(FirmwareBlobHandler::UpdateState::updateStarted);
     }
 
+    void getToUpdateCompleted(UpdateStatus result)
+    {
+        getToUpdateStarted();
+        EXPECT_CALL(*updateMockPtr, status()).WillOnce(Return(result));
+
+        blobs::BlobMeta meta;
+        EXPECT_TRUE(handler->stat(session, &meta));
+        expectedState(FirmwareBlobHandler::UpdateState::updateCompleted);
+    }
+
     ImageHandlerMock imageMock;
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {
