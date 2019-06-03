@@ -155,13 +155,33 @@ TEST_F(FirmwareHandlerUpdateCompletedTest, WriteToUpdateBlobReturnsFailure)
 }
 
 /*
+ * commit(session) - returns failure
+ */
+TEST_F(FirmwareHandlerUpdateCompletedTest,
+       CommitOnUpdateBlobAfterSuccessReturnsFailure)
+{
+    getToUpdateCompleted(ActionStatus::success);
+
+    EXPECT_CALL(*updateMockPtr, triggerUpdate()).Times(0);
+    EXPECT_FALSE(handler->commit(session, {}));
+}
+
+TEST_F(FirmwareHandlerUpdateCompletedTest,
+       CommitOnUpdateBlobAfterFailureReturnsFailure)
+{
+    getToUpdateCompleted(ActionStatus::failed);
+
+    EXPECT_CALL(*updateMockPtr, triggerUpdate()).Times(0);
+    EXPECT_FALSE(handler->commit(session, {}));
+}
+
+/*
  * There are the following calls (parameters may vary):
  * canHandleBlob(blob)
  * getBlobIds
  * deleteBlob(blob)
  * close(session)
  * read(session)
- * commit(session)
  */
 
 } // namespace
