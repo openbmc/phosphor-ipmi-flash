@@ -152,8 +152,7 @@ bool FirmwareBlobHandler::deleteBlob(const std::string& path)
  * of the data cached, and any additional pertinent information.  The
  * blob_state on the active files will return the state of the update.
  */
-bool FirmwareBlobHandler::stat(const std::string& path,
-                               struct blobs::BlobMeta* meta)
+bool FirmwareBlobHandler::stat(const std::string& path, blobs::BlobMeta* meta)
 {
     /* We know we support this path because canHandle is called ahead */
     if (path == verifyBlobId || path == activeImageBlobId ||
@@ -212,7 +211,7 @@ ActionStatus FirmwareBlobHandler::getActionStatus()
  * Return stat information on an open session.  It therefore must be an active
  * handle to either the active image or active hash.
  */
-bool FirmwareBlobHandler::stat(uint16_t session, struct blobs::BlobMeta* meta)
+bool FirmwareBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
 {
     auto item = lookup.find(session);
     if (item == lookup.end())

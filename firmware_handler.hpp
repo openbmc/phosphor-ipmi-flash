@@ -153,7 +153,7 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
     bool canHandleBlob(const std::string& path) override;
     std::vector<std::string> getBlobIds() override;
     bool deleteBlob(const std::string& path) override;
-    bool stat(const std::string& path, struct blobs::BlobMeta* meta) override;
+    bool stat(const std::string& path, blobs::BlobMeta* meta) override;
     bool open(uint16_t session, uint16_t flags,
               const std::string& path) override;
     std::vector<uint8_t> read(uint16_t session, uint32_t offset,
@@ -164,7 +164,7 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
                    const std::vector<uint8_t>& data) override;
     bool commit(uint16_t session, const std::vector<uint8_t>& data) override;
     bool close(uint16_t session) override;
-    bool stat(uint16_t session, struct blobs::BlobMeta* meta) override;
+    bool stat(uint16_t session, blobs::BlobMeta* meta) override;
     bool expire(uint16_t session) override;
 
     bool triggerVerification();
