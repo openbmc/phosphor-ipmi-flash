@@ -32,7 +32,7 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         blobs, data, CreateVerifyMock(), CreateUpdateMock());
 
-    struct blobs::BlobMeta meta;
+    blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));
     EXPECT_EQ(FirmwareBlobHandler::UpdateFlags::ipmi, meta.blobState);
 }
