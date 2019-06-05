@@ -644,72 +644,56 @@ bool FirmwareBlobHandler::close(uint16_t session)
         return false;
     }
 
-    /* Are you closing the verify blob? */
-    if (item->second->activePath == verifyBlobId)
+    switch (state)
     {
-        switch (state)
-        {
-            case UpdateState::verificationPending:
-                /* They haven't triggered, therefore closing is uninteresting.
-                 */
-                break;
-            case UpdateState::verificationStarted:
-                /* TODO: If they close this blob before verification finishes,
-                 * that's an abort.
-                 */
-                return false;
-            case UpdateState::verificationCompleted:
-                if (lastVerificationStatus == ActionStatus::success)
-                {
-                    state = UpdateState::updatePending;
-                    addBlobId(updateBlobId);
-                    removeBlobId(verifyBlobId);
-                }
-                else
-                {
-                    /* TODO: Verification failed, what now? */
-                }
-                break;
-            default:
-                break;
-        }
-        /* Must be verificationPending... not yet started, they may re-open and
-         * trigger verification.
-         */
-    }
-    else if (item->second->activePath == updateBlobId)
-    {
-        switch (state)
-        {
-            case UpdateState::updatePending:
-                /* They haven't triggered the update, therefore this is
-                 * uninteresting. */
-                break;
-            case UpdateState::updateStarted:
-                /* TODO: handle closing while update is running!. */
-                break;
-            case UpdateState::updateCompleted:
-                if (lastUpdateStatus == ActionStatus::failed)
-                {
-                    /* TODO: lOG something? */
-                }
+        case UpdateState::uploadInProgress:
+            /* They are closing a data pathway (image, tarball, hash). */
+            state = UpdateState::verificationPending;
 
-                state = UpdateState::notYetStarted;
-                removeBlobId(updateBlobId);
-                removeBlobId(activeImageBlobId);
-                removeBlobId(activeHashBlobId);
-                break;
-            default:
-                break;
-        }
-    }
-    else
-    {
-        /* They are closing a data pathway (image, tarball, hash). */
-        state = UpdateState::verificationPending;
+            /* Add verify blob ID now that we can expect it. */
+            addBlobId(verifyBlobId);
+            break;
+        case UpdateState::verificationPending:
+            /* They haven't triggered, therefore closing is uninteresting.
+             */
+            break;
+        case UpdateState::verificationStarted:
+            /* TODO: If they close this blob before verification finishes,
+             * that's an abort.
+             */
+            return false;
+        case UpdateState::verificationCompleted:
+            if (lastVerificationStatus == ActionStatus::success)
+            {
+                state = UpdateState::updatePending;
+                addBlobId(updateBlobId);
+                removeBlobId(verifyBlobId);
+            }
+            else
+            {
+                /* TODO: Verification failed, what now? */
+            }
+            break;
+        case UpdateState::updatePending:
+            /* They haven't triggered the update, therefore this is
+             * uninteresting. */
+            break;
+        case UpdateState::updateStarted:
+            /* TODO: handle closing while update is running!. */
+            break;
+        case UpdateState::updateCompleted:
+            if (lastUpdateStatus == ActionStatus::failed)
+            {
+                /* TODO: lOG something? */
+            }
 
-        /* Add verify blob ID now that we can expect it. */
-        addBlobId(verifyBlobId);
+            state = UpdateState::notYetStarted;
+            removeBlobId(updateBlobId);
+            removeBlobId(activeImageBlobId);
+            removeBlobId(activeHashBlobId);
+            break;
+        default:
+            break;
     }
 
     if (item->second->dataHandler)
