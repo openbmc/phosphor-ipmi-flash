@@ -202,9 +202,38 @@ TEST_F(FirmwareHandlerUpdateCompletedTest, GetBlobListProvidesExpectedBlobs)
 }
 
 /*
+ * close(session) - closes everything out and returns to state not-yet-started.
+ * It doesn't go and clean out any update artifacts that may be present on the
+ * system.  It's up to the update implementation to deal with this before
+ * marking complete.
+ */
+TEST_F(FirmwareHandlerUpdateCompletedTest,
+       ClosingOnUpdateBlobIdAfterSuccessReturnsToNotYetStartedAndCleansBlobList)
+{
+    getToUpdateCompleted(ActionStatus::success);
+
+    handler->close(session);
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+
+    std::vector<std::string> expected = {hashBlobId, staticLayoutBlobId};
+    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+}
+
+TEST_F(FirmwareHandlerUpdateCompletedTest,
+       ClosingOnUpdateBlobIdAfterFailureReturnsToNotYetStartedAndCleansBlobList)
+{
+    getToUpdateCompleted(ActionStatus::failed);
+
+    handler->close(session);
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+
+    std::vector<std::string> expected = {hashBlobId, staticLayoutBlobId};
+    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+}
+
+/*
  * There are the following calls (parameters may vary):
- * deleteBlob(blob)
- * close(session)
+ * TODO: deleteBlob(blob)
  */
 
 } // namespace

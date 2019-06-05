@@ -637,6 +637,10 @@ bool FirmwareBlobHandler::close(uint16_t session)
     {
         switch (state)
         {
+            case UpdateState::verificationPending:
+                /* They haven't triggered, therefore closing is uninteresting.
+                 */
+                break;
             case UpdateState::verificationStarted:
                 /* TODO: If they close this blob before verification finishes,
                  * that's an abort.
@@ -652,7 +656,6 @@ bool FirmwareBlobHandler::close(uint16_t session)
                 else
                 {
                     /* TODO: Verification failed, what now? */
-                    state = UpdateState::notYetStarted;
                 }
                 break;
             default:
@@ -664,7 +667,29 @@ bool FirmwareBlobHandler::close(uint16_t session)
     }
     else if (item->second->activePath == updateBlobId)
     {
-        /* nothing interesting. */
+        switch (state)
+        {
+            case UpdateState::updatePending:
+                /* They haven't triggered the update, therefore this is
+                 * uninteresting. */
+                break;
+            case UpdateState::updateStarted:
+                /* TODO: handle closing while update is running!. */
+                break;
+            case UpdateState::updateCompleted:
+                if (lastUpdateStatus == ActionStatus::failed)
+                {
+                    /* TODO: lOG something? */
+                }
+
+                state = UpdateState::notYetStarted;
+                removeBlobId(updateBlobId);
+                removeBlobId(activeImageBlobId);
+                removeBlobId(activeHashBlobId);
+                break;
+            default:
+                break;
+        }
     }
     else
     {
