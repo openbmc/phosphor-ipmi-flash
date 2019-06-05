@@ -21,6 +21,7 @@ namespace
 {
 
 using ::testing::IsEmpty;
+using ::testing::UnorderedElementsAreArray;
 
 /*
  * There are the following calls (parameters may vary):
@@ -188,9 +189,20 @@ TEST_F(FirmwareHandlerUpdateCompletedTest, ReadingFromUpdateBlobReturnsNothing)
 }
 
 /*
- * There are the following calls (parameters may vary):
- * canHandleBlob(blob)
  * getBlobIds
+ * canHandleBlob(blob)
+ */
+TEST_F(FirmwareHandlerUpdateCompletedTest, GetBlobListProvidesExpectedBlobs)
+{
+    getToUpdateCompleted(ActionStatus::success);
+
+    std::vector<std::string> expected = {updateBlobId, hashBlobId,
+                                         activeImageBlobId, staticLayoutBlobId};
+    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+}
+
+/*
+ * There are the following calls (parameters may vary):
  * deleteBlob(blob)
  * close(session)
  */
