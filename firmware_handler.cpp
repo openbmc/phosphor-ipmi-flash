@@ -360,7 +360,6 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
             if (path == verifyBlobId)
             {
                 verifyImage.flags = flags;
-                verifyImage.state = Session::State::open;
 
                 lookup[session] = &verifyImage;
 
@@ -378,7 +377,6 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
             if (path == updateBlobId)
             {
                 updateImage.flags = flags;
-                updateImage.state = Session::State::open;
 
                 lookup[session] = &updateImage;
 
@@ -476,7 +474,6 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     curr->flags = flags;
     curr->dataHandler = d->handler;
     curr->imageHandler = h->handler;
-    curr->state = Session::State::open;
 
     lookup[session] = curr;
 
@@ -705,7 +702,6 @@ bool FirmwareBlobHandler::close(uint16_t session)
         item->second->imageHandler->close();
     }
 
-    item->second->state = Session::State::closed;
     lookup.erase(item);
     fileOpen = false;
     return true;

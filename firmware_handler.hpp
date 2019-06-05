@@ -29,8 +29,7 @@ struct Session
      * @param[in] the active path to which this corresponds.
      */
     explicit Session(const std::string& path) :
-        dataHandler(nullptr), imageHandler(nullptr), flags(0),
-        state(State::closed), activePath(path)
+        dataHandler(nullptr), imageHandler(nullptr), flags(0), activePath(path)
     {
     }
 
@@ -47,16 +46,6 @@ struct Session
 
     /** The flags used to open the session. */
     std::uint16_t flags;
-
-    /** A sesion can be for an image (or tarball) or the hash. */
-    enum class State
-    {
-        open = 0,
-        closed = 1,
-    };
-
-    /** The current state of this session. */
-    State state;
 
     /** The active path. */
     std::string activePath;
