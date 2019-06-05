@@ -20,6 +20,8 @@ namespace ipmi_flash
 namespace
 {
 
+using ::testing::IsEmpty;
+
 /*
  * There are the following calls (parameters may vary):
  * canHandleBlob(blob)
@@ -176,12 +178,21 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
 }
 
 /*
+ * read(session) - nothing to read here.
+ */
+TEST_F(FirmwareHandlerUpdateCompletedTest, ReadingFromUpdateBlobReturnsNothing)
+{
+    getToUpdateCompleted(ActionStatus::success);
+
+    EXPECT_THAT(handler->read(session, 0, 1), IsEmpty());
+}
+
+/*
  * There are the following calls (parameters may vary):
  * canHandleBlob(blob)
  * getBlobIds
  * deleteBlob(blob)
  * close(session)
- * read(session)
  */
 
 } // namespace
