@@ -108,8 +108,7 @@ void UpdateHandler::sendFile(const std::string& target, const std::string& path)
 
 /* Poll an open verification session.  Handling closing the session is not yet
  * owned by this method. */
-bool pollVerificationStatus(std::uint16_t session,
-                            ipmiblob::BlobInterface* blob)
+bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
 {
     using namespace std::chrono_literals;
 
@@ -217,7 +216,7 @@ bool UpdateHandler::verifyFile(const std::string& target)
     std::fprintf(stderr,
                  "Calling stat on verification session to check status\n");
 
-    if (pollVerificationStatus(session, blob))
+    if (pollStatus(session, blob))
     {
         std::fprintf(stderr, "Verification returned success\n");
         success = true;
@@ -255,7 +254,7 @@ void updaterMain(UpdateHandler* updater, const std::string& imagePath,
     std::fprintf(stderr, "Sending over the hash file.\n");
     updater->sendFile(ipmi_flash::hashBlobId, signaturePath);
 
-    /* Trigger the verification by opening the verify file. */
+    /* Trigger the verification by opening and committing the verify file. */
     std::fprintf(stderr, "Opening the verification file\n");
     if (updater->verifyFile(ipmi_flash::verifyBlobId))
     {
@@ -264,6 +263,24 @@ void updaterMain(UpdateHandler* updater, const std::string& imagePath,
     else
     {
         std::fprintf(stderr, "failed\n");
+        throw ToolException("Verification failed");
+    }
+
+    /* Trigger the update by opening and committing the update file. */
+    std::fprintf(stderr, "Opening the update file\n");
+    if (updater->verifyFile(ipmi_flash::updateBlobId))
+    {
+        std::fprintf(stderr, "succeeded\n");
+    }
+    else
+    {
+        /* Depending on the update mechanism used, this may be uninteresting.
+         * For instance, for the static layout, we use the reboot update
+         * mechanism.  Which doesn't always lead to a successful return before
+         * the BMC starts shutting down services.
+         */
+        std::fprintf(stderr, "failed\n");
+        throw ToolException("Update failed");
     }
 }
 

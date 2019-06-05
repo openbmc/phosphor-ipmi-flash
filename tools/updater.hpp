@@ -59,8 +59,7 @@ class UpdateHandler
  * @param[in] blob - pointer to blob interface implementation object.
  * @return true if the verification was successul.
  */
-bool pollVerificationStatus(std::uint16_t session,
-                            ipmiblob::BlobInterface* blob);
+bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob);
 
 /**
  * Attempt to update the BMC's firmware using the interface provided.
