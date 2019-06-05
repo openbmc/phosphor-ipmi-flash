@@ -301,24 +301,7 @@ bool FirmwareBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
 bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
                                const std::string& path)
 {
-    /* Check that they've opened for writing - read back not currently
-     * supported.
-     */
-    if ((flags & blobs::OpenFlags::write) == 0)
-    {
-        return false;
-    }
-
-    /* Is the verification process underway? */
-    if (state == UpdateState::verificationStarted)
-    {
-        return false;
-    }
-
     /* Is there an open session already? We only allow one at a time.
-     *
-     * TODO: Temporarily using a simple boolean flag until there's a full
-     * session object to check.
      *
      * Further on this, if there's an active session to the hash we don't allow
      * re-opening the image, and if we have the image open, we don't allow
@@ -334,53 +317,9 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         return false;
     }
 
-    /* When in this state, they can only open the updateBlobId */
-    if (state == UpdateState::updatePending)
-    {
-        if (path != updateBlobId)
-        {
-            return false;
-        }
-        else
-        {
-            /* Similarly to verifyBlodId, this is special. */
-            updateImage.flags = flags;
-            updateImage.state = Session::State::open;
-
-            lookup[session] = &updateImage;
-
-            fileOpen = true;
-            return true;
-        }
-    }
-
-    /* Handle opening the verifyBlobId --> we know the image and hash aren't
-     * open because of the fileOpen check.
-     *
-     * The file must be opened for writing, but no transport mechanism specified
-     * since it's irrelevant.
+    /* The active blobs are only meant to indicate status that something has
+     * opened the image file or the hash file.
      */
-    if (path == verifyBlobId)
-    {
-        /* In this case, there's no image handler to use, or data handler,
-         * simply set up a session.
-         */
-        verifyImage.flags = flags;
-        verifyImage.state = Session::State::open;
-
-        lookup[session] = &verifyImage;
-
-        fileOpen = true;
-        return true;
-    }
-
-    /* There are two abstractions at play, how you get the data and how you
-     * handle that data. such that, whether the data comes from the PCI bridge
-     * or LPC bridge is not connected to whether the data goes into a static
-     * layout flash update or a UBI tarball.
-     */
-
-    /* 2) there isn't, so what are they opening? */
     if (path == activeImageBlobId || path == activeHashBlobId)
     {
         /* 2a) are they opening the active image? this can only happen if they
@@ -391,6 +330,83 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
          */
         return false;
     }
+
+    /* Check that they've opened for writing - read back not currently
+     * supported.
+     */
+    if ((flags & blobs::OpenFlags::write) == 0)
+    {
+        return false;
+    }
+
+    /* Because canHandleBlob is called before open, we know that if they try to
+     *  open the verifyBlobId, they're in a state where it's present.
+     */
+
+    switch (state)
+    {
+        case UpdateState::uploadInProgress:
+            /* Unreachable code because if it's started a file is open. */
+            break;
+        case UpdateState::verificationPending:
+            /* Handle opening the verifyBlobId --> we know the image and hash
+             * aren't open because of the fileOpen check.  They can still open
+             * other files from this state to transition back into
+             * uploadInProgress.
+             *
+             * The file must be opened for writing, but no transport mechanism
+             * specified since it's irrelevant.
+             */
+            if (path == verifyBlobId)
+            {
+                verifyImage.flags = flags;
+                verifyImage.state = Session::State::open;
+
+                lookup[session] = &verifyImage;
+
+                fileOpen = true;
+                return true;
+            }
+            break;
+        case UpdateState::verificationStarted:
+            /* Unreachable code because if it's started a file is open. */
+            return false;
+        case UpdateState::verificationCompleted:
+            /* Unreachable code because if it's started a file is open. */
+            return false;
+        case UpdateState::updatePending:
+        {
+            /* When in this state, they can only open the updateBlobId */
+            if (path != updateBlobId)
+            {
+                return false;
+            }
+            else
+            {
+                updateImage.flags = flags;
+                updateImage.state = Session::State::open;
+
+                lookup[session] = &updateImage;
+
+                fileOpen = true;
+                return true;
+            }
+        }
+        case UpdateState::updateStarted:
+            /* Unreachable code because if it's started a file is open. */
+            break;
+        case UpdateState::updateCompleted:
+            /* Unreachable code because if it's started a file is open. */
+            break;
+        default:
+            break;
+    }
+
+    /* There are two abstractions at play, how you get the data and how you
+     * handle that data. such that, whether the data comes from the PCI bridge
+     * or LPC bridge is not connected to whether the data goes into a static
+     * layout flash update or a UBI tarball.
+     */
 
     /* Check the flags for the transport mechanism: if none match we don't
      * support what they request.
