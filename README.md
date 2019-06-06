@@ -109,6 +109,6 @@ Variable                     | Default                    | Meaning
 ## Flash State Machine Details
 
 [This document](ipmi_flash.md) describes the details of the state machine
-implemented and how differnet interactions with it will respond.  This also
+implemented and how different interactions with it will respond.  This also
 describes how a host-side tool is expected to talk to it (triggering different
 states and actions).
