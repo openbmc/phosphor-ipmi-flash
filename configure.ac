@@ -181,15 +181,15 @@ AS_IF([test "x$HASH_FILENAME" == "x"], [HASH_FILENAME="/tmp/bmc.sig"])
 AC_DEFINE_UNQUOTED([HASH_FILENAME], ["$HASH_FILENAME"], [The file to use for the hash provided.])
 
 AC_ARG_VAR(VERIFY_STATUS_FILENAME, [The file checked for the verification status.])
-AS_IF([test "xVERIFY_STATUS_FILENAME" == "x"], [VERIFY_STATUS_FILENAME="/tmp/bmc.verify"])
+AS_IF([test "x$VERIFY_STATUS_FILENAME" == "x"], [VERIFY_STATUS_FILENAME="/tmp/bmc.verify"])
 AC_DEFINE_UNQUOTED([VERIFY_STATUS_FILENAME], ["$VERIFY_STATUS_FILENAME"], [The file checked for the verification status.])
 
 AC_ARG_VAR(VERIFY_DBUS_SERVICE, [The systemd service started for verification.])
-AS_IF([test "xVERIFY_DBUS_SERVICE" == "x"], [VERIFY_DBUS_SERVICE="verify_image.service"])
+AS_IF([test "x$VERIFY_DBUS_SERVICE" == "x"], [VERIFY_DBUS_SERVICE="verify_image.service"])
 AC_DEFINE_UNQUOTED([VERIFY_DBUS_SERVICE], ["$VERIFY_DBUS_SERVICE"], [The systemd service started for verification.])
 
 AC_ARG_VAR(UPDATE_DBUS_SERVICE, [The systemd service started for updating the BMC.])
-AS_IF([test "xUPDATE_DBUS_SERVICE" == "x"], [UPDATE_DBUS_SERVICE="update-bmc.service"])
+AS_IF([test "x$UPDATE_DBUS_SERVICE" == "x"], [UPDATE_DBUS_SERVICE="update-bmc.service"])
 AC_DEFINE_UNQUOTED([UPDATE_DBUS_SERVICE], ["$UPDATE_DBUS_SERVICE"], [The systemd service started for updating the BMC.])
 
 
