@@ -199,9 +199,8 @@ bool UpdateHandler::verifyFile(const std::string& target)
                             std::string(b.what()));
     }
 
-    std::fprintf(
-        stderr,
-        "Committing to verification file to trigger verification service\n");
+    std::fprintf(stderr, "Committing to %s to trigger service\n",
+                 target.c_str());
 
     try
     {
@@ -213,17 +212,17 @@ bool UpdateHandler::verifyFile(const std::string& target)
                             std::string(b.what()));
     }
 
-    std::fprintf(stderr,
-                 "Calling stat on verification session to check status\n");
+    std::fprintf(stderr, "Calling stat on %s session to check status\n",
+                 target.c_str());
 
     if (pollStatus(session, blob))
     {
-        std::fprintf(stderr, "Verification returned success\n");
+        std::fprintf(stderr, "Returned success\n");
         success = true;
     }
     else
     {
-        std::fprintf(stderr, "Verification returned non-success (could still "
+        std::fprintf(stderr, "Returned non-success (could still "
                              "be running (unlikely))\n");
     }
 
