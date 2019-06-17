@@ -156,6 +156,9 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
     bool stat(uint16_t session, blobs::BlobMeta* meta) override;
     bool expire(uint16_t session) override;
 
+    void abortProcess();
+
+    void abortVerification();
     bool triggerVerification();
     bool triggerUpdate();
 
