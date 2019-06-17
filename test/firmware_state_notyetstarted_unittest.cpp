@@ -41,6 +41,18 @@ class FirmwareHandlerNotYetStartedTest : public IpmiOnlyFirmwareStaticTest
  * returned by getBlobIds.  It is tested in firmware_canhandle_unittest
  */
 
+/*
+ * deleteBlob()
+ */
+TEST_F(FirmwareHandlerNotYetStartedTest, DeleteBlobInStateReturnsFalse)
+{
+    auto blobs = handler->getBlobIds();
+    for (const auto& b : blobs)
+    {
+        EXPECT_FALSE(handler->deleteBlob(b));
+    }
+}
+
 /* canHandleBlob, getBlobIds */
 TEST_F(FirmwareHandlerNotYetStartedTest, GetBlobListValidateListContents)
 {

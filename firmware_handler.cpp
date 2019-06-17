@@ -114,6 +114,22 @@ bool FirmwareBlobHandler::deleteBlob(const std::string& path)
         return false;
     }
 
+    /* only includes states where fileOpen == false */
+    switch (state)
+    {
+        case UpdateState::notYetStarted:
+            /* Trying to delete anything at this point has no effect and returns
+             * false.
+             */
+            return false;
+        case UpdateState::verificationPending:
+            break;
+        case UpdateState::updatePending:
+            break;
+        default:
+            break;
+    }
+
     /* TODO: implement. */
     return false;
 }
