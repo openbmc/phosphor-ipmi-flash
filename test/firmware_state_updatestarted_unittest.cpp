@@ -212,8 +212,22 @@ TEST_F(FirmwareHandlerUpdateStartedTest,
 }
 
 /*
- * TODO: close(session) - this will abort.
+ * close(session) - this will abort.
  */
+TEST_F(FirmwareHandlerUpdateStartedTest, CloseOnUpdateDuringUpdateAbortsProcess)
+{
+    getToUpdateStarted();
+    EXPECT_CALL(*updateMockPtr, abort()).Times(1);
+
+    EXPECT_TRUE(handler->close(session));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
 
 } // namespace
 } // namespace ipmi_flash

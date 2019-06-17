@@ -678,7 +678,11 @@ bool FirmwareBlobHandler::close(uint16_t session)
              * uninteresting. */
             break;
         case UpdateState::updateStarted:
-            /* TODO: handle closing while update is running!. */
+            /* Abort without checking to see if it happened to finish. Require
+             * the caller to stat() deliberately.
+             */
+            abortUpdate();
+            abortProcess();
             break;
         case UpdateState::updateCompleted:
             if (lastUpdateStatus == ActionStatus::failed)
@@ -752,6 +756,11 @@ bool FirmwareBlobHandler::triggerVerification()
     }
 
     return result;
+}
+
+void FirmwareBlobHandler::abortUpdate()
+{
+    update->abort();
 }
 
 bool FirmwareBlobHandler::triggerUpdate()

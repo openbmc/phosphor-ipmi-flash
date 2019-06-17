@@ -160,6 +160,7 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
 
     void abortVerification();
     bool triggerVerification();
+    void abortUpdate();
     bool triggerUpdate();
 
     /** Allow grabbing the current state. */
