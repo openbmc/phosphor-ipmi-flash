@@ -25,7 +25,6 @@ check_PROGRAMS = \
 	firmware_handler_unittest \
 	firmware_stat_unittest \
 	firmware_canhandle_unittest \
-	firmware_open_unittest \
 	firmware_write_unittest \
 	firmware_writemeta_unittest \
 	firmware_close_unittest \
@@ -62,9 +61,6 @@ firmware_stat_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_canhandle_unittest_SOURCES = firmware_canhandle_unittest.cpp
 firmware_canhandle_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
-
-firmware_open_unittest_SOURCES = firmware_open_unittest.cpp
-firmware_open_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_write_unittest_SOURCES = firmware_write_unittest.cpp
 firmware_write_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
