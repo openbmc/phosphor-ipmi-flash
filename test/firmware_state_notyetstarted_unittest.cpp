@@ -71,10 +71,6 @@ TEST_F(FirmwareHandlerNotYetStartedTest, GetBlobListValidateListContents)
     }
 }
 
-/* TODO: Try deleting some blobs -- in this state it should just return failure,
- * but it's not yet implemented
- */
-
 /* stat(blob_id) */
 TEST_F(FirmwareHandlerNotYetStartedTest, StatEachBlobIdVerifyResults)
 {
