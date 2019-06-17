@@ -63,9 +63,10 @@ TEST_F(FirmwareHandlerUpdateStartedTest, VerifyListOfBlobs)
 {
     getToUpdateStarted();
 
-    std::vector<std::string> expected = {updateBlobId, hashBlobId,
-                                         activeImageBlobId, staticLayoutBlobId};
-    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+    EXPECT_THAT(
+        handler->getBlobIds(),
+        UnorderedElementsAreArray(
+            {updateBlobId, hashBlobId, activeImageBlobId, staticLayoutBlobId}));
 }
 
 /*
@@ -234,10 +235,8 @@ TEST_F(FirmwareHandlerUpdateStartedTest, CloseOnUpdateDuringUpdateAbortsProcess)
 
     EXPECT_TRUE(handler->close(session));
 
-    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
-
     EXPECT_THAT(handler->getBlobIds(),
-                UnorderedElementsAreArray(expectedBlobs));
+                UnorderedElementsAreArray(startingBlobs));
 
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
 }

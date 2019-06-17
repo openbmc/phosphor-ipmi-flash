@@ -53,9 +53,9 @@ TEST_F(FirmwareHandlerUpdatePendingTest, GetBlobsListHasExpectedValues)
 {
     getToUpdatePending();
 
-    std::vector<std::string> expected = {updateBlobId, activeImageBlobId,
-                                         hashBlobId, staticLayoutBlobId};
-    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray({updateBlobId, activeImageBlobId,
+                                           hashBlobId, staticLayoutBlobId}));
 }
 
 /*
@@ -167,8 +167,7 @@ TEST_F(FirmwareHandlerUpdatePendingTest, StatOnNormalBlobsReturnsSuccess)
     expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
     expected.size = 0;
 
-    std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
-    for (const auto& blob : testBlobs)
+    for (const auto& blob : startingBlobs)
     {
         ASSERT_TRUE(handler->canHandleBlob(blob));
 
@@ -249,9 +248,8 @@ TEST_F(FirmwareHandlerUpdatePendingTest, DeleteUpdateAbortsProcess)
     ASSERT_TRUE(handler->canHandleBlob(updateBlobId));
     EXPECT_TRUE(handler->deleteBlob(updateBlobId));
 
-    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
     EXPECT_THAT(handler->getBlobIds(),
-                UnorderedElementsAreArray(expectedBlobs));
+                UnorderedElementsAreArray(startingBlobs));
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
 }
 
@@ -264,9 +262,8 @@ TEST_F(FirmwareHandlerUpdatePendingTest, DeleteActiveImageAbortsProcess)
     ASSERT_TRUE(handler->canHandleBlob(activeImageBlobId));
     EXPECT_TRUE(handler->deleteBlob(activeImageBlobId));
 
-    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
     EXPECT_THAT(handler->getBlobIds(),
-                UnorderedElementsAreArray(expectedBlobs));
+                UnorderedElementsAreArray(startingBlobs));
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
 }
 
@@ -279,9 +276,8 @@ TEST_F(FirmwareHandlerUpdatePendingTest, DeleteStaticLayoutAbortsProcess)
     ASSERT_TRUE(handler->canHandleBlob(staticLayoutBlobId));
     EXPECT_TRUE(handler->deleteBlob(staticLayoutBlobId));
 
-    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
     EXPECT_THAT(handler->getBlobIds(),
-                UnorderedElementsAreArray(expectedBlobs));
+                UnorderedElementsAreArray(startingBlobs));
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
 }
 
@@ -294,9 +290,8 @@ TEST_F(FirmwareHandlerUpdatePendingTest, DeleteHashAbortsProcess)
     ASSERT_TRUE(handler->canHandleBlob(hashBlobId));
     EXPECT_TRUE(handler->deleteBlob(hashBlobId));
 
-    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
     EXPECT_THAT(handler->getBlobIds(),
-                UnorderedElementsAreArray(expectedBlobs));
+                UnorderedElementsAreArray(startingBlobs));
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
 }
 
