@@ -232,9 +232,22 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
 }
 
 /*
- * There are the following calls (parameters may vary):
- * TODO: deleteBlob(blob)
+ * deleteBlob(blob)
  */
+TEST_F(FirmwareHandlerUpdateCompletedTest, DeleteBlobReturnsFalse)
+{
+    /* Try deleting all blobs, it doesn't really matter which though because you
+     * cannot close out an open session, therefore you must fail to delete
+     * anything unless everything is closed.
+     */
+    getToUpdateCompleted(ActionStatus::success);
+
+    auto blobs = handler->getBlobIds();
+    for (const auto& b : blobs)
+    {
+        EXPECT_FALSE(handler->deleteBlob(b));
+    }
+}
 
 } // namespace
 } // namespace ipmi_flash

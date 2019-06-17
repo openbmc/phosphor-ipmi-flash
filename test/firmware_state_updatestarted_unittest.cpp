@@ -69,8 +69,21 @@ TEST_F(FirmwareHandlerUpdateStartedTest, VerifyListOfBlobs)
 }
 
 /*
- * TODO: deleteBlob(blob)
+ * deleteBlob(blob)
  */
+TEST_F(FirmwareHandlerUpdateStartedTest, DeleteBlobReturnsFalse)
+{
+    /* Try deleting all blobs, it doesn't really matter which though because you
+     * cannot close out an open session, therefore you must fail to delete
+     * anything unless everything is closed.
+     */
+    getToUpdateStarted();
+    auto blobs = handler->getBlobIds();
+    for (const auto& b : blobs)
+    {
+        EXPECT_FALSE(handler->deleteBlob(b));
+    }
+}
 
 /*
  * stat(blob)

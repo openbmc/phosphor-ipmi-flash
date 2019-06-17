@@ -146,7 +146,22 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
  * updateBlobId.
  */
 
-/* TODO: deleteBlob(blob) */
+/*
+ * deleteBlob(blob)
+ */
+TEST_F(FirmwareHandlerVerificationStartedTest, DeleteBlobReturnsFalse)
+{
+    /* Try deleting all blobs, it doesn't really matter which though because you
+     * cannot close out an open session, therefore you must fail to delete
+     * anything unless everything is closed.
+     */
+    getToVerificationStarted(staticLayoutBlobId);
+    auto blobs = handler->getBlobIds();
+    for (const auto& b : blobs)
+    {
+        EXPECT_FALSE(handler->deleteBlob(b));
+    }
+}
 
 /*
  * stat(blob)
