@@ -71,9 +71,6 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
         lpc = (1 << 10), /* Expect to send contents over LPC bridge. */
     };
 
-    /* TODO: All of the states may not be required - if we add abort() commands
-     * appropriately.
-     */
     /** The state of the firmware update process. */
     enum class UpdateState
     {
