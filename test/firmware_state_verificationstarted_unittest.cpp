@@ -142,10 +142,6 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
     expectedState(FirmwareBlobHandler::UpdateState::verificationCompleted);
 }
 
-/* TODO: Once verificationCompleted is the state, canHandleBlob should accept
- * updateBlobId.
- */
-
 /*
  * deleteBlob(blob)
  */
