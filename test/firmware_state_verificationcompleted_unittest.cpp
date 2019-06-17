@@ -297,8 +297,19 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 
 /*
  * close(session) - close on the verify blobid:
- * TODO:  2. if unsuccessful doesn't add update blob id, changes state to?
+ *   2. if unsuccessful it aborts.
  */
+TEST_F(FirmwareHandlerVerificationCompletedTest, CloseAfterFailureAborts)
+{
+    getToVerificationCompleted(ActionStatus::failed);
+    ASSERT_FALSE(handler->canHandleBlob(updateBlobId));
+
+    handler->close(session);
+    ASSERT_FALSE(handler->canHandleBlob(updateBlobId));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+    std::vector<std::string> expected = {staticLayoutBlobId, hashBlobId};
+    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+}
 
 } // namespace
 } // namespace ipmi_flash
