@@ -655,10 +655,11 @@ bool FirmwareBlobHandler::close(uint16_t session)
              */
             break;
         case UpdateState::verificationStarted:
-            /* TODO: If they close this blob before verification finishes,
-             * that's an abort.
+            /* Abort without checking to see if it happened to finish. Require
+             * the caller to stat() deliberately.
              */
-            return false;
+            abortVerification();
+            abortProcess();
         case UpdateState::verificationCompleted:
             if (lastVerificationStatus == ActionStatus::success)
             {
@@ -721,6 +722,24 @@ std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t session,
                                                uint32_t requestedSize)
 {
     return {};
+}
+
+void FirmwareBlobHandler::abortProcess()
+{
+    /* Closing of open files is handled from close() -- Reaching here from
+     * delete may never be supported.
+     */
+    removeBlobId(verifyBlobId);
+    removeBlobId(updateBlobId);
+    removeBlobId(activeImageBlobId);
+    removeBlobId(activeHashBlobId);
+
+    state = UpdateState::notYetStarted;
+}
+
+void FirmwareBlobHandler::abortVerification()
+{
+    verification->abort();
 }
 
 bool FirmwareBlobHandler::triggerVerification()
