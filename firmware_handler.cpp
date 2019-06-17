@@ -126,12 +126,12 @@ bool FirmwareBlobHandler::deleteBlob(const std::string& path)
             abortProcess();
             return true;
         case UpdateState::updatePending:
-            break;
+            abortProcess();
+            return true;
         default:
             break;
     }
 
-    /* TODO: implement. */
     return false;
 }
 

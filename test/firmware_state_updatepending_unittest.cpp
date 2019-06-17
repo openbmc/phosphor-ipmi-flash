@@ -235,8 +235,70 @@ TEST_F(FirmwareHandlerUpdatePendingTest,
 }
 
 /*
- * TODO: deleteBlob(blob)
+ * deleteBlob(blob)
  */
+TEST_F(FirmwareHandlerUpdatePendingTest, DeleteUpdateAbortsProcess)
+{
+    /* It doesn't matter what blob id is used to delete in the design, so just
+     * delete the update blob id
+     */
+    getToUpdatePending();
+
+    EXPECT_CALL(*updateMockPtr, abort()).Times(0);
+
+    ASSERT_TRUE(handler->canHandleBlob(updateBlobId));
+    EXPECT_TRUE(handler->deleteBlob(updateBlobId));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
+
+TEST_F(FirmwareHandlerUpdatePendingTest, DeleteActiveImageAbortsProcess)
+{
+    getToUpdatePending();
+
+    EXPECT_CALL(*updateMockPtr, abort()).Times(0);
+
+    ASSERT_TRUE(handler->canHandleBlob(activeImageBlobId));
+    EXPECT_TRUE(handler->deleteBlob(activeImageBlobId));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
+
+TEST_F(FirmwareHandlerUpdatePendingTest, DeleteStaticLayoutAbortsProcess)
+{
+    getToUpdatePending();
+
+    EXPECT_CALL(*updateMockPtr, abort()).Times(0);
+
+    ASSERT_TRUE(handler->canHandleBlob(staticLayoutBlobId));
+    EXPECT_TRUE(handler->deleteBlob(staticLayoutBlobId));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
+
+TEST_F(FirmwareHandlerUpdatePendingTest, DeleteHashAbortsProcess)
+{
+    getToUpdatePending();
+
+    EXPECT_CALL(*updateMockPtr, abort()).Times(0);
+
+    ASSERT_TRUE(handler->canHandleBlob(hashBlobId));
+    EXPECT_TRUE(handler->deleteBlob(hashBlobId));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
 
 } // namespace
 } // namespace ipmi_flash
