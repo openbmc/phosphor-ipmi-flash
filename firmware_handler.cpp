@@ -679,12 +679,10 @@ bool FirmwareBlobHandler::close(uint16_t session)
             if (lastUpdateStatus == ActionStatus::failed)
             {
                 /* TODO: lOG something? */
+                std::fprintf(stderr, "Update failed\n");
             }
 
-            state = UpdateState::notYetStarted;
-            removeBlobId(updateBlobId);
-            removeBlobId(activeImageBlobId);
-            removeBlobId(activeHashBlobId);
+            abortProcess();
             break;
         default:
             break;
