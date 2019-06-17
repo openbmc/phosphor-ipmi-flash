@@ -48,10 +48,9 @@ TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveImage)
     /* Opening the image file will add the active image blob id */
     openToInProgress(staticLayoutBlobId);
 
-    std::vector<std::string> expectedAfterImage = {
-        staticLayoutBlobId, hashBlobId, activeImageBlobId};
     EXPECT_THAT(handler->getBlobIds(),
-                UnorderedElementsAreArray(expectedAfterImage));
+                UnorderedElementsAreArray(
+                    {staticLayoutBlobId, hashBlobId, activeImageBlobId}));
 }
 
 TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveHash)
@@ -59,10 +58,9 @@ TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveHash)
     /* Opening the image file will add the active image blob id */
     openToInProgress(hashBlobId);
 
-    std::vector<std::string> expectedAfterImage = {
-        staticLayoutBlobId, hashBlobId, activeHashBlobId};
     EXPECT_THAT(handler->getBlobIds(),
-                UnorderedElementsAreArray(expectedAfterImage));
+                UnorderedElementsAreArray(
+                    {staticLayoutBlobId, hashBlobId, activeHashBlobId}));
 }
 
 /*

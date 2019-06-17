@@ -91,9 +91,10 @@ TEST_F(FirmwareHandlerVerificationCompletedTest,
 TEST_F(FirmwareHandlerVerificationCompletedTest, GetBlobIdsReturnsExpectedList)
 {
     getToVerificationCompleted(ActionStatus::success);
-    std::vector<std::string> expected = {verifyBlobId, hashBlobId,
-                                         activeImageBlobId, staticLayoutBlobId};
-    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+    EXPECT_THAT(
+        handler->getBlobIds(),
+        UnorderedElementsAreArray(
+            {verifyBlobId, hashBlobId, activeImageBlobId, staticLayoutBlobId}));
 }
 
 /*
@@ -307,8 +308,8 @@ TEST_F(FirmwareHandlerVerificationCompletedTest, CloseAfterFailureAborts)
     handler->close(session);
     ASSERT_FALSE(handler->canHandleBlob(updateBlobId));
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
-    std::vector<std::string> expected = {staticLayoutBlobId, hashBlobId};
-    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(startingBlobs));
 }
 
 } // namespace

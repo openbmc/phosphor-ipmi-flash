@@ -59,13 +59,11 @@ TEST_F(FirmwareHandlerNotYetStartedTest, GetBlobListValidateListContents)
     /* By only checking that the hash and static blob ids are present to start
      * with, we're also verifying others aren't.
      */
-    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
-
     EXPECT_THAT(handler->getBlobIds(),
-                UnorderedElementsAreArray(expectedBlobs));
+                UnorderedElementsAreArray(startingBlobs));
 
     /* Verify canHandleBlob is reading from the same list (basically) */
-    for (const auto& blob : expectedBlobs)
+    for (const auto& blob : startingBlobs)
     {
         EXPECT_TRUE(handler->canHandleBlob(blob));
     }
