@@ -269,5 +269,22 @@ TEST_F(FirmwareHandlerUploadInProgressTest, CommitAgainstHashFileReturnsFailure)
     EXPECT_FALSE(handler->commit(session, {}));
 }
 
+/*
+ * deleteBlob(blob)
+ */
+TEST_F(FirmwareHandlerUploadInProgressTest, DeleteBlobReturnsFalse)
+{
+    /* Try deleting all blobs, it doesn't really matter which though because you
+     * cannot close out an open session, therefore you must fail to delete
+     * anything unless everything is closed.
+     */
+    openToInProgress(staticLayoutBlobId);
+    auto blobs = handler->getBlobIds();
+    for (const auto& b : blobs)
+    {
+        EXPECT_FALSE(handler->deleteBlob(b));
+    }
+}
+
 } // namespace
 } // namespace ipmi_flash
