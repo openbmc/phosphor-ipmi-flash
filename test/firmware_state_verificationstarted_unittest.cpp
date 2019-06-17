@@ -263,8 +263,22 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
 /*
  * close(session) - close while state if verificationStarted without calling
  * stat first will abort.
- * TODO: implement this test when we implement abort.
  */
+TEST_F(FirmwareHandlerVerificationStartedTest,
+       CloseOnVerifyDuringVerificationAbortsProcess)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+    EXPECT_CALL(*verifyMockPtr, abort()).Times(1);
+
+    EXPECT_TRUE(handler->close(session));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
 
 } // namespace
 } // namespace ipmi_flash
