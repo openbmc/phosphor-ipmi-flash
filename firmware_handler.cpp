@@ -661,7 +661,13 @@ bool FirmwareBlobHandler::close(uint16_t session)
             }
             else
             {
-                /* TODO: Verification failed, what now? */
+                /* Verification failed, and the host-tool knows this by calling
+                 * stat(), which triggered the state change to
+                 * verificationCompleted.
+                 *
+                 * Therefore, let's abort the process at this point.
+                 */
+                abortProcess();
             }
             break;
         case UpdateState::updatePending:
