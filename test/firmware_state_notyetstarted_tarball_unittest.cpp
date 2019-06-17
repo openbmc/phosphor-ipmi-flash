@@ -70,12 +70,13 @@ TEST_F(FirmwareHandlerNotYetStartedUbitTest,
 {
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
 
-    std::vector<std::string> expected = {hashBlobId, ubiTarballBlobId};
-    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray({hashBlobId, ubiTarballBlobId}));
 
     openToInProgress(ubiTarballBlobId);
-    expected = {hashBlobId, ubiTarballBlobId, activeImageBlobId};
-    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(
+                    {hashBlobId, ubiTarballBlobId, activeImageBlobId}));
 }
 
 } // namespace

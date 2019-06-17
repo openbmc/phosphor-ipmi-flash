@@ -122,6 +122,8 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     std::uint16_t session = 1;
     std::uint16_t flags =
         blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+
+    std::vector<std::string> startingBlobs = {staticLayoutBlobId, hashBlobId};
 };
 
 class IpmiOnlyFirmwareTest : public ::testing::Test

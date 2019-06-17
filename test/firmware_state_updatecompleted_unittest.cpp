@@ -196,9 +196,10 @@ TEST_F(FirmwareHandlerUpdateCompletedTest, GetBlobListProvidesExpectedBlobs)
 {
     getToUpdateCompleted(ActionStatus::success);
 
-    std::vector<std::string> expected = {updateBlobId, hashBlobId,
-                                         activeImageBlobId, staticLayoutBlobId};
-    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+    EXPECT_THAT(
+        handler->getBlobIds(),
+        UnorderedElementsAreArray(
+            {updateBlobId, hashBlobId, activeImageBlobId, staticLayoutBlobId}));
 }
 
 /*
@@ -215,8 +216,8 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
     handler->close(session);
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
 
-    std::vector<std::string> expected = {hashBlobId, staticLayoutBlobId};
-    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(startingBlobs));
 }
 
 TEST_F(FirmwareHandlerUpdateCompletedTest,
@@ -227,8 +228,8 @@ TEST_F(FirmwareHandlerUpdateCompletedTest,
     handler->close(session);
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
 
-    std::vector<std::string> expected = {hashBlobId, staticLayoutBlobId};
-    EXPECT_THAT(handler->getBlobIds(), UnorderedElementsAreArray(expected));
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(startingBlobs));
 }
 
 /*
