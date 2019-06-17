@@ -97,51 +97,25 @@ std::vector<std::string> FirmwareBlobHandler::getBlobIds()
 /*
  * Per the design, this mean abort, and this will trigger whatever
  * appropriate actions are required to abort the process.
- *
- * You cannot delete a blob that has an open handle in the system, therefore
- * this is never called if there's an open session.  Guaranteed by the blob
- * manager.
  */
 bool FirmwareBlobHandler::deleteBlob(const std::string& path)
 {
-    const std::string* toDelete;
-
-    /* You cannot delete the verify blob -- trying to delete it, currently has
-     * no impact.
-     * TODO: Should trying to delete this cause an abort?
+    /* This cannot be called if you have an open session to the path.
+     * You can have an open session to verify/update/hash/image, but not active*
+     *
+     * Therefore, if this is called, it's either on a blob that isn't presently
+     * open.  However, there could be open blobs, so we need to close all open
+     * sessions. This closing on our is an invalid handler behavior.  Therefore,
+     * we cannot close an active session.  To enforce this, we only allow
+     * deleting if there isn't a file open.
      */
-    if (path == verifyBlobId)
+    if (fileOpen)
     {
         return false;
     }
 
-    if (path == hashBlobId || path == activeHashBlobId)
-    {
-        /* They're deleting the hash. */
-        toDelete = &activeHashBlobId;
-    }
-    else
-    {
-        /* They're deleting the image. */
-        toDelete = &activeImageBlobId;
-    }
-
-    auto it = std::find_if(
-        blobIDs.begin(), blobIDs.end(),
-        [toDelete](const auto& iter) { return (iter == *toDelete); });
-    if (it == blobIDs.end())
-    {
-        /* Somehow they've asked to delete something we didn't say we could
-         * handle.
-         */
-        return false;
-    }
-
-    blobIDs.erase(it);
-
-    /* TODO: Handle aborting the process and fixing up the state. */
-
-    return true;
+    /* TODO: implement. */
+    return false;
 }
 
 /*

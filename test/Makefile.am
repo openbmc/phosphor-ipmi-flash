@@ -29,7 +29,6 @@ check_PROGRAMS = \
 	firmware_write_unittest \
 	firmware_writemeta_unittest \
 	firmware_close_unittest \
-	firmware_delete_unittest \
 	firmware_sessionstat_unittest \
 	firmware_commit_unittest \
 	file_handler_unittest \
@@ -75,9 +74,6 @@ firmware_writemeta_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_close_unittest_SOURCES = firmware_close_unittest.cpp
 firmware_close_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
-
-firmware_delete_unittest_SOURCES = firmware_delete_unittest.cpp
-firmware_delete_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
 
 firmware_sessionstat_unittest_SOURCES = firmware_sessionstat_unittest.cpp
 firmware_sessionstat_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
