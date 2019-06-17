@@ -123,7 +123,8 @@ bool FirmwareBlobHandler::deleteBlob(const std::string& path)
              */
             return false;
         case UpdateState::verificationPending:
-            break;
+            abortProcess();
+            return true;
         case UpdateState::updatePending:
             break;
         default:

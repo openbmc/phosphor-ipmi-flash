@@ -64,8 +64,70 @@ TEST_F(FirmwareHandlerVerificationPendingTest, VerifyBlobIdAvailableInState)
 }
 
 /*
- * delete(blob) TODO: Implement this.
+ * delete(blob)
  */
+TEST_F(FirmwareHandlerVerificationPendingTest, DeleteVerifyPendingAbortsProcess)
+{
+    /* It doesn't matter what blob id is used to delete in the design, so just
+     * delete the verify blob id
+     */
+    getToVerificationPending(staticLayoutBlobId);
+
+    EXPECT_CALL(*verifyMockPtr, abort()).Times(0);
+
+    ASSERT_TRUE(handler->canHandleBlob(verifyBlobId));
+    EXPECT_TRUE(handler->deleteBlob(verifyBlobId));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest, DeleteActiveImageAbortsProcess)
+{
+    getToVerificationPending(staticLayoutBlobId);
+
+    EXPECT_CALL(*verifyMockPtr, abort()).Times(0);
+
+    ASSERT_TRUE(handler->canHandleBlob(activeImageBlobId));
+    EXPECT_TRUE(handler->deleteBlob(activeImageBlobId));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest, DeleteStaticLayoutAbortsProcess)
+{
+    getToVerificationPending(staticLayoutBlobId);
+
+    EXPECT_CALL(*verifyMockPtr, abort()).Times(0);
+
+    ASSERT_TRUE(handler->canHandleBlob(staticLayoutBlobId));
+    EXPECT_TRUE(handler->deleteBlob(staticLayoutBlobId));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest, DeleteHashAbortsProcess)
+{
+    getToVerificationPending(staticLayoutBlobId);
+
+    EXPECT_CALL(*verifyMockPtr, abort()).Times(0);
+
+    ASSERT_TRUE(handler->canHandleBlob(hashBlobId));
+    EXPECT_TRUE(handler->deleteBlob(hashBlobId));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
 
 /*
  * stat(blob)
