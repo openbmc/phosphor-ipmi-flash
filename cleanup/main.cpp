@@ -14,18 +14,30 @@
  * limitations under the License.
  */
 
+#include "config.h"
+
+#include "cleanup.hpp"
 #include "util.hpp"
+
+#include <blobs-ipmid/blobs.hpp>
+#include <memory>
+#include <phosphor-logging/log.hpp>
+#include <string>
+#include <vector>
 
 namespace ipmi_flash
 {
+std::vector<std::string> files = {STATIC_HANDLER_STAGED_NAME, TARBALL_STAGED_NAME, HASH_FILENAME, VERIFY_STATUS_FILENAME};
+}
 
-const std::string updateBlobId = "/flash/update";
-const std::string verifyBlobId = "/flash/verify";
-const std::string hashBlobId = "/flash/hash";
-const std::string activeImageBlobId = "/flash/active/image";
-const std::string activeHashBlobId = "/flash/active/hash";
-const std::string staticLayoutBlobId = "/flash/image";
-const std::string ubiTarballBlobId = "/flash/tarball";
-const std::string cleanupBlobId = "/flash/cleanup";
+extern "C" std::unique_ptr<blobs::GenericBlobInterface> createHandler()
+{
+    auto handler = ipmi_flash::FileCleanupHandler::CreateCleanupHandler(ipmi_flash::cleanupBlobId, files);
 
-} // namespace ipmi_flash
+    if (!handler) {
+        log<level::ERR>("Unable to create FileCleanupHandle for Firmware");
+        return nullptr;
+    }
+
+    return handler;
+}
