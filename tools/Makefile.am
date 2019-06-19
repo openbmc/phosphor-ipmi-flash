@@ -16,3 +16,5 @@ libupdater_la_SOURCES = \
 	pci.cpp \
 	p2a.cpp \
 	$(top_srcdir)/internal/sys.cpp
+
+SUBDIRS = . test
