@@ -9,7 +9,7 @@
 namespace host_tool
 {
 
-class UpdateHandlerMock : public UpdateHandler
+class UpdateHandlerMock : public UpdateHandlerInterface
 {
   public:
     MOCK_METHOD1(checkAvailable, bool(const std::string&));

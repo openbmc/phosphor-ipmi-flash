@@ -8,16 +8,10 @@
 namespace host_tool
 {
 
-/** Object that actually handles the update itself. */
-class UpdateHandler
+class UpdateHandlerInterface
 {
   public:
-    UpdateHandler(ipmiblob::BlobInterface* blob, DataInterface* handler) :
-        blob(blob), handler(handler)
-    {
-    }
-
-    virtual ~UpdateHandler() = default;
+    virtual ~UpdateHandlerInterface() = default;
 
     /**
      * Check if the goal firmware is listed in the blob_list and that the
@@ -26,16 +20,16 @@ class UpdateHandler
      * @param[in] goalFirmware - the firmware to check /flash/image
      * /flash/tarball, etc.
      */
-    virtual bool checkAvailable(const std::string& goalFirmware);
+    virtual bool checkAvailable(const std::string& goalFirmware) = 0;
 
     /**
      * Send the file contents at path to the blob id, target.
      *
      * @param[in] target - the blob id
      * @param[in] path - the source file path
-     * @throw ToolException on failure.
      */
-    virtual void sendFile(const std::string& target, const std::string& path);
+    virtual void sendFile(const std::string& target,
+                          const std::string& path) = 0;
 
     /**
      * Trigger verification.
@@ -43,9 +37,32 @@ class UpdateHandler
      * @param[in] target - the verification blob id (may support multiple in the
      * future.
      * @return true if verified, false if verification errors.
+     */
+    virtual bool verifyFile(const std::string& target) = 0;
+};
+
+/** Object that actually handles the update itself. */
+class UpdateHandler : public UpdateHandlerInterface
+{
+  public:
+    UpdateHandler(ipmiblob::BlobInterface* blob, DataInterface* handler) :
+        blob(blob), handler(handler)
+    {
+    }
+
+    ~UpdateHandler() = default;
+
+    bool checkAvailable(const std::string& goalFirmware) override;
+
+    /**
+     * @throw ToolException on failure.
+     */
+    void sendFile(const std::string& target, const std::string& path) override;
+
+    /**
      * @throw ToolException on failure (TODO: throw on timeout.)
      */
-    virtual bool verifyFile(const std::string& target);
+    bool verifyFile(const std::string& target) override;
 
   private:
     ipmiblob::BlobInterface* blob;
@@ -69,7 +86,7 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob);
  * @param[in] signaturePath - the path to the signature file.
  * @throws ToolException on failures.
  */
-void updaterMain(UpdateHandler* updater, const std::string& imagePath,
+void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
                  const std::string& signaturePath);
 
 } // namespace host_tool

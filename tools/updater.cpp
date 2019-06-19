@@ -107,7 +107,8 @@ void UpdateHandler::sendFile(const std::string& target, const std::string& path)
 }
 
 /* Poll an open verification session.  Handling closing the session is not yet
- * owned by this method. */
+ * owned by this method.
+ */
 bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
 {
     using namespace std::chrono_literals;
@@ -230,7 +231,7 @@ bool UpdateHandler::verifyFile(const std::string& target)
     return (success == true);
 }
 
-void updaterMain(UpdateHandler* updater, const std::string& imagePath,
+void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
                  const std::string& signaturePath)
 {
     /* TODO(venture): Add optional parameter to specify the flash type, default
