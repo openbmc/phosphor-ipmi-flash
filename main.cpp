@@ -124,5 +124,5 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
         return nullptr;
     }
 
-    return std::move(handler);
+    return handler;
 }
