@@ -41,13 +41,6 @@ check_PROGRAMS = \
 	firmware_state_updatecompleted_unittest \
 	firmware_state_notyetstarted_tarball_unittest
 
-if BUILD_HOST_TOOL
-check_PROGRAMS += \
-	tools_bt_unittest \
-	tools_lpc_unittest \
-	tools_updater_unittest
-endif
-
 TESTS = $(check_PROGRAMS)
 
 firmware_createhandler_unittest_SOURCES = firmware_createhandler_unittest.cpp
@@ -106,14 +99,3 @@ firmware_state_updatecompleted_unittest_LDADD = $(top_builddir)/libfirmwareblob_
 
 firmware_state_notyetstarted_tarball_unittest_SOURCES = firmware_state_notyetstarted_tarball_unittest.cpp
 firmware_state_notyetstarted_tarball_unittest_LDADD = $(top_builddir)/libfirmwareblob_common.la
-
-if BUILD_HOST_TOOL
-tools_bt_unittest_SOURCES = tools_bt_unittest.cpp
-tools_bt_unittest_LDADD = $(top_builddir)/tools/libupdater.la
-
-tools_lpc_unittest_SOURCES = tools_lpc_unittest.cpp
-tools_lpc_unittest_LDADD = $(top_builddir)/tools/libupdater.la
-
-tools_updater_unittest_SOURCES = tools_updater_unittest.cpp
-tools_updater_unittest_LDADD = $(top_builddir)/tools/libupdater.la
-endif
