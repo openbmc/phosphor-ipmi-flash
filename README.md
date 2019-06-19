@@ -92,6 +92,12 @@ Option                 | Meaning
 `--enable-aspeed-lpc`  | Use with ASPEED parts.
 `--enable-nuvoton-lpc` | Use with Nuvoton parts.
 
+There are also options to control an optional clean up mechanism.
+
+Option                    | Meaning
+------------------------- | -------
+`--enable-cleanup-delete` | Provide a simple blob id that deletes artifacts.
+
 ### Internal Configuration Details
 
 The following variables can be set to whatever you wish, however they have
