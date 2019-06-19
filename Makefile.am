@@ -94,3 +94,7 @@ SUBDIRS = . test
 if BUILD_HOST_TOOL
 SUBDIRS += tools
 endif
+
+if BUILD_CLEANUP_DELETE
+SUBDIRS += cleanup
+endif

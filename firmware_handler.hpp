@@ -100,11 +100,12 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
      * @param[in] verification - pointer to object for triggering verification
      * @param[in] update - point to object for triggering the update
      */
-    static std::unique_ptr<GenericBlobInterface> CreateFirmwareBlobHandler(
-        const std::vector<HandlerPack>& firmwares,
-        const std::vector<DataHandlerPack>& transports,
-        std::unique_ptr<TriggerableActionInterface> verification,
-        std::unique_ptr<TriggerableActionInterface> update);
+    static std::unique_ptr<blobs::GenericBlobInterface>
+        CreateFirmwareBlobHandler(
+            const std::vector<HandlerPack>& firmwares,
+            const std::vector<DataHandlerPack>& transports,
+            std::unique_ptr<TriggerableActionInterface> verification,
+            std::unique_ptr<TriggerableActionInterface> update);
 
     /**
      * Create a FirmwareBlobHandler.

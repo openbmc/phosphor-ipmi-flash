@@ -13,19 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "fs.hpp"
 
-#include "util.hpp"
+#include <filesystem>
+#include <string>
 
 namespace ipmi_flash
 {
 
-const std::string updateBlobId = "/flash/update";
-const std::string verifyBlobId = "/flash/verify";
-const std::string hashBlobId = "/flash/hash";
-const std::string activeImageBlobId = "/flash/active/image";
-const std::string activeHashBlobId = "/flash/active/hash";
-const std::string staticLayoutBlobId = "/flash/image";
-const std::string ubiTarballBlobId = "/flash/tarball";
-const std::string cleanupBlobId = "/flash/cleanup";
+void FileSystem::remove(const std::string& path) const
+{
+    namespace fs = std::filesystem;
+
+    try
+    {
+        (void)fs::remove(path);
+    }
+    catch (...)
+    {
+        return;
+    }
+
+    return;
+}
+
+FileSystem fileSystemHelper;
 
 } // namespace ipmi_flash

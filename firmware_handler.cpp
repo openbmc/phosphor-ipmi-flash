@@ -21,6 +21,7 @@
 #include "util.hpp"
 
 #include <algorithm>
+#include <blobs-ipmid/blobs.hpp>
 #include <cstdint>
 #include <cstring>
 #include <fstream>

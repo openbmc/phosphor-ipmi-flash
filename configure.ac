@@ -32,6 +32,9 @@ AS_IF([test "x$enable_tests" = "xyes"], [enable_lpc_bridge=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_aspeed_lpc=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_nuvoton_lpc=yes])
 
+# If building tests, enable building all cleanup handler options.
+AS_IF([test "x$enable_tests" = "xyes"], [enable_cleanup_delete=yes])
+
 # Checks for programs.
 AC_PROG_CXX
 AM_PROG_AR
@@ -89,6 +92,12 @@ AC_ARG_ENABLE([reboot-update],
 AS_IF([test "x$enable_reboot_update" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_REBOOT_UPDATE], [CXXFLAGS])
 ])
+
+# Enable the cleanup handle that deletes the temporary files.
+AC_ARG_ENABLE([cleanup-delete],
+    AS_HELP_STRING([--enable-cleanup-delete],
+                   [Enable use of the delete files cleanup mechanism.]))
+AM_CONDITIONAL([BUILD_CLEANUP_DELETE], [test "x$enable_cleanup_delete" = "xyes"])
 
 # Enable static layout for firmware image staging.
 AC_ARG_ENABLE([static-layout],
@@ -321,5 +330,5 @@ AS_IF([test "x$enable_oe_sdk" == "xyes"],
 )
 
 # Create configured output
-AC_CONFIG_FILES([Makefile test/Makefile tools/Makefile])
+AC_CONFIG_FILES([Makefile test/Makefile tools/Makefile cleanup/Makefile cleanup/test/Makefile])
 AC_OUTPUT
