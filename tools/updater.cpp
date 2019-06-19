@@ -107,7 +107,8 @@ void UpdateHandler::sendFile(const std::string& target, const std::string& path)
 }
 
 /* Poll an open verification session.  Handling closing the session is not yet
- * owned by this method. */
+ * owned by this method.
+ */
 bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
 {
     using namespace std::chrono_literals;
