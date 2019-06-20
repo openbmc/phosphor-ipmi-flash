@@ -231,6 +231,28 @@ bool UpdateHandler::verifyFile(const std::string& target)
     return (success == true);
 }
 
+void UpdateHandler::cleanArtifacts()
+{
+    /* open(), commit(), close() */
+    std::uint16_t session;
+
+    /* Errors aren't important for this call. */
+    try
+    {
+        std::fprintf(stderr, "Opening the cleanup blob\n");
+        session =
+            blob->openBlob(ipmi_flash::cleanupBlobId,
+                           static_cast<std::uint16_t>(blobs::OpenFlags::write));
+        std::fprintf(stderr, "Committing to the cleanup blob\n");
+        blob->commit(session, {});
+        std::fprintf(stderr, "Closing cleanup blob\n");
+        blob->closeBlob(session);
+    }
+    catch (...)
+    {
+    }
+}
+
 void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
                  const std::string& signaturePath)
 {
@@ -245,42 +267,51 @@ void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
     }
 
     /* Yay, our data handler is supported. */
-
-    /* Send over the firmware image. */
-    std::fprintf(stderr, "Sending over the firmware image.\n");
-    updater->sendFile(ipmi_flash::staticLayoutBlobId, imagePath);
-
-    /* Send over the hash contents. */
-    std::fprintf(stderr, "Sending over the hash file.\n");
-    updater->sendFile(ipmi_flash::hashBlobId, signaturePath);
-
-    /* Trigger the verification by opening and committing the verify file. */
-    std::fprintf(stderr, "Opening the verification file\n");
-    if (updater->verifyFile(ipmi_flash::verifyBlobId))
+    try
     {
-        std::fprintf(stderr, "succeeded\n");
-    }
-    else
-    {
-        std::fprintf(stderr, "failed\n");
-        throw ToolException("Verification failed");
-    }
 
-    /* Trigger the update by opening and committing the update file. */
-    std::fprintf(stderr, "Opening the update file\n");
-    if (updater->verifyFile(ipmi_flash::updateBlobId))
-    {
-        std::fprintf(stderr, "succeeded\n");
-    }
-    else
-    {
-        /* Depending on the update mechanism used, this may be uninteresting.
-         * For instance, for the static layout, we use the reboot update
-         * mechanism.  Which doesn't always lead to a successful return before
-         * the BMC starts shutting down services.
+        /* Send over the firmware image. */
+        std::fprintf(stderr, "Sending over the firmware image.\n");
+        updater->sendFile(ipmi_flash::staticLayoutBlobId, imagePath);
+
+        /* Send over the hash contents. */
+        std::fprintf(stderr, "Sending over the hash file.\n");
+        updater->sendFile(ipmi_flash::hashBlobId, signaturePath);
+
+        /* Trigger the verification by opening and committing the verify file.
          */
-        std::fprintf(stderr, "failed\n");
-        throw ToolException("Update failed");
+        std::fprintf(stderr, "Opening the verification file\n");
+        if (updater->verifyFile(ipmi_flash::verifyBlobId))
+        {
+            std::fprintf(stderr, "succeeded\n");
+        }
+        else
+        {
+            std::fprintf(stderr, "failed\n");
+            throw ToolException("Verification failed");
+        }
+
+        /* Trigger the update by opening and committing the update file. */
+        std::fprintf(stderr, "Opening the update file\n");
+        if (updater->verifyFile(ipmi_flash::updateBlobId))
+        {
+            std::fprintf(stderr, "succeeded\n");
+        }
+        else
+        {
+            /* Depending on the update mechanism used, this may be
+             * uninteresting. For instance, for the static layout, we use the
+             * reboot update mechanism.  Which doesn't always lead to a
+             * successful return before the BMC starts shutting down services.
+             */
+            std::fprintf(stderr, "failed\n");
+            throw ToolException("Update failed");
+        }
+    }
+    catch (...)
+    {
+        updater->cleanArtifacts();
+        throw;
     }
 }
 

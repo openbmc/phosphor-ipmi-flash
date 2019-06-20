@@ -39,6 +39,11 @@ class UpdateHandlerInterface
      * @return true if verified, false if verification errors.
      */
     virtual bool verifyFile(const std::string& target) = 0;
+
+    /**
+     * Cleanup the artifacts by triggering this action.
+     */
+    virtual void cleanArtifacts() = 0;
 };
 
 /** Object that actually handles the update itself. */
@@ -63,6 +68,8 @@ class UpdateHandler : public UpdateHandlerInterface
      * @throw ToolException on failure (TODO: throw on timeout.)
      */
     bool verifyFile(const std::string& target) override;
+
+    void cleanArtifacts() override;
 
   private:
     ipmiblob::BlobInterface* blob;
