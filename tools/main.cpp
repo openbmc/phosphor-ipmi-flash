@@ -33,6 +33,7 @@
 #include <ipmiblob/blob_handler.hpp>
 #include <ipmiblob/ipmi_handler.hpp>
 #include <iterator>
+#include <limits>
 #include <memory>
 #include <string>
 #include <vector>
@@ -78,6 +79,8 @@ int main(int argc, char* argv[])
     char* valueEnd = nullptr;
     long address = 0;
     long length = 0;
+    std::uint32_t hostAddress = 0;
+    std::uint32_t hostLength = 0;
 
     while (1)
     {
@@ -133,6 +136,13 @@ int main(int argc, char* argv[])
                     usage(argv[0]);
                     exit(EXIT_FAILURE);
                 }
+                if (address > std::numeric_limits<std::uint32_t>::max())
+                {
+                    std::fprintf(stderr, "Address beyond 32-bit limit.\n");
+                    usage(argv[0]);
+                    exit(EXIT_FAILURE);
+                }
+                hostAddress = static_cast<std::uint32_t>(address);
                 break;
             case 'l':
                 length = std::strtol(&optarg[0], &valueEnd, 0);
@@ -141,6 +151,13 @@ int main(int argc, char* argv[])
                     usage(argv[0]);
                     exit(EXIT_FAILURE);
                 }
+                if (length > std::numeric_limits<std::uint32_t>::max())
+                {
+                    std::fprintf(stderr, "Length beyond 32-bit limit.\n");
+                    usage(argv[0]);
+                    exit(EXIT_FAILURE);
+                }
+                hostLength = static_cast<std::uint32_t>(length);
                 break;
             default:
                 usage(argv[0]);
@@ -177,13 +194,13 @@ int main(int argc, char* argv[])
         }
         else if (interface == IPMILPC)
         {
-            if (address == 0 || length == 0)
+            if (hostAddress == 0 || hostLength == 0)
             {
                 std::fprintf(stderr, "Address or Length were 0\n");
                 exit(EXIT_FAILURE);
             }
             handler = std::make_unique<host_tool::LpcDataHandler>(
-                &blob, &devmem, address, length);
+                &blob, &devmem, hostAddress, hostLength);
         }
         else if (interface == IPMIPCI)
         {

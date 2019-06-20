@@ -18,7 +18,7 @@ TEST(LpcHandleTest, verifySendsFileContents)
     ipmiblob::BlobInterfaceMock blobMock;
     HostIoInterfaceMock ioMock;
 
-    LpcDataHandler handler(&blobMock, &ioMock, 0, 0, &sysMock);
+    LpcDataHandler handler(&blobMock, &ioMock, 0xfedc1000, 0x1000, &sysMock);
     std::uint16_t session = 0xbeef;
     std::string filePath = "/asdf";
 

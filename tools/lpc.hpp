@@ -22,7 +22,7 @@ class LpcDataHandler : public DataInterface
 {
   public:
     LpcDataHandler(ipmiblob::BlobInterface* blob, HostIoInterface* io,
-                   long address, long length,
+                   std::uint32_t address, std::uint32_t length,
                    const internal::Sys* sys = &internal::sys_impl) :
         blob(blob),
         io(io), address(address), length(length), sys(sys){};
@@ -36,8 +36,8 @@ class LpcDataHandler : public DataInterface
   private:
     ipmiblob::BlobInterface* blob;
     HostIoInterface* io;
-    long address;
-    long length;
+    std::uint32_t address;
+    std::uint32_t length;
     const internal::Sys* sys;
 };
 

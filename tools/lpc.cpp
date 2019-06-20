@@ -28,8 +28,8 @@ bool LpcDataHandler::sendContents(const std::string& input,
     LpcRegion host_lpc_buf;
 
     /* TODO: Remove hard-coded configuration used with test machine. */
-    host_lpc_buf.address = 0xfedc1000;
-    host_lpc_buf.length = 0x1000;
+    host_lpc_buf.address = address;
+    host_lpc_buf.length = length;
 
     std::vector<std::uint8_t> payload(sizeof(host_lpc_buf));
     std::memcpy(payload.data(), &host_lpc_buf, sizeof(host_lpc_buf));
