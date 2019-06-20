@@ -18,7 +18,8 @@ AM_LDFLAGS = \
 check_PROGRAMS = \
 	tools_bt_unittest \
 	tools_lpc_unittest \
-	tools_updater_unittest
+	tools_updater_unittest \
+	tools_helper_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -30,3 +31,6 @@ tools_lpc_unittest_LDADD = $(top_builddir)/tools/libupdater.la
 
 tools_updater_unittest_SOURCES = tools_updater_unittest.cpp
 tools_updater_unittest_LDADD = $(top_builddir)/tools/libupdater.la
+
+tools_helper_unittest_SOURCES = tools_helper_unittest.cpp
+tools_helper_unittest_LDADD = $(top_builddir)/tools/libupdater.la

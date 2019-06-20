@@ -10,6 +10,8 @@ libupdater_la_CXXFLAGS = -I$(top_srcdir) $(CODE_COVERAGE_CXXFLAGS) $(IPMIBLOB_CF
 libupdater_la_SOURCES = \
 	$(top_srcdir)/util.cpp \
 	updater.cpp \
+	handler.cpp \
+	helper.cpp \
 	bt.cpp \
 	lpc.cpp \
 	io.cpp \
