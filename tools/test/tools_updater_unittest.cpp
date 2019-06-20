@@ -1,5 +1,6 @@
 #include "data_interface_mock.hpp"
 #include "status.hpp"
+#include "tool_errors.hpp"
 #include "updater.hpp"
 #include "updater_mock.hpp"
 #include "util.hpp"
@@ -136,6 +137,22 @@ TEST_F(UpdaterTest, UpdateMainReturnsSuccessIfAllSuccess)
         .WillOnce(Return(true));
 
     updaterMain(&handler, image, signature);
+}
+
+TEST_F(UpdaterTest, UpdateMainCleansUpOnFailure)
+{
+    const std::string image = "image.bin";
+    const std::string signature = "signature.bin";
+    UpdateHandlerMock handler;
+
+    EXPECT_CALL(handler, checkAvailable(_)).WillOnce(Return(true));
+    EXPECT_CALL(handler, sendFile(_, image)).WillOnce(Return());
+    EXPECT_CALL(handler, sendFile(_, signature)).WillOnce(Return());
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId))
+        .WillOnce(Return(false));
+    EXPECT_CALL(handler, cleanArtifacts()).WillOnce(Return());
+
+    EXPECT_THROW(updaterMain(&handler, image, signature), ToolException);
 }
 
 } // namespace host_tool

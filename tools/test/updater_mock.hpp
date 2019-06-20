@@ -15,6 +15,7 @@ class UpdateHandlerMock : public UpdateHandlerInterface
     MOCK_METHOD1(checkAvailable, bool(const std::string&));
     MOCK_METHOD2(sendFile, void(const std::string&, const std::string&));
     MOCK_METHOD1(verifyFile, bool(const std::string&));
+    MOCK_METHOD0(cleanArtifacts, void());
 };
 
 } // namespace host_tool
