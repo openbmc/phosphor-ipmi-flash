@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <cstdlib>
 #include <exception>
 #include <iostream>
 #include <ipmiblob/blob_handler.hpp>
@@ -74,6 +75,9 @@ bool checkInterface(const std::string& interface)
 int main(int argc, char* argv[])
 {
     std::string command, interface, imagePath, signaturePath;
+    char* valueEnd = nullptr;
+    long address = 0;
+    long length = 0;
 
     while (1)
     {
@@ -83,13 +87,15 @@ int main(int argc, char* argv[])
             {"interface", required_argument, 0, 'i'},
             {"image", required_argument, 0, 'm'},
             {"sig", required_argument, 0, 's'},
+            {"address", required_argument, 0, 'a'},
+            {"length", required_argument, 0, 'l'},
             {0, 0, 0, 0}
         };
         // clang-format on
 
         int option_index = 0;
         int c =
-            getopt_long(argc, argv, "c:i:m:s:", long_options, &option_index);
+            getopt_long(argc, argv, "c:i:m:s:a:l", long_options, &option_index);
         if (c == -1)
         {
             break;
@@ -119,6 +125,22 @@ int main(int argc, char* argv[])
                 break;
             case 's':
                 signaturePath = std::string{optarg};
+                break;
+            case 'a':
+                address = std::strtol(&optarg[0], &valueEnd, 0);
+                if (valueEnd == nullptr)
+                {
+                    usage(argv[0]);
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            case 'l':
+                length = std::strtol(&optarg[0], &valueEnd, 0);
+                if (valueEnd == nullptr)
+                {
+                    usage(argv[0]);
+                    exit(EXIT_FAILURE);
+                }
                 break;
             default:
                 usage(argv[0]);
@@ -155,8 +177,13 @@ int main(int argc, char* argv[])
         }
         else if (interface == IPMILPC)
         {
-            handler =
-                std::make_unique<host_tool::LpcDataHandler>(&blob, &devmem);
+            if (address == 0 || length == 0)
+            {
+                std::fprintf(stderr, "Address or Length were 0\n");
+                exit(EXIT_FAILURE);
+            }
+            handler = std::make_unique<host_tool::LpcDataHandler>(
+                &blob, &devmem, address, length);
         }
         else if (interface == IPMIPCI)
         {

@@ -22,9 +22,10 @@ class LpcDataHandler : public DataInterface
 {
   public:
     LpcDataHandler(ipmiblob::BlobInterface* blob, HostIoInterface* io,
+                   long address, long length,
                    const internal::Sys* sys = &internal::sys_impl) :
         blob(blob),
-        io(io), sys(sys){};
+        io(io), address(address), length(length), sys(sys){};
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
     ipmi_flash::FirmwareBlobHandler::UpdateFlags supportedType() const override
@@ -35,6 +36,8 @@ class LpcDataHandler : public DataInterface
   private:
     ipmiblob::BlobInterface* blob;
     HostIoInterface* io;
+    long address;
+    long length;
     const internal::Sys* sys;
 };
 
