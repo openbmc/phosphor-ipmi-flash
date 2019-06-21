@@ -14,9 +14,11 @@ namespace host_tool
  * @param[in] updater - update handler object.
  * @param[in] imagePath - the path to the image file.
  * @param[in] signaturePath - the path to the signature file.
+ * @param[in] layoutType - the image update layout type (static/ubi/other)
  * @throws ToolException on failures.
  */
 void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
-                 const std::string& signaturePath);
+                 const std::string& signaturePath,
+                 const std::string& layoutType);
 
 } // namespace host_tool

@@ -41,24 +41,38 @@
 #define IPMILPC "ipmilpc"
 #define IPMIPCI "ipmipci"
 #define IPMIBT "ipmibt"
+#define STATIC "static"
+#define UBITAR "ubitar"
 
 namespace
 {
 const std::vector<std::string> interfaceList = {IPMIBT, IPMILPC, IPMIPCI};
-}
+const std::vector<std::string> typeList = {STATIC, UBITAR};
+} // namespace
 
 void usage(const char* program)
 {
     std::fprintf(
         stderr,
         "Usage: %s --command <command> --interface <interface> --image "
-        "<image file> --sig <signature file>\n",
+        "<image file> --sig <signature file> --type <layout>\n",
         program);
 
     std::fprintf(stderr, "interfaces: ");
     std::copy(interfaceList.begin(), interfaceList.end(),
               std::ostream_iterator<std::string>(std::cerr, ", "));
     std::fprintf(stderr, "\n");
+
+    std::fprintf(stderr, "layouts: ");
+    std::copy(typeList.begin(), typeList.end(),
+              std::ostream_iterator<std::string>(std::cerr, ", "));
+    std::fprintf(stderr, "\n");
+}
+
+bool checkType(const std::string& type)
+{
+    auto tFound = std::find(typeList.begin(), typeList.end(), type);
+    return (tFound != typeList.end());
 }
 
 bool checkCommand(const std::string& command)
@@ -75,7 +89,7 @@ bool checkInterface(const std::string& interface)
 
 int main(int argc, char* argv[])
 {
-    std::string command, interface, imagePath, signaturePath;
+    std::string command, interface, imagePath, signaturePath, type;
     char* valueEnd = nullptr;
     long address = 0;
     long length = 0;
@@ -92,13 +106,14 @@ int main(int argc, char* argv[])
             {"sig", required_argument, 0, 's'},
             {"address", required_argument, 0, 'a'},
             {"length", required_argument, 0, 'l'},
+            {"type", required_argument, 0, 't'},
             {0, 0, 0, 0}
         };
         // clang-format on
 
         int option_index = 0;
-        int c =
-            getopt_long(argc, argv, "c:i:m:s:a:l", long_options, &option_index);
+        int c = getopt_long(argc, argv, "c:i:m:s:a:l:t:", long_options,
+                            &option_index);
         if (c == -1)
         {
             break;
@@ -158,6 +173,14 @@ int main(int argc, char* argv[])
                     exit(EXIT_FAILURE);
                 }
                 hostLength = static_cast<std::uint32_t>(length);
+                break;
+            case 't':
+                type = std::string{optarg};
+                if (!checkType(type))
+                {
+                    usage(argv[0]);
+                    exit(EXIT_FAILURE);
+                }
                 break;
             default:
                 usage(argv[0]);
@@ -220,7 +243,7 @@ int main(int argc, char* argv[])
         try
         {
             host_tool::UpdateHandler updater(&blob, handler.get());
-            host_tool::updaterMain(&updater, imagePath, signaturePath);
+            host_tool::updaterMain(&updater, imagePath, signaturePath, type);
         }
         catch (const host_tool::ToolException& e)
         {

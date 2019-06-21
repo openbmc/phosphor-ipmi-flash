@@ -35,13 +35,14 @@ namespace host_tool
 {
 
 void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
-                 const std::string& signaturePath)
+                 const std::string& signaturePath,
+                 const std::string& layoutType)
 {
-    /* TODO(venture): Add optional parameter to specify the flash type, default
-     * to legacy for now.
-     */
-    bool goalSupported =
-        updater->checkAvailable(ipmi_flash::staticLayoutBlobId);
+    const auto& layout = (layoutType == "static")
+                             ? ipmi_flash::staticLayoutBlobId
+                             : ipmi_flash::ubiTarballBlobId;
+
+    bool goalSupported = updater->checkAvailable(layout);
     if (!goalSupported)
     {
         throw ToolException("Goal firmware or interface not supported");
@@ -50,10 +51,9 @@ void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
     /* Yay, our data handler is supported. */
     try
     {
-
         /* Send over the firmware image. */
         std::fprintf(stderr, "Sending over the firmware image.\n");
-        updater->sendFile(ipmi_flash::staticLayoutBlobId, imagePath);
+        updater->sendFile(layout, imagePath);
 
         /* Send over the hash contents. */
         std::fprintf(stderr, "Sending over the hash file.\n");

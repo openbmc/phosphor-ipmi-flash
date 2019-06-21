@@ -110,7 +110,7 @@ TEST_F(UpdaterTest, UpdateMainReturnsSuccessIfAllSuccess)
     EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId))
         .WillOnce(Return(true));
 
-    updaterMain(&handler, image, signature);
+    updaterMain(&handler, image, signature, "static");
 }
 
 TEST_F(UpdaterTest, UpdateMainCleansUpOnFailure)
@@ -126,7 +126,8 @@ TEST_F(UpdaterTest, UpdateMainCleansUpOnFailure)
         .WillOnce(Return(false));
     EXPECT_CALL(handler, cleanArtifacts()).WillOnce(Return());
 
-    EXPECT_THROW(updaterMain(&handler, image, signature), ToolException);
+    EXPECT_THROW(updaterMain(&handler, image, signature, "static"),
+                 ToolException);
 }
 
 } // namespace host_tool
