@@ -130,6 +130,7 @@ bool UpdateHandler::verifyFile(const std::string& target)
     }
     catch (const ipmiblob::BlobException& b)
     {
+        blob->closeBlob(session);
         throw ToolException("blob exception received: " +
                             std::string(b.what()));
     }
@@ -164,14 +165,23 @@ void UpdateHandler::cleanArtifacts()
         session =
             blob->openBlob(ipmi_flash::cleanupBlobId,
                            static_cast<std::uint16_t>(blobs::OpenFlags::write));
+    }
+    catch (...)
+    {
+        return;
+    }
+
+    try
+    {
         std::fprintf(stderr, "Committing to the cleanup blob\n");
         blob->commit(session, {});
         std::fprintf(stderr, "Closing cleanup blob\n");
-        blob->closeBlob(session);
     }
     catch (...)
     {
     }
+
+    blob->closeBlob(session);
 }
 
 } // namespace host_tool
