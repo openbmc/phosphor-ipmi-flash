@@ -111,7 +111,7 @@ Variable                     | Default                    | Meaning
 `PREPARATION_DBUS_SERVICE`   | `prepare_update.service`   | The systemd service started when the host starts to send an update.
 `VERIFY_STATUS_FILENAME`     | `/tmp/bmc.verify`          | The file checked for the verification status.
 `VERIFY_DBUS_SERVICE`        | `verify_image.service`     | The systemd service started for verification.
-`UPDATE_DBUS_SERVICE`        | `update-bmc.service`       | The systemd service started for updating the BMC.
+`UPDATE_DBUS_SERVICE`        | `update_bmc.service`       | The systemd service started for updating the BMC.
 
 ## Flash State Machine Details
 

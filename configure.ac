@@ -267,7 +267,7 @@ AC_ARG_VAR(
 )
 AS_IF(
     [test "x$UPDATE_DBUS_SERVICE" == "x"],
-    [UPDATE_DBUS_SERVICE="update-bmc.service"]
+    [UPDATE_DBUS_SERVICE="update_bmc.service"]
 )
 AC_DEFINE_UNQUOTED(
     [UPDATE_DBUS_SERVICE],
