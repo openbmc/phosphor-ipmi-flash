@@ -36,7 +36,8 @@ class FirmwareHandlerNotYetStartedUbitTest : public ::testing::Test
         updateMockPtr = reinterpret_cast<TriggerMock*>(updateMock.get());
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, std::move(verifyMock), std::move(updateMock));
+            blobs, data, CreateTriggerMock(), std::move(verifyMock),
+            std::move(updateMock));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)

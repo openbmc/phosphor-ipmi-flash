@@ -29,6 +29,10 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
             {staticLayoutBlobId, &imageMock},
         };
 
+        std::unique_ptr<TriggerableActionInterface> prepareMock =
+            std::make_unique<TriggerMock>();
+        prepareMockPtr = reinterpret_cast<TriggerMock*>(prepareMock.get());
+
         std::unique_ptr<TriggerableActionInterface> verifyMock =
             std::make_unique<TriggerMock>();
         verifyMockPtr = reinterpret_cast<TriggerMock*>(verifyMock.get());
@@ -38,7 +42,8 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         updateMockPtr = reinterpret_cast<TriggerMock*>(updateMock.get());
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, std::move(verifyMock), std::move(updateMock));
+            blobs, data, std::move(prepareMock), std::move(verifyMock),
+            std::move(updateMock));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)
@@ -117,6 +122,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     std::vector<DataHandlerPack> data = {
         {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr}};
     std::unique_ptr<blobs::GenericBlobInterface> handler;
+    TriggerMock* prepareMockPtr;
     TriggerMock* verifyMockPtr;
     TriggerMock* updateMockPtr;
 
@@ -143,7 +149,8 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
             {"asdf", &imageMock},
         };
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, CreateTriggerMock(), CreateTriggerMock());
+            blobs, data, CreateTriggerMock(), CreateTriggerMock(),
+            CreateTriggerMock());
     }
 };
 
@@ -167,7 +174,8 @@ class FakeLpcFirmwareTest : public ::testing::Test
             {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
         };
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, CreateTriggerMock(), CreateTriggerMock());
+            blobs, data, CreateTriggerMock(), CreateTriggerMock(),
+            CreateTriggerMock());
     }
 };
 

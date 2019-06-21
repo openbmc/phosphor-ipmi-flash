@@ -104,6 +104,7 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
         CreateFirmwareBlobHandler(
             const std::vector<HandlerPack>& firmwares,
             const std::vector<DataHandlerPack>& transports,
+            std::unique_ptr<TriggerableActionInterface> preparation,
             std::unique_ptr<TriggerableActionInterface> verification,
             std::unique_ptr<TriggerableActionInterface> update);
 
@@ -121,13 +122,14 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
         const std::vector<HandlerPack>& firmwares,
         const std::vector<std::string>& blobs,
         const std::vector<DataHandlerPack>& transports, std::uint16_t bitmask,
+        std::unique_ptr<TriggerableActionInterface> preparation,
         std::unique_ptr<TriggerableActionInterface> verification,
         std::unique_ptr<TriggerableActionInterface> update) :
         handlers(firmwares),
         blobIDs(blobs), transports(transports), bitmask(bitmask),
         activeImage(activeImageBlobId), activeHash(activeHashBlobId),
         verifyImage(verifyBlobId), updateImage(updateBlobId), lookup(),
-        state(UpdateState::notYetStarted),
+        state(UpdateState::notYetStarted), preparation(std::move(preparation)),
         verification(std::move(verification)), update(std::move(update))
     {
     }
@@ -220,6 +222,12 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
 
     /** The firmware update state. */
     UpdateState state;
+
+    /* preparation is triggered once we go into uploadInProgress(), but only
+     * once per full cycle, going back to notYetStarted resets this.
+     */
+    bool preparationTriggered = false;
+    std::unique_ptr<TriggerableActionInterface> preparation;
 
     std::unique_ptr<TriggerableActionInterface> verification;
 
