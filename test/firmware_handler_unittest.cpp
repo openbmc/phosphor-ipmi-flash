@@ -22,7 +22,8 @@ TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        {}, data, CreateTriggerMock(), CreateTriggerMock());
+        {}, data, CreateTriggerMock(), CreateTriggerMock(),
+        CreateTriggerMock());
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
@@ -35,7 +36,8 @@ TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, {}, CreateTriggerMock(), CreateTriggerMock());
+        blobs, {}, CreateTriggerMock(), CreateTriggerMock(),
+        CreateTriggerMock());
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
@@ -51,13 +53,15 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateTriggerMock(), CreateTriggerMock());
+        blobs, data, CreateTriggerMock(), CreateTriggerMock(),
+        CreateTriggerMock());
     EXPECT_EQ(handler, nullptr);
 
     blobs.push_back({hashBlobId, &imageMock});
 
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateTriggerMock(), CreateTriggerMock());
+        blobs, data, CreateTriggerMock(), CreateTriggerMock(),
+        CreateTriggerMock());
     auto result = handler->getBlobIds();
     std::vector<std::string> expectedBlobs = {"asdf", hashBlobId};
     EXPECT_THAT(result, UnorderedElementsAreArray(expectedBlobs));

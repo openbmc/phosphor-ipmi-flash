@@ -23,6 +23,7 @@
 #include "lpc_handler.hpp"
 #include "lpc_nuvoton.hpp"
 #include "pci_handler.hpp"
+#include "prepare_systemd.hpp"
 #include "status.hpp"
 #include "update_systemd.hpp"
 #include "util.hpp"
@@ -113,6 +114,8 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 
     auto handler = ipmi_flash::FirmwareBlobHandler::CreateFirmwareBlobHandler(
         ipmi_flash::supportedFirmware, ipmi_flash::supportedTransports,
+        ipmi_flash::SystemdPreparation::CreatePreparation(
+            sdbusplus::bus::new_default(), PREPARATION_DBUS_SERVICE),
         ipmi_flash::SystemdVerification::CreateVerification(
             sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
             VERIFY_DBUS_SERVICE),

@@ -43,6 +43,7 @@ libfirmwareblob_common_la_SOURCES = \
 	firmware_handler.cpp \
 	file_handler.cpp \
 	internal/sys.cpp \
+	prepare_systemd.cpp \
 	verify_systemd.cpp \
 	update_systemd.cpp
 

@@ -189,6 +189,10 @@ AC_ARG_VAR(HASH_FILENAME, [The file to use for the hash provided.])
 AS_IF([test "x$HASH_FILENAME" == "x"], [HASH_FILENAME="/tmp/bmc.sig"])
 AC_DEFINE_UNQUOTED([HASH_FILENAME], ["$HASH_FILENAME"], [The file to use for the hash provided.])
 
+AC_ARG_VAR(PREPARATION_DBUS_SERVICE, [The systemd service started when the host starts to send an update.])
+AS_IF([test "x$PREPARATION_DBUS_SERVICE" == "x"], [PREPARATION_DBUS_SERVICE="prepare_update.service"])
+AC_DEFINE_UNQUOTED([PREPARATION_DBUS_SERVICE], ["$PREPARATION_DBUS_SERVICE"], [The systemd service started when the host starts to send an update.])
+
 AC_ARG_VAR(VERIFY_STATUS_FILENAME, [The file checked for the verification status.])
 AS_IF([test "x$VERIFY_STATUS_FILENAME" == "x"], [VERIFY_STATUS_FILENAME="/tmp/bmc.verify"])
 AC_DEFINE_UNQUOTED([VERIFY_STATUS_FILENAME], ["$VERIFY_STATUS_FILENAME"], [The file checked for the verification status.])
