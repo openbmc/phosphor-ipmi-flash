@@ -167,6 +167,9 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
         return state;
     };
 
+    /** Provide for any state change triggers in convenience handler. */
+    void changeState(UpdateState next);
+
   private:
     void addBlobId(const std::string& blob)
     {

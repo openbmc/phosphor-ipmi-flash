@@ -233,12 +233,12 @@ bool FirmwareBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
         {
             if (item->second->activePath == verifyBlobId)
             {
-                state = UpdateState::verificationCompleted;
+                changeState(UpdateState::verificationCompleted);
             }
             else
             {
                 /* item->second->activePath == updateBlobId */
-                state = UpdateState::updateCompleted;
+                changeState(UpdateState::updateCompleted);
             }
 
             item->second->flags &= ~blobs::StateFlags::committing;
@@ -472,7 +472,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     addBlobId(*active);
     removeBlobId(verifyBlobId);
 
-    state = UpdateState::uploadInProgress;
+    changeState(UpdateState::uploadInProgress);
     fileOpen = true;
 
     return true;
@@ -637,7 +637,7 @@ bool FirmwareBlobHandler::close(uint16_t session)
     {
         case UpdateState::uploadInProgress:
             /* They are closing a data pathway (image, tarball, hash). */
-            state = UpdateState::verificationPending;
+            changeState(UpdateState::verificationPending);
 
             /* Add verify blob ID now that we can expect it. */
             addBlobId(verifyBlobId);
@@ -656,7 +656,7 @@ bool FirmwareBlobHandler::close(uint16_t session)
         case UpdateState::verificationCompleted:
             if (lastVerificationStatus == ActionStatus::success)
             {
-                state = UpdateState::updatePending;
+                changeState(UpdateState::updatePending);
                 addBlobId(updateBlobId);
                 removeBlobId(verifyBlobId);
             }
@@ -709,6 +709,11 @@ bool FirmwareBlobHandler::close(uint16_t session)
     return true;
 }
 
+void FirmwareBlobHandler::changeState(UpdateState next)
+{
+    state = next;
+}
+
 bool FirmwareBlobHandler::expire(uint16_t session)
 {
     return false;
@@ -735,7 +740,7 @@ void FirmwareBlobHandler::abortProcess()
     removeBlobId(activeImageBlobId);
     removeBlobId(activeHashBlobId);
 
-    state = UpdateState::notYetStarted;
+    changeState(UpdateState::notYetStarted);
 }
 
 void FirmwareBlobHandler::abortVerification()
@@ -748,7 +753,7 @@ bool FirmwareBlobHandler::triggerVerification()
     bool result = verification->trigger();
     if (result)
     {
-        state = UpdateState::verificationStarted;
+        changeState(UpdateState::verificationStarted);
     }
 
     return result;
@@ -764,7 +769,7 @@ bool FirmwareBlobHandler::triggerUpdate()
     bool result = update->trigger();
     if (result)
     {
-        state = UpdateState::updateStarted;
+        changeState(UpdateState::updateStarted);
     }
 
     return result;
