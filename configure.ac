@@ -177,34 +177,103 @@ AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DASPEED_P2A], [CXXFLAGS])
 ])
 
-AC_ARG_VAR(STATIC_HANDLER_STAGED_NAME, [The file to use for staging the firmware update.])
-AS_IF([test "x$STATIC_HANDLER_STAGED_NAME" == "x"], [STATIC_HANDLER_STAGED_NAME="/run/initramfs/bmc-image"])
-AC_DEFINE_UNQUOTED([STATIC_HANDLER_STAGED_NAME], ["$STATIC_HANDLER_STAGED_NAME"], [The file to use for staging the firmware update.])
+AC_ARG_VAR(
+    STATIC_HANDLER_STAGED_NAME,
+    [The file to use for staging the firmware update.]
+)
+AS_IF(
+    [test "x$STATIC_HANDLER_STAGED_NAME" == "x"],
+    [STATIC_HANDLER_STAGED_NAME="/run/initramfs/bmc-image"]
+)
+AC_DEFINE_UNQUOTED(
+    [STATIC_HANDLER_STAGED_NAME],
+    ["$STATIC_HANDLER_STAGED_NAME"],
+    [The file to use for staging the firmware update.]
+)
 
-AC_ARG_VAR(TARBALL_STAGED_NAME, [The file to use for staging the firmware update.])
-AS_IF([test "x$TARBALL_STAGED_NAME" == "x"], [TARBALL_STAGED_NAME="/tmp/image-update.tar"])
-AC_DEFINE_UNQUOTED([TARBALL_STAGED_NAME], ["$TARBALL_STAGED_NAME"], [The file to use for staging the firmware update.])
+AC_ARG_VAR(
+    TARBALL_STAGED_NAME,
+    [The file to use for staging the firmware update.]
+)
+AS_IF(
+    [test "x$TARBALL_STAGED_NAME" == "x"],
+    [TARBALL_STAGED_NAME="/tmp/image-update.tar"]
+)
+AC_DEFINE_UNQUOTED(
+    [TARBALL_STAGED_NAME],
+    ["$TARBALL_STAGED_NAME"],
+    [The file to use for staging the firmware update.]
+)
 
-AC_ARG_VAR(HASH_FILENAME, [The file to use for the hash provided.])
-AS_IF([test "x$HASH_FILENAME" == "x"], [HASH_FILENAME="/tmp/bmc.sig"])
-AC_DEFINE_UNQUOTED([HASH_FILENAME], ["$HASH_FILENAME"], [The file to use for the hash provided.])
+AC_ARG_VAR(
+    HASH_FILENAME,
+    [The file to use for the hash provided.]
+)
+AS_IF(
+    [test "x$HASH_FILENAME" == "x"],
+    [HASH_FILENAME="/tmp/bmc.sig"]
+)
+AC_DEFINE_UNQUOTED(
+    [HASH_FILENAME],
+    ["$HASH_FILENAME"],
+    [The file to use for the hash provided.]
+)
 
-AC_ARG_VAR(PREPARATION_DBUS_SERVICE, [The systemd service started when the host starts to send an update.])
-AS_IF([test "x$PREPARATION_DBUS_SERVICE" == "x"], [PREPARATION_DBUS_SERVICE="prepare_update.service"])
-AC_DEFINE_UNQUOTED([PREPARATION_DBUS_SERVICE], ["$PREPARATION_DBUS_SERVICE"], [The systemd service started when the host starts to send an update.])
+AC_ARG_VAR(
+    PREPARATION_DBUS_SERVICE,
+    [The systemd service started when the host starts to send an update.]
+)
+AS_IF(
+    [test "x$PREPARATION_DBUS_SERVICE" == "x"],
+    [PREPARATION_DBUS_SERVICE="prepare_update.service"]
+)
+AC_DEFINE_UNQUOTED(
+    [PREPARATION_DBUS_SERVICE],
+    ["$PREPARATION_DBUS_SERVICE"],
+    [The systemd service started when the host starts to send an update.]
+)
 
-AC_ARG_VAR(VERIFY_STATUS_FILENAME, [The file checked for the verification status.])
-AS_IF([test "x$VERIFY_STATUS_FILENAME" == "x"], [VERIFY_STATUS_FILENAME="/tmp/bmc.verify"])
-AC_DEFINE_UNQUOTED([VERIFY_STATUS_FILENAME], ["$VERIFY_STATUS_FILENAME"], [The file checked for the verification status.])
+AC_ARG_VAR(
+    VERIFY_STATUS_FILENAME,
+    [The file checked for the verification status.]
+)
+AS_IF(
+    [test "x$VERIFY_STATUS_FILENAME" == "x"],
+    [VERIFY_STATUS_FILENAME="/tmp/bmc.verify"]
+)
+AC_DEFINE_UNQUOTED(
+    [VERIFY_STATUS_FILENAME],
+    ["$VERIFY_STATUS_FILENAME"],
+    [The file checked for the verification status.]
+)
 
-AC_ARG_VAR(VERIFY_DBUS_SERVICE, [The systemd service started for verification.])
-AS_IF([test "x$VERIFY_DBUS_SERVICE" == "x"], [VERIFY_DBUS_SERVICE="verify_image.service"])
-AC_DEFINE_UNQUOTED([VERIFY_DBUS_SERVICE], ["$VERIFY_DBUS_SERVICE"], [The systemd service started for verification.])
+AC_ARG_VAR(
+    VERIFY_DBUS_SERVICE,
+    [The systemd service started for verification.]
+)
+AS_IF(
+    [test "x$VERIFY_DBUS_SERVICE" == "x"],
+    [VERIFY_DBUS_SERVICE="verify_image.service"]
+)
+AC_DEFINE_UNQUOTED(
+    [VERIFY_DBUS_SERVICE],
+    ["$VERIFY_DBUS_SERVICE"],
+    [The systemd service started for verification.]
+)
 
-AC_ARG_VAR(UPDATE_DBUS_SERVICE, [The systemd service started for updating the BMC.])
-AS_IF([test "x$UPDATE_DBUS_SERVICE" == "x"], [UPDATE_DBUS_SERVICE="update-bmc.service"])
-AC_DEFINE_UNQUOTED([UPDATE_DBUS_SERVICE], ["$UPDATE_DBUS_SERVICE"], [The systemd service started for updating the BMC.])
-
+AC_ARG_VAR(
+    UPDATE_DBUS_SERVICE,
+    [The systemd service started for updating the BMC.]
+)
+AS_IF(
+    [test "x$UPDATE_DBUS_SERVICE" == "x"],
+    [UPDATE_DBUS_SERVICE="update-bmc.service"]
+)
+AC_DEFINE_UNQUOTED(
+    [UPDATE_DBUS_SERVICE],
+    ["$UPDATE_DBUS_SERVICE"],
+    [The systemd service started for updating the BMC.]
+)
 
 AC_CHECK_HEADER(linux/ipmi.h, [HAVE_LINUX_IPMI_H=""], [HAVE_LINUX_IPMI_H="-I linux/ipmi.h"])
 AS_IF([test "$HAVE_LINUX_IPMI_H" != ""],
@@ -334,5 +403,7 @@ AS_IF([test "x$enable_oe_sdk" == "xyes"],
 )
 
 # Create configured output
-AC_CONFIG_FILES([Makefile test/Makefile tools/Makefile tools/test/Makefile cleanup/Makefile cleanup/test/Makefile])
+AC_CONFIG_FILES([Makefile test/Makefile])
+AC_CONFIG_FILES([tools/Makefile tools/test/Makefile])
+AC_CONFIG_FILES([cleanup/Makefile cleanup/test/Makefile])
 AC_OUTPUT
