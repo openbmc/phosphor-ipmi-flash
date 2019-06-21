@@ -31,7 +31,8 @@ TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateTriggerMock(), CreateTriggerMock());
+        blobs, data, CreateTriggerMock(), CreateTriggerMock(),
+        CreateTriggerMock());
 
     //    EXPECT_EQ(handler, nullptr);
     EXPECT_FALSE(handler == nullptr);

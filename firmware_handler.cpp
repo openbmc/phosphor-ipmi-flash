@@ -39,6 +39,7 @@ std::unique_ptr<blobs::GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
         const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
+        std::unique_ptr<TriggerableActionInterface> preparation,
         std::unique_ptr<TriggerableActionInterface> verification,
         std::unique_ptr<TriggerableActionInterface> update)
 {
@@ -72,8 +73,8 @@ std::unique_ptr<blobs::GenericBlobInterface>
     }
 
     return std::make_unique<FirmwareBlobHandler>(
-        firmwares, blobs, transports, bitmask, std::move(verification),
-        std::move(update));
+        firmwares, blobs, transports, bitmask, std::move(preparation),
+        std::move(verification), std::move(update));
 }
 
 /* Check if the path is in our supported list (or active list). */
@@ -712,6 +713,21 @@ bool FirmwareBlobHandler::close(uint16_t session)
 void FirmwareBlobHandler::changeState(UpdateState next)
 {
     state = next;
+
+    if (state == UpdateState::notYetStarted)
+    {
+        /* Going back to notyetstarted, let them trigger preparation again. */
+        preparationTriggered = false;
+    }
+    else if (state == UpdateState::uploadInProgress)
+    {
+        /* Store this transition logic here instead of ::open() */
+        if (!preparationTriggered)
+        {
+            preparation->trigger();
+            preparationTriggered = true;
+        }
+    }
 }
 
 bool FirmwareBlobHandler::expire(uint16_t session)

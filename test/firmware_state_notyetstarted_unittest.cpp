@@ -93,6 +93,7 @@ TEST_F(FirmwareHandlerNotYetStartedTest, StatEachBlobIdVerifyResults)
 TEST_F(FirmwareHandlerNotYetStartedTest, OpenStaticImageFileVerifyStateChange)
 {
     EXPECT_CALL(imageMock, open(staticLayoutBlobId)).WillOnce(Return(true));
+    EXPECT_CALL(*prepareMockPtr, trigger()).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
 
@@ -104,6 +105,7 @@ TEST_F(FirmwareHandlerNotYetStartedTest, OpenStaticImageFileVerifyStateChange)
 TEST_F(FirmwareHandlerNotYetStartedTest, OpenHashFileVerifyStateChange)
 {
     EXPECT_CALL(imageMock, open(hashBlobId)).WillOnce(Return(true));
+    EXPECT_CALL(*prepareMockPtr, trigger()).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(session, flags, hashBlobId));
 

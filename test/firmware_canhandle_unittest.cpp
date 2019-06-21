@@ -33,7 +33,8 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateTriggerMock(), CreateTriggerMock());
+        blobs, data, CreateTriggerMock(), CreateTriggerMock(),
+        CreateTriggerMock());
 
     for (const auto& item : items)
     {
