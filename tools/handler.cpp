@@ -132,6 +132,7 @@ bool UpdateHandler::verifyFile(const std::string& target)
     }
     catch (const ipmiblob::BlobException& b)
     {
+        blob->close(session);
         throw ToolException("blob exception received: " +
                             std::string(b.what()));
     }
@@ -157,7 +158,7 @@ bool UpdateHandler::verifyFile(const std::string& target)
 void UpdateHandler::cleanArtifacts()
 {
     /* open(), commit(), close() */
-    std::uint16_t session;
+    std::uint16_t session = 0;
 
     /* Errors aren't important for this call. */
     try
@@ -169,10 +170,14 @@ void UpdateHandler::cleanArtifacts()
         std::fprintf(stderr, "Committing to the cleanup blob\n");
         blob->commit(session, {});
         std::fprintf(stderr, "Closing cleanup blob\n");
-        blob->closeBlob(session);
     }
     catch (...)
     {
+    }
+
+    if (session != 0)
+    {
+        blob->closeBlob(session);
     }
 }
 
