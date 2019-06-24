@@ -7,6 +7,24 @@
 namespace ipmi_flash
 {
 
+struct MemorySet
+{
+    int mappedFd = -1;
+    std::uint8_t* mapped = nullptr;
+};
+
+/** The result from the mapWindow command. */
+struct WindowMapResult
+{
+    /* The response can validly be 0, or EFBIG.  If it's EFBIG that means the
+     * region available is within the requested region. If the value is anything
+     * else, it's a complete failure.
+     */
+    std::uint8_t response;
+    std::uint32_t windowOffset;
+    std::uint32_t windowSize;
+};
+
 /**
  * Different LPC (or P2a) memory map implementations may require different
  * mechanisms for specific tasks such as mapping the memory window or copying
@@ -16,6 +34,11 @@ class HardwareMapperInterface
 {
   public:
     virtual ~HardwareMapperInterface() = default;
+
+    /**
+     * Open the driver or whatever and map the region.
+     */
+    virtual MemorySet open() = 0;
 
     /**
      * Close the mapper.  This could mean, send an ioctl to turn off the region,
@@ -31,19 +54,10 @@ class HardwareMapperInterface
      *
      * @param[in] address - The address for mapping (passed to LPC window)
      * @param[in] length - The length of the region
-     * @return windowOffset, windowSize - The offset into the window and
-     * length of the region.  On failure, length is set to 0.
+     * @return WindowMapResult - the result of the call
      */
-    virtual std::pair<std::uint32_t, std::uint32_t>
-        mapWindow(std::uint32_t address, std::uint32_t length) = 0;
-
-    /**
-     * Returns the bytes from the mapped window.
-     *
-     * @param[in] length - the number of bytes to copy.
-     * @return the bytes copied out of the region.
-     */
-    virtual std::vector<std::uint8_t> copyFrom(std::uint32_t length) = 0;
+    virtual WindowMapResult mapWindow(std::uint32_t address,
+                                      std::uint32_t length) = 0;
 };
 
 } // namespace ipmi_flash

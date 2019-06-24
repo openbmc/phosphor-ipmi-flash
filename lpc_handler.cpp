@@ -56,7 +56,11 @@ std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
         return {};
     }
 
-    return mapper->copyFrom(length);
+    std::vector<std::uint8_t> results(length);
+    std::memcpy(results.data(), memory.mapped + mappingResult.windowOffset,
+                length);
+
+    return results;
 }
 
 bool LpcDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)
@@ -70,15 +74,12 @@ bool LpcDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)
 
     std::memcpy(&lpcRegion, configuration.data(), configuration.size());
 
-    std::uint32_t windowOffset;
-    std::uint32_t windowSize;
-
     /* TODO: LpcRegion sanity checking. */
-
-    std::tie(windowOffset, windowSize) =
-        mapper->mapWindow(lpcRegion.address, lpcRegion.length);
-    if (windowSize == 0)
+    mappingResult = mapper->mapWindow(lpcRegion.address, lpcRegion.length);
+    if (mappingResult.response != 0)
     {
+        std::fprintf(stderr, "mappingResult.response %u\n",
+                     mappingResult.response);
         /* Failed to map region. */
         return false;
     }
@@ -88,10 +89,23 @@ bool LpcDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)
 
 std::vector<std::uint8_t> LpcDataHandler::readMeta()
 {
-    /* TODO: Implement this call, s.t. with lpc_aspeed or whatever, you can
-     * validate the region.
-     */
-    return {};
+    /* Return the MemoryResult structure packed. */
+    std::vector<std::uint8_t> output(
+        sizeof(std::uint8_t) + sizeof(std::uint32_t) + sizeof(std::uint32_t));
+
+    int index = 0;
+    std::memcpy(&output[index], &mappingResult.response,
+                sizeof(mappingResult.response));
+
+    index += sizeof(mappingResult.response);
+    std::memcpy(&output[index], &mappingResult.windowOffset,
+                sizeof(mappingResult.windowOffset));
+
+    index += sizeof(mappingResult.windowOffset);
+    std::memcpy(&output[index], &mappingResult.windowSize,
+                sizeof(mappingResult.windowSize));
+
+    return output;
 }
 
 } // namespace ipmi_flash
