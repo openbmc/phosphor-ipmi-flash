@@ -70,6 +70,7 @@ bool PciDataHandler::open()
     {
         sys->close(mappedFd);
         mappedFd = -1;
+        mapped = nullptr;
 
         return false;
     }
