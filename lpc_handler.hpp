@@ -1,6 +1,7 @@
 #pragma once
 
 #include "data_handler.hpp"
+#include "mapper_errors.hpp"
 #include "window_hw_interface.hpp"
 
 #include <cstdint>
@@ -45,12 +46,31 @@ class LpcDataHandler : public DataInterface
   private:
     bool setInitializedAndReturn(bool value)
     {
+        if (value) {
+           try {
+               /* Try really opening the map. */
+               memory = mapper->open();
+           } catch (const MapperException &e) {
+               std::fprintf(stderr, "received mapper exception: %s\n", e.what());
+               return false;
+           }
+        }
+
         initialized = value;
         return value;
     }
 
     std::unique_ptr<HardwareMapperInterface> mapper;
     bool initialized;
+    /* The LPC Handler does not take ownership of this, in case there's cleanup required for close()
+     */
+    MemorySet memory;
+    /* Offset in reserved memory at which host data arrives. */
+    std::uint32_t windowOffset;
+    /* Size of the chunk of the memory region in use by the host (e.g.
+     * mapped over external block mechanism).
+     */
+    std::uint32_t windowSize;
 };
 
 } // namespace ipmi_flash

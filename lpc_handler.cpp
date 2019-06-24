@@ -56,7 +56,10 @@ std::vector<std::uint8_t> LpcDataHandler::copyFrom(std::uint32_t length)
         return {};
     }
 
-    return mapper->copyFrom(length);
+    std::vector<std::uint8_t> results(length);
+    std::memcpy(results.data(), memory.mapped + windowOffset, length);
+
+    return results;
 }
 
 bool LpcDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)
@@ -69,9 +72,6 @@ bool LpcDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)
     }
 
     std::memcpy(&lpcRegion, configuration.data(), configuration.size());
-
-    std::uint32_t windowOffset;
-    std::uint32_t windowSize;
 
     /* TODO: LpcRegion sanity checking. */
 

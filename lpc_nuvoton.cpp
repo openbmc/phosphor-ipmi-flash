@@ -16,6 +16,7 @@
 
 #include "lpc_nuvoton.hpp"
 
+#include "mapper_errors.hpp"
 #include "window_hw_interface.hpp"
 
 #include <fcntl.h>
@@ -35,14 +36,53 @@ using std::uint32_t;
 using std::uint8_t;
 
 std::unique_ptr<HardwareMapperInterface>
-    LpcMapperNuvoton::createNuvotonMapper(std::uint32_t regionAddress)
+    LpcMapperNuvoton::createNuvotonMapper(std::uint32_t regionAddress, std::uint32_t regionSize)
 {
     /* NOTE: Considered making one factory for both types. */
-    return std::make_unique<LpcMapperNuvoton>(regionAddress);
+    return std::make_unique<LpcMapperNuvoton>(regionAddress, regionSize);
+}
+
+MemorySet LpcMapperNuvoton::open()
+{
+    static constexpr auto devmem = "/dev/mem";
+
+    mappedFd = sys->open(devmem, O_RDWR | O_SYNC);
+    if (mappedFd == -1)
+    {
+        throw MapperException("Unable to open /dev/mem");
+    }
+
+    mapped = reinterpret_cast<uint8_t*>(
+            sys->mmap(0, memoryRegionSize, PROT_READ, MAP_SHARED, mappedFd, regionAddress));
+    if (mapped == MAP_FAILED)
+    {
+        sys->close(mappedFd);
+        mappedFd = -1;
+        mapped = nullptr;
+
+        throw MapperException("Unable to map region");
+    }
+
+    MemorySet output;
+    output.mappedFd = mappedFd;
+    output.mapped = mapped;
+
+    return output;
 }
 
 void LpcMapperNuvoton::close()
 {
+    if (mapped)
+    {
+        sys->munmap(mapped, memoryRegionSize);
+        mapped = nullptr;
+    }
+
+    if (mappedFd != -1)
+    {
+        sys->close(mappedFd);
+        mappedFd = -1;
+    }
 }
 
 /*
@@ -133,12 +173,6 @@ std::pair<std::uint32_t, std::uint32_t>
     sys->close(fd);
 
     return std::make_pair(windowOffset, windowSize);
-}
-
-std::vector<std::uint8_t> LpcMapperNuvoton::copyFrom(std::uint32_t length)
-{
-    /* TODO: implement. */
-    return {};
 }
 
 } // namespace ipmi_flash

@@ -55,7 +55,7 @@ LpcDataHandler lpcDataHandler(
     LpcMapperAspeed::createAspeedMapper(MAPPED_ADDRESS, memoryRegionSize));
 #elif defined(NUVOTON_LPC)
 LpcDataHandler
-    lpcDataHandler(LpcMapperNuvoton::createNuvotonMapper(MAPPED_ADDRESS));
+    lpcDataHandler(LpcMapperNuvoton::createNuvotonMapper(MAPPED_ADDRESS, memoryRegionSize));
 #else
 #error "You must specify a hardware implementation."
 #endif

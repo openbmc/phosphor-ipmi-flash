@@ -7,6 +7,12 @@
 namespace ipmi_flash
 {
 
+struct MemorySet
+{
+    int mappedFd = -1;
+    std::uint8_t* mapped = nullptr;
+};
+
 /**
  * Different LPC (or P2a) memory map implementations may require different
  * mechanisms for specific tasks such as mapping the memory window or copying
@@ -16,6 +22,11 @@ class HardwareMapperInterface
 {
   public:
     virtual ~HardwareMapperInterface() = default;
+
+    /**
+     * Open the driver or whatever and map the region.
+     */
+    virtual MemorySet open() = 0;
 
     /**
      * Close the mapper.  This could mean, send an ioctl to turn off the region,
@@ -36,14 +47,6 @@ class HardwareMapperInterface
      */
     virtual std::pair<std::uint32_t, std::uint32_t>
         mapWindow(std::uint32_t address, std::uint32_t length) = 0;
-
-    /**
-     * Returns the bytes from the mapped window.
-     *
-     * @param[in] length - the number of bytes to copy.
-     * @return the bytes copied out of the region.
-     */
-    virtual std::vector<std::uint8_t> copyFrom(std::uint32_t length) = 0;
 };
 
 } // namespace ipmi_flash
