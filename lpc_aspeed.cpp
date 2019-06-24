@@ -16,6 +16,7 @@
 
 #include "lpc_aspeed.hpp"
 
+#include "mapper_errors.hpp"
 #include "window_hw_interface.hpp"
 
 #include <fcntl.h>
@@ -113,6 +114,19 @@ std::pair<std::uint32_t, std::uint32_t>
     return std::make_pair(offset, length);
 }
 
+MemorySet LpcMapperAspeed::open()
+{
+    if (mapRegion())
+    {
+        MemorySet output;
+        output.mappedFd = mappedFd;
+        output.mapped = mappedRegion;
+        return output;
+    }
+
+    throw MapperException("Unable to memory-map region");
+}
+
 bool LpcMapperAspeed::mapRegion()
 {
     /* Open the file to map. */
@@ -137,24 +151,6 @@ bool LpcMapperAspeed::mapRegion()
      * other pieces should go here...
      */
     return true;
-}
-
-std::vector<std::uint8_t> LpcMapperAspeed::copyFrom(std::uint32_t length)
-{
-    if (mappedFd < 0)
-    {
-        /* NOTE: may make more sense to do this in the open() */
-        if (!mapRegion())
-        {
-            /* Was unable to map region -- this call only required if using mmap
-             * and not ioctl.
-             */
-            /* TODO: have a better failure. */
-            return {};
-        }
-    }
-
-    return std::vector<std::uint8_t>(mappedRegion, mappedRegion + length);
 }
 
 } // namespace ipmi_flash
