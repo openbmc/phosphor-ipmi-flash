@@ -98,6 +98,13 @@ Option                    | Meaning
 ------------------------- | -------
 `--enable-cleanup-delete` | Provide a simple blob id that deletes artifacts.
 
+If the update mechanism desired is simply a BMC reboot, a platform can just
+enable that directly.
+
+Option                   | Meaning
+------------------------ | -------
+`--enable-reboot-update` | Enable use of reboot update mechanism.
+
 ### Internal Configuration Details
 
 The following variables can be set to whatever you wish, however they have
