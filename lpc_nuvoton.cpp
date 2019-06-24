@@ -16,11 +16,13 @@
 
 #include "lpc_nuvoton.hpp"
 
+#include "mapper_errors.hpp"
 #include "window_hw_interface.hpp"
 
 #include <fcntl.h>
 #include <sys/mman.h>
 
+#include <cerrno>
 #include <cinttypes>
 #include <cstdint>
 #include <cstdio>
@@ -35,14 +37,54 @@ using std::uint32_t;
 using std::uint8_t;
 
 std::unique_ptr<HardwareMapperInterface>
-    LpcMapperNuvoton::createNuvotonMapper(std::uint32_t regionAddress)
+    LpcMapperNuvoton::createNuvotonMapper(std::uint32_t regionAddress,
+                                          std::uint32_t regionSize)
 {
     /* NOTE: Considered making one factory for both types. */
-    return std::make_unique<LpcMapperNuvoton>(regionAddress);
+    return std::make_unique<LpcMapperNuvoton>(regionAddress, regionSize);
+}
+
+MemorySet LpcMapperNuvoton::open()
+{
+    static constexpr auto devmem = "/dev/mem";
+
+    mappedFd = sys->open(devmem, O_RDWR | O_SYNC);
+    if (mappedFd == -1)
+    {
+        throw MapperException("Unable to open /dev/mem");
+    }
+
+    mapped = reinterpret_cast<uint8_t*>(sys->mmap(
+        0, memoryRegionSize, PROT_READ, MAP_SHARED, mappedFd, regionAddress));
+    if (mapped == MAP_FAILED)
+    {
+        sys->close(mappedFd);
+        mappedFd = -1;
+        mapped = nullptr;
+
+        throw MapperException("Unable to map region");
+    }
+
+    MemorySet output;
+    output.mappedFd = mappedFd;
+    output.mapped = mapped;
+
+    return output;
 }
 
 void LpcMapperNuvoton::close()
 {
+    if (mapped)
+    {
+        sys->munmap(mapped, memoryRegionSize);
+        mapped = nullptr;
+    }
+
+    if (mappedFd != -1)
+    {
+        sys->close(mappedFd);
+        mappedFd = -1;
+    }
 }
 
 /*
@@ -56,9 +98,11 @@ void LpcMapperNuvoton::close()
  *   - WindowOffset = 4 and WindowSize = len - 4 if (addr & 0x7) == 0
  *   - WindowSize = 0 means that the region cannot be mapped otherwise
  */
-std::pair<std::uint32_t, std::uint32_t>
-    LpcMapperNuvoton::mapWindow(std::uint32_t address, std::uint32_t length)
+WindowMapResult LpcMapperNuvoton::mapWindow(std::uint32_t address,
+                                            std::uint32_t length)
 {
+    WindowMapResult result = {};
+
     /* We reserve the first 4 bytes from the mapped region; the first byte
      * is shared semaphore, and the number of 4 is for alignment.
      */
@@ -69,7 +113,8 @@ std::pair<std::uint32_t, std::uint32_t>
     {
         std::fprintf(stderr, "window size %" PRIx32 " too small to map.\n",
                      length);
-        return std::make_pair(0, 0);
+        result.response = EINVAL;
+        return result;
     }
 
     if (length > bmcMapMaxSizeBytes)
@@ -84,19 +129,27 @@ std::pair<std::uint32_t, std::uint32_t>
      * bytes so as to skip the semaphore register.
      */
     uint32_t windowOffset = bmcMapReserveBytes;
-    uint32_t windowSize = length;
+    // uint32_t windowSize = length;
+
+    result.response = 0;
+    result.windowOffset = windowOffset;
+    result.windowSize = length;
 
     const uint32_t addressOffset = address & 0x7;
 
     if (addressOffset == 0)
     {
         std::fprintf(stderr, "Map address offset should be 4 for Nuvoton.\n");
-        return std::make_pair(0, 0);
+
+        result.response = EFBIG;
+        return result;
     }
     else if (addressOffset != bmcMapReserveBytes)
     {
         std::fprintf(stderr, "Map address offset should be 4 for Nuvoton.\n");
-        return std::make_pair(0, 0);
+
+        result.response = EINVAL;
+        return result;
     }
 
     /* TODO: need a kernel driver to handle mapping configuration.
@@ -107,7 +160,9 @@ std::pair<std::uint32_t, std::uint32_t>
     {
         std::fprintf(stderr, "Failed to open /dev/mem\n");
         sys->close(fd);
-        return std::make_pair(0, 0);
+
+        result.response = EINVAL;
+        return result;
     }
 
     const uint32_t bmcMapConfigBaseAddr = 0xc0001000;
@@ -132,13 +187,7 @@ std::pair<std::uint32_t, std::uint32_t>
     sys->munmap(mapBasePtr, pageSize);
     sys->close(fd);
 
-    return std::make_pair(windowOffset, windowSize);
-}
-
-std::vector<std::uint8_t> LpcMapperNuvoton::copyFrom(std::uint32_t length)
-{
-    /* TODO: implement. */
-    return {};
+    return result;
 }
 
 } // namespace ipmi_flash

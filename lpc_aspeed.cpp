@@ -16,12 +16,14 @@
 
 #include "lpc_aspeed.hpp"
 
+#include "mapper_errors.hpp"
 #include "window_hw_interface.hpp"
 
 #include <fcntl.h>
 #include <linux/aspeed-lpc-ctrl.h>
 #include <linux/kernel.h>
 
+#include <cerrno>
 #include <cstdint>
 #include <cstring>
 #include <memory>
@@ -58,9 +60,10 @@ void LpcMapperAspeed::close()
     }
 }
 
-std::pair<std::uint32_t, std::uint32_t>
-    LpcMapperAspeed::mapWindow(std::uint32_t address, std::uint32_t length)
+WindowMapResult LpcMapperAspeed::mapWindow(std::uint32_t address,
+                                           std::uint32_t length)
 {
+    WindowMapResult result = {};
     static const std::uint32_t MASK_64K = 0xFFFFU;
     const std::uint32_t offset = address & MASK_64K;
 
@@ -71,11 +74,10 @@ std::pair<std::uint32_t, std::uint32_t>
                      " is too large for mem region"
                      " of size %zu\n",
                      length, offset, regionSize);
-        /* TODO: need to throw an exception at this point to store the data to
-         * provide an EBIG response later.
-         */
-        /* *windowSize = regionSize - offset; */
-        return std::make_pair(0, 0);
+
+        result.response = EFBIG;
+        result.windowSize = regionSize - offset;
+        return result;
     }
 
     struct aspeed_lpc_ctrl_mapping map = {
@@ -98,7 +100,9 @@ std::pair<std::uint32_t, std::uint32_t>
         std::fprintf(stderr,
                      "cannot open Aspeed LPC kernel control dev \"%s\"\n",
                      lpcControlPath.c_str());
-        return std::make_pair(0, 0);
+
+        result.response = EINVAL;
+        return result;
     }
 
     if (sys->ioctl(lpcControlFd, ASPEED_LPC_CTRL_IOCTL_MAP, &map) == -1)
@@ -106,11 +110,30 @@ std::pair<std::uint32_t, std::uint32_t>
         std::fprintf(stderr, "Failed to ioctl Aspeed LPC map with error %s\n",
                      std::strerror(errno));
         sys->close(lpcControlFd);
-        return std::make_pair(0, 0);
+
+        result.response = EINVAL;
+        return result;
     }
 
     sys->close(lpcControlFd);
-    return std::make_pair(offset, length);
+
+    result.response = 0;
+    result.windowOffset = offset;
+    result.windowSize = length;
+    return result;
+}
+
+MemorySet LpcMapperAspeed::open()
+{
+    if (mapRegion())
+    {
+        MemorySet output;
+        output.mappedFd = mappedFd;
+        output.mapped = mappedRegion;
+        return output;
+    }
+
+    throw MapperException("Unable to memory-map region");
 }
 
 bool LpcMapperAspeed::mapRegion()
@@ -137,24 +160,6 @@ bool LpcMapperAspeed::mapRegion()
      * other pieces should go here...
      */
     return true;
-}
-
-std::vector<std::uint8_t> LpcMapperAspeed::copyFrom(std::uint32_t length)
-{
-    if (mappedFd < 0)
-    {
-        /* NOTE: may make more sense to do this in the open() */
-        if (!mapRegion())
-        {
-            /* Was unable to map region -- this call only required if using mmap
-             * and not ioctl.
-             */
-            /* TODO: have a better failure. */
-            return {};
-        }
-    }
-
-    return std::vector<std::uint8_t>(mappedRegion, mappedRegion + length);
 }
 
 } // namespace ipmi_flash
