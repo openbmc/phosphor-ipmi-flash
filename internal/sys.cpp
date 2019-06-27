@@ -19,10 +19,26 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
+
+#include <cstdint>
 
 namespace internal
 {
+
+std::int64_t SysImpl::getSize(const char* pathname) const
+{
+    struct stat results;
+    int rc = ::stat(pathname, &results);
+    if (rc)
+    {
+        return 0;
+    }
+
+    return static_cast<std::int64_t>(results.st_size);
+}
 
 int SysImpl::open(const char* pathname, int flags) const
 {

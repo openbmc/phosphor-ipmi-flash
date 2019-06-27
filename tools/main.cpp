@@ -19,6 +19,7 @@
 #include "lpc.hpp"
 #include "p2a.hpp"
 #include "pci.hpp"
+#include "progress.hpp"
 #include "tool_errors.hpp"
 #include "updater.hpp"
 
@@ -207,13 +208,15 @@ int main(int argc, char* argv[])
         ipmiblob::BlobHandler blob(std::move(ipmi));
         host_tool::DevMemDevice devmem;
         host_tool::PciUtilImpl pci;
+        host_tool::ProgressStdoutIndicator progress;
 
         std::unique_ptr<host_tool::DataInterface> handler;
 
         /* Input has already been validated in this case. */
         if (interface == IPMIBT)
         {
-            handler = std::make_unique<host_tool::BtDataHandler>(&blob);
+            handler =
+                std::make_unique<host_tool::BtDataHandler>(&blob, &progress);
         }
         else if (interface == IPMILPC)
         {
@@ -223,12 +226,12 @@ int main(int argc, char* argv[])
                 exit(EXIT_FAILURE);
             }
             handler = std::make_unique<host_tool::LpcDataHandler>(
-                &blob, &devmem, hostAddress, hostLength);
+                &blob, &devmem, hostAddress, hostLength, &progress);
         }
         else if (interface == IPMIPCI)
         {
             handler = std::make_unique<host_tool::P2aDataHandler>(
-                &blob, &devmem, &pci);
+                &blob, &devmem, &pci, &progress);
         }
 
         if (!handler)

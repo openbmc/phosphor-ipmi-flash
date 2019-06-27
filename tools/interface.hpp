@@ -1,6 +1,7 @@
 #pragma once
 
 #include "flags.hpp"
+#include "progress.hpp"
 
 #include <cstdint>
 #include <string>

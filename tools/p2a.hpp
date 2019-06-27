@@ -4,6 +4,7 @@
 #include "internal/sys.hpp"
 #include "io.hpp"
 #include "pci.hpp"
+#include "progress.hpp"
 
 #include <cstdint>
 #include <ipmiblob/blob_interface.hpp>
@@ -22,10 +23,10 @@ class P2aDataHandler : public DataInterface
 {
   public:
     P2aDataHandler(ipmiblob::BlobInterface* blob, HostIoInterface* io,
-                   PciUtilInterface* pci,
+                   PciUtilInterface* pci, ProgressInterface* progress,
                    const internal::Sys* sys = &internal::sys_impl) :
         blob(blob),
-        io(io), pci(pci), sys(sys)
+        io(io), pci(pci), progress(progress), sys(sys)
     {
     }
 
@@ -39,6 +40,7 @@ class P2aDataHandler : public DataInterface
     ipmiblob::BlobInterface* blob;
     HostIoInterface* io;
     PciUtilInterface* pci;
+    ProgressInterface* progress;
     const internal::Sys* sys;
 };
 
