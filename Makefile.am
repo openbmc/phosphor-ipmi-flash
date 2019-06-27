@@ -35,8 +35,19 @@ else
 endif
 
 ACLOCAL_AMFLAGS = -I m4
+AM_DEFAULT_SOURCE_EXT = .cpp
 
-SUBDIRS =
+noinst_LTLIBRARIES = libfirmware_common.la
+libfirmware_common_la_SOURCES = \
+	util.cpp \
+	internal/sys.cpp
+libfirmware_common_la_CXXFLAGS = \
+	$(CODE_COVERAGE_CXXFLAGS) \
+	-flto
+libfirmware_common_la_LDFLAGS = \
+	$(CODE_COVERAGE_LIBS)
+
+SUBDIRS = .
 
 if BUILD_BMC_HANDLER
 SUBDIRS += bmc
