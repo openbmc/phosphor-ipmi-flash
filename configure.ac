@@ -1,6 +1,6 @@
 # Initialization
 AC_PREREQ([2.69])
-AC_INIT([phosphor-ipmi-flash], [0.1], [https://github.com/openbmc/phosphor-ipmi-flash/issues])
+AC_INIT([phosphor-ipmi-flash], [1.0], [https://github.com/openbmc/phosphor-ipmi-flash/issues])
 AC_LANG([C++])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIRS([m4])
