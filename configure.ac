@@ -54,6 +54,12 @@ AC_ARG_ENABLE([build-host-tool],
 )
 AM_CONDITIONAL([BUILD_HOST_TOOL], [test "x$enable_build_host_tool" != "xno"])
 
+# Enable building the bmc (default: yes)
+AC_ARG_ENABLE([build-bmc-blob-handler],
+    AC_HELP_STRING([--disable-build-bmc-blob-handler], [Disable buliding the BMC BLOB handler])
+)
+AM_CONDITIONAL([BUILD_BMC_HANDLER], [test "x$enable_build_bmc_blob_handler" != "xno"])
+
 # If not building the host-tool, we're building the BMC.
 AS_IF([test "x$enable_build_host_tool" != "xyes"], [
     PKG_CHECK_MODULES(
@@ -99,7 +105,7 @@ AS_IF([test "x$enable_reboot_update" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_REBOOT_UPDATE], [CXXFLAGS])
 ])
 
-# Enable the cleanup handle that deletes the temporary files.
+# Enable the cleanup handle that deletes the temporary files. (default: no)
 AC_ARG_ENABLE([cleanup-delete],
     AS_HELP_STRING([--enable-cleanup-delete],
                    [Enable use of the delete files cleanup mechanism.]))

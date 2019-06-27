@@ -36,7 +36,11 @@ endif
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = bmc
+SUBDIRS =
+
+if BUILD_BMC_HANDLER
+SUBDIRS += bmc
+endif
 
 if BUILD_HOST_TOOL
 SUBDIRS += tools
