@@ -2,10 +2,8 @@ AM_DEFAULT_SOURCE_EXT = .cpp
 
 noinst_LTLIBRARIES = libfirmwareblob_common.la
 libfirmwareblob_common_la_SOURCES = \
-	$(top_srcdir)/util.cpp \
 	firmware_handler.cpp \
 	file_handler.cpp \
-	$(top_srcdir)/internal/sys.cpp \
 	prepare_systemd.cpp \
 	verify_systemd.cpp \
 	update_systemd.cpp
@@ -37,6 +35,7 @@ libfirmwareblob_common_la_LDFLAGS = \
         $(PHOSPHOR_LOGGING_LIBS) \
         $(CODE_COVERAGE_LIBS) \
         -lstdc++fs
+libfirmwareblob_common_la_LIBADD = $(top_builddir)/libfirmware_common.la
 
 libfirmwareblobdir = ${libdir}/ipmid-providers
 libfirmwareblob_LTLIBRARIES = libfirmwareblob.la

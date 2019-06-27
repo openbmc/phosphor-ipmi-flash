@@ -14,7 +14,6 @@ libupdater_la_CXXFLAGS = \
 	$(IPMIBLOB_CFLAGS) \
 	$(PCILIB_CFLAGS)
 libupdater_la_SOURCES = \
-	$(top_srcdir)/util.cpp \
 	updater.cpp \
 	handler.cpp \
 	helper.cpp \
@@ -22,7 +21,7 @@ libupdater_la_SOURCES = \
 	lpc.cpp \
 	io.cpp \
 	pci.cpp \
-	p2a.cpp \
-	$(top_srcdir)/internal/sys.cpp
+	p2a.cpp
+libupdater_la_LIBADD = $(top_builddir)/libfirmware_common.la
 
 SUBDIRS = . test
