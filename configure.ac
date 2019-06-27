@@ -48,14 +48,25 @@ AX_APPEND_COMPILE_FLAGS([-Wall -Werror], [CXXFLAGS])
 # Checks for library functions.
 LT_INIT # Required for systemd linking
 
-# Checks for libraries.
-PKG_CHECK_MODULES(
-    [SDBUSPLUS],
-    [sdbusplus],
-    [AC_DEFINE(HAVE_SDBUSPLUS, [1], [Found openbmc/sdbusplus package])],
-    [AC_MSG_ERROR([The openbmc/sdbusplus package is required])]
+# Enable building the host tool (default: yes)
+AC_ARG_ENABLE([build-host-tool],
+    AC_HELP_STRING([--disable-build-host-tool], [Disable building the host tool])
 )
-PKG_CHECK_MODULES([PHOSPHOR_LOGGING], [phosphor-logging])
+AM_CONDITIONAL([BUILD_HOST_TOOL], [test "x$enable_build_host_tool" != "xno"])
+
+# If not building the host-tool, we're building the BMC.
+AS_IF([test "x$enable_build_host_tool" != "xyes"], [
+    PKG_CHECK_MODULES(
+        [SDBUSPLUS],
+        [sdbusplus],
+        [AC_DEFINE(HAVE_SDBUSPLUS, [1], [Found openbmc/sdbusplus package])],
+        [AC_MSG_ERROR([The openbmc/sdbusplus package is required])]
+    )
+
+    PKG_CHECK_MODULES([PHOSPHOR_LOGGING], [phosphor-logging])
+])
+
+# These packages are required for both the BMC and the host-tool.
 PKG_CHECK_MODULES(
     [IPMIBLOB],
     [ipmiblob],
@@ -78,12 +89,6 @@ AC_CHECK_HEADER(
 AX_PTHREAD([], [AC_MSG_ERROR(["pthread required and not found"])])
 
 # Configurability
-
-# Enable building the host tool (default: yes)
-AC_ARG_ENABLE([build-host-tool],
-    AC_HELP_STRING([--disable-build-host-tool], [Disable building the host tool])
-)
-AM_CONDITIONAL([BUILD_HOST_TOOL], [test "x$enable_build_host_tool" != "xno"])
 
 # Enable the reboot update mechanism
 AC_ARG_ENABLE([reboot-update],
