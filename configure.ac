@@ -60,8 +60,8 @@ AC_ARG_ENABLE([build-bmc-blob-handler],
 )
 AM_CONDITIONAL([BUILD_BMC_HANDLER], [test "x$enable_build_bmc_blob_handler" != "xno"])
 
-# If not building the host-tool, we're building the BMC.
-AS_IF([test "x$enable_build_host_tool" != "xyes"], [
+# Build the BMC by default, so check if set to no.
+AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
     PKG_CHECK_MODULES(
         [SDBUSPLUS],
         [sdbusplus],
@@ -78,6 +78,16 @@ AS_IF([test "x$enable_build_host_tool" != "xyes"], [
     )
 ])
 
+# If not building the host-tool, we're building the BMC.
+AS_IF([test "x$enable_build_host_tool" != "xno"], [
+    PKG_CHECK_MODULES(
+        [PCILIB],
+        [libpci],
+        [],
+        [AC_MSG_ERROR([Could not find libpci... pciutils package required])]
+    )
+])
+
 # These packages are required for both the BMC and the host-tool.
 PKG_CHECK_MODULES(
     [IPMIBLOB],
@@ -86,12 +96,6 @@ PKG_CHECK_MODULES(
     [AC_MSG_ERROR(
         [Could not find ipmiblob...openbmc/ipmi-blob-tool package required])
     ]
-)
-PKG_CHECK_MODULES(
-    [PCILIB],
-    [libpci],
-    [],
-    [AC_MSG_ERROR([Could not find libpci... pciutils package required])]
 )
 AX_PTHREAD([], [AC_MSG_ERROR(["pthread required and not found"])])
 
