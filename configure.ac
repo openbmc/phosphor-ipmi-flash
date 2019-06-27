@@ -408,7 +408,8 @@ AS_IF([test "x$enable_oe_sdk" == "xyes"],
 )
 
 # Create configured output
-AC_CONFIG_FILES([Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([bmc/Makefile bmc/test/Makefile])
 AC_CONFIG_FILES([tools/Makefile tools/test/Makefile])
 AC_CONFIG_FILES([cleanup/Makefile cleanup/test/Makefile])
 AC_OUTPUT
