@@ -33,7 +33,7 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithDataHandler)
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
+        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc,
         hashBlobId));
 
     /* The active hash blob_id was added. */
@@ -60,7 +60,7 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithoutDataHandler)
     EXPECT_CALL(imageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi,
         hashBlobId));
 
     /* The active hash blob_id was added. */

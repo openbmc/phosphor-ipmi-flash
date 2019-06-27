@@ -16,12 +16,16 @@
 
 #include "p2a.hpp"
 
-#include "firmware_handler.hpp"
+#include "data.hpp"
+#include "flags.hpp"
 #include "pci.hpp"
 #include "pci_handler.hpp"
 
+#include <cstdint>
 #include <cstring>
 #include <ipmiblob/blob_errors.hpp>
+#include <memory>
+#include <string>
 
 namespace host_tool
 {

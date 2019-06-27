@@ -51,26 +51,12 @@ struct Session
     std::string activePath;
 };
 
-struct ExtChunkHdr
-{
-    std::uint32_t length; /* Length of the data queued (little endian). */
-} __attribute__((packed));
-
 /**
  * Register only one firmware blob handler that will manage all sessions.
  */
 class FirmwareBlobHandler : public blobs::GenericBlobInterface
 {
   public:
-    enum UpdateFlags : std::uint16_t
-    {
-        openRead = (1 << 0),  /* Flag for reading. */
-        openWrite = (1 << 1), /* Flag for writing. */
-        ipmi = (1 << 8), /* Expect to send contents over IPMI BlockTransfer. */
-        p2a = (1 << 9),  /* Expect to send contents over P2A bridge. */
-        lpc = (1 << 10), /* Expect to send contents over LPC bridge. */
-    };
-
     /** The state of the firmware update process. */
     enum class UpdateState
     {

@@ -5,7 +5,6 @@
 #include "updater_mock.hpp"
 #include "util.hpp"
 
-#include <blobs-ipmid/blobs.hpp>
 #include <ipmiblob/test/blob_interface_mock.hpp>
 #include <string>
 
@@ -32,8 +31,8 @@ class UpdateHandlerTest : public ::testing::Test
 TEST_F(UpdateHandlerTest, CheckAvailableSuccess)
 {
     ipmiblob::StatResponse statObj = {};
-    statObj.blob_state = ipmi_flash::FirmwareBlobHandler::UpdateFlags::ipmi |
-                         ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc;
+    statObj.blob_state = ipmi_flash::FirmwareFlags::UpdateFlags::ipmi |
+                         ipmi_flash::FirmwareFlags::UpdateFlags::lpc;
 
     EXPECT_CALL(blobMock, getBlobList())
         .WillOnce(
@@ -43,7 +42,7 @@ TEST_F(UpdateHandlerTest, CheckAvailableSuccess)
         .WillOnce(Return(statObj));
 
     EXPECT_CALL(handlerMock, supportedType())
-        .WillOnce(Return(ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc));
+        .WillOnce(Return(ipmi_flash::FirmwareFlags::UpdateFlags::lpc));
 
     EXPECT_TRUE(updater.checkAvailable(ipmi_flash::staticLayoutBlobId));
 }
@@ -55,11 +54,11 @@ TEST_F(UpdateHandlerTest, SendFileSuccess)
 
     std::uint16_t supported =
         static_cast<std::uint16_t>(
-            ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc) |
+            ipmi_flash::FirmwareFlags::UpdateFlags::lpc) |
         static_cast<std::uint16_t>(blobs::OpenFlags::write);
 
     EXPECT_CALL(handlerMock, supportedType())
-        .WillOnce(Return(ipmi_flash::FirmwareBlobHandler::UpdateFlags::lpc));
+        .WillOnce(Return(ipmi_flash::FirmwareFlags::UpdateFlags::lpc));
 
     EXPECT_CALL(blobMock, openBlob(ipmi_flash::staticLayoutBlobId, supported))
         .WillOnce(Return(session));

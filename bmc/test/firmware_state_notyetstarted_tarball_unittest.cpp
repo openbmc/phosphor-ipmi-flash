@@ -56,14 +56,14 @@ class FirmwareHandlerNotYetStartedUbitTest : public ::testing::Test
     ImageHandlerMock imageMock;
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr}};
+        {FirmwareFlags::UpdateFlags::ipmi, nullptr}};
     std::unique_ptr<blobs::GenericBlobInterface> handler;
     TriggerMock* verifyMockPtr;
     TriggerMock* updateMockPtr;
 
     std::uint16_t session = 1;
     std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+        blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi;
 };
 
 TEST_F(FirmwareHandlerNotYetStartedUbitTest,
