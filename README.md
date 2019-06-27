@@ -5,6 +5,70 @@ update mechanism.
 
 The primary details are [here](https://github.com/openbmc/docs/blob/master/designs/firmware_update_via_blobs.md).
 
+## Building and using the host-tool
+
+This repo contains a host-tool implementation for talking to the corresponding
+BMC blob handler.
+
+### Building the host-tool
+
+The host-tool depends on ipmi-blob-tool and pciutils.
+
+#### Building pciutils
+
+Check out the [pciutils source](https://github.com/pciutils/pciutils).
+
+Then run these commands in the source directory.
+```
+make SHARED=yes
+make SHARED=yes install
+make install-lib
+```
+
+#### Building ipmi-blob-tool
+
+Check out the [ipmi-blob-tool source](https://github.com/openbmc/ipmi-blob-tool).
+
+Then run these commands in the source directory.
+
+```
+./bootstrap.sh
+./configure
+make
+make install
+```
+
+#### Building burn_my_bmc (the host-tool)
+
+Check out the [phosphor-ipmi-flash source](https://github.com/openbmc/phosphor-ipmi-flash).
+
+Then run these commands in the source directory.
+
+```
+./bootstrap.sh
+./configure --disable-build-bmc-blob-handler
+make
+make install
+```
+
+### Parameters
+
+The host-tool has parameters that let the caller specify every required detail.
+
+The required parameters are:
+
+ Parameter  | Options  | Meaning
+----------- | -------- | -------
+`command`   | `update` | The tool should try to update the BMC firmware.
+`interface` | `ipmibt`, `ipmilpc`, `ipmipci` | The data transport mechanism, typically `ipmilpc`
+`image`     | path     | The BMC firmware image file (or tarball)
+`sig`       | path     | The path to a signature file to send to the BMC along with the image file.
+`type`      | `static`, `ubitar` | Whether we're updating via the static layout or UBI tarball. 
+
+If you're using an LPC data transfer mechanism, you'll need two additional
+parameters: `address` and `length`.  These values indicate where on the host
+you've reserved memory to be used for the transfer window.
+
 ## Introduction
 
 This supports two methods of providing the image to stage. You can send the
