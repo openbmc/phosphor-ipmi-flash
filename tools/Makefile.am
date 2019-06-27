@@ -1,4 +1,4 @@
-noinst_PROGRAMS = burn_my_bmc
+bin_PROGRAMS = burn_my_bmc
 
 burn_my_bmc_SOURCES = main.cpp
 burn_my_bmc_LDADD = libupdater.la $(CODE_COVERAGE_LIBS)
