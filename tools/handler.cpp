@@ -16,13 +16,13 @@
 
 #include "handler.hpp"
 
+#include "flags.hpp"
 #include "helper.hpp"
 #include "status.hpp"
 #include "tool_errors.hpp"
 #include "util.hpp"
 
 #include <algorithm>
-#include <blobs-ipmid/blobs.hpp>
 #include <cstdint>
 #include <cstring>
 #include <ipmiblob/blob_errors.hpp>
@@ -85,7 +85,8 @@ void UpdateHandler::sendFile(const std::string& target, const std::string& path)
     {
         session = blob->openBlob(
             target, static_cast<std::uint16_t>(supported) |
-                        static_cast<std::uint16_t>(blobs::OpenFlags::write));
+                        static_cast<std::uint16_t>(
+                            ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
     }
     catch (const ipmiblob::BlobException& b)
     {
@@ -113,7 +114,8 @@ bool UpdateHandler::verifyFile(const std::string& target)
     try
     {
         session = blob->openBlob(
-            target, static_cast<std::uint16_t>(blobs::OpenFlags::write));
+            target, static_cast<std::uint16_t>(
+                        ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
     }
     catch (const ipmiblob::BlobException& b)
     {
@@ -162,9 +164,10 @@ void UpdateHandler::cleanArtifacts()
     try
     {
         std::fprintf(stderr, "Opening the cleanup blob\n");
-        session =
-            blob->openBlob(ipmi_flash::cleanupBlobId,
-                           static_cast<std::uint16_t>(blobs::OpenFlags::write));
+        session = blob->openBlob(
+            ipmi_flash::cleanupBlobId,
+            static_cast<std::uint16_t>(
+                ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
     }
     catch (...)
     {

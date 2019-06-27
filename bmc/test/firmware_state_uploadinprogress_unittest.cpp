@@ -96,7 +96,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnNormalBlobsReturnsSuccess)
      * return the same information as in the notYetStarted state.
      */
     blobs::BlobMeta expected;
-    expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
+    expected.blobState = FirmwareFlags::UpdateFlags::ipmi;
     expected.size = 0;
 
     openToInProgress(staticLayoutBlobId);
@@ -126,7 +126,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 32;
     expectedMeta.blobState =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+        blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi;
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
 }

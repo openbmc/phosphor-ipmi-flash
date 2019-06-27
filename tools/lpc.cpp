@@ -16,9 +16,14 @@
 
 #include "lpc.hpp"
 
+#include "data.hpp"
+
 #include <cerrno>
+#include <cstdint>
 #include <cstring>
 #include <ipmiblob/blob_errors.hpp>
+#include <memory>
+#include <string>
 
 namespace host_tool
 {

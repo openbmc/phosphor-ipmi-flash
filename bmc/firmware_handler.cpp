@@ -16,6 +16,8 @@
 
 #include "firmware_handler.hpp"
 
+#include "data.hpp"
+#include "flags.hpp"
 #include "image_handler.hpp"
 #include "status.hpp"
 #include "util.hpp"
@@ -511,7 +513,7 @@ bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
 
     std::vector<std::uint8_t> bytes;
 
-    if (item->second->flags & UpdateFlags::ipmi)
+    if (item->second->flags & FirmwareFlags::UpdateFlags::ipmi)
     {
         bytes = data;
     }
@@ -550,7 +552,7 @@ bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
         return false;
     }
 
-    if (item->second->flags & UpdateFlags::ipmi)
+    if (item->second->flags & FirmwareFlags::UpdateFlags::ipmi)
     {
         return false;
     }

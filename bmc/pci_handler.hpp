@@ -10,12 +10,6 @@
 namespace ipmi_flash
 {
 
-/** P2A configuration response. */
-struct PciConfigResponse
-{
-    std::uint32_t address;
-} __attribute__((packed));
-
 /**
  * Data handler for reading and writing data via the P2A bridge.
  *
