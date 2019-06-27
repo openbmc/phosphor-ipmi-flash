@@ -16,6 +16,15 @@ bool BtDataHandler::sendContents(const std::string& input,
         return false;
     }
 
+    std::int64_t fileSize = sys->getSize(input.c_str());
+    if (fileSize == 0)
+    {
+        std::fprintf(stderr, "Zero-length file, or other file access error\n");
+        return false;
+    }
+
+    progress->start(fileSize);
+
     try
     {
         static constexpr int btBufferLen = 50;
@@ -33,6 +42,7 @@ bool BtDataHandler::sendContents(const std::string& input,
                                                  &readBuffer[bytesRead]);
                 blob->writeBytes(session, offset, buffer);
                 offset += bytesRead;
+                progress->updateProgress(bytesRead);
             }
         } while (bytesRead > 0);
     }

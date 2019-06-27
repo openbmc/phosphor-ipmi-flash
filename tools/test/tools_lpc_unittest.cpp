@@ -1,6 +1,7 @@
 #include "internal_sys_mock.hpp"
 #include "io_mock.hpp"
 #include "lpc.hpp"
+#include "progress_mock.hpp"
 
 #include <cstring>
 #include <ipmiblob/test/blob_interface_mock.hpp>
@@ -8,6 +9,8 @@
 #include <gtest/gtest.h>
 
 namespace host_tool
+{
+namespace
 {
 
 using ::testing::_;
@@ -23,14 +26,17 @@ TEST(LpcHandleTest, verifySendsFileContents)
     internal::InternalSysMock sysMock;
     ipmiblob::BlobInterfaceMock blobMock;
     HostIoInterfaceMock ioMock;
+    ProgressMock progMock;
 
     const std::uint32_t address = 0xfedc1000;
     const std::uint32_t length = 0x1000;
 
-    LpcDataHandler handler(&blobMock, &ioMock, address, length, &sysMock);
+    LpcDataHandler handler(&blobMock, &ioMock, address, length, &progMock,
+                           &sysMock);
     std::uint16_t session = 0xbeef;
     std::string filePath = "/asdf";
     int fileDescriptor = 5;
+    const int fakeFileSize = 100;
 
     LpcRegion host_lpc_buf;
     host_lpc_buf.address = address;
@@ -45,6 +51,8 @@ TEST(LpcHandleTest, verifySendsFileContents)
 
     EXPECT_CALL(sysMock, open(StrEq(filePath.c_str()), _))
         .WillOnce(Return(fileDescriptor));
+    EXPECT_CALL(sysMock, getSize(StrEq(filePath.c_str())))
+        .WillOnce(Return(fakeFileSize));
     EXPECT_CALL(sysMock, read(_, NotNull(), Gt(data.size())))
         .WillOnce(Invoke([&data](int, void* buf, std::size_t) {
             std::memcpy(buf, data.data(), data.size());
@@ -66,4 +74,5 @@ TEST(LpcHandleTest, verifySendsFileContents)
     EXPECT_TRUE(handler.sendContents(filePath, session));
 }
 
+} // namespace
 } // namespace host_tool

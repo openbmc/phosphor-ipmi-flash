@@ -3,6 +3,7 @@
 #include "interface.hpp"
 #include "internal/sys.hpp"
 #include "io.hpp"
+#include "progress.hpp"
 
 #include <cstdint>
 #include <ipmiblob/blob_interface.hpp>
@@ -23,9 +24,11 @@ class LpcDataHandler : public DataInterface
   public:
     LpcDataHandler(ipmiblob::BlobInterface* blob, HostIoInterface* io,
                    std::uint32_t address, std::uint32_t length,
+                   ProgressInterface* progress,
                    const internal::Sys* sys = &internal::sys_impl) :
         blob(blob),
-        io(io), address(address), length(length), sys(sys){};
+        io(io), address(address), length(length), progress(progress),
+        sys(sys){};
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
     ipmi_flash::FirmwareFlags::UpdateFlags supportedType() const override
@@ -38,6 +41,7 @@ class LpcDataHandler : public DataInterface
     HostIoInterface* io;
     std::uint32_t address;
     std::uint32_t length;
+    ProgressInterface* progress;
     const internal::Sys* sys;
 };
 

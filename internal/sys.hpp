@@ -12,6 +12,7 @@
 
 #include <cinttypes>
 #include <cstddef>
+#include <cstdint>
 
 namespace internal
 {
@@ -34,6 +35,7 @@ class Sys
     virtual int getpagesize() const = 0;
     virtual int ioctl(int fd, unsigned long request, void* param) const = 0;
     virtual int poll(struct pollfd* fds, nfds_t nfds, int timeout) const = 0;
+    virtual std::int64_t getSize(const char* pathname) const = 0;
 };
 
 /**
@@ -53,6 +55,8 @@ class SysImpl : public Sys
     int getpagesize() const override;
     int ioctl(int fd, unsigned long request, void* param) const override;
     int poll(struct pollfd* fds, nfds_t nfds, int timeout) const override;
+    /* returns 0 on failure, or if the file is zero bytes. */
+    std::int64_t getSize(const char* pathname) const override;
 };
 
 /** @brief Default instantiation of sys */

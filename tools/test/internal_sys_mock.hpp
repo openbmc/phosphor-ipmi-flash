@@ -4,6 +4,8 @@
 
 #include <unistd.h>
 
+#include <cstdint>
+
 #include <gmock/gmock.h>
 
 namespace internal
@@ -22,6 +24,7 @@ class InternalSysMock : public Sys
     MOCK_CONST_METHOD0(getpagesize, int());
     MOCK_CONST_METHOD3(ioctl, int(int, unsigned long, void*));
     MOCK_CONST_METHOD3(poll, int(struct pollfd*, nfds_t, int));
+    MOCK_CONST_METHOD1(getSize, std::int64_t(const char*));
 };
 
 } // namespace internal

@@ -111,6 +111,15 @@ bool P2aDataHandler::sendContents(const std::string& input,
         return false;
     }
 
+    std::int64_t fileSize = sys->getSize(input.c_str());
+    if (fileSize == 0)
+    {
+        std::fprintf(stderr, "Zero-length file, or other file access error\n");
+        return false;
+    }
+
+    progress->start(fileSize);
+
     const std::uint32_t p2aLength = aspeedP2aOffset;
 
     auto readBuffer = std::make_unique<std::uint8_t[]>(p2aLength);
@@ -152,6 +161,7 @@ bool P2aDataHandler::sendContents(const std::string& input,
                 /* This doesn't return anything on success. */
                 blob->writeBytes(session, offset, chunkBytes);
                 offset += bytesRead;
+                progress->updateProgress(bytesRead);
             }
         } while (bytesRead > 0);
     }
