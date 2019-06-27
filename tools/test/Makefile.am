@@ -3,6 +3,7 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/ \
 	-I$(top_srcdir)/tools/ \
+	-I$(top_srcdir)/bmc \
 	$(GTEST_CFLAGS) \
 	$(GMOCK_CFLAGS) \
 	$(CODE_COVERAGE_CPPFLAGS)
