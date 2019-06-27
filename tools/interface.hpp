@@ -1,6 +1,6 @@
 #pragma once
 
-#include "firmware_handler.hpp"
+#include "flags.hpp"
 
 #include <cstdint>
 #include <string>
@@ -30,8 +30,7 @@ class DataInterface
      *
      * @return the enum value corresponding to the supported type.
      */
-    virtual ipmi_flash::FirmwareBlobHandler::UpdateFlags
-        supportedType() const = 0;
+    virtual ipmi_flash::FirmwareFlags::UpdateFlags supportedType() const = 0;
 };
 
 } // namespace host_tool

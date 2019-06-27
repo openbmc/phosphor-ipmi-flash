@@ -1,4 +1,5 @@
 #include "firmware_handler.hpp"
+#include "flags.hpp"
 #include "image_mock.hpp"
 #include "triggerable_mock.hpp"
 #include "util.hpp"
@@ -25,7 +26,7 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
@@ -34,7 +35,7 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
 
     blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));
-    EXPECT_EQ(FirmwareBlobHandler::UpdateFlags::ipmi, meta.blobState);
+    EXPECT_EQ(FirmwareFlags::UpdateFlags::ipmi, meta.blobState);
 }
 
 } // namespace ipmi_flash

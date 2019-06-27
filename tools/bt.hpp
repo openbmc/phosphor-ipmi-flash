@@ -17,9 +17,9 @@ class BtDataHandler : public DataInterface
         sys(sys){};
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
-    ipmi_flash::FirmwareBlobHandler::UpdateFlags supportedType() const override
+    ipmi_flash::FirmwareFlags::UpdateFlags supportedType() const override
     {
-        return ipmi_flash::FirmwareBlobHandler::UpdateFlags::ipmi;
+        return ipmi_flash::FirmwareFlags::UpdateFlags::ipmi;
     }
 
   private:
