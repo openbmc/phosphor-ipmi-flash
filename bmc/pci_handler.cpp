@@ -16,6 +16,8 @@
 
 #include "pci_handler.hpp"
 
+#include "data.hpp"
+
 #include <fcntl.h>
 #include <linux/aspeed-p2a-ctrl.h>
 

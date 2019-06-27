@@ -24,8 +24,7 @@ TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
-        "asdf"));
+        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi, "asdf"));
 
     std::vector<std::uint8_t> bytes = {0xaa, 0x55};
 
@@ -38,8 +37,7 @@ TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
     EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::lpc,
-        "asdf"));
+        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc, "asdf"));
 
     std::vector<std::uint8_t> bytes = {0x01, 0x02, 0x03, 0x04};
 

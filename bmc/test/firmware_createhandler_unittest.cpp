@@ -1,5 +1,6 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
+#include "flags.hpp"
 #include "image_mock.hpp"
 #include "triggerable_mock.hpp"
 #include "util.hpp"
@@ -26,8 +27,8 @@ TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
     };
 
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-        {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
+        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
+        {FirmwareFlags::UpdateFlags::lpc, &dataMock},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(

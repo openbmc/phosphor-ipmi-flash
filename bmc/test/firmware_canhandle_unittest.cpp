@@ -1,5 +1,6 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
+#include "flags.hpp"
 #include "image_mock.hpp"
 #include "triggerable_mock.hpp"
 #include "util.hpp"
@@ -29,7 +30,7 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
         {"bcdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(

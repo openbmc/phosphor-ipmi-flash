@@ -164,7 +164,7 @@ TEST_F(FirmwareHandlerUpdatePendingTest, StatOnNormalBlobsReturnsSuccess)
     getToUpdatePending();
 
     blobs::BlobMeta expected;
-    expected.blobState = FirmwareBlobHandler::UpdateFlags::ipmi;
+    expected.blobState = FirmwareFlags::UpdateFlags::ipmi;
     expected.size = 0;
 
     for (const auto& blob : startingBlobs)
