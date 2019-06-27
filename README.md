@@ -120,6 +120,30 @@ Variable                     | Default                    | Meaning
 `VERIFY_DBUS_SERVICE`        | `verify_image.service`     | The systemd service started for verification.
 `UPDATE_DBUS_SERVICE`        | `update_bmc.service`       | The systemd service started for updating the BMC.
 
+## Building and using the host-tool
+
+This repo contains a host-tool implementation for talking to the corresponding
+BMC blob handler.
+
+### Building the host-tool
+
+First build [openbmc/ipmi-blob-tool](https://github.com/openbmc/ipmi-blob-tool#building).
+
+Secondly, build phosphor-ipmi-flash:
+
+```
+./bootstrap.sh
+./configure
+make
+make install
+```
+
+TODO: 
+
+### Parameters
+
+TODO: Add the parameter details.
+
 ## Flash State Machine Details
 
 [This document](ipmi_flash.md) describes the details of the state machine
