@@ -16,14 +16,13 @@
 
 #include "updater.hpp"
 
-#include "firmware_handler.hpp"
+#include "flags.hpp"
 #include "handler.hpp"
 #include "status.hpp"
 #include "tool_errors.hpp"
 #include "util.hpp"
 
 #include <algorithm>
-#include <blobs-ipmid/blobs.hpp>
 #include <cstring>
 #include <ipmiblob/blob_errors.hpp>
 #include <memory>

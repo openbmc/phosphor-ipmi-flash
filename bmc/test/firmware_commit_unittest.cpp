@@ -1,5 +1,6 @@
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
+#include "flags.hpp"
 #include "image_mock.hpp"
 #include "triggerable_mock.hpp"
 #include "util.hpp"
@@ -33,7 +34,7 @@ class FirmwareHandlerCommitTest : public ::testing::Test
         };
 
         data = {
-            {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+            {FirmwareFlags::UpdateFlags::ipmi, nullptr},
         };
     }
 };
@@ -55,8 +56,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
-        "asdf"));
+        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi, "asdf"));
 
     EXPECT_FALSE(handler->commit(0, {}));
 }
@@ -78,7 +78,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
     EXPECT_CALL(imageMock1, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi,
+        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi,
         hashBlobId));
 
     EXPECT_FALSE(handler->commit(0, {}));

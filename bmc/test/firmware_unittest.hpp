@@ -2,6 +2,7 @@
 
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
+#include "flags.hpp"
 #include "image_mock.hpp"
 #include "triggerable_mock.hpp"
 
@@ -121,7 +122,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     ImageHandlerMock imageMock;
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr}};
+        {FirmwareFlags::UpdateFlags::ipmi, nullptr}};
     std::unique_ptr<blobs::GenericBlobInterface> handler;
     TriggerMock* prepareMockPtr;
     TriggerMock* verifyMockPtr;
@@ -129,7 +130,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
 
     std::uint16_t session = 1;
     std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareBlobHandler::UpdateFlags::ipmi;
+        blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi;
 
     std::vector<std::string> startingBlobs = {staticLayoutBlobId, hashBlobId};
 };
@@ -140,7 +141,7 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
     ImageHandlerMock imageMock;
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr}};
+        {FirmwareFlags::UpdateFlags::ipmi, nullptr}};
     std::unique_ptr<blobs::GenericBlobInterface> handler;
 
     void SetUp() override
@@ -171,8 +172,8 @@ class FakeLpcFirmwareTest : public ::testing::Test
             {"asdf", &imageMock},
         };
         data = {
-            {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
-            {FirmwareBlobHandler::UpdateFlags::lpc, &dataMock},
+            {FirmwareFlags::UpdateFlags::ipmi, nullptr},
+            {FirmwareFlags::UpdateFlags::lpc, &dataMock},
         };
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
             blobs, data, CreateTriggerMock(), CreateTriggerMock(),

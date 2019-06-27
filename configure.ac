@@ -64,6 +64,12 @@ AS_IF([test "x$enable_build_host_tool" != "xyes"], [
     )
 
     PKG_CHECK_MODULES([PHOSPHOR_LOGGING], [phosphor-logging])
+
+    AC_CHECK_HEADER(
+        [blobs-ipmid/blobs.hpp],
+        [],
+        [AC_MSG_ERROR(["phosphor-ipmi-blobs required and not found."])]
+    )
 ])
 
 # These packages are required for both the BMC and the host-tool.
@@ -80,11 +86,6 @@ PKG_CHECK_MODULES(
     [libpci],
     [],
     [AC_MSG_ERROR([Could not find libpci... pciutils package required])]
-)
-AC_CHECK_HEADER(
-    [blobs-ipmid/blobs.hpp],
-    [],
-    [AC_MSG_ERROR(["phosphor-ipmi-blobs required and not found."])]
 )
 AX_PTHREAD([], [AC_MSG_ERROR(["pthread required and not found"])])
 
