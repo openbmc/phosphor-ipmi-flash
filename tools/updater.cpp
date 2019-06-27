@@ -16,7 +16,7 @@
 
 #include "updater.hpp"
 
-#include "firmware_handler.hpp"
+#include "flags.hpp"
 #include "handler.hpp"
 #include "status.hpp"
 #include "tool_errors.hpp"

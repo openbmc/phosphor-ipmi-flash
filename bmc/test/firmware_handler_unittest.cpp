@@ -1,4 +1,5 @@
 #include "firmware_handler.hpp"
+#include "flags.hpp"
 #include "image_mock.hpp"
 #include "triggerable_mock.hpp"
 #include "util.hpp"
@@ -18,7 +19,7 @@ using ::testing::UnorderedElementsAreArray;
 TEST(FirmwareHandlerTest, CreateEmptyListVerifyFails)
 {
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
@@ -49,7 +50,7 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
         {"asdf", &imageMock},
     };
     std::vector<DataHandlerPack> data = {
-        {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(

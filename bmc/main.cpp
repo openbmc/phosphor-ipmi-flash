@@ -18,6 +18,7 @@
 
 #include "file_handler.hpp"
 #include "firmware_handler.hpp"
+#include "flags.hpp"
 #include "image_handler.hpp"
 #include "lpc_aspeed.hpp"
 #include "lpc_handler.hpp"
@@ -80,12 +81,12 @@ std::vector<HandlerPack> supportedFirmware = {
 };
 
 std::vector<DataHandlerPack> supportedTransports = {
-    {FirmwareBlobHandler::UpdateFlags::ipmi, nullptr},
+    {FirmwareFlags::UpdateFlags::ipmi, nullptr},
 #ifdef ENABLE_PCI_BRIDGE
-    {FirmwareBlobHandler::UpdateFlags::p2a, &pciDataHandler},
+    {FirmwareFlags::UpdateFlags::p2a, &pciDataHandler},
 #endif
 #ifdef ENABLE_LPC_BRIDGE
-    {FirmwareBlobHandler::UpdateFlags::lpc, &lpcDataHandler},
+    {FirmwareFlags::UpdateFlags::lpc, &lpcDataHandler},
 #endif
 };
 
