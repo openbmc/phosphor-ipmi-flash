@@ -27,6 +27,9 @@ void ProgressStdoutIndicator::updateProgress(std::int64_t bytes)
     currentBytes += bytes;
     std::fprintf(stdout, "\rProgress: %.2f%%",
                  100.0 * currentBytes / totalBytes);
+    if (currentBytes == totalBytes)
+        std::fprintf(stdout, "\n");
+
     std::fflush(stdout);
 }
 
