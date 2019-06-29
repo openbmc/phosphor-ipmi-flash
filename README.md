@@ -136,7 +136,6 @@ Variable              | Default | Meaning
 
 Option                | Meaning
 --------------------- | -------
-`--enable-pci-bridge` | Enable the PCI-to-AHB transport option.
 `--enable-lpc-bridge` | Enable the LPC-to-AHB transport option.
 
 If a platform enables p2a as the transport mechanism, a specific vendor must be
