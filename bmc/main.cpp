@@ -39,7 +39,9 @@ namespace ipmi_flash
 {
 namespace
 {
+
 FileHandler hashHandler(HASH_FILENAME);
+
 #ifdef ENABLE_STATIC_LAYOUT
 FileHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
 #endif
@@ -91,7 +93,6 @@ std::vector<DataHandlerPack> supportedTransports = {
 };
 
 } // namespace
-
 } // namespace ipmi_flash
 
 extern "C" {
@@ -100,8 +101,6 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler();
 
 std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
-    using namespace phosphor::logging;
-
 #ifdef ENABLE_REBOOT_UPDATE
     static constexpr auto rebootTarget = "reboot.target";
     static constexpr auto rebootMode = "replace-irreversibly";
@@ -113,17 +112,21 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
         sdbusplus::bus::new_default(), UPDATE_DBUS_SERVICE);
 #endif
 
+    auto prepare = ipmi_flash::SystemdPreparation::CreatePreparation(
+        sdbusplus::bus::new_default(), PREPARATION_DBUS_SERVICE);
+
+    auto verifier = ipmi_flash::SystemdVerification::CreateVerification(
+        sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
+        VERIFY_DBUS_SERVICE);
+
     auto handler = ipmi_flash::FirmwareBlobHandler::CreateFirmwareBlobHandler(
         ipmi_flash::supportedFirmware, ipmi_flash::supportedTransports,
-        ipmi_flash::SystemdPreparation::CreatePreparation(
-            sdbusplus::bus::new_default(), PREPARATION_DBUS_SERVICE),
-        ipmi_flash::SystemdVerification::CreateVerification(
-            sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
-            VERIFY_DBUS_SERVICE),
-        std::move(updater));
+        std::move(prepare), std::move(verifier), std::move(updater));
 
     if (!handler)
     {
+        using namespace phosphor::logging;
+
         log<level::ERR>("Firmware Handler has invalid configuration");
         return nullptr;
     }
