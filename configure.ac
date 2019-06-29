@@ -179,7 +179,7 @@ AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
 
 AS_IF([test "x$enable_aspeed_lpc" = "xyes"], [
     AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
-        AC_MSG_ERROR([Invalid configuration enabling both ASPEED and Nuvoton LPC])
+        AC_MSG_ERROR([Invalid configuration enabling both ASPEED and Nuvoton.])
     ])
 ])
 
@@ -197,6 +197,12 @@ AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
                  [`mkdir -p linux;wget https://raw.githubusercontent.com/openbmc/linux/dev-5.0/include/uapi/linux/aspeed-p2a-ctrl.h -O linux/aspeed-p2a-ctrl.h`])
     )
     AX_APPEND_COMPILE_FLAGS([-DASPEED_P2A], [CXXFLAGS])
+])
+
+AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
+    AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
+        AC_MSG_ERROR([Invalid configuration enabling both ASPEED and Nuvoton.])
+    ])
 ])
 
 AC_ARG_VAR(
