@@ -177,6 +177,14 @@ AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DNUVOTON_LPC], [CXXFLAGS])
 ])
 
+AS_IF([test "x$enable_aspeed_lpc" = "xyes"], [
+    AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
+        AS_IF([test "x$enable_tests" != "xyes"], [
+            AC_MSG_ERROR([Invalid configuration enabling both ASPEED and Nuvoton.])
+        ])
+    ])
+])
+
 AC_ARG_ENABLE([aspeed-p2a],
     AS_HELP_STRING([--enable-aspeed-p2a],
                    [Enable external transfers using Aspeed PCI-to-AHB]))
@@ -191,6 +199,14 @@ AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
                  [`mkdir -p linux;wget https://raw.githubusercontent.com/openbmc/linux/dev-5.0/include/uapi/linux/aspeed-p2a-ctrl.h -O linux/aspeed-p2a-ctrl.h`])
     )
     AX_APPEND_COMPILE_FLAGS([-DASPEED_P2A], [CXXFLAGS])
+])
+
+AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
+    AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
+        AS_IF([test "x$enable_tests" != "xyes"], [
+            AC_MSG_ERROR([Invalid configuration enabling both ASPEED and Nuvoton.])
+        ])
+    ])
 ])
 
 AC_ARG_VAR(
