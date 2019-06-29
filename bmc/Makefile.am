@@ -6,16 +6,15 @@ libfirmwareblob_common_la_SOURCES = \
 	file_handler.cpp \
 	prepare_systemd.cpp \
 	verify_systemd.cpp \
-	update_systemd.cpp
+	update_systemd.cpp \
+	lpc_handler.cpp
 
-if ENABLE_LPC_BRIDGE
-libfirmwareblob_common_la_SOURCES += lpc_handler.cpp
 if ENABLE_ASPEED_LPC
 libfirmwareblob_common_la_SOURCES += lpc_aspeed.cpp
 endif
+
 if ENABLE_NUVOTON_LPC
 libfirmwareblob_common_la_SOURCES += lpc_nuvoton.cpp
-endif
 endif
 
 if ENABLE_ASPEED_P2A
