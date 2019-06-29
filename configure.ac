@@ -24,7 +24,6 @@ AS_IF([test "x$enable_code_coverage" != "xno"], [
 AS_IF([test "x$enable_tests" = "xyes"], [enable_static_layout=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_tarball_ubi=yes])
 
-AS_IF([test "x$enable_tests" = "xyes"], [enable_pci_bridge=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_aspeed_p2a=yes])
 
 # You can only build main.o with one of the lpc implementations, however, specify both.
@@ -131,13 +130,6 @@ AS_IF([test "x$enable_tarball_ubi" = "xyes"], [
 ])
 
 # Enable P2A, and or LPC (block-transfer is always enabled).
-AC_ARG_ENABLE([pci-bridge],
-    AS_HELP_STRING([--enable-pci-bridge],
-                   [Enable pci-bridge transport mechanism]))
-AM_CONDITIONAL(ENABLE_PCI_BRIDGE, [test "x$enable_pci_bridge" = "xyes"])
-AS_IF([test "x$enable_pci_bridge" = "xyes"], [
-    AX_APPEND_COMPILE_FLAGS([-DENABLE_PCI_BRIDGE], [CXXFLAGS])
-])
 AC_ARG_ENABLE([lpc-bridge],
     AS_HELP_STRING([--enable-lpc-bridge],
                    [Enable lpc-bridge transport mechanism]))
@@ -199,6 +191,7 @@ AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
                  [`mkdir -p linux;wget https://raw.githubusercontent.com/openbmc/linux/dev-5.0/include/uapi/linux/aspeed-p2a-ctrl.h -O linux/aspeed-p2a-ctrl.h`])
     )
     AX_APPEND_COMPILE_FLAGS([-DASPEED_P2A], [CXXFLAGS])
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_PCI_BRIDGE], [CXXFLAGS])
 ])
 
 AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
