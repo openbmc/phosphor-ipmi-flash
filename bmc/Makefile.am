@@ -18,10 +18,8 @@ libfirmwareblob_common_la_SOURCES += lpc_nuvoton.cpp
 endif
 endif
 
-if ENABLE_PCI_BRIDGE
 if ENABLE_ASPEED_P2A
 libfirmwareblob_common_la_SOURCES += pci_handler.cpp
-endif
 endif
 
 libfirmwareblob_common_la_CXXFLAGS = \
