@@ -134,10 +134,6 @@ Variable              | Default | Meaning
 --------------------- | ------- | -------
 `MAPPED_ADDRESS`      | 0       | The address used for mapping P2A or LPC into the BMC's memory-space.
 
-Option                | Meaning
---------------------- | -------
-`--enable-lpc-bridge` | Enable the LPC-to-AHB transport option.
-
 If a platform enables p2a as the transport mechanism, a specific vendor must be
 selected via the following configuration option.  Currently, only one is
 supported.

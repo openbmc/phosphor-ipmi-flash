@@ -27,7 +27,6 @@ AS_IF([test "x$enable_tests" = "xyes"], [enable_tarball_ubi=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_aspeed_p2a=yes])
 
 # You can only build main.o with one of the lpc implementations, however, specify both.
-AS_IF([test "x$enable_tests" = "xyes"], [enable_lpc_bridge=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_aspeed_lpc=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_nuvoton_lpc=yes])
 
@@ -129,15 +128,6 @@ AS_IF([test "x$enable_tarball_ubi" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_TARBALL_UBI], [CXXFLAGS])
 ])
 
-# Enable P2A, and or LPC (block-transfer is always enabled).
-AC_ARG_ENABLE([lpc-bridge],
-    AS_HELP_STRING([--enable-lpc-bridge],
-                   [Enable lpc-bridge transport mechanism]))
-AM_CONDITIONAL(ENABLE_LPC_BRIDGE, [test "x$enable_lpc_bridge" = "xyes"])
-AS_IF([test "x$enable_lpc_bridge" = "xyes"], [
-    AX_APPEND_COMPILE_FLAGS([-DENABLE_LPC_BRIDGE], [CXXFLAGS])
-])
-
 # The address used for mapping P2A or LPC into the BMC's memory-space:
 # e.g. https://github.com/openbmc/linux/blob/1da2ce51886a3b2f5db2087f26c661e13ee13b84/arch/arm/boot/dts/aspeed-bmc-quanta-q71l.dts#L26
 # or https://github.com/openbmc/linux/blob/1da2ce51886a3b2f5db2087f26c661e13ee13b84/arch/arm/boot/dts/aspeed-bmc-opp-zaius.dts#L166
@@ -160,6 +150,7 @@ AS_IF([test "x$enable_aspeed_lpc" = "xyes"], [
     )
 
     AX_APPEND_COMPILE_FLAGS([-DASPEED_LPC], [CXXFLAGS])
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_LPC_BRIDGE], [CXXFLAGS])
 ])
 AC_ARG_ENABLE([nuvoton-lpc],
     AS_HELP_STRING([--enable-nuvoton-lpc],
@@ -167,6 +158,7 @@ AC_ARG_ENABLE([nuvoton-lpc],
 AM_CONDITIONAL(ENABLE_NUVOTON_LPC, [test "x$enable_nuvoton_lpc" = "xyes"])
 AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DNUVOTON_LPC], [CXXFLAGS])
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_LPC_BRIDGE], [CXXFLAGS])
 ])
 
 AS_IF([test "x$enable_aspeed_lpc" = "xyes"], [
