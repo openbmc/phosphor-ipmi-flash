@@ -177,6 +177,12 @@ AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DNUVOTON_LPC], [CXXFLAGS])
 ])
 
+AS_IF([test "x$enable_aspeed_lpc" = "xyes"], [
+    AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
+        AC_MSG_ERROR([Invalid configuration enabling both ASPEED and Nuvoton LPC])
+    ])
+])
+
 AC_ARG_ENABLE([aspeed-p2a],
     AS_HELP_STRING([--enable-aspeed-p2a],
                    [Enable external transfers using Aspeed PCI-to-AHB]))
