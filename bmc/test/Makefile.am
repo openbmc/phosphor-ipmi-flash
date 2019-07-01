@@ -40,7 +40,8 @@ check_PROGRAMS = \
 	firmware_state_updatepending_unittest \
 	firmware_state_updatestarted_unittest \
 	firmware_state_updatecompleted_unittest \
-	firmware_state_notyetstarted_tarball_unittest
+	firmware_state_notyetstarted_tarball_unittest \
+	firmware_multiplebundle_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -100,3 +101,6 @@ firmware_state_updatecompleted_unittest_LDADD = $(top_builddir)/bmc/libfirmwareb
 
 firmware_state_notyetstarted_tarball_unittest_SOURCES = firmware_state_notyetstarted_tarball_unittest.cpp
 firmware_state_notyetstarted_tarball_unittest_LDADD = $(top_builddir)/bmc/libfirmwareblob_common.la
+
+firmware_multiplebundle_unittest_SOURCES = firmware_multiplebundle_unittest.cpp
+firmware_multiplebundle_unittest_LDADD = $(top_builddir)/bmc/libfirmwareblob_common.la
