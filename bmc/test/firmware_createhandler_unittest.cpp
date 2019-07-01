@@ -9,6 +9,9 @@
 
 namespace ipmi_flash
 {
+namespace
+{
+
 using ::testing::Return;
 using ::testing::StrEq;
 using ::testing::StrictMock;
@@ -32,11 +35,11 @@ TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateTriggerMock(), CreateTriggerMock(),
-        CreateTriggerMock());
+        blobs, data, std::move(CreateActionMap("abcd")));
 
     //    EXPECT_EQ(handler, nullptr);
     EXPECT_FALSE(handler == nullptr);
 }
 
+} // namespace
 } // namespace ipmi_flash

@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <gmock/gmock.h>
@@ -42,9 +43,16 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
             std::make_unique<TriggerMock>();
         updateMockPtr = reinterpret_cast<TriggerMock*>(updateMock.get());
 
+        std::unique_ptr<ActionPack> actionPack = std::make_unique<ActionPack>();
+        actionPack->preparation = std::move(prepareMock);
+        actionPack->verification = std::move(verifyMock);
+        actionPack->update = std::move(updateMock);
+
+        ActionMap packs;
+        packs[staticLayoutBlobId] = std::move(actionPack);
+
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, std::move(prepareMock), std::move(verifyMock),
-            std::move(updateMock));
+            blobs, data, std::move(packs));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)
@@ -56,7 +64,10 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     void openToInProgress(const std::string& blobId)
     {
         EXPECT_CALL(imageMock, open(blobId)).WillOnce(Return(true));
-        EXPECT_CALL(*prepareMockPtr, trigger()).WillOnce(Return(true));
+        if (blobId != hashBlobId)
+        {
+            EXPECT_CALL(*prepareMockPtr, trigger()).WillOnce(Return(true));
+        }
         EXPECT_TRUE(handler->open(session, flags, blobId));
         expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
     }
@@ -74,6 +85,24 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     {
         getToVerificationPending(blobId);
 
+        EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
+        EXPECT_CALL(*verifyMockPtr, trigger()).WillOnce(Return(true));
+
+        EXPECT_TRUE(handler->commit(session, {}));
+        expectedState(FirmwareBlobHandler::UpdateState::verificationStarted);
+    }
+
+    void getToVerificationStartedWitHashBlob()
+    {
+        /* Open both static and hash to check for activeHashBlobId. */
+        getToVerificationPending(staticLayoutBlobId);
+
+        openToInProgress(hashBlobId);
+        EXPECT_CALL(imageMock, close()).WillRepeatedly(Return());
+        handler->close(session);
+        expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
+
+        /* Now the hash is active AND the static image is active. */
         EXPECT_TRUE(handler->open(session, flags, verifyBlobId));
         EXPECT_CALL(*verifyMockPtr, trigger()).WillOnce(Return(true));
 
@@ -151,8 +180,7 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
             {"asdf", &imageMock},
         };
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, CreateTriggerMock(), CreateTriggerMock(),
-            CreateTriggerMock());
+            blobs, data, std::move(CreateActionMap("asdf")));
     }
 };
 
@@ -176,8 +204,7 @@ class FakeLpcFirmwareTest : public ::testing::Test
             {FirmwareFlags::UpdateFlags::lpc, &dataMock},
         };
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, CreateTriggerMock(), CreateTriggerMock(),
-            CreateTriggerMock());
+            blobs, data, std::move(CreateActionMap("asdf")));
     }
 };
 

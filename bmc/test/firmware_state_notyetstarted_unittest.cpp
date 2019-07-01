@@ -105,7 +105,10 @@ TEST_F(FirmwareHandlerNotYetStartedTest, OpenStaticImageFileVerifyStateChange)
 TEST_F(FirmwareHandlerNotYetStartedTest, OpenHashFileVerifyStateChange)
 {
     EXPECT_CALL(imageMock, open(hashBlobId)).WillOnce(Return(true));
-    EXPECT_CALL(*prepareMockPtr, trigger()).WillOnce(Return(true));
+    /* Opening the hash blob id doesn't trigger a preparation, only a firmware
+     * blob.
+     */
+    EXPECT_CALL(*prepareMockPtr, trigger()).Times(0);
 
     EXPECT_TRUE(handler->open(session, flags, hashBlobId));
 
