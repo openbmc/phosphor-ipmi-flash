@@ -41,9 +41,8 @@ std::unique_ptr<blobs::GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
         const std::vector<HandlerPack>& firmwares,
         const std::vector<DataHandlerPack>& transports,
-        std::unique_ptr<TriggerableActionInterface> preparation,
-        std::unique_ptr<TriggerableActionInterface> verification,
-        std::unique_ptr<TriggerableActionInterface> update)
+        std::unordered_map<
+            std::string, std::unique_ptr<ipmi_flash::ActionPack>>&& actionPacks)
 {
     /* There must be at least one. */
     if (!firmwares.size())
@@ -75,8 +74,7 @@ std::unique_ptr<blobs::GenericBlobInterface>
     }
 
     return std::make_unique<FirmwareBlobHandler>(
-        firmwares, blobs, transports, bitmask, std::move(preparation),
-        std::move(verification), std::move(update));
+        firmwares, blobs, transports, bitmask, std::move(actionPacks));
 }
 
 /* Check if the path is in our supported list (or active list). */
@@ -172,6 +170,7 @@ bool FirmwareBlobHandler::stat(const std::string& path, blobs::BlobMeta* meta)
 ActionStatus FirmwareBlobHandler::getActionStatus()
 {
     ActionStatus value = ActionStatus::unknown;
+    auto* pack = getActionPack();
 
     switch (state)
     {
@@ -179,7 +178,13 @@ ActionStatus FirmwareBlobHandler::getActionStatus()
             value = ActionStatus::unknown;
             break;
         case UpdateState::verificationStarted:
-            value = verification->status();
+            /* If we got here, there must be data AND a hash, not just a hash,
+             * therefore pack will be known. */
+            if (!pack)
+            {
+                break;
+            }
+            value = pack->verification->status();
             lastVerificationStatus = value;
             break;
         case UpdateState::verificationCompleted:
@@ -189,7 +194,11 @@ ActionStatus FirmwareBlobHandler::getActionStatus()
             value = ActionStatus::unknown;
             break;
         case UpdateState::updateStarted:
-            value = update->status();
+            if (!pack)
+            {
+                break;
+            }
+            value = pack->update->status();
             lastUpdateStatus = value;
             break;
         case UpdateState::updateCompleted:
@@ -340,6 +349,9 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
 
     switch (state)
     {
+        case UpdateState::notYetStarted:
+            /* Only hashBlobId and firmware BlobIds present. */
+            break;
         case UpdateState::uploadInProgress:
             /* Unreachable code because if it's started a file is open. */
             break;
@@ -389,6 +401,35 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
             break;
         default:
             break;
+    }
+
+    /* To support multiple firmware options, we need to make sure they're
+     * opening the one they already opened during this update sequence, or it's
+     * the first time they're opening it.
+     */
+    if (path != hashBlobId)
+    {
+        /* If they're not opening the hashBlobId they must be opening a firmware
+         * handler.
+         */
+        if (openedFirmwareType.empty())
+        {
+            /* First time for this sequence. */
+            openedFirmwareType = path;
+        }
+        else
+        {
+            if (openedFirmwareType != path)
+            {
+                /* Previously, in this sequence they opened /flash/image, and
+                 * now they're opening /flash/bios without finishing out
+                 * /flash/image (for example).
+                 */
+                std::fprintf(stderr, "Trying to open alternate firmware while "
+                                     "unfinished with other firmware.\n");
+                return false;
+            }
+        }
     }
 
     /* There are two abstractions at play, how you get the data and how you
@@ -731,8 +772,12 @@ void FirmwareBlobHandler::changeState(UpdateState next)
         /* Store this transition logic here instead of ::open() */
         if (!preparationTriggered)
         {
-            preparation->trigger();
-            preparationTriggered = true;
+            auto* pack = getActionPack();
+            if (pack)
+            {
+                pack->preparation->trigger();
+                preparationTriggered = true;
+            }
         }
     }
 }
@@ -763,17 +808,28 @@ void FirmwareBlobHandler::abortProcess()
     removeBlobId(activeImageBlobId);
     removeBlobId(activeHashBlobId);
 
+    openedFirmwareType = "";
     changeState(UpdateState::notYetStarted);
 }
 
 void FirmwareBlobHandler::abortVerification()
 {
-    verification->abort();
+    auto* pack = getActionPack();
+    if (pack)
+    {
+        pack->verification->abort();
+    }
 }
 
 bool FirmwareBlobHandler::triggerVerification()
 {
-    bool result = verification->trigger();
+    auto* pack = getActionPack();
+    if (!pack)
+    {
+        return false;
+    }
+
+    bool result = pack->verification->trigger();
     if (result)
     {
         changeState(UpdateState::verificationStarted);
@@ -784,12 +840,22 @@ bool FirmwareBlobHandler::triggerVerification()
 
 void FirmwareBlobHandler::abortUpdate()
 {
-    update->abort();
+    auto* pack = getActionPack();
+    if (pack)
+    {
+        pack->update->abort();
+    }
 }
 
 bool FirmwareBlobHandler::triggerUpdate()
 {
-    bool result = update->trigger();
+    auto* pack = getActionPack();
+    if (!pack)
+    {
+        return false;
+    }
+
+    bool result = pack->update->trigger();
     if (result)
     {
         changeState(UpdateState::updateStarted);
