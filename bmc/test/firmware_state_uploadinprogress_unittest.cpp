@@ -193,7 +193,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
     handler->close(session);
     expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 
-    EXPECT_TRUE(handler->canHandleBlob(verifyBlobId));
+    EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
 }
 
 /*

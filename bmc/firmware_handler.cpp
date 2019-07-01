@@ -642,8 +642,13 @@ bool FirmwareBlobHandler::close(uint16_t session)
             /* They are closing a data pathway (image, tarball, hash). */
             changeState(UpdateState::verificationPending);
 
-            /* Add verify blob ID now that we can expect it. */
-            addBlobId(verifyBlobId);
+            /* Add verify blob ID now that we can expect it, IIF they also wrote
+             * some data.
+             */
+            if (std::count(blobIDs.begin(), blobIDs.end(), activeImageBlobId))
+            {
+                addBlobId(verifyBlobId);
+            }
             break;
         case UpdateState::verificationPending:
             /* They haven't triggered, therefore closing is uninteresting.
