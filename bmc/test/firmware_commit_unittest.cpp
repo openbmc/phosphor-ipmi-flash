@@ -12,6 +12,8 @@
 
 namespace ipmi_flash
 {
+namespace
+{
 using ::testing::_;
 using ::testing::IsNull;
 using ::testing::NotNull;
@@ -50,8 +52,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
         std::make_unique<StrictMock<TriggerMock>>();
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateTriggerMock(), std::move(verifyMock),
-        CreateTriggerMock());
+        blobs, data, std::move(CreateActionMap("asdf")));
 
     EXPECT_CALL(imageMock2, open("asdf")).WillOnce(Return(true));
 
@@ -72,8 +73,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
         std::make_unique<StrictMock<TriggerMock>>();
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateTriggerMock(), std::move(verifyMock),
-        CreateTriggerMock());
+        blobs, data, std::move(CreateActionMap("asdf")));
 
     EXPECT_CALL(imageMock1, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
@@ -84,4 +84,5 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
     EXPECT_FALSE(handler->commit(0, {}));
 }
 
+} // namespace
 } // namespace ipmi_flash
