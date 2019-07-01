@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <gmock/gmock.h>
@@ -42,9 +43,16 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
             std::make_unique<TriggerMock>();
         updateMockPtr = reinterpret_cast<TriggerMock*>(updateMock.get());
 
+        std::unique_ptr<ActionPack> actionPack = std::make_unique<ActionPack>();
+        actionPack.preparation = std::move(prepareMock);
+        actionPack.verification = std::move(verifyMock);
+        actionPack.update = std::move(updateMock);
+
+        ActionMap packs;
+        packs[staticLayoutBlobId] = std::move(actionPack);
+
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, std::move(prepareMock), std::move(verifyMock),
-            std::move(updateMock));
+            blobs, data, std::move(packs));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)
