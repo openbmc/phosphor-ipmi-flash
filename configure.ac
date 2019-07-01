@@ -151,6 +151,14 @@ AS_IF([test "x$enable_tarball_ubi" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_TARBALL_UBI], [CXXFLAGS])
 ])
 
+AS_IF([test "x$enable_tarball_ubi" = "xyes"], [
+    AS_IF([test "x$enable_static_layout" = "xyes"], [
+        AS_IF([test "x$enable_tests" != "xyes"], [
+            AC_MSG_ERROR([Invalid configuration enabling both static and ubi tarball bmc image types.])
+        ])
+    ])
+])
+
 # The address used for mapping P2A or LPC into the BMC's memory-space:
 # e.g. https://github.com/openbmc/linux/blob/1da2ce51886a3b2f5db2087f26c661e13ee13b84/arch/arm/boot/dts/aspeed-bmc-quanta-q71l.dts#L26
 # or https://github.com/openbmc/linux/blob/1da2ce51886a3b2f5db2087f26c661e13ee13b84/arch/arm/boot/dts/aspeed-bmc-opp-zaius.dts#L166
