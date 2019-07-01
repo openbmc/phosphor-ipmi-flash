@@ -48,6 +48,7 @@ test-driver
 test-suite.log
 
 # Custom generated files
+*.target
 
 # Output binaries
 burn_my_bmc
