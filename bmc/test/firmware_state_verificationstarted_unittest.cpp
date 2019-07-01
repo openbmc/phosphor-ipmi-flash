@@ -173,7 +173,7 @@ TEST_F(FirmwareHandlerVerificationStartedTest, StatOnActiveImageReturnsFailure)
 
 TEST_F(FirmwareHandlerVerificationStartedTest, StatOnActiveHashReturnsFailure)
 {
-    getToVerificationStarted(hashBlobId);
+    getToVerificationStartedWitHashBlob();
     ASSERT_TRUE(handler->canHandleBlob(activeHashBlobId));
 
     blobs::BlobMeta meta;
