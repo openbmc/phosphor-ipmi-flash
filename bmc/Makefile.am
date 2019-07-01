@@ -1,5 +1,12 @@
 AM_DEFAULT_SOURCE_EXT = .cpp
 
+if HAVE_SYSTEMD
+systemdsystemunit_DATA = \
+	phosphor-ipmi-flash-bmc-prepare.target \
+	phosphor-ipmi-flash-bmc-verify.target \
+	phosphor-ipmi-flash-bmc-update.target
+endif
+
 noinst_LTLIBRARIES = libfirmwareblob_common.la
 libfirmwareblob_common_la_SOURCES = \
 	firmware_handler.cpp \
