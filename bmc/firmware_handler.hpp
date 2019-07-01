@@ -13,10 +13,29 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace ipmi_flash
 {
+
+/**
+ * Given a firmware name, provide a set of triggerable action interfaces
+ * associated with that firmware type.
+ */
+struct ActionPack
+{
+    /** The name of the action pack, something like image, or tarball, or bios.
+     * The firmware blob id is parsed to pull the "filename" portion from the
+     * path, and matched against the key to a map of these.
+     */
+    std::unique_ptr<TriggerableActionInterface> preparation;
+    std::unique_ptr<TriggerableActionInterface> verification;
+    std::unique_ptr<TriggerableActionInterface> update;
+};
+
+using ActionMap =
+    std::unordered_map<std::string, std::unique_ptr<ipmi_flash::ActionPack>>;
 
 /**
  * Representation of a session, includes how to read/write data.
@@ -90,9 +109,7 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
         CreateFirmwareBlobHandler(
             const std::vector<HandlerPack>& firmwares,
             const std::vector<DataHandlerPack>& transports,
-            std::unique_ptr<TriggerableActionInterface> preparation,
-            std::unique_ptr<TriggerableActionInterface> verification,
-            std::unique_ptr<TriggerableActionInterface> update);
+            ActionMap&& actionPacks);
 
     /**
      * Create a FirmwareBlobHandler.
@@ -104,19 +121,15 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
      * @param[in] verification - pointer to object for triggering verification
      * @param[in] update - point to object for triggering the update
      */
-    FirmwareBlobHandler(
-        const std::vector<HandlerPack>& firmwares,
-        const std::vector<std::string>& blobs,
-        const std::vector<DataHandlerPack>& transports, std::uint16_t bitmask,
-        std::unique_ptr<TriggerableActionInterface> preparation,
-        std::unique_ptr<TriggerableActionInterface> verification,
-        std::unique_ptr<TriggerableActionInterface> update) :
+    FirmwareBlobHandler(const std::vector<HandlerPack>& firmwares,
+                        const std::vector<std::string>& blobs,
+                        const std::vector<DataHandlerPack>& transports,
+                        std::uint16_t bitmask, ActionMap&& actionPacks) :
         handlers(firmwares),
         blobIDs(blobs), transports(transports), bitmask(bitmask),
         activeImage(activeImageBlobId), activeHash(activeHashBlobId),
         verifyImage(verifyBlobId), updateImage(updateBlobId), lookup(),
-        state(UpdateState::notYetStarted), preparation(std::move(preparation)),
-        verification(std::move(verification)), update(std::move(update))
+        state(UpdateState::notYetStarted), actionPacks(std::move(actionPacks))
     {
     }
     ~FirmwareBlobHandler() = default;
@@ -159,6 +172,20 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
     void changeState(UpdateState next);
 
   private:
+    /**
+     * Given the current session type, grab the ActionPack (likely will be worked into the Session for lookup).
+     */
+    ActionPack* getActionPack()
+    {
+        if (openedFirmwareType.empty())
+        {
+            /* No firmware type has been opened, but we're triggering verification, or preparing.
+             * This can happen if they open the hash before the image, which is impossible.
+             */
+            return nullptr;
+        }
+    }
+
     void addBlobId(const std::string& blob)
     {
         auto blobIdMatch = std::find_if(
@@ -209,15 +236,14 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
     /** The firmware update state. */
     UpdateState state;
 
+    /** Track what firmware blobid they opened to start this sequence. */
+    std::string openedFirmwareType;
+
     /* preparation is triggered once we go into uploadInProgress(), but only
      * once per full cycle, going back to notYetStarted resets this.
      */
     bool preparationTriggered = false;
-    std::unique_ptr<TriggerableActionInterface> preparation;
-
-    std::unique_ptr<TriggerableActionInterface> verification;
-
-    std::unique_ptr<TriggerableActionInterface> update;
+    ActionMap actionPacks;
 
     /** Temporary variable to track whether a blob is open. */
     bool fileOpen = false;
