@@ -44,7 +44,7 @@ AX_CXX_COMPILE_STDCXX_17([noext])
 AX_APPEND_COMPILE_FLAGS([-Wall -Werror], [CXXFLAGS])
 
 # Checks for library functions.
-LT_INIT # Required for systemd linking
+LT_INIT
 
 # Enable building the host tool (default: yes)
 AC_ARG_ENABLE([build-host-tool],
@@ -60,6 +60,8 @@ AM_CONDITIONAL([BUILD_BMC_HANDLER], [test "x$enable_build_bmc_blob_handler" != "
 
 # Build the BMC by default, so check if set to no.
 AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
+    PKG_CHECK_MODULES([SYSTEMD], [libsystemd >= 221])
+
     PKG_CHECK_MODULES(
         [SDBUSPLUS],
         [sdbusplus],
@@ -74,6 +76,27 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
         [],
         [AC_MSG_ERROR(["phosphor-ipmi-blobs required and not found."])]
     )
+
+PKG_PROG_PKG_CONFIG
+AC_ARG_WITH([systemdsystemunitdir],
+     [AS_HELP_STRING([--with-systemdsystemunitdir=DIR], [Directory for systemd service files])],
+     [],
+     [with_systemdsystemunitdir=auto]
+)
+AS_IF([test "x$with_systemdsystemunitdir" = "xyes" -o "x$with_systemdsystemunitdir" = "xauto"],
+    [def_systemdsystemunitdir=$($PKG_CONFIG --variable=systemdsystemunitdir systemd)
+     AS_IF([test "x$def_systemdsystemunitdir" = "x"],
+           [AS_IF([test "x$with_systemdsystemunitdir" = "xyes"],
+                  [AC_MSG_ERROR([systemd support requested but pkg-config unable to query systemd package])]
+            )
+            with_systemdsystemunitdir=no],
+           [with_systemdsystemunitdir="$def_systemdsystemunitdir"]
+     )]
+)
+AS_IF([test "x$with_systemdsystemunitdir" != "xno"],
+      [AC_SUBST([systemdsystemunitdir], [$with_systemdsystemunitdir])]
+)
+AM_CONDITIONAL([HAVE_SYSTEMD], [test "x$with_systemdsystemunitdir" != "xno"])
 ])
 
 # If not building the host-tool, we're building the BMC.
@@ -238,16 +261,16 @@ AC_DEFINE_UNQUOTED(
 
 AC_ARG_VAR(
     PREPARATION_DBUS_SERVICE,
-    [The systemd service started when the host starts to send an update.]
+    [The systemd target started when the host starts to send an update.]
 )
 AS_IF(
     [test "x$PREPARATION_DBUS_SERVICE" == "x"],
-    [PREPARATION_DBUS_SERVICE="prepare_update.service"]
+    [PREPARATION_DBUS_SERVICE="phosphor-ipmi-flash-bmc-prepare.target"]
 )
 AC_DEFINE_UNQUOTED(
     [PREPARATION_DBUS_SERVICE],
     ["$PREPARATION_DBUS_SERVICE"],
-    [The systemd service started when the host starts to send an update.]
+    [The systemd target started when the host starts to send an update.]
 )
 
 AC_ARG_VAR(
@@ -266,30 +289,30 @@ AC_DEFINE_UNQUOTED(
 
 AC_ARG_VAR(
     VERIFY_DBUS_SERVICE,
-    [The systemd service started for verification.]
+    [The systemd target started for verification.]
 )
 AS_IF(
     [test "x$VERIFY_DBUS_SERVICE" == "x"],
-    [VERIFY_DBUS_SERVICE="verify_image.service"]
+    [VERIFY_DBUS_SERVICE="phosphor-ipmi-flash-bmc-verify.target"]
 )
 AC_DEFINE_UNQUOTED(
     [VERIFY_DBUS_SERVICE],
     ["$VERIFY_DBUS_SERVICE"],
-    [The systemd service started for verification.]
+    [The systemd target started for verification.]
 )
 
 AC_ARG_VAR(
     UPDATE_DBUS_SERVICE,
-    [The systemd service started for updating the BMC.]
+    [The systemd target started for updating the BMC.]
 )
 AS_IF(
     [test "x$UPDATE_DBUS_SERVICE" == "x"],
-    [UPDATE_DBUS_SERVICE="update_bmc.service"]
+    [UPDATE_DBUS_SERVICE="phosphor-ipmi-flash-bmc-update.target"]
 )
 AC_DEFINE_UNQUOTED(
     [UPDATE_DBUS_SERVICE],
     ["$UPDATE_DBUS_SERVICE"],
-    [The systemd service started for updating the BMC.]
+    [The systemd target started for updating the BMC.]
 )
 
 AC_CHECK_HEADER(linux/ipmi.h, [HAVE_LINUX_IPMI_H=""], [HAVE_LINUX_IPMI_H="-I linux/ipmi.h"])
@@ -424,4 +447,7 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([bmc/Makefile bmc/test/Makefile])
 AC_CONFIG_FILES([tools/Makefile tools/test/Makefile])
 AC_CONFIG_FILES([cleanup/Makefile cleanup/test/Makefile])
+AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bmc-prepare.target])
+AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bmc-verify.target])
+AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bmc-update.target])
 AC_OUTPUT
