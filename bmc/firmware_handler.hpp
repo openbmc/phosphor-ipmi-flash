@@ -19,6 +19,22 @@ namespace ipmi_flash
 {
 
 /**
+ * Given a firmware name, provide a set of triggerable action interfaces
+ * associated with that firmware type.
+ */
+struct ActionPack
+{
+    /** The name of the action pack, something like image, or tarball, or bios.
+     * The firmware blob id is parsed to pull the "filename" portion from the
+     * path, and matched against this field.
+     */
+    const std::string name;
+    std::unique_ptr<TriggerableActionInterface> preparation;
+    std::unique_ptr<TriggerableActionInterface> verification;
+    std::unique_ptr<TriggerableActionInterface> update;
+};
+
+/**
  * Representation of a session, includes how to read/write data.
  */
 struct Session
