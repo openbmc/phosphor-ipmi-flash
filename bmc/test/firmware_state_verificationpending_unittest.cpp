@@ -153,11 +153,21 @@ TEST_F(FirmwareHandlerVerificationPendingTest, StatOnActiveHashReturnsFailure)
 TEST_F(FirmwareHandlerVerificationPendingTest,
        StatOnVerificationBlobReturnsFailure)
 {
-    getToVerificationPending(hashBlobId);
+    getToVerificationPending(staticLayoutBlobId);
     ASSERT_TRUE(handler->canHandleBlob(verifyBlobId));
 
     blobs::BlobMeta meta;
     EXPECT_FALSE(handler->stat(verifyBlobId, &meta));
+}
+
+TEST_F(FirmwareHandlerVerificationPendingTest,
+       VerificationBlobNotFoundWithoutStaticDataAsWell)
+{
+    /* If you only ever open the hash blob id, and never the firmware blob id,
+     * the verify blob isn't added.
+     */
+    getToVerificationPending(hashBlobId);
+    EXPECT_FALSE(handler->canHandleBlob(verifyBlobId));
 }
 
 TEST_F(FirmwareHandlerVerificationPendingTest, StatOnNormalBlobsReturnsSuccess)
