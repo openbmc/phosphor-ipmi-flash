@@ -34,6 +34,7 @@
 #include <memory>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus.hpp>
+#include <unordered_map>
 
 namespace ipmi_flash
 {
@@ -119,9 +120,28 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
         sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
         VERIFY_DBUS_SERVICE);
 
+    ipmi_flash::ActionMap actionPacks = {};
+
+    /* TODO: for bios should the name be, bios or /flash/bios?, these are
+     * /flash/... and it simplifies a few other things later (open/etc)
+     */
+    std::string bmcName;
+#ifdef ENABLE_STATIC_LAYOUT
+    bmcName = ipmi_flash::staticLayoutBlobId;
+#endif
+#ifdef ENABLE_TARBALL_UBI
+    bmcName = ipmi_flash::ubiTarballBlobId;
+#endif
+
+    auto bmcPack = std::make_unique<ipmi_flash::ActionPack>();
+    bmcPack->preparation = std::move(prepare);
+    bmcPack->verification = std::move(verifier);
+    bmcPack->update = std::move(updater);
+    actionPacks[bmcName] = std::move(bmcPack);
+
     auto handler = ipmi_flash::FirmwareBlobHandler::CreateFirmwareBlobHandler(
         ipmi_flash::supportedFirmware, ipmi_flash::supportedTransports,
-        std::move(prepare), std::move(verifier), std::move(updater));
+        std::move(actionPacks));
 
     if (!handler)
     {

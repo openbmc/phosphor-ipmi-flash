@@ -34,8 +34,7 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, CreateTriggerMock(), CreateTriggerMock(),
-        CreateTriggerMock());
+        blobs, data, std::move(CreateActionMap("asdf")));
 
     for (const auto& item : items)
     {
