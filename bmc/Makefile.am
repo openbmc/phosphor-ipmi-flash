@@ -5,6 +5,12 @@ systemdsystemunit_DATA = \
 	phosphor-ipmi-flash-bmc-prepare.target \
 	phosphor-ipmi-flash-bmc-verify.target \
 	phosphor-ipmi-flash-bmc-update.target
+if ENABLE_HOST_BIOS
+systemdsystemunit_DATA += \
+	phosphor-ipmi-flash-bios-prepare.target \
+	phosphor-ipmi-flash-bios-verify.target \
+	phosphor-ipmi-flash-bios-update.target
+endif
 endif
 
 noinst_LTLIBRARIES = libfirmwareblob_common.la

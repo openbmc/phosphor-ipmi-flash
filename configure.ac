@@ -58,6 +58,12 @@ AC_ARG_ENABLE([build-bmc-blob-handler],
 )
 AM_CONDITIONAL([BUILD_BMC_HANDLER], [test "x$enable_build_bmc_blob_handler" != "xno"])
 
+# Enable building host-bios support into the BMC (default: no)
+# This is only set if build-bmc-blob-handler is not "no."
+AC_ARG_ENABLE([host-bios],
+    AC_HELP_STRING([--enable-host-bios], [Enable supporting the host bios])
+)
+
 # Build the BMC by default, so check if set to no.
 AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
     PKG_CHECK_MODULES([SYSTEMD], [libsystemd >= 221])
@@ -97,6 +103,10 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
         [AC_SUBST([systemdsystemunitdir], [$with_systemdsystemunitdir])]
     )
     AM_CONDITIONAL([HAVE_SYSTEMD], [test "x$with_systemdsystemunitdir" != "xno"])
+
+    # Only set if build-bmc-blob-handler wasn't unset.
+    AM_CONDITIONAL([ENABLE_HOST_BIOS], [test "$enable_host_bios" = "xyes"])
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_HOST_BIOS], [CXXFLAGS])
 ])
 
 # If not building the host-tool, we're building the BMC.
@@ -254,6 +264,20 @@ AC_DEFINE_UNQUOTED(
 )
 
 AC_ARG_VAR(
+    BIOS_STAGED_NAME,
+    [The file to use for staging the bios firmware update.]
+)
+AS_IF(
+    [test "x$BIOS_STAGED_NAME" == "x"],
+    [BIOS_STAGED_NAME="/tmp/bios-image"]
+)
+AC_DEFINE_UNQUOTED(
+    [BIOS_STAGED_NAME],
+    ["$BIOS_STAGED_NAME"],
+    [The file to use for staging the bios firmware update.]
+)
+
+AC_ARG_VAR(
     HASH_FILENAME,
     [The file to use for the hash provided.]
 )
@@ -296,6 +320,20 @@ AC_DEFINE_UNQUOTED(
 )
 
 AC_ARG_VAR(
+    BIOS_VERIFY_STATUS_FILENAME,
+    [The file checked for the verification status.]
+)
+AS_IF(
+    [test "x$BIOS_VERIFY_STATUS_FILENAME" == "x"],
+    [BIOS_VERIFY_STATUS_FILENAME="/tmp/bios.verify"]
+)
+AC_DEFINE_UNQUOTED(
+    [BIOS_VERIFY_STATUS_FILENAME],
+    ["$BIOS_VERIFY_STATUS_FILENAME"],
+    [The file checked for the verification status.]
+)
+
+AC_ARG_VAR(
     VERIFY_DBUS_SERVICE,
     [The systemd target started for verification.]
 )
@@ -321,6 +359,46 @@ AC_DEFINE_UNQUOTED(
     [UPDATE_DBUS_SERVICE],
     ["$UPDATE_DBUS_SERVICE"],
     [The systemd target started for updating the BMC.]
+)
+
+AC_ARG_VAR(
+    PREPARATION_BIOS_TARGET,
+    [The systemd target started when the host starts to send an update.]
+)
+AS_IF(
+    [test "x$PREPARATION_BIOS_TARGET" == "x"],
+    [PREPARATION_BIOS_TARGET="phosphor-ipmi-flash-bios-prepare.target"]
+)
+AC_DEFINE_UNQUOTED(
+    [PREPARATION_BIOS_TARGET],
+    ["$PREPARATION_BIOS_TARGET"],
+    [The systemd target started when the host starts to send an update.]
+)
+AC_ARG_VAR(
+    VERIFY_BIOS_TARGET,
+    [The systemd target started for verifying the BIOS image.]
+)
+AS_IF(
+    [test "x$VERIFY_BIOS_TARGET" == "x"],
+    [VERIFY_BIOS_TARGET="phosphor-ipmi-flash-bios-verify.target"]
+)
+AC_DEFINE_UNQUOTED(
+    [VERIFY_BIOS_TARGET],
+    ["$VERIFY_BIOS_TARGET"],
+    [The systemd target started for verifying the BIOS image.]
+)
+AC_ARG_VAR(
+    UPDATE_BIOS_TARGET,
+    [The systemd target started for updating the BIOS.]
+)
+AS_IF(
+    [test "x$UPDATE_BIOS_TARGET" == "x"],
+    [UPDATE_BIOS_TARGET="phosphor-ipmi-flash-bios-update.target"]
+)
+AC_DEFINE_UNQUOTED(
+    [UPDATE_BIOS_TARGET],
+    ["$UPDATE_BIOS_TARGET"],
+    [The systemd target started for updating the BIOS.]
 )
 
 AC_CHECK_HEADER(linux/ipmi.h, [HAVE_LINUX_IPMI_H=""], [HAVE_LINUX_IPMI_H="-I linux/ipmi.h"])
@@ -458,4 +536,7 @@ AC_CONFIG_FILES([cleanup/Makefile cleanup/test/Makefile])
 AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bmc-prepare.target])
 AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bmc-verify.target])
 AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bmc-update.target])
+AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bios-prepare.target])
+AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bios-verify.target])
+AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bios-update.target])
 AC_OUTPUT
