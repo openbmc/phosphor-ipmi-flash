@@ -49,6 +49,9 @@ FileHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
 #ifdef ENABLE_TARBALL_UBI
 FileHandler ubitarballHandler(TARBALL_STAGED_NAME);
 #endif
+#ifdef ENABLE_HOST_BIOS
+FileHandler biosHandler(BIOS_STAGED_NAME);
+#endif
 
 /* The maximum external buffer size we expect is 64KB. */
 static constexpr std::size_t memoryRegionSize = 64 * 1024UL;
@@ -81,6 +84,9 @@ std::vector<HandlerPack> supportedFirmware = {
 #ifdef ENABLE_TARBALL_UBI
     {ubiTarballBlobId, &ubitarballHandler},
 #endif
+#ifdef ENABLE_HOST_BIOS
+    {biosBlobId, &biosHandler},
+#endif
 };
 
 std::vector<DataHandlerPack> supportedTransports = {
@@ -102,6 +108,8 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler();
 
 std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
+    ipmi_flash::ActionMap actionPacks = {};
+
 #ifdef ENABLE_REBOOT_UPDATE
     static constexpr auto rebootTarget = "reboot.target";
     static constexpr auto rebootMode = "replace-irreversibly";
@@ -120,8 +128,6 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
         sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
         VERIFY_DBUS_SERVICE);
 
-    ipmi_flash::ActionMap actionPacks = {};
-
     /* TODO: for bios should the name be, bios or /flash/bios?, these are
      * /flash/... and it simplifies a few other things later (open/etc)
      */
@@ -138,6 +144,27 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
     bmcPack->verification = std::move(verifier);
     bmcPack->update = std::move(updater);
     actionPacks[bmcName] = std::move(bmcPack);
+
+#ifdef ENABLE_HOST_BIOS
+    {
+        auto biosPack = std::make_unique<ipmi_flash::ActionPack>();
+
+        biosPack->preparation =
+            ipmi_flash::SystemdPreparation::CreatePreparation(
+                sdbusplus::bus::new_default(), PREPARATION_BIOS_TARGET);
+
+        biosPack->verification =
+            ipmi_flash::SystemdVerification::CreateVerification(
+                sdbusplus::bus::new_default(), BIOS_VERIFY_STATUS_FILENAME,
+                VERIFY_BIOS_TARGET);
+
+        biosPack->update =
+            ipmi_flash::SystemdUpdateMechanism::CreateSystemdUpdate(
+                sdbusplus::bus::new_default(), UPDATE_BIOS_TARGET);
+
+        actionPacks[ipmi_flash::biosBlobId] = std::move(biosPack);
+    }
+#endif
 
     auto handler = ipmi_flash::FirmwareBlobHandler::CreateFirmwareBlobHandler(
         ipmi_flash::supportedFirmware, ipmi_flash::supportedTransports,

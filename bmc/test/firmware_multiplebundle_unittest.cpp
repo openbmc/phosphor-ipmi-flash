@@ -33,7 +33,7 @@ class IpmiOnlyTwoFirmwaresTest : public ::testing::Test
         blobs = {
             {hashBlobId, &hashImageMock},
             {staticLayoutBlobId, &staticImageMock},
-            {biosId, &biosImageMock},
+            {biosBlobId, &biosImageMock},
         };
 
         std::unique_ptr<TriggerableActionInterface> bmcPrepareMock =
@@ -77,7 +77,7 @@ class IpmiOnlyTwoFirmwaresTest : public ::testing::Test
         biosPack->update = std::move(biosUpdateMock);
 
         packs[staticLayoutBlobId] = std::move(bmcPack);
-        packs[biosId] = std::move(biosPack);
+        packs[biosBlobId] = std::move(biosPack);
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
             blobs, data, std::move(packs));
@@ -103,8 +103,6 @@ class IpmiOnlyTwoFirmwaresTest : public ::testing::Test
     std::uint16_t session = 1;
     std::uint16_t flags =
         blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi;
-
-    const std::string biosId = "/flash/bios";
 };
 
 TEST_F(IpmiOnlyTwoFirmwaresTest, OpeningBiosAfterBlobFails)
@@ -124,8 +122,8 @@ TEST_F(IpmiOnlyTwoFirmwaresTest, OpeningBiosAfterBlobFails)
 
     expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 
-    EXPECT_CALL(biosImageMock, open(biosId)).Times(0);
-    EXPECT_FALSE(handler->open(session, flags, biosId));
+    EXPECT_CALL(biosImageMock, open(biosBlobId)).Times(0);
+    EXPECT_FALSE(handler->open(session, flags, biosBlobId));
 }
 
 TEST_F(IpmiOnlyTwoFirmwaresTest, OpeningHashBeforeBiosSucceeds)
@@ -142,8 +140,8 @@ TEST_F(IpmiOnlyTwoFirmwaresTest, OpeningHashBeforeBiosSucceeds)
     expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
     ASSERT_FALSE(handler->canHandleBlob(verifyBlobId));
 
-    EXPECT_CALL(biosImageMock, open(biosId)).WillOnce(Return(true));
-    EXPECT_TRUE(handler->open(session, flags, biosId));
+    EXPECT_CALL(biosImageMock, open(biosBlobId)).WillOnce(Return(true));
+    EXPECT_TRUE(handler->open(session, flags, biosBlobId));
 
     expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
 
