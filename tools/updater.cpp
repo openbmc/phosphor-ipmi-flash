@@ -28,6 +28,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <unordered_map>
 #include <vector>
 
 namespace host_tool
@@ -37,9 +38,12 @@ void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
                  const std::string& signaturePath,
                  const std::string& layoutType)
 {
-    const auto& layout = (layoutType == "static")
-                             ? ipmi_flash::staticLayoutBlobId
-                             : ipmi_flash::ubiTarballBlobId;
+    static std::unordered_map<std::string, std::string> typesToBlob = {
+        {"static", ipmi_flash::staticLayoutBlobId},
+        {"ubitar", ipmi_flash::ubiTarballBlobId},
+        {"bios", ipmi_flash::biosBlobId}};
+    /* We know it's one of the above types already. */
+    auto& layout = typesToBlob[layoutType];
 
     bool goalSupported = updater->checkAvailable(layout);
     if (!goalSupported)
