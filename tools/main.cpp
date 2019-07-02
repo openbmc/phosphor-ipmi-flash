@@ -44,11 +44,12 @@
 #define IPMIBT "ipmibt"
 #define STATIC "static"
 #define UBITAR "ubitar"
+#define BIOS "bios"
 
 namespace
 {
 const std::vector<std::string> interfaceList = {IPMIBT, IPMILPC, IPMIPCI};
-const std::vector<std::string> typeList = {STATIC, UBITAR};
+const std::vector<std::string> typeList = {STATIC, UBITAR, BIOS};
 } // namespace
 
 void usage(const char* program)
