@@ -109,7 +109,8 @@ TODO: Flesh out the UBI approach.
 To use `phosphor-ipmi-flash` a platform must provide a configuration.  A
 platform can configure multiple interfaces, such as both lpc and pci.  However,
 a platform should only configure either static layout updates, or ubi.  If
-enabling lpc, the platform must specify either aspeed or nuvoton.
+enabling lpc, the platform must specify either aspeed or nuvoton.  The system
+also supports receiving BIOS updates.
 
 The following are the two primary configuration options, which control how the
 update is treated.
@@ -118,6 +119,7 @@ Option                   | Meaning
 ------------------------ | -------
 `--enable-static-layout` | Enable treating the update as a static layout update.
 `--enable-tarball-ubi`   | Enable treating the update as a tarball for UBI update.
+`--enable-host-bios`     | Enable receiving the update for a host bios update.
 
 The following are configuration options for how the host and BMC are meant to
 transfer the data.  By default, the data-in-IPMI mechanism is enabled.
@@ -169,15 +171,20 @@ Option                   | Meaning
 The following variables can be set to whatever you wish, however they have
 usable default values.
 
-Variable                     | Default                    | Meaning
----------------------------- | -------------------------- | -------------------------------------------------------------------------
-`STATIC_HANDLER_STAGED_NAME` | `/run/initramfs/bmc-image` | The filename where to write the staged firmware image for static updates.
-`TARBALL_STAGED_NAME`        | `/tmp/image-update.tar`    | The filename where to write the UBI update tarball.
-`HASH_FILENAME`              | `/tmp/bmc.sig`             | The file to use for the hash provided.
-`PREPARATION_DBUS_SERVICE`   | `phosphor-ipmi-flash-bmc-prepare.target` | The systemd service started when the host starts to send an update.
-`VERIFY_STATUS_FILENAME`     | `/tmp/bmc.verify`          | The file checked for the verification status.
-`VERIFY_DBUS_SERVICE`        | `phosphor-ipmi-flash-bmc-verify.target`  | The systemd service started for verification.
-`UPDATE_DBUS_SERVICE`        | `phosphor-ipmi-flash-bmc-update.target`  | The systemd service started for updating the BMC.
+Variable                      | Default                    | Meaning
+----------------------------- | -------------------------- | -------------------------------------------------------------------------
+`STATIC_HANDLER_STAGED_NAME`  | `/run/initramfs/bmc-image` | The filename where to write the staged firmware image for static updates.
+`TARBALL_STAGED_NAME`         | `/tmp/image-update.tar`    | The filename where to write the UBI update tarball.
+`HASH_FILENAME`               | `/tmp/bmc.sig`             | The file to use for the hash provided.
+`PREPARATION_DBUS_SERVICE`    | `phosphor-ipmi-flash-bmc-prepare.target` | The systemd target started when the host starts to send an update.
+`VERIFY_STATUS_FILENAME`      | `/tmp/bmc.verify`          | The file checked for the verification status.
+`VERIFY_DBUS_SERVICE`         | `phosphor-ipmi-flash-bmc-verify.target`  | The systemd target started for verification.
+`UPDATE_DBUS_SERVICE`         | `phosphor-ipmi-flash-bmc-update.target`  | The systemd target started for updating the BMC.
+`BIOS_STAGED_NAME`            | `/tmp/bios-image`  | The file to use for staging the bios firmware update.
+`BIOS_VERIFY_STATUS_FILENAME` | `/tmp/bios.verify` | The file checked for the verification status.
+`PREPARATION_BIOS_TARGET`     | `phosphor-ipmi-flash-bios-prepare.target` | The systemd target when the host starts to send an update.
+`VERIFY_BIOS_TARGET`          | `phosphor-ipmi-flash-bios-verify.target`  | The systemd target started for verification.
+`UPDATE_BIOS_TARGET`          | `phosphor-ipmi-flash-bios-update.target`  | The systemd target started for updating the BIOS.
 
 ## Flash State Machine Details
 
