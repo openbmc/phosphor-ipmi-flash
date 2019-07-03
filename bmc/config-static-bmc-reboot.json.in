@@ -1,0 +1,21 @@
+[{
+	"blob": "/flash/image",
+	"handler": {
+		"type": "file",
+		"path": "@STATIC_HANDLER_STAGED_NAME@"
+	},
+	"actions": {
+		"preparation": {
+			"type": "systemd",
+			"unit": "@PREPARATION_DBUS_SERVICE@"
+		},
+		"verification": {
+			"type": "fileSystemdVerify",
+			"unit": "@VERIFY_DBUS_SERVICE@",
+			"path": "@VERIFY_STATUS_FILENAME@"
+		},
+		"update": {
+			"type": "reboot"
+		}
+	}
+}]
