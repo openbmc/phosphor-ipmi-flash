@@ -1,5 +1,8 @@
 AM_DEFAULT_SOURCE_EXT = .cpp
 
+pkgdatadir = $(datadir)/phosphor-ipmi-flash
+inst_pkgdatadir_DATA = phosphor-ipmi-flash-bmc.json
+
 if HAVE_SYSTEMD
 systemdsystemunit_DATA = \
 	phosphor-ipmi-flash-bmc-prepare.target \
@@ -15,6 +18,7 @@ endif
 
 noinst_LTLIBRARIES = libfirmwareblob_common.la
 libfirmwareblob_common_la_SOURCES = \
+	buildjson.cpp \
 	firmware_handler.cpp \
 	file_handler.cpp \
 	prepare_systemd.cpp \
