@@ -83,6 +83,12 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
         [AC_MSG_ERROR(["phosphor-ipmi-blobs required and not found."])]
     )
 
+    AC_CHECK_HEADER(
+        [nlohmann/json.hpp],
+        [],
+        [AC_MSG_ERROR([Could not find nlohmann/json.hpp])]
+    )
+
     PKG_PROG_PKG_CONFIG
     AC_ARG_WITH([systemdsystemunitdir],
         [AS_HELP_STRING([--with-systemdsystemunitdir=DIR], [Directory for systemd service files])],
@@ -136,6 +142,7 @@ AX_PTHREAD([], [AC_MSG_ERROR(["pthread required and not found"])])
 AC_ARG_ENABLE([reboot-update],
     AS_HELP_STRING([--enable-reboot-update],
                    [Enable use of reboot update mechanism.]))
+AM_CONDITIONAL([ENABLE_REBOOT_UPDATE], [test "x$enable_reboot_update" = "xyes"])
 AS_IF([test "x$enable_reboot_update" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_REBOOT_UPDATE], [CXXFLAGS])
 ])
@@ -150,6 +157,7 @@ AM_CONDITIONAL([BUILD_CLEANUP_DELETE], [test "x$enable_cleanup_delete" = "xyes"]
 AC_ARG_ENABLE([static-layout],
     AS_HELP_STRING([--enable-static-layout],
                    [Enable static layout firmware update via Blobs]))
+AM_CONDITIONAL([ENABLE_STATIC_LAYOUT], [test "x$enable_static_layout" = "xyes"])
 AS_IF([test "x$enable_static_layout" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_STATIC_LAYOUT], [CXXFLAGS])
 ])
@@ -539,4 +547,7 @@ AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bmc-update.target])
 AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bios-prepare.target])
 AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bios-verify.target])
 AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bios-update.target])
+AC_CONFIG_FILES([bmc/config-static-bmc-reboot.json])
+AC_CONFIG_FILES([bmc/config-static-bmc.json])
+AC_CONFIG_FILES([bmc/config-bios.json])
 AC_OUTPUT
