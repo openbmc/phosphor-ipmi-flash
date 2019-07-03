@@ -1,5 +1,20 @@
 AM_DEFAULT_SOURCE_EXT = .cpp
 
+pkgdatadir = $(datadir)/phosphor-ipmi-flash
+
+# reboot update is only effective for static layout
+# static layout is also possible with a tarball+bmc-code-mgmt
+#
+# TODO: see if bmc-code-mgmt will reboot for us or if we need to support this
+# variation
+if ENABLE_STATIC_LAYOUT
+if ENABLE_REBOOT_UPDATE
+dist_pkgdata_DATA = static-bmc-reboot.json
+else
+dist_pkgdata_DATA = static-bmc.json
+endif
+endif
+
 if HAVE_SYSTEMD
 systemdsystemunit_DATA = \
 	phosphor-ipmi-flash-bmc-prepare.target \
@@ -15,6 +30,7 @@ endif
 
 noinst_LTLIBRARIES = libfirmwareblob_common.la
 libfirmwareblob_common_la_SOURCES = \
+	buildjson.cpp \
 	firmware_handler.cpp \
 	file_handler.cpp \
 	prepare_systemd.cpp \
