@@ -49,6 +49,7 @@ test-suite.log
 
 # Custom generated files
 *.target
+*.json
 
 # Output binaries
 burn_my_bmc
