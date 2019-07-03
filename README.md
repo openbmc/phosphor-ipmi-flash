@@ -51,6 +51,12 @@ make
 make install
 ```
 
+*NOTE:* When building from the OpenBMC SDK your configuration call will be:
+
+```
+./configure --enable-oe-sdk --host "$(uname -m)" --disable-build-bmc-blob-handler AR=x86_64-openbmc-linux-gcc-ar RANLIB=x86_64-openbmc-linux-gcc-ranlib
+```
+
 ### Parameters
 
 The host-tool has parameters that let the caller specify every required detail.
