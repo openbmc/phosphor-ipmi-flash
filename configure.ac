@@ -83,6 +83,12 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
         [AC_MSG_ERROR(["phosphor-ipmi-blobs required and not found."])]
     )
 
+    AC_CHECK_HEADER(
+        [nlohmann/json.hpp],
+        [],
+        [AC_MSG_ERROR([Could not find nlohmann/json.hpp])]
+    )
+
     PKG_PROG_PKG_CONFIG
     AC_ARG_WITH([systemdsystemunitdir],
         [AS_HELP_STRING([--with-systemdsystemunitdir=DIR], [Directory for systemd service files])],
