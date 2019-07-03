@@ -1,0 +1,22 @@
+[{
+	"blob": "/flash/bios",
+	"handler": {
+		"type": "file",
+		"path": "@BIOS_STAGED_NAME@"
+	},
+	"actions": {
+		"preparation": {
+			"type": "systemd",
+			"unit": "@PREPARATION_BIOS_TARGET@"
+		},
+		"verification": {
+			"type": "fileSystemdVerify",
+			"unit": "@VERIFY_BIOS_TARGET@",
+			"path": "@BIOS_VERIFY_STATUS_FILENAME@"
+		},
+		"update": {
+			"type": "systemd",
+			"unit": "@UPDATE_BIOS_TARGET@"
+		}
+	}
+}]
