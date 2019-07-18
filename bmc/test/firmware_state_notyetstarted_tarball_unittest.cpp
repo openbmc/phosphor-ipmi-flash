@@ -5,6 +5,7 @@
 #include "firmware_handler.hpp"
 #include "firmware_unittest.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -22,10 +23,15 @@ class FirmwareHandlerNotYetStartedUbitTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        blobs = {
-            {hashBlobId, &imageMock},
-            {ubiTarballBlobId, &imageMock},
-        };
+        std::unique_ptr<ImageHandlerInterface> image =
+            std::make_unique<ImageHandlerMock>();
+        hashImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
+        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+
+        image = std::make_unique<ImageHandlerMock>();
+        imageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
+        blobs.push_back(
+            std::move(HandlerPack(ubiTarballBlobId, std::move(image))));
 
         std::unique_ptr<TriggerableActionInterface> verifyMock =
             std::make_unique<TriggerMock>();
@@ -44,7 +50,7 @@ class FirmwareHandlerNotYetStartedUbitTest : public ::testing::Test
         packs[ubiTarballBlobId] = std::move(actionPack);
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, std::move(packs));
+            std::move(blobs), data, std::move(packs));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)
@@ -55,12 +61,19 @@ class FirmwareHandlerNotYetStartedUbitTest : public ::testing::Test
 
     void openToInProgress(const std::string& blobId)
     {
-        EXPECT_CALL(imageMock, open(blobId)).WillOnce(Return(true));
+        if (blobId == hashBlobId)
+        {
+            EXPECT_CALL(*hashImageMock, open(blobId)).WillOnce(Return(true));
+        }
+        else
+        {
+            EXPECT_CALL(*imageMock, open(blobId)).WillOnce(Return(true));
+        }
         EXPECT_TRUE(handler->open(session, flags, blobId));
         expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
     }
 
-    ImageHandlerMock imageMock;
+    ImageHandlerMock *hashImageMock, *imageMock;
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {
         {FirmwareFlags::UpdateFlags::ipmi, nullptr}};
