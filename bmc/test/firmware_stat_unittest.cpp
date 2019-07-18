@@ -19,18 +19,18 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
      * the input for this function.
      */
 
-    ImageHandlerMock imageMock;
+    std::vector<HandlerPack> blobs;
+    blobs.push_back(std::move(
+        HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
+    blobs.push_back(
+        std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
 
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock},
-        {"asdf", &imageMock},
-    };
     std::vector<DataHandlerPack> data = {
         {FirmwareFlags::UpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(CreateActionMap("asdf")));
+        std::move(blobs), data, std::move(CreateActionMap("asdf")));
 
     blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));
