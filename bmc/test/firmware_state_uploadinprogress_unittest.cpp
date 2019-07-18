@@ -121,7 +121,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
      */
     openToInProgress(staticLayoutBlobId);
 
-    EXPECT_CALL(imageMock, getSize()).WillOnce(Return(32));
+    EXPECT_CALL(*imageMock2, getSize()).WillOnce(Return(32));
 
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 32;
@@ -224,7 +224,8 @@ TEST_F(FirmwareHandlerUploadInProgressTest, WriteToImageReturnsSuccess)
 {
     openToInProgress(staticLayoutBlobId);
     std::vector<std::uint8_t> bytes = {0x01, 0x02};
-    EXPECT_CALL(imageMock, write(0, ContainerEq(bytes))).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock2, write(0, ContainerEq(bytes)))
+        .WillOnce(Return(true));
     EXPECT_TRUE(handler->write(session, 0, bytes));
 }
 
@@ -232,7 +233,8 @@ TEST_F(FirmwareHandlerUploadInProgressTest, WriteToHashReturnsSuccess)
 {
     openToInProgress(hashBlobId);
     std::vector<std::uint8_t> bytes = {0x01, 0x02};
-    EXPECT_CALL(imageMock, write(0, ContainerEq(bytes))).WillOnce(Return(true));
+    EXPECT_CALL(*hashImageMock, write(0, ContainerEq(bytes)))
+        .WillOnce(Return(true));
     EXPECT_TRUE(handler->write(session, 0, bytes));
 }
 

@@ -107,7 +107,7 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
      */
     static std::unique_ptr<blobs::GenericBlobInterface>
         CreateFirmwareBlobHandler(
-            const std::vector<HandlerPack>& firmwares,
+            std::vector<HandlerPack>&& firmwares,
             const std::vector<DataHandlerPack>& transports,
             ActionMap&& actionPacks);
 
@@ -121,11 +121,11 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
      * @param[in] verification - pointer to object for triggering verification
      * @param[in] update - point to object for triggering the update
      */
-    FirmwareBlobHandler(const std::vector<HandlerPack>& firmwares,
+    FirmwareBlobHandler(std::vector<HandlerPack>&& firmwares,
                         const std::vector<std::string>& blobs,
                         const std::vector<DataHandlerPack>& transports,
                         std::uint16_t bitmask, ActionMap&& actionPacks) :
-        handlers(firmwares),
+        handlers(std::move(firmwares)),
         blobIDs(blobs), transports(transports), bitmask(bitmask),
         activeImage(activeImageBlobId), activeHash(activeHashBlobId),
         verifyImage(verifyBlobId), updateImage(updateBlobId), lookup(),
