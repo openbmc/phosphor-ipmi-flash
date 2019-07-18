@@ -21,7 +21,7 @@ class FirmwareHandlerWriteMetaTest : public FakeLpcFirmwareTest
 
 TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
 {
-    EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi, "asdf"));
@@ -34,7 +34,7 @@ TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
 TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
 {
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc, "asdf"));

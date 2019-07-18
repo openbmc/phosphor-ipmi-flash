@@ -48,10 +48,25 @@ class ImageHandlerInterface
     virtual int getSize() = 0;
 };
 
-struct HandlerPack
+class HandlerPack
 {
+  public:
+    HandlerPack(const std::string& name,
+                std::unique_ptr<ImageHandlerInterface> handler) :
+        blobName(name),
+        handler(std::move(handler))
+    {
+    }
+
+    HandlerPack() = default;
+    ~HandlerPack() = default;
+    HandlerPack(const HandlerPack&) = delete;
+    HandlerPack& operator=(const HandlerPack&) = delete;
+    HandlerPack(HandlerPack&&) = default;
+    HandlerPack& operator=(HandlerPack&&) = default;
+
     std::string blobName;
-    ImageHandlerInterface* handler;
+    std::unique_ptr<ImageHandlerInterface> handler;
 };
 
 } // namespace ipmi_flash

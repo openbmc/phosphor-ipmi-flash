@@ -41,18 +41,6 @@ namespace ipmi_flash
 namespace
 {
 
-FileHandler hashHandler(HASH_FILENAME);
-
-#ifdef ENABLE_STATIC_LAYOUT
-FileHandler staticLayoutHandler(STATIC_HANDLER_STAGED_NAME);
-#endif
-#ifdef ENABLE_TARBALL_UBI
-FileHandler ubitarballHandler(TARBALL_STAGED_NAME);
-#endif
-#ifdef ENABLE_HOST_BIOS
-FileHandler biosHandler(BIOS_STAGED_NAME);
-#endif
-
 /* The maximum external buffer size we expect is 64KB. */
 static constexpr std::size_t memoryRegionSize = 64 * 1024UL;
 
@@ -75,19 +63,6 @@ PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
 #error "You must specify a hardware implementation."
 #endif
 #endif
-
-std::vector<HandlerPack> supportedFirmware = {
-    {hashBlobId, &hashHandler},
-#ifdef ENABLE_STATIC_LAYOUT
-    {staticLayoutBlobId, &staticLayoutHandler},
-#endif
-#ifdef ENABLE_TARBALL_UBI
-    {ubiTarballBlobId, &ubitarballHandler},
-#endif
-#ifdef ENABLE_HOST_BIOS
-    {biosBlobId, &biosHandler},
-#endif
-};
 
 std::vector<DataHandlerPack> supportedTransports = {
     {FirmwareFlags::UpdateFlags::ipmi, nullptr},
@@ -166,8 +141,31 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
     }
 #endif
 
+    std::vector<ipmi_flash::HandlerPack> supportedFirmware;
+
+    supportedFirmware.push_back(std::move(ipmi_flash::HandlerPack(
+        ipmi_flash::hashBlobId,
+        std::make_unique<ipmi_flash::FileHandler>(HASH_FILENAME))));
+
+#ifdef ENABLE_STATIC_LAYOUT
+    supportedFirmware.push_back(std::move(
+        ipmi_flash::HandlerPack(ipmi_flash::staticLayoutBlobId,
+                                std::make_unique<ipmi_flash::FileHandler>(
+                                    STATIC_HANDLER_STAGED_NAME))));
+#endif
+#ifdef ENABLE_TARBALL_UBI
+    supportedFirmware.push_back(std::move(ipmi_flash::HandlerPack(
+        ipmi_flash::ubiTarballBlobId,
+        std::make_unique<ipmi_flash::FileHandler>(TARBALL_STAGED_NAME))));
+#endif
+#ifdef ENABLE_HOST_BIOS
+    supportedFirmware.push_back(std::move(ipmi_flash::HandlerPack(
+        ipmi_flash::biosBlobId,
+        std::make_unique<ipmi_flash::FileHandler>(BIOS_STAGED_NAME))));
+#endif
+
     auto handler = ipmi_flash::FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        ipmi_flash::supportedFirmware, ipmi_flash::supportedTransports,
+        std::move(supportedFirmware), ipmi_flash::supportedTransports,
         std::move(actionPacks));
 
     if (!handler)

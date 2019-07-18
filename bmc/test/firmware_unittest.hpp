@@ -26,10 +26,21 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        blobs = {
-            {hashBlobId, &imageMock},
-            {staticLayoutBlobId, &imageMock},
-        };
+        /* Unfortunately, since the FirmwareHandler object ends up owning the
+         * handlers, we can't just share handlers.
+         */
+        std::unique_ptr<ImageHandlerInterface> image =
+            std::make_unique<ImageHandlerMock>();
+        hashImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
+
+        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+
+        std::unique_ptr<ImageHandlerInterface> image2 =
+            std::make_unique<ImageHandlerMock>();
+        imageMock2 = reinterpret_cast<ImageHandlerMock*>(image2.get());
+
+        blobs.push_back(
+            std::move(HandlerPack(staticLayoutBlobId, std::move(image2))));
 
         std::unique_ptr<TriggerableActionInterface> prepareMock =
             std::make_unique<TriggerMock>();
@@ -52,7 +63,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         packs[staticLayoutBlobId] = std::move(actionPack);
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, std::move(packs));
+            std::move(blobs), data, std::move(packs));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)
@@ -63,7 +74,15 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
 
     void openToInProgress(const std::string& blobId)
     {
-        EXPECT_CALL(imageMock, open(blobId)).WillOnce(Return(true));
+        if (blobId == hashBlobId)
+        {
+            EXPECT_CALL(*hashImageMock, open(blobId)).WillOnce(Return(true));
+        }
+        else
+        {
+            EXPECT_CALL(*imageMock2, open(blobId)).WillOnce(Return(true));
+        }
+
         if (blobId != hashBlobId)
         {
             EXPECT_CALL(*prepareMockPtr, trigger()).WillOnce(Return(true));
@@ -76,7 +95,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     {
         openToInProgress(blobId);
 
-        EXPECT_CALL(imageMock, close()).WillRepeatedly(Return());
+        EXPECT_CALL(*hashImageMock, close()).WillRepeatedly(Return());
         handler->close(session);
         expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
     }
@@ -98,7 +117,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         getToVerificationPending(staticLayoutBlobId);
 
         openToInProgress(hashBlobId);
-        EXPECT_CALL(imageMock, close()).WillRepeatedly(Return());
+        EXPECT_CALL(*hashImageMock, close()).WillRepeatedly(Return());
         handler->close(session);
         expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 
@@ -148,11 +167,15 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         expectedState(FirmwareBlobHandler::UpdateState::updateCompleted);
     }
 
-    ImageHandlerMock imageMock;
+    ImageHandlerMock* hashImageMock;
+    ImageHandlerMock* imageMock2;
+
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {
         {FirmwareFlags::UpdateFlags::ipmi, nullptr}};
+
     std::unique_ptr<blobs::GenericBlobInterface> handler;
+
     TriggerMock* prepareMockPtr;
     TriggerMock* verifyMockPtr;
     TriggerMock* updateMockPtr;
@@ -167,7 +190,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
 class IpmiOnlyFirmwareTest : public ::testing::Test
 {
   protected:
-    ImageHandlerMock imageMock;
+    ImageHandlerMock *hashImageMock, *imageMock;
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {
         {FirmwareFlags::UpdateFlags::ipmi, nullptr}};
@@ -175,12 +198,20 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
 
     void SetUp() override
     {
-        blobs = {
-            {hashBlobId, &imageMock},
-            {"asdf", &imageMock},
-        };
+        std::unique_ptr<ImageHandlerInterface> image =
+            std::make_unique<ImageHandlerMock>();
+        hashImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
+
+        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+
+        std::unique_ptr<ImageHandlerInterface> image2 =
+            std::make_unique<ImageHandlerMock>();
+        imageMock = reinterpret_cast<ImageHandlerMock*>(image2.get());
+
+        blobs.push_back(std::move(HandlerPack("asdf", std::move(image2))));
+
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, std::move(CreateActionMap("asdf")));
+            std::move(blobs), data, std::move(CreateActionMap("asdf")));
     }
 };
 
@@ -188,23 +219,32 @@ class FakeLpcFirmwareTest : public ::testing::Test
 {
   protected:
     DataHandlerMock dataMock;
-    ImageHandlerMock imageMock;
+    ImageHandlerMock *hashImageMock, *imageMock;
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data;
     std::unique_ptr<blobs::GenericBlobInterface> handler;
 
     void SetUp() override
     {
-        blobs = {
-            {hashBlobId, &imageMock},
-            {"asdf", &imageMock},
-        };
+        std::unique_ptr<ImageHandlerInterface> image =
+            std::make_unique<ImageHandlerMock>();
+        hashImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
+
+        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+
+        std::unique_ptr<ImageHandlerInterface> image2 =
+            std::make_unique<ImageHandlerMock>();
+        imageMock = reinterpret_cast<ImageHandlerMock*>(image2.get());
+
+        blobs.push_back(
+            std::move(HandlerPack(staticLayoutBlobId, std::move(image2))));
+
         data = {
             {FirmwareFlags::UpdateFlags::ipmi, nullptr},
             {FirmwareFlags::UpdateFlags::lpc, &dataMock},
         };
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, std::move(CreateActionMap("asdf")));
+            std::move(blobs), data, std::move(CreateActionMap("asdf")));
     }
 };
 
