@@ -24,17 +24,20 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
 
     ImageHandlerMock imageMock;
 
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock},
-        {"asdf", &imageMock},
-        {"bcdf", &imageMock},
-    };
+    std::vector<HandlerPack> blobs;
+    blobs.push_back(std::move(
+        HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
+    blobs.push_back(
+        std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
+    blobs.push_back(
+        std::move(HandlerPack("bcdf", std::make_unique<ImageHandlerMock>())));
+
     std::vector<DataHandlerPack> data = {
         {FirmwareFlags::UpdateFlags::ipmi, nullptr},
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(CreateActionMap("asdf")));
+        std::move(blobs), data, std::move(CreateActionMap("asdf")));
 
     for (const auto& item : items)
     {

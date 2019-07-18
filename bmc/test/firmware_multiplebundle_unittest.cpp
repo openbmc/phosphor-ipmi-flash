@@ -30,11 +30,19 @@ class IpmiOnlyTwoFirmwaresTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        blobs = {
-            {hashBlobId, &hashImageMock},
-            {staticLayoutBlobId, &staticImageMock},
-            {biosBlobId, &biosImageMock},
-        };
+        std::unique_ptr<ImageHandlerInterface> image =
+            std::make_unique<ImageHandlerMock>();
+        hashImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
+        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+
+        image = std::make_unique<ImageHandlerMock>();
+        staticImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
+        blobs.push_back(
+            std::move(HandlerPack(staticLayoutBlobId, std::move(image))));
+
+        image = std::make_unique<ImageHandlerMock>();
+        biosImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
+        blobs.push_back(std::move(HandlerPack(biosBlobId, std::move(image))));
 
         std::unique_ptr<TriggerableActionInterface> bmcPrepareMock =
             std::make_unique<TriggerMock>();
@@ -80,7 +88,7 @@ class IpmiOnlyTwoFirmwaresTest : public ::testing::Test
         packs[biosBlobId] = std::move(biosPack);
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            blobs, data, std::move(packs));
+            std::move(blobs), data, std::move(packs));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)
@@ -89,7 +97,7 @@ class IpmiOnlyTwoFirmwaresTest : public ::testing::Test
         EXPECT_EQ(state, realHandler->getCurrentState());
     }
 
-    ImageHandlerMock hashImageMock, staticImageMock, biosImageMock;
+    ImageHandlerMock *hashImageMock, *staticImageMock, *biosImageMock;
 
     std::vector<HandlerPack> blobs;
     std::vector<DataHandlerPack> data = {
@@ -110,42 +118,42 @@ TEST_F(IpmiOnlyTwoFirmwaresTest, OpeningBiosAfterBlobFails)
     /* You can only have one file open at a time, and the first firmware file
      * you open locks it down
      */
-    EXPECT_CALL(staticImageMock, open(staticLayoutBlobId))
+    EXPECT_CALL(*staticImageMock, open(staticLayoutBlobId))
         .WillOnce(Return(true));
     EXPECT_CALL(*bmcPrepareMockPtr, trigger()).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
     expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
 
-    EXPECT_CALL(staticImageMock, close()).WillOnce(Return());
+    EXPECT_CALL(*staticImageMock, close()).WillOnce(Return());
     handler->close(session);
 
     expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 
-    EXPECT_CALL(biosImageMock, open(biosBlobId)).Times(0);
+    EXPECT_CALL(*biosImageMock, open(biosBlobId)).Times(0);
     EXPECT_FALSE(handler->open(session, flags, biosBlobId));
 }
 
 TEST_F(IpmiOnlyTwoFirmwaresTest, OpeningHashBeforeBiosSucceeds)
 {
     /* Opening the hash blob does nothing special in this regard. */
-    EXPECT_CALL(hashImageMock, open(hashBlobId)).WillOnce(Return(true));
+    EXPECT_CALL(*hashImageMock, open(hashBlobId)).WillOnce(Return(true));
     EXPECT_TRUE(handler->open(session, flags, hashBlobId));
 
     expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
 
-    EXPECT_CALL(hashImageMock, close()).WillOnce(Return());
+    EXPECT_CALL(*hashImageMock, close()).WillOnce(Return());
     handler->close(session);
 
     expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
     ASSERT_FALSE(handler->canHandleBlob(verifyBlobId));
 
-    EXPECT_CALL(biosImageMock, open(biosBlobId)).WillOnce(Return(true));
+    EXPECT_CALL(*biosImageMock, open(biosBlobId)).WillOnce(Return(true));
     EXPECT_TRUE(handler->open(session, flags, biosBlobId));
 
     expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
 
-    EXPECT_CALL(biosImageMock, close()).WillOnce(Return());
+    EXPECT_CALL(*biosImageMock, close()).WillOnce(Return());
     handler->close(session);
 }
 

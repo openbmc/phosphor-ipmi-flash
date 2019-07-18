@@ -5,6 +5,8 @@
 #include "triggerable_mock.hpp"
 #include "util.hpp"
 
+#include <memory>
+
 #include <gtest/gtest.h>
 
 namespace ipmi_flash
@@ -25,9 +27,9 @@ TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
     //    StrictMock<SdJournalMock> journalMock;
     //    SwapJouralHandler(&journalMock);
 
-    std::vector<HandlerPack> blobs = {
-        {hashBlobId, &imageMock},
-    };
+    std::vector<HandlerPack> blobs;
+    blobs.push_back(std::move(
+        HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
 
     std::vector<DataHandlerPack> data = {
         {FirmwareFlags::UpdateFlags::ipmi, nullptr},
@@ -35,7 +37,7 @@ TEST(FirmwareHandlerBlobTest, VerifyFirmwareCounts)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        blobs, data, std::move(CreateActionMap("abcd")));
+        std::move(blobs), data, std::move(CreateActionMap("abcd")));
 
     //    EXPECT_EQ(handler, nullptr);
     EXPECT_FALSE(handler == nullptr);

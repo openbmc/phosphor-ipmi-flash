@@ -27,13 +27,13 @@ TEST_F(FirmwareSessionStateTestIpmiOnly, DataTypeIpmiNoMetadata)
     /* Verifying running stat if the type of data session is IPMI returns no
      * metadata.
      */
-    EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi, "asdf"));
 
     int size = 512;
-    EXPECT_CALL(imageMock, getSize()).WillOnce(Return(size));
+    EXPECT_CALL(*imageMock, getSize()).WillOnce(Return(size));
 
     blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat(0, &meta));
@@ -50,13 +50,13 @@ TEST_F(FirmwareSessionStateTestLpc, DataTypeP2AReturnsMetadata)
      * simply implementing read().
      */
     EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(imageMock, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc, "asdf"));
 
     int size = 512;
-    EXPECT_CALL(imageMock, getSize()).WillOnce(Return(size));
+    EXPECT_CALL(*imageMock, getSize()).WillOnce(Return(size));
     std::vector<std::uint8_t> mBytes = {0x01, 0x02};
     EXPECT_CALL(dataMock, readMeta()).WillOnce(Return(mBytes));
 
