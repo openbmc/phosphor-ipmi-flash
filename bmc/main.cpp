@@ -16,6 +16,7 @@
 
 #include "config.h"
 
+#include "buildjson.hpp"
 #include "file_handler.hpp"
 #include "firmware_handler.hpp"
 #include "flags.hpp"
@@ -34,15 +35,21 @@
 #include <memory>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus.hpp>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace ipmi_flash
 {
+
 namespace
 {
 
 /* The maximum external buffer size we expect is 64KB. */
 static constexpr std::size_t memoryRegionSize = 64 * 1024UL;
+
+static constexpr const char* jsonConfigurationPath =
+    "/usr/share/phosphor-ipmi-flash/";
 
 #ifdef ENABLE_LPC_BRIDGE
 #if defined(ASPEED_LPC)
@@ -96,6 +103,17 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler();
 
 std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
+    /* NOTE: This is unused presently. */
+    {
+        std::vector<ipmi_flash::HandlerConfig> configsFromJson =
+            ipmi_flash::BuildHandlerConfigs(ipmi_flash::jsonConfigurationPath);
+
+        for (const auto& config : configsFromJson)
+        {
+            std::fprintf(stderr, "config loaded: %s\n", config.blobId.c_str());
+        }
+    }
+
     ipmi_flash::ActionMap actionPacks = {};
 
     {
