@@ -74,6 +74,19 @@ std::vector<DataHandlerPack> supportedTransports = {
 #endif
 };
 
+/**
+ * Given a name and path, create a HandlerPack.
+ *
+ * @param[in] name - the blob id path for this
+ * @param[in] path - the file path to write the contents.
+ * @return the HandlerPack.
+ */
+HandlerPack CreateFileHandlerPack(const std::string& name,
+                                  const std::string& path)
+{
+    return HandlerPack(name, std::make_unique<FileHandler>(path));
+}
+
 } // namespace
 } // namespace ipmi_flash
 
@@ -85,40 +98,41 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
     ipmi_flash::ActionMap actionPacks = {};
 
-#ifdef ENABLE_REBOOT_UPDATE
-    static constexpr auto rebootTarget = "reboot.target";
-    static constexpr auto rebootMode = "replace-irreversibly";
+    {
+        auto bmcPack = std::make_unique<ipmi_flash::ActionPack>();
 
-    auto updater = ipmi_flash::SystemdUpdateMechanism::CreateSystemdUpdate(
-        sdbusplus::bus::new_default(), rebootTarget, rebootMode);
+#ifdef ENABLE_REBOOT_UPDATE
+        static constexpr auto rebootTarget = "reboot.target";
+        static constexpr auto rebootMode = "replace-irreversibly";
+
+        bmcPack->update =
+            ipmi_flash::SystemdUpdateMechanism::CreateSystemdUpdate(
+                sdbusplus::bus::new_default(), rebootTarget, rebootMode);
 #else
-    auto updater = ipmi_flash::SystemdUpdateMechanism::CreateSystemdUpdate(
-        sdbusplus::bus::new_default(), UPDATE_DBUS_SERVICE);
+        bmcPack->update =
+            ipmi_flash::SystemdUpdateMechanism::CreateSystemdUpdate(
+                sdbusplus::bus::new_default(), UPDATE_DBUS_SERVICE);
 #endif
 
-    auto prepare = ipmi_flash::SystemdPreparation::CreatePreparation(
-        sdbusplus::bus::new_default(), PREPARATION_DBUS_SERVICE);
+        bmcPack->preparation =
+            ipmi_flash::SystemdPreparation::CreatePreparation(
+                sdbusplus::bus::new_default(), PREPARATION_DBUS_SERVICE);
 
-    auto verifier = ipmi_flash::SystemdVerification::CreateVerification(
-        sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
-        VERIFY_DBUS_SERVICE);
+        bmcPack->verification =
+            ipmi_flash::SystemdVerification::CreateVerification(
+                sdbusplus::bus::new_default(), VERIFY_STATUS_FILENAME,
+                VERIFY_DBUS_SERVICE);
 
-    /* TODO: for bios should the name be, bios or /flash/bios?, these are
-     * /flash/... and it simplifies a few other things later (open/etc)
-     */
-    std::string bmcName;
+        std::string bmcName;
 #ifdef ENABLE_STATIC_LAYOUT
-    bmcName = ipmi_flash::staticLayoutBlobId;
+        bmcName = ipmi_flash::staticLayoutBlobId;
 #endif
 #ifdef ENABLE_TARBALL_UBI
-    bmcName = ipmi_flash::ubiTarballBlobId;
+        bmcName = ipmi_flash::ubiTarballBlobId;
 #endif
 
-    auto bmcPack = std::make_unique<ipmi_flash::ActionPack>();
-    bmcPack->preparation = std::move(prepare);
-    bmcPack->verification = std::move(verifier);
-    bmcPack->update = std::move(updater);
-    actionPacks[bmcName] = std::move(bmcPack);
+        actionPacks[bmcName] = std::move(bmcPack);
+    }
 
 #ifdef ENABLE_HOST_BIOS
     {
@@ -143,25 +157,20 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 
     std::vector<ipmi_flash::HandlerPack> supportedFirmware;
 
-    supportedFirmware.push_back(std::move(ipmi_flash::HandlerPack(
-        ipmi_flash::hashBlobId,
-        std::make_unique<ipmi_flash::FileHandler>(HASH_FILENAME))));
+    supportedFirmware.push_back(std::move(ipmi_flash::CreateFileHandlerPack(
+        ipmi_flash::hashBlobId, HASH_FILENAME)));
 
 #ifdef ENABLE_STATIC_LAYOUT
-    supportedFirmware.push_back(std::move(
-        ipmi_flash::HandlerPack(ipmi_flash::staticLayoutBlobId,
-                                std::make_unique<ipmi_flash::FileHandler>(
-                                    STATIC_HANDLER_STAGED_NAME))));
+    supportedFirmware.push_back(std::move(ipmi_flash::CreateFileHandlerPack(
+        ipmi_flash::staticLayoutBlobId, STATIC_HANDLER_STAGED_NAME)));
 #endif
 #ifdef ENABLE_TARBALL_UBI
-    supportedFirmware.push_back(std::move(ipmi_flash::HandlerPack(
-        ipmi_flash::ubiTarballBlobId,
-        std::make_unique<ipmi_flash::FileHandler>(TARBALL_STAGED_NAME))));
+    supportedFirmware.push_back(std::move(ipmi_flash::CreateFileHandlerPack(
+        ipmi_flash::ubiTarballBlobId, TARBALL_STAGED_NAME)));
 #endif
 #ifdef ENABLE_HOST_BIOS
-    supportedFirmware.push_back(std::move(ipmi_flash::HandlerPack(
-        ipmi_flash::biosBlobId,
-        std::make_unique<ipmi_flash::FileHandler>(BIOS_STAGED_NAME))));
+    supportedFirmware.push_back(std::move(ipmi_flash::CreateFileHandlerPack(
+        ipmi_flash::biosBlobId, BIOS_STAGED_NAME)));
 #endif
 
     auto handler = ipmi_flash::FirmwareBlobHandler::CreateFirmwareBlobHandler(
