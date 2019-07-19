@@ -71,7 +71,7 @@ libfirmwareblob_common_la_LIBADD = $(top_builddir)/libfirmware_common.la
 
 libfirmwareblobdir = ${libdir}/ipmid-providers
 libfirmwareblob_LTLIBRARIES = libfirmwareblob.la
-libfirmwareblob_la_SOURCES = main.cpp
+libfirmwareblob_la_SOURCES = main.cpp fs.cpp
 libfirmwareblob_la_LIBADD = libfirmwareblob_common.la
 libfirmwareblob_la_LDFLAGS = \
 	$(SDBUSPLUS_LIBS) \

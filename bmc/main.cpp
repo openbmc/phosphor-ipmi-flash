@@ -16,9 +16,11 @@
 
 #include "config.h"
 
+#include "buildjson.hpp"
 #include "file_handler.hpp"
 #include "firmware_handler.hpp"
 #include "flags.hpp"
+#include "fs.hpp"
 #include "image_handler.hpp"
 #include "lpc_aspeed.hpp"
 #include "lpc_handler.hpp"
@@ -31,18 +33,24 @@
 #include "verify_systemd.hpp"
 
 #include <cstdint>
+#include <fstream>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus.hpp>
 #include <unordered_map>
 
 namespace ipmi_flash
 {
+
 namespace
 {
 
 /* The maximum external buffer size we expect is 64KB. */
 static constexpr std::size_t memoryRegionSize = 64 * 1024UL;
+
+static constexpr const char* jsonConfigurationPath =
+    "/usr/share/phosphor-ipmi-flash/";
 
 #ifdef ENABLE_LPC_BRIDGE
 #if defined(ASPEED_LPC)
@@ -87,6 +95,38 @@ HandlerPack CreateFileHandlerPack(const std::string& name,
     return HandlerPack(name, std::make_unique<FileHandler>(path));
 }
 
+std::vector<HandlerConfig> BuildHandlerConfigs(const std::string& directory)
+{
+    using namespace phosphor::logging;
+
+    std::vector<HandlerConfig> output;
+
+    std::vector<std::string> jsonPaths = GetJsonList(directory);
+
+    for (const auto& path : jsonPaths)
+    {
+        std::ifstream jsonFile(path);
+        if (!jsonFile.is_open())
+        {
+            log<level::ERR>("Unable to open json file",
+                            entry("PATH=%s", path.c_str()));
+            continue;
+        }
+
+        auto data = nlohmann::json::parse(jsonFile, nullptr, false);
+        if (data.is_discarded())
+        {
+            log<level::ERR>("Parsing json failed",
+                            entry("PATH=%s", path.c_str()));
+            continue;
+        }
+
+        std::vector<HandlerConfig> configs = buildHandlerFromJson(data);
+    }
+
+    return output;
+}
+
 } // namespace
 } // namespace ipmi_flash
 
@@ -96,6 +136,17 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler();
 
 std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
+    /* NOTE: This is unused presently. */
+    {
+        std::vector<ipmi_flash::HandlerConfig> configsFromJson =
+            ipmi_flash::BuildHandlerConfigs(ipmi_flash::jsonConfigurationPath);
+
+        for (const auto& config : configsFromJson)
+        {
+            std::fprintf(stderr, "config loaded: %s\n", config.blobId);
+        }
+    }
+
     ipmi_flash::ActionMap actionPacks = {};
 
     {
