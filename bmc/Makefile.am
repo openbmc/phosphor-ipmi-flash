@@ -37,6 +37,7 @@ endif
 noinst_LTLIBRARIES = libfirmwareblob_common.la
 libfirmwareblob_common_la_SOURCES = \
 	buildjson.cpp \
+	fs.cpp \
 	firmware_handler.cpp \
 	file_handler.cpp \
 	prepare_systemd.cpp \

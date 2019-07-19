@@ -54,4 +54,12 @@ class HandlerConfig
  */
 std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data);
 
+/**
+ * Given a folder of json configs, build the configurations.
+ *
+ * @param[in] directory - the directory to search (recurisvely).
+ * @return list of HandlerConfig objects.
+ */
+std::vector<HandlerConfig> BuildHandlerConfigs(const std::string& directory);
+
 } // namespace ipmi_flash
