@@ -16,13 +16,16 @@
 #include "buildjson.hpp"
 
 #include "file_handler.hpp"
+#include "fs.hpp"
 #include "prepare_systemd.hpp"
 #include "update_systemd.hpp"
 #include "verify_systemd.hpp"
 
+#include <algorithm>
 #include <cstdio>
 #include <exception>
 #include <nlohmann/json.hpp>
+#include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus.hpp>
 #include <string>
 #include <vector>
@@ -131,6 +134,39 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
     }
 
     return handlers;
+}
+
+std::vector<HandlerConfig> BuildHandlerConfigs(const std::string& directory)
+{
+    using namespace phosphor::logging;
+
+    std::vector<HandlerConfig> output;
+
+    std::vector<std::string> jsonPaths = GetJsonList(directory);
+
+    for (const auto& path : jsonPaths)
+    {
+        std::ifstream jsonFile(path);
+        if (!jsonFile.is_open())
+        {
+            log<level::ERR>("Unable to open json file",
+                            entry("PATH=%s", path.c_str()));
+            continue;
+        }
+
+        auto data = nlohmann::json::parse(jsonFile, nullptr, false);
+        if (data.is_discarded())
+        {
+            log<level::ERR>("Parsing json failed",
+                            entry("PATH=%s", path.c_str()));
+            continue;
+        }
+
+        std::vector<HandlerConfig> configs = buildHandlerFromJson(data);
+        std::move(configs.begin(), configs.end(), std::back_inserter(output));
+    }
+
+    return output;
 }
 
 } // namespace ipmi_flash
