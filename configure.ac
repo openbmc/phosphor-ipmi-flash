@@ -30,6 +30,8 @@ AS_IF([test "x$enable_tests" = "xyes"], [enable_aspeed_p2a=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_aspeed_lpc=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_nuvoton_lpc=yes])
 
+AS_IF([test "x$enable_host_bios" = "xyes"], [enable_host_bios=yes])
+
 # If building tests, enable building all cleanup handler options.
 AS_IF([test "x$enable_tests" = "xyes"], [enable_cleanup_delete=yes])
 
@@ -111,8 +113,10 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
     AM_CONDITIONAL([HAVE_SYSTEMD], [test "x$with_systemdsystemunitdir" != "xno"])
 
     # Only set if build-bmc-blob-handler wasn't unset.
-    AM_CONDITIONAL([ENABLE_HOST_BIOS], [test "$enable_host_bios" = "xyes"])
-    AX_APPEND_COMPILE_FLAGS([-DENABLE_HOST_BIOS], [CXXFLAGS])
+    AM_CONDITIONAL([ENABLE_HOST_BIOS], [test "x$enable_host_bios" = "xyes"])
+    AS_IF([test "x$enable_host_bios" = "xyes"], [
+        AX_APPEND_COMPILE_FLAGS([-DENABLE_HOST_BIOS], [CXXFLAGS])
+    ])
 ])
 
 # If not building the host-tool, we're building the BMC.
