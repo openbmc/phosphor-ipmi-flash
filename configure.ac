@@ -117,6 +117,9 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
     AS_IF([test "x$enable_host_bios" = "xyes"], [
         AX_APPEND_COMPILE_FLAGS([-DENABLE_HOST_BIOS], [CXXFLAGS])
     ])
+], [
+    AM_CONDITIONAL([HAVE_SYSTEMD], [0])
+    AM_CONDITIONAL([ENABLE_HOST_BIOS], [0])
 ])
 
 # If not building the host-tool, we're building the BMC.
