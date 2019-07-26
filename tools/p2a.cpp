@@ -73,11 +73,14 @@ bool P2aDataHandler::sendContents(const std::string& input,
     std::uint32_t value;
     if (!io->read(bar1 | aspeedP2aConfig, sizeof(value), &value))
     {
-        if (0 == (value & p2ABridgeEnabled))
-        {
-            std::fprintf(stderr, "Bridge not enabled.\n");
-            return false;
-        }
+         std::fprintf(stderr, "PCI config read failed\n");
+        return false;
+    }
+
+    if (0 == (value & p2ABridgeEnabled))
+    {
+        std::fprintf(stderr, "Bridge not enabled.\n");
+        return false;
     }
 
     std::fprintf(stderr, "The bridge is enabled!\n");
