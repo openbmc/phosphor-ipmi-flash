@@ -29,6 +29,23 @@
 namespace host_tool
 {
 
+namespace
+{
+void disablePciBridge(HostIoInterface* io, std::size_t address)
+{
+    /* Read current value, and just blindly unset the bit. */
+    std::uint32_t value;
+    if (!io->read(address + aspeedP2aConfig, sizeof(value), &value))
+    {
+        return;
+    }
+
+    value &= ~p2ABridgeEnabled;
+    io->write(address + aspeedP2aConfig, sizeof(value), &value);
+}
+
+} // namespace
+
 bool P2aDataHandler::sendContents(const std::string& input,
                                   std::uint16_t session)
 {
@@ -36,6 +53,12 @@ bool P2aDataHandler::sendContents(const std::string& input,
     PciFilter filter;
     bool found = false;
     pciaddr_t bar1;
+    bool returnValue = false;
+    int inputFd = -1;
+    ipmi_flash::PciConfigResponse pciResp;
+    std::int64_t fileSize;
+    const std::uint32_t p2aLength = aspeedP2aOffset;
+    std::unique_ptr<std::uint8_t[]> readBuffer;
 
     filter.vid = aspeedVendorId;
     filter.did = aspeedDeviceId;
@@ -68,10 +91,10 @@ bool P2aDataHandler::sendContents(const std::string& input,
     std::fprintf(stderr, "\n");
 
     /* We sent the open command before this, so the window should be open and
-     * the bridge enabled.
+     * the bridge enabled on the BMC.
      */
     std::uint32_t value;
-    if (!io->read(bar1 | aspeedP2aConfig, sizeof(value), &value))
+    if (!io->read(bar1 + aspeedP2aConfig, sizeof(value), &value))
     {
         std::fprintf(stderr, "PCI config read failed\n");
         return false;
@@ -79,10 +102,17 @@ bool P2aDataHandler::sendContents(const std::string& input,
 
     if (0 == (value & p2ABridgeEnabled))
     {
-        std::fprintf(stderr, "Bridge not enabled.\n");
-        return false;
+        std::fprintf(stderr, "Bridge not enabled - Enabling from host\n");
+
+        value |= p2ABridgeEnabled;
+        if (!io->write(bar1 + aspeedP2aConfig, sizeof(value), &value))
+        {
+            std::fprintf(stderr, "PCI config write failed\n");
+            return false;
+        }
     }
 
+    /* From this point down we need to disable the bridge. */
     std::fprintf(stderr, "The bridge is enabled!\n");
 
     /* Read the configuration via blobs metadata (stat). */
@@ -91,45 +121,43 @@ bool P2aDataHandler::sendContents(const std::string& input,
     {
         std::fprintf(stderr, "Didn't receive expected size of metadata for "
                              "PCI Configuration response\n");
-        return false;
+        goto exit;
     }
 
-    ipmi_flash::PciConfigResponse pciResp;
     std::memcpy(&pciResp, stat.metadata.data(), sizeof(pciResp));
     std::fprintf(stderr, "Received address: 0x%x\n", pciResp.address);
 
     /* Configure the mmio to point there. */
-    if (!io->write(bar1 | aspeedP2aBridge, sizeof(pciResp.address),
+    if (!io->write(bar1 + aspeedP2aBridge, sizeof(pciResp.address),
                    &pciResp.address))
     {
         // Failed to set it up, so fall back.
         std::fprintf(stderr, "Failed to update the bridge address\n");
-        return false;
+        goto exit;
     }
 
     /* For data blocks in 64kb, stage data, and send blob write command. */
-    int inputFd = sys->open(input.c_str(), 0);
+    inputFd = sys->open(input.c_str(), 0);
     if (inputFd < 0)
     {
-        return false;
+        std::fprintf(stderr, "Unable to open file: '%s'\n", input.c_str());
+        goto exit;
     }
 
-    std::int64_t fileSize = sys->getSize(input.c_str());
+    fileSize = sys->getSize(input.c_str());
     if (fileSize == 0)
     {
         std::fprintf(stderr, "Zero-length file, or other file access error\n");
-        return false;
+        goto exit;
     }
 
     progress->start(fileSize);
 
-    const std::uint32_t p2aLength = aspeedP2aOffset;
-
-    auto readBuffer = std::make_unique<std::uint8_t[]>(p2aLength);
+    readBuffer = std::make_unique<std::uint8_t[]>(p2aLength);
     if (nullptr == readBuffer)
     {
         std::fprintf(stderr, "Unable to allocate memory for read buffer.\n");
-        return false;
+        goto exit;
     }
 
     try
@@ -142,19 +170,19 @@ bool P2aDataHandler::sendContents(const std::string& input,
             bytesRead = sys->read(inputFd, readBuffer.get(), p2aLength);
             if (bytesRead > 0)
             {
-                /* TODO: Will likely need to store an rv somewhere to know when
-                 * we're exiting from failure.
+                /* TODO: Will likely need to store an rv somewhere to know
+                 * when we're exiting from failure.
                  */
-                if (!io->write(bar1 | aspeedP2aOffset, bytesRead,
+                if (!io->write(bar1 + aspeedP2aOffset, bytesRead,
                                readBuffer.get()))
                 {
                     std::fprintf(stderr,
                                  "Failed to write to region in memory!\n");
-                    break;
+                    goto exit;
                 }
 
-                /* Ok, so the data is staged, now send the blob write with the
-                 * details.
+                /* Ok, so the data is staged, now send the blob write with
+                 * the details.
                  */
                 struct ipmi_flash::ExtChunkHdr chunk;
                 chunk.length = bytesRead;
@@ -170,12 +198,22 @@ bool P2aDataHandler::sendContents(const std::string& input,
     }
     catch (const ipmiblob::BlobException& b)
     {
-        sys->close(inputFd);
-        return false;
+        goto exit;
     }
 
-    sys->close(inputFd);
-    return true;
+    /* defaults to failure. */
+    returnValue = true;
+
+exit:
+    /* disable PCI bridge. */
+    disablePciBridge(io, bar1);
+
+    /* close input file. */
+    if (inputFd != -1)
+    {
+        sys->close(inputFd);
+    }
+    return returnValue;
 }
 
 } // namespace host_tool
