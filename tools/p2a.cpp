@@ -68,7 +68,7 @@ bool P2aDataHandler::sendContents(const std::string& input,
     std::fprintf(stderr, "\n");
 
     /* We sent the open command before this, so the window should be open and
-     * the bridge enabled.
+     * the bridge enabled on the BMC.
      */
     std::uint32_t value;
     if (!io->read(bar1 | aspeedP2aConfig, sizeof(value), &value))
@@ -79,8 +79,14 @@ bool P2aDataHandler::sendContents(const std::string& input,
 
     if (0 == (value & p2ABridgeEnabled))
     {
-        std::fprintf(stderr, "Bridge not enabled.\n");
-        return false;
+        std::fprintf(stderr, "Bridge not enabled - Enabling from host\n");
+
+        value = 1;
+        if (!io->write(bar1 | aspeedP2aConfig, sizeof(value), &value))
+        {
+            std::fprintf(stderr, "PCI config write failed\n");
+            return false;
+        }
     }
 
     std::fprintf(stderr, "The bridge is enabled!\n");
