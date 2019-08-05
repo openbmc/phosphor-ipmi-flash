@@ -29,12 +29,12 @@ class SystemdVerification : public TriggerableActionInterface
      */
     static std::unique_ptr<TriggerableActionInterface>
         CreateVerification(sdbusplus::bus::bus&& bus, const std::string& path,
-                           const std::string& service);
+                           const std::string& service, const std::string& mode);
 
     SystemdVerification(sdbusplus::bus::bus&& bus, const std::string& path,
-                        const std::string& service) :
+                        const std::string& service, const std::string& mode) :
         bus(std::move(bus)),
-        checkPath(path), triggerService(service)
+        checkPath(path), triggerService(service), mode(mode)
     {
     }
 
@@ -48,9 +48,12 @@ class SystemdVerification : public TriggerableActionInterface
     void abort() override;
     ActionStatus status() override;
 
+    const std::string getMode() const;
+
   private:
     sdbusplus::bus::bus bus;
     const std::string checkPath;
     const std::string triggerService;
+    const std::string mode;
 };
 } // namespace ipmi_flash
