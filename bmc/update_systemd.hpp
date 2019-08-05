@@ -17,8 +17,7 @@ class SystemdUpdateMechanism : public TriggerableActionInterface
   public:
     static std::unique_ptr<TriggerableActionInterface>
         CreateSystemdUpdate(sdbusplus::bus::bus&& bus,
-                            const std::string& target,
-                            const std::string& mode = "");
+                            const std::string& target, const std::string& mode);
 
     SystemdUpdateMechanism(sdbusplus::bus::bus&& bus, const std::string& target,
                            const std::string& mode) :

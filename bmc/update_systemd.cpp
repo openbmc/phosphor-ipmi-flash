@@ -45,11 +45,7 @@ bool SystemdUpdateMechanism::trigger()
     auto method = bus.new_method_call(systemdService, systemdRoot,
                                       systemdInterface, "StartUnit");
     method.append(target);
-
-    if (!mode.empty())
-    {
-        method.append(mode);
-    }
+    method.append(mode);
 
     try
     {

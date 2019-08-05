@@ -113,7 +113,7 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             {
                 const auto& unit = update.at("unit");
                 pack->update = SystemdUpdateMechanism::CreateSystemdUpdate(
-                    sdbusplus::bus::new_default(), unit);
+                    sdbusplus::bus::new_default(), unit, "replace");
             }
             else
             {
