@@ -28,16 +28,16 @@ namespace ipmi_flash
 {
 
 std::unique_ptr<TriggerableActionInterface>
-    SystemdVerification::CreateVerification(sdbusplus::bus::bus&& bus,
-                                            const std::string& path,
-                                            const std::string& service,
-                                            const std::string& mode)
+    SystemdWithStatusFile::CreateVerification(sdbusplus::bus::bus&& bus,
+                                              const std::string& path,
+                                              const std::string& service,
+                                              const std::string& mode)
 {
-    return std::make_unique<SystemdVerification>(std::move(bus), path, service,
-                                                 mode);
+    return std::make_unique<SystemdWithStatusFile>(std::move(bus), path,
+                                                   service, mode);
 }
 
-bool SystemdVerification::trigger()
+bool SystemdWithStatusFile::trigger()
 {
     static constexpr auto systemdService = "org.freedesktop.systemd1";
     static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
@@ -63,12 +63,12 @@ bool SystemdVerification::trigger()
     return true;
 }
 
-void SystemdVerification::abort()
+void SystemdWithStatusFile::abort()
 {
     /* TODO: Implement this. */
 }
 
-ActionStatus SystemdVerification::status()
+ActionStatus SystemdWithStatusFile::status()
 {
     ActionStatus result = ActionStatus::unknown;
 
@@ -99,7 +99,7 @@ ActionStatus SystemdVerification::status()
     return result;
 }
 
-const std::string SystemdVerification::getMode() const
+const std::string SystemdWithStatusFile::getMode() const
 {
     return mode;
 }

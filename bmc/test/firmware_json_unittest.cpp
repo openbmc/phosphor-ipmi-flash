@@ -424,7 +424,7 @@ TEST(FirmwareJsonTest, VerifyValidSingleNonReboot)
     EXPECT_FALSE(h[0].actions == nullptr);
     EXPECT_FALSE(h[0].actions->preparation == nullptr);
     EXPECT_FALSE(h[0].actions->verification == nullptr);
-    auto verifier = reinterpret_cast<SystemdVerification*>(
+    auto verifier = reinterpret_cast<SystemdWithStatusFile*>(
         h[0].actions->verification.get());
     EXPECT_THAT(verifier->getMode(), "replace");
     EXPECT_FALSE(h[0].actions->update == nullptr);
@@ -468,7 +468,7 @@ TEST(FirmwareJsonTest, VerifyValidWithModes)
     EXPECT_FALSE(h[0].actions == nullptr);
     EXPECT_FALSE(h[0].actions->preparation == nullptr);
     EXPECT_FALSE(h[0].actions->verification == nullptr);
-    auto verifier = reinterpret_cast<SystemdVerification*>(
+    auto verifier = reinterpret_cast<SystemdWithStatusFile*>(
         h[0].actions->verification.get());
     EXPECT_THAT(verifier->getMode(), "replace-nope");
     EXPECT_FALSE(h[0].actions->update == nullptr);
@@ -513,12 +513,12 @@ TEST(FirmwareJsonTest, VerifyValidUpdateWithFilePath)
     EXPECT_FALSE(h[0].actions == nullptr);
     EXPECT_FALSE(h[0].actions->preparation == nullptr);
     EXPECT_FALSE(h[0].actions->verification == nullptr);
-    auto verifier = reinterpret_cast<SystemdVerification*>(
+    auto verifier = reinterpret_cast<SystemdWithStatusFile*>(
         h[0].actions->verification.get());
     EXPECT_THAT(verifier->getMode(), "replace-nope");
     EXPECT_FALSE(h[0].actions->update == nullptr);
     auto updater =
-        reinterpret_cast<SystemdVerification*>(h[0].actions->update.get());
+        reinterpret_cast<SystemdWithStatusFile*>(h[0].actions->update.get());
     EXPECT_THAT(updater->getMode(), "replace-fake");
 }
 

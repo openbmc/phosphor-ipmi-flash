@@ -15,7 +15,7 @@ namespace ipmi_flash
  * verification step, however, it leaves room for a future possibility out
  * something wholly configurable.
  */
-class SystemdVerification : public TriggerableActionInterface
+class SystemdWithStatusFile : public TriggerableActionInterface
 {
   public:
     /**
@@ -32,18 +32,18 @@ class SystemdVerification : public TriggerableActionInterface
         CreateVerification(sdbusplus::bus::bus&& bus, const std::string& path,
                            const std::string& service, const std::string& mode);
 
-    SystemdVerification(sdbusplus::bus::bus&& bus, const std::string& path,
-                        const std::string& service, const std::string& mode) :
+    SystemdWithStatusFile(sdbusplus::bus::bus&& bus, const std::string& path,
+                          const std::string& service, const std::string& mode) :
         bus(std::move(bus)),
         checkPath(path), triggerService(service), mode(mode)
     {
     }
 
-    ~SystemdVerification() = default;
-    SystemdVerification(const SystemdVerification&) = delete;
-    SystemdVerification& operator=(const SystemdVerification&) = delete;
-    SystemdVerification(SystemdVerification&&) = default;
-    SystemdVerification& operator=(SystemdVerification&&) = default;
+    ~SystemdWithStatusFile() = default;
+    SystemdWithStatusFile(const SystemdWithStatusFile&) = delete;
+    SystemdWithStatusFile& operator=(const SystemdWithStatusFile&) = delete;
+    SystemdWithStatusFile(SystemdWithStatusFile&&) = default;
+    SystemdWithStatusFile& operator=(SystemdWithStatusFile&&) = default;
 
     bool trigger() override;
     void abort() override;

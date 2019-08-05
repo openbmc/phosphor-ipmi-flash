@@ -100,7 +100,7 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
                     systemdMode = verify.at("mode").get<std::string>();
                 }
 
-                pack->verification = SystemdVerification::CreateVerification(
+                pack->verification = SystemdWithStatusFile::CreateVerification(
                     sdbusplus::bus::new_default(), path, unit, systemdMode);
             }
             else
@@ -131,7 +131,7 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
                     systemdMode = update.at("mode").get<std::string>();
                 }
 
-                pack->update = SystemdVerification::CreateVerification(
+                pack->update = SystemdWithStatusFile::CreateVerification(
                     sdbusplus::bus::new_default(), path, unit, systemdMode);
             }
             else if (updateType == "systemd")
