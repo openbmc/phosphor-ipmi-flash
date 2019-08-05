@@ -1,5 +1,6 @@
 #include "buildjson.hpp"
 #include "update_systemd.hpp"
+#include "verify_systemd.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -423,6 +424,9 @@ TEST(FirmwareJsonTest, VerifyValidSingleNonReboot)
     EXPECT_FALSE(h[0].actions == nullptr);
     EXPECT_FALSE(h[0].actions->preparation == nullptr);
     EXPECT_FALSE(h[0].actions->verification == nullptr);
+    auto verifier = reinterpret_cast<SystemdVerification*>(
+        h[0].actions->verification.get());
+    EXPECT_THAT(verifier->getMode(), "replace");
     EXPECT_FALSE(h[0].actions->update == nullptr);
     auto updater =
         reinterpret_cast<SystemdUpdateMechanism*>(h[0].actions->update.get());

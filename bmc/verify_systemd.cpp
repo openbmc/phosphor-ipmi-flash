@@ -30,9 +30,11 @@ namespace ipmi_flash
 std::unique_ptr<TriggerableActionInterface>
     SystemdVerification::CreateVerification(sdbusplus::bus::bus&& bus,
                                             const std::string& path,
-                                            const std::string& service)
+                                            const std::string& service,
+                                            const std::string& mode)
 {
-    return std::make_unique<SystemdVerification>(std::move(bus), path, service);
+    return std::make_unique<SystemdVerification>(std::move(bus), path, service,
+                                                 mode);
 }
 
 bool SystemdVerification::trigger()
@@ -44,7 +46,7 @@ bool SystemdVerification::trigger()
     auto method = bus.new_method_call(systemdService, systemdRoot,
                                       systemdInterface, "StartUnit");
     method.append(triggerService);
-    method.append("replace");
+    method.append(mode);
 
     try
     {
@@ -95,6 +97,11 @@ ActionStatus SystemdVerification::status()
     }
 
     return result;
+}
+
+const std::string SystemdVerification::getMode() const
+{
+    return mode;
 }
 
 } // namespace ipmi_flash
