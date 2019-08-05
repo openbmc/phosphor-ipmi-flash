@@ -433,7 +433,7 @@ TEST(FirmwareJsonTest, VerifyValidSingleNonReboot)
     EXPECT_THAT(updater->getMode(), "replace");
 }
 
-TEST(FirmwareJsonTest, VerifyValidUpdateWithMode)
+TEST(FirmwareJsonTest, VerifyValidWithModes)
 {
     auto j2 = R"(
         [{
@@ -450,7 +450,8 @@ TEST(FirmwareJsonTest, VerifyValidUpdateWithMode)
                 "verification" : {
                     "type" : "fileSystemdVerify",
                     "unit" : "phosphor-ipmi-flash-bmc-verify.target",
-                    "path" : "/tmp/bmc.verify"
+                    "path" : "/tmp/bmc.verify",
+                    "mode" : "replace-nope"
                 },
                 "update" : {
                     "type" : "systemd",
@@ -467,6 +468,9 @@ TEST(FirmwareJsonTest, VerifyValidUpdateWithMode)
     EXPECT_FALSE(h[0].actions == nullptr);
     EXPECT_FALSE(h[0].actions->preparation == nullptr);
     EXPECT_FALSE(h[0].actions->verification == nullptr);
+    auto verifier = reinterpret_cast<SystemdVerification*>(
+        h[0].actions->verification.get());
+    EXPECT_THAT(verifier->getMode(), "replace-nope");
     EXPECT_FALSE(h[0].actions->update == nullptr);
     auto updater =
         reinterpret_cast<SystemdUpdateMechanism*>(h[0].actions->update.get());

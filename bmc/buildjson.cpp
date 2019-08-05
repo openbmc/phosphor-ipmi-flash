@@ -91,9 +91,17 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             {
                 const auto& path = verify.at("path");
                 const auto& unit = verify.at("unit");
-                const std::string mode = "replace";
+
+                /* the mode parameter is optional. */
+                std::string systemdMode = "replace";
+                const auto& mode = verify.find("mode");
+                if (mode != verify.end())
+                {
+                    systemdMode = verify.at("mode").get<std::string>();
+                }
+
                 pack->verification = SystemdVerification::CreateVerification(
-                    sdbusplus::bus::new_default(), path, unit, mode);
+                    sdbusplus::bus::new_default(), path, unit, systemdMode);
             }
             else
             {
