@@ -118,6 +118,22 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
                 pack->update = SystemdUpdateMechanism::CreateSystemdUpdate(
                     sdbusplus::bus::new_default(), rebootTarget, rebootMode);
             }
+            else if (updateType == "fileSystemdUpdate")
+            {
+                const auto& path = update.at("path");
+                const auto& unit = update.at("unit");
+
+                /* the mode parameter is optional. */
+                std::string systemdMode = "replace";
+                const auto& mode = update.find("mode");
+                if (mode != update.end())
+                {
+                    systemdMode = update.at("mode").get<std::string>();
+                }
+
+                pack->update = SystemdVerification::CreateVerification(
+                    sdbusplus::bus::new_default(), path, unit, systemdMode);
+            }
             else if (updateType == "systemd")
             {
                 const auto& unit = update.at("unit");
