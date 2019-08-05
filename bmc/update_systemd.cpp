@@ -69,4 +69,9 @@ ActionStatus SystemdUpdateMechanism::status()
     return ActionStatus::running;
 }
 
+const std::string SystemdUpdateMechanism::getMode() const
+{
+    return mode;
+}
+
 } // namespace ipmi_flash

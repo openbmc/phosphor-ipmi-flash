@@ -1,4 +1,5 @@
 #include "buildjson.hpp"
+#include "update_systemd.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -423,6 +424,49 @@ TEST(FirmwareJsonTest, VerifyValidSingleNonReboot)
     EXPECT_FALSE(h[0].actions->preparation == nullptr);
     EXPECT_FALSE(h[0].actions->verification == nullptr);
     EXPECT_FALSE(h[0].actions->update == nullptr);
+    auto updater =
+        reinterpret_cast<SystemdUpdateMechanism*>(h[0].actions->update.get());
+    EXPECT_THAT(updater->getMode(), "replace");
+}
+
+TEST(FirmwareJsonTest, VerifyValidUpdateWithMode)
+{
+    auto j2 = R"(
+        [{
+            "blob" : "/flash/image",
+            "handler" : {
+                "type" : "file",
+                "path" : "/run/initramfs/bmc-image"
+            },
+            "actions" : {
+                "preparation" : {
+                    "type" : "systemd",
+                    "unit" : "phosphor-ipmi-flash-bmc-prepare.target"
+                },
+                "verification" : {
+                    "type" : "fileSystemdVerify",
+                    "unit" : "phosphor-ipmi-flash-bmc-verify.target",
+                    "path" : "/tmp/bmc.verify"
+                },
+                "update" : {
+                    "type" : "systemd",
+                    "mode" : "replace-fake",
+                    "unit" : "phosphor-ipmi-flash-bmc-update.target"
+                }
+            }
+         }]
+    )"_json;
+
+    auto h = buildHandlerFromJson(j2);
+    EXPECT_EQ(h[0].blobId, "/flash/image");
+    EXPECT_FALSE(h[0].handler == nullptr);
+    EXPECT_FALSE(h[0].actions == nullptr);
+    EXPECT_FALSE(h[0].actions->preparation == nullptr);
+    EXPECT_FALSE(h[0].actions->verification == nullptr);
+    EXPECT_FALSE(h[0].actions->update == nullptr);
+    auto updater =
+        reinterpret_cast<SystemdUpdateMechanism*>(h[0].actions->update.get());
+    EXPECT_THAT(updater->getMode(), "replace-fake");
 }
 
 } // namespace

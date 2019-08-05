@@ -112,8 +112,17 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             else if (updateType == "systemd")
             {
                 const auto& unit = update.at("unit");
+
+                /* the mode parameter is optional. */
+                std::string systemdMode = "replace";
+                const auto& mode = update.find("mode");
+                if (mode != update.end())
+                {
+                    systemdMode = update.at("mode").get<std::string>();
+                }
+
                 pack->update = SystemdUpdateMechanism::CreateSystemdUpdate(
-                    sdbusplus::bus::new_default(), unit, "replace");
+                    sdbusplus::bus::new_default(), unit, systemdMode);
             }
             else
             {

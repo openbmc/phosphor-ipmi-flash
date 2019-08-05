@@ -36,6 +36,8 @@ class SystemdUpdateMechanism : public TriggerableActionInterface
     void abort() override;
     ActionStatus status() override;
 
+    const std::string getMode() const;
+
   private:
     sdbusplus::bus::bus bus;
     const std::string target;
