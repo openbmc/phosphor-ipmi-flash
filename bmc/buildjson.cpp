@@ -91,8 +91,9 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             {
                 const auto& path = verify.at("path");
                 const auto& unit = verify.at("unit");
+                const std::string mode = "replace";
                 pack->verification = SystemdVerification::CreateVerification(
-                    sdbusplus::bus::new_default(), path, unit);
+                    sdbusplus::bus::new_default(), path, unit, mode);
             }
             else
             {
