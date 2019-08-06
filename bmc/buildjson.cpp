@@ -34,6 +34,25 @@
 namespace ipmi_flash
 {
 
+std::unique_ptr<TriggerableActionInterface>
+    buildFileSystemd(const nlohmann::json& data)
+{
+    /* This type of action requires a path and unit, and optionally a mode. */
+    const auto& path = data.at("path");
+    const auto& unit = data.at("unit");
+
+    /* the mode parameter is optional. */
+    std::string systemdMode = "replace";
+    const auto& mode = data.find("mode");
+    if (mode != data.end())
+    {
+        systemdMode = data.at("mode").get<std::string>();
+    }
+
+    return SystemdWithStatusFile::CreateSystemdWithStatusFile(
+        sdbusplus::bus::new_default(), path, unit, systemdMode);
+}
+
 std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
 {
     std::vector<HandlerConfig> handlers;
@@ -89,20 +108,7 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             const std::string verifyType = verify.at("type");
             if (verifyType == "fileSystemdVerify")
             {
-                const auto& path = verify.at("path");
-                const auto& unit = verify.at("unit");
-
-                /* the mode parameter is optional. */
-                std::string systemdMode = "replace";
-                const auto& mode = verify.find("mode");
-                if (mode != verify.end())
-                {
-                    systemdMode = verify.at("mode").get<std::string>();
-                }
-
-                pack->verification =
-                    SystemdWithStatusFile::CreateSystemdWithStatusFile(
-                        sdbusplus::bus::new_default(), path, unit, systemdMode);
+                pack->verification = std::move(buildFileSystemd(verify));
             }
             else
             {
@@ -121,20 +127,7 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             }
             else if (updateType == "fileSystemdUpdate")
             {
-                const auto& path = update.at("path");
-                const auto& unit = update.at("unit");
-
-                /* the mode parameter is optional. */
-                std::string systemdMode = "replace";
-                const auto& mode = update.find("mode");
-                if (mode != update.end())
-                {
-                    systemdMode = update.at("mode").get<std::string>();
-                }
-
-                pack->update =
-                    SystemdWithStatusFile::CreateSystemdWithStatusFile(
-                        sdbusplus::bus::new_default(), path, unit, systemdMode);
+                pack->update = std::move(buildFileSystemd(update));
             }
             else if (updateType == "systemd")
             {
