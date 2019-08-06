@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "verify_systemd.hpp"
+#include "general_systemd.hpp"
 
 #include "status.hpp"
 
@@ -28,10 +28,9 @@ namespace ipmi_flash
 {
 
 std::unique_ptr<TriggerableActionInterface>
-    SystemdWithStatusFile::CreateVerification(sdbusplus::bus::bus&& bus,
-                                              const std::string& path,
-                                              const std::string& service,
-                                              const std::string& mode)
+    SystemdWithStatusFile::CreateSystemdWithStatusFile(
+        sdbusplus::bus::bus&& bus, const std::string& path,
+        const std::string& service, const std::string& mode)
 {
     return std::make_unique<SystemdWithStatusFile>(std::move(bus), path,
                                                    service, mode);

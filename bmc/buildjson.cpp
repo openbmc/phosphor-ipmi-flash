@@ -17,9 +17,9 @@
 
 #include "file_handler.hpp"
 #include "fs.hpp"
+#include "general_systemd.hpp"
 #include "prepare_systemd.hpp"
 #include "update_systemd.hpp"
-#include "verify_systemd.hpp"
 
 #include <algorithm>
 #include <cstdio>
@@ -100,8 +100,9 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
                     systemdMode = verify.at("mode").get<std::string>();
                 }
 
-                pack->verification = SystemdWithStatusFile::CreateVerification(
-                    sdbusplus::bus::new_default(), path, unit, systemdMode);
+                pack->verification =
+                    SystemdWithStatusFile::CreateSystemdWithStatusFile(
+                        sdbusplus::bus::new_default(), path, unit, systemdMode);
             }
             else
             {
@@ -131,8 +132,9 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
                     systemdMode = update.at("mode").get<std::string>();
                 }
 
-                pack->update = SystemdWithStatusFile::CreateVerification(
-                    sdbusplus::bus::new_default(), path, unit, systemdMode);
+                pack->update =
+                    SystemdWithStatusFile::CreateSystemdWithStatusFile(
+                        sdbusplus::bus::new_default(), path, unit, systemdMode);
             }
             else if (updateType == "systemd")
             {

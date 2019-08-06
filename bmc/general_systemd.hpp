@@ -10,17 +10,15 @@ namespace ipmi_flash
 {
 
 /**
- * Representation of what is used for verification.  Currently, this reduces the
- * chance of error by using an object instead of two strings to control the
- * verification step, however, it leaves room for a future possibility out
- * something wholly configurable.
+ * Representation of what is used for triggering an action with systemd and
+ * checking the result by reading a file.
  */
 class SystemdWithStatusFile : public TriggerableActionInterface
 {
   public:
     /**
-     * Create a default Verification object that uses systemd to trigger the
-     * process.
+     * Create a default SystemdWithStatusFile object that uses systemd to
+     * trigger the process.
      *
      * @param[in] bus - an sdbusplus handler for a bus to use.
      * @param[in] path - the path to check for verification status.
@@ -29,8 +27,10 @@ class SystemdWithStatusFile : public TriggerableActionInterface
      * @param[in] mode - the job-mode when starting the systemd Unit.
      */
     static std::unique_ptr<TriggerableActionInterface>
-        CreateVerification(sdbusplus::bus::bus&& bus, const std::string& path,
-                           const std::string& service, const std::string& mode);
+        CreateSystemdWithStatusFile(sdbusplus::bus::bus&& bus,
+                                    const std::string& path,
+                                    const std::string& service,
+                                    const std::string& mode);
 
     SystemdWithStatusFile(sdbusplus::bus::bus&& bus, const std::string& path,
                           const std::string& service, const std::string& mode) :

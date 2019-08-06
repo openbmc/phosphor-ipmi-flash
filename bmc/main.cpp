@@ -20,6 +20,7 @@
 #include "file_handler.hpp"
 #include "firmware_handler.hpp"
 #include "flags.hpp"
+#include "general_systemd.hpp"
 #include "image_handler.hpp"
 #include "lpc_aspeed.hpp"
 #include "lpc_handler.hpp"
@@ -29,7 +30,6 @@
 #include "status.hpp"
 #include "update_systemd.hpp"
 #include "util.hpp"
-#include "verify_systemd.hpp"
 
 #include <cstdint>
 #include <memory>
