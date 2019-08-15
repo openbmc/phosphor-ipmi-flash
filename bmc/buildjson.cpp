@@ -27,6 +27,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <phosphor-logging/log.hpp>
+#include <regex>
 #include <sdbusplus/bus.hpp>
 #include <string>
 #include <vector>
@@ -65,6 +66,14 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
 
             /* at() throws an exception when the key is not present. */
             item.at("blob").get_to(output.blobId);
+
+            /* name must be: /flash/... */
+            if (!std::regex_match(output.blobId, std::regex("^\\/flash\\/.+")))
+            {
+                throw std::runtime_error("Invalid blob name: '" +
+                                         output.blobId +
+                                         "' must start with /flash/");
+            }
 
             /* handler is required. */
             const auto& h = item.at("handler");
