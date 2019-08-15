@@ -42,14 +42,10 @@
 #define IPMILPC "ipmilpc"
 #define IPMIPCI "ipmipci"
 #define IPMIBT "ipmibt"
-#define STATIC "static"
-#define UBITAR "ubitar"
-#define BIOS "bios"
 
 namespace
 {
 const std::vector<std::string> interfaceList = {IPMIBT, IPMILPC, IPMIPCI};
-const std::vector<std::string> typeList = {STATIC, UBITAR, BIOS};
 } // namespace
 
 void usage(const char* program)
@@ -65,16 +61,9 @@ void usage(const char* program)
               std::ostream_iterator<std::string>(std::cerr, ", "));
     std::fprintf(stderr, "\n");
 
-    std::fprintf(stderr, "layouts: ");
-    std::copy(typeList.begin(), typeList.end(),
-              std::ostream_iterator<std::string>(std::cerr, ", "));
-    std::fprintf(stderr, "\n");
-}
-
-bool checkType(const std::string& type)
-{
-    auto tFound = std::find(typeList.begin(), typeList.end(), type);
-    return (tFound != typeList.end());
+    std::fprintf(stderr, "layouts examples: image, bios\n");
+    std::fprintf(stderr,
+                 "the type field specifies '/flash/{layout}' for a handler\n");
 }
 
 bool checkCommand(const std::string& command)
@@ -178,11 +167,6 @@ int main(int argc, char* argv[])
                 break;
             case 't':
                 type = std::string{optarg};
-                if (!checkType(type))
-                {
-                    usage(argv[0]);
-                    exit(EXIT_FAILURE);
-                }
                 break;
             default:
                 usage(argv[0]);
@@ -199,7 +183,8 @@ int main(int argc, char* argv[])
     /* They want to update the firmware. */
     if (command == "update")
     {
-        if (interface.empty() || imagePath.empty() || signaturePath.empty())
+        if (interface.empty() || imagePath.empty() || signaturePath.empty() ||
+            type.empty())
         {
             usage(argv[0]);
             exit(EXIT_FAILURE);

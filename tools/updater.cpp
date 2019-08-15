@@ -38,12 +38,10 @@ void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
                  const std::string& signaturePath,
                  const std::string& layoutType)
 {
-    static std::unordered_map<std::string, std::string> typesToBlob = {
-        {"static", ipmi_flash::staticLayoutBlobId},
-        {"ubitar", ipmi_flash::ubiTarballBlobId},
-        {"bios", ipmi_flash::biosBlobId}};
-    /* We know it's one of the above types already. */
-    auto& layout = typesToBlob[layoutType];
+    /* TODO: validate the layoutType isn't a special value such as: 'update',
+     * 'verify', or 'hash'
+     */
+    std::string layout = "/flash/" + layoutType;
 
     bool goalSupported = updater->checkAvailable(layout);
     if (!goalSupported)
