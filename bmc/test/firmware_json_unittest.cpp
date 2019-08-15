@@ -301,6 +301,68 @@ TEST(FirmwareJsonTest, TwoConfigsOneInvalidReturnsValid)
  * TODO: Only allow unique handler blob paths (tested at a higher level).
  */
 
+TEST(FirmwareJsonTest, VerifyBlobNameMatches)
+{
+    /* A perfect configuration except the blob name doesn't start with "/flash/"
+     */
+    auto j2 = R"(
+        [{
+            "blob" : "bmc-image-flash",
+            "handler" : {
+                "type" : "file",
+                "path" : "/run/initramfs/bmc-image"
+            },
+            "actions" : {
+                "preparation" : {
+                    "type" : "systemd",
+                    "unit" : "phosphor-ipmi-flash-bmc-prepare.target"
+                },
+                "verification" : {
+                    "type" : "fileSystemdVerify",
+                    "unit" : "phosphor-ipmi-flash-bmc-verify.target",
+                    "path" : "/tmp/bmc.verify"
+                },
+                "update" : {
+                    "type" : "reboot"
+                }
+            }
+         }]
+    )"_json;
+
+    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+}
+
+TEST(FirmwareJsonTest, VerifyMinimumBlobNameLength)
+{
+    /* A perfect configuration except the blob name doesn't start with "/flash/"
+     */
+    auto j2 = R"(
+        [{
+            "blob" : "/flash/",
+            "handler" : {
+                "type" : "file",
+                "path" : "/run/initramfs/bmc-image"
+            },
+            "actions" : {
+                "preparation" : {
+                    "type" : "systemd",
+                    "unit" : "phosphor-ipmi-flash-bmc-prepare.target"
+                },
+                "verification" : {
+                    "type" : "fileSystemdVerify",
+                    "unit" : "phosphor-ipmi-flash-bmc-verify.target",
+                    "path" : "/tmp/bmc.verify"
+                },
+                "update" : {
+                    "type" : "reboot"
+                }
+            }
+         }]
+    )"_json;
+
+    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+}
+
 TEST(FirmwareJsonTest, VerifySystemdWithReboot)
 {
     auto j2 = R"(
