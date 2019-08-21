@@ -57,4 +57,39 @@ class SystemdWithStatusFile : public TriggerableActionInterface
     const std::string triggerService;
     const std::string mode;
 };
+
+class SystemdNoFile : public TriggerableActionInterface
+{
+  public:
+    static std::unique_ptr<TriggerableActionInterface>
+        CreateSystemdNoFile(sdbusplus::bus::bus&& bus,
+                            const std::string& service,
+                            const std::string& mode);
+
+    SystemdNoFile(sdbusplus::bus::bus&& bus, const std::string& service,
+                  const std::string& mode) :
+        bus(std::move(bus)),
+        triggerService(service), mode(mode)
+    {
+    }
+
+    ~SystemdNoFile() = default;
+    SystemdNoFile(const SystemdNoFile&) = delete;
+    SystemdNoFile& operator=(const SystemdNoFile&) = delete;
+    SystemdNoFile(SystemdNoFile&&) = default;
+    SystemdNoFile& operator=(SystemdNoFile&&) = default;
+
+    bool trigger() override;
+    void abort() override;
+    ActionStatus status() override;
+
+    const std::string getMode() const;
+
+  private:
+    sdbusplus::bus::bus bus;
+    const std::string triggerService;
+    const std::string mode;
+    ActionStatus state = ActionStatus::unknown;
+};
+
 } // namespace ipmi_flash

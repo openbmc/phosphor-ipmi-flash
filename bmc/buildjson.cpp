@@ -18,8 +18,6 @@
 #include "file_handler.hpp"
 #include "fs.hpp"
 #include "general_systemd.hpp"
-#include "prepare_systemd.hpp"
-#include "update_systemd.hpp"
 
 #include <algorithm>
 #include <cstdio>
@@ -52,6 +50,24 @@ std::unique_ptr<TriggerableActionInterface>
 
     return SystemdWithStatusFile::CreateSystemdWithStatusFile(
         sdbusplus::bus::new_default(), path, unit, systemdMode);
+}
+
+std::unique_ptr<TriggerableActionInterface>
+    buildSystemd(const nlohmann::json& data)
+{
+    /* This type of action requires a unit, and optionally a mode. */
+    const auto& unit = data.at("unit");
+
+    /* the mode parameter is optional. */
+    std::string systemdMode = "replace";
+    const auto& mode = data.find("mode");
+    if (mode != data.end())
+    {
+        systemdMode = data.at("mode").get<std::string>();
+    }
+
+    return SystemdNoFile::CreateSystemdNoFile(sdbusplus::bus::new_default(),
+                                              unit, systemdMode);
 }
 
 std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
@@ -103,18 +119,7 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             const std::string prepareType = prep.at("type");
             if (prepareType == "systemd")
             {
-                const auto& unit = prep.at("unit");
-
-                /* the mode parameter is optional. */
-                std::string systemdMode = "replace";
-                const auto& mode = prep.find("mode");
-                if (mode != prep.end())
-                {
-                    systemdMode = prep.at("mode").get<std::string>();
-                }
-
-                pack->preparation = SystemdPreparation::CreatePreparation(
-                    sdbusplus::bus::new_default(), unit, systemdMode);
+                pack->preparation = std::move(buildSystemd(prep));
             }
             else
             {
@@ -138,7 +143,7 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             const std::string updateType = update.at("type");
             if (updateType == "reboot")
             {
-                pack->update = SystemdUpdateMechanism::CreateSystemdUpdate(
+                pack->update = SystemdNoFile::CreateSystemdNoFile(
                     sdbusplus::bus::new_default(), "reboot.target",
                     "replace-irreversibly");
             }
@@ -148,18 +153,7 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             }
             else if (updateType == "systemd")
             {
-                const auto& unit = update.at("unit");
-
-                /* the mode parameter is optional. */
-                std::string systemdMode = "replace";
-                const auto& mode = update.find("mode");
-                if (mode != update.end())
-                {
-                    systemdMode = update.at("mode").get<std::string>();
-                }
-
-                pack->update = SystemdUpdateMechanism::CreateSystemdUpdate(
-                    sdbusplus::bus::new_default(), unit, systemdMode);
+                pack->update = std::move(buildSystemd(update));
             }
             else
             {

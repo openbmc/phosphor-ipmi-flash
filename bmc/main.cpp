@@ -26,9 +26,7 @@
 #include "lpc_handler.hpp"
 #include "lpc_nuvoton.hpp"
 #include "pci_handler.hpp"
-#include "prepare_systemd.hpp"
 #include "status.hpp"
-#include "update_systemd.hpp"
 #include "util.hpp"
 
 #include <cstdint>
