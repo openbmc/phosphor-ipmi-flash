@@ -192,6 +192,10 @@ Variable                      | Default                    | Meaning
 `VERIFY_BIOS_TARGET`          | `phosphor-ipmi-flash-bios-verify.target`  | The systemd target started for verification.
 `UPDATE_BIOS_TARGET`          | `phosphor-ipmi-flash-bios-update.target`  | The systemd target started for updating the BIOS.
 
+## JSON Configuration
+
+Read the [details](bmc_json_config.md) of the json configuration.  The json configurations are used to configure the BMC's flash handler behaviors.
+
 ## Flash State Machine Details
 
 [This document](ipmi_flash.md) describes the details of the state machine
