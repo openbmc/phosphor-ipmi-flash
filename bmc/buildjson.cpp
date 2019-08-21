@@ -129,10 +129,9 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             const std::string updateType = update.at("type");
             if (updateType == "reboot")
             {
-                static constexpr auto rebootTarget = "reboot.target";
-                static constexpr auto rebootMode = "replace-irreversibly";
                 pack->update = SystemdUpdateMechanism::CreateSystemdUpdate(
-                    sdbusplus::bus::new_default(), rebootTarget, rebootMode);
+                    sdbusplus::bus::new_default(), "reboot.target",
+                    "replace-irreversibly");
             }
             else if (updateType == "fileSystemdUpdate")
             {
