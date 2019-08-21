@@ -69,7 +69,7 @@ The required parameters are:
 `interface` | `ipmibt`, `ipmilpc`, `ipmipci` | The data transport mechanism, typically `ipmilpc`
 `image`     | path     | The BMC firmware image file (or tarball)
 `sig`       | path     | The path to a signature file to send to the BMC along with the image file.
-`type`      | `static`, `ubitar` | Whether we're updating via the static layout or UBI tarball.
+`type`      | blob ending | The ending of the blob id.  For instance `/flash/image` becomes a type of `image`.
 
 If you're using an LPC data transfer mechanism, you'll need two additional
 parameters: `address` and `length`.  These values indicate where on the host
