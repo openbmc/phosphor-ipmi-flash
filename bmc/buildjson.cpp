@@ -104,8 +104,17 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             if (prepareType == "systemd")
             {
                 const auto& unit = prep.at("unit");
+
+                /* the mode parameter is optional. */
+                std::string systemdMode = "replace";
+                const auto& mode = prep.find("mode");
+                if (mode != prep.end())
+                {
+                    systemdMode = prep.at("mode").get<std::string>();
+                }
+
                 pack->preparation = SystemdPreparation::CreatePreparation(
-                    sdbusplus::bus::new_default(), unit);
+                    sdbusplus::bus::new_default(), unit, systemdMode);
             }
             else
             {

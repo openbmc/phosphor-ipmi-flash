@@ -13,11 +13,13 @@ class SystemdPreparation : public TriggerableActionInterface
 {
   public:
     static std::unique_ptr<TriggerableActionInterface>
-        CreatePreparation(sdbusplus::bus::bus&& bus,
-                          const std::string& service);
+        CreatePreparation(sdbusplus::bus::bus&& bus, const std::string& service,
+                          const std::string& mode);
 
-    SystemdPreparation(sdbusplus::bus::bus&& bus, const std::string& service) :
-        bus(std::move(bus)), triggerService(service)
+    SystemdPreparation(sdbusplus::bus::bus&& bus, const std::string& service,
+                       const std::string& mode) :
+        bus(std::move(bus)),
+        triggerService(service), mode(mode)
     {
     }
 
@@ -34,6 +36,7 @@ class SystemdPreparation : public TriggerableActionInterface
   private:
     sdbusplus::bus::bus bus;
     const std::string triggerService;
+    const std::string mode;
     ActionStatus state = ActionStatus::unknown;
 };
 

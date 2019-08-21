@@ -25,9 +25,10 @@ namespace ipmi_flash
 
 std::unique_ptr<TriggerableActionInterface>
     SystemdPreparation::CreatePreparation(sdbusplus::bus::bus&& bus,
-                                          const std::string& service)
+                                          const std::string& service,
+                                          const std::string& mode)
 {
-    return std::make_unique<SystemdPreparation>(std::move(bus), service);
+    return std::make_unique<SystemdPreparation>(std::move(bus), service, mode);
 }
 
 bool SystemdPreparation::trigger()
@@ -39,7 +40,7 @@ bool SystemdPreparation::trigger()
     auto method = bus.new_method_call(systemdService, systemdRoot,
                                       systemdInterface, "StartUnit");
     method.append(triggerService);
-    method.append("replace");
+    method.append(mode);
 
     try
     {
