@@ -220,12 +220,12 @@ it, not whether it did what you ultimately wanted.
 *   `mode` - optional - string - default: replace - the mode for starting the
     service.
 
-#### `fileSystemdVerify`
+#### `fileSystemdVerify` & `fileSystemdUpdate`
 
 Because one may care about the result of their actions, the `fileSystemdVerify`
-action type exists. It will start the service and when asked for a status, it'll
-read the contents of a file. Therefore, whatever is performing the action will
-want to update that file.
+and `fileSystemdUpdate` action type exists. It will start the service and when
+asked for a status, it'll read the contents of a file. Therefore, whatever is
+performing the action will want to update that file.
 
 *   `path` - required - string - the full file system path to where one finds
     the status.
