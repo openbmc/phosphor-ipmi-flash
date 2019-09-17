@@ -154,6 +154,15 @@ AS_IF([test "x$enable_reboot_update" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_REBOOT_UPDATE], [CXXFLAGS])
 ])
 
+# Enable the update with status file
+AC_ARG_ENABLE([update-status],
+    AS_HELP_STRING([--enable-update-status],
+                   [Enable use of update status file.]))
+AM_CONDITIONAL([ENABLE_UPDATE_STATUS], [test "x$enable_update_status" = "xyes"])
+AS_IF([test "x$enable_update_status" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_UPDATE_STATUS], [CXXFLAGS])
+])
+
 # Enable the cleanup handle that deletes the temporary files. (default: no)
 AC_ARG_ENABLE([cleanup-delete],
     AS_HELP_STRING([--enable-cleanup-delete],
@@ -377,6 +386,20 @@ AC_DEFINE_UNQUOTED(
 )
 
 AC_ARG_VAR(
+    UPDATE_STATUS_FILENAME,
+    [The file checked for the update status.]
+)
+AS_IF(
+    [test "x$UPDATE_STATUS_FILENAME" == "x"],
+    [UPDATE_STATUS_FILENAME="/tmp/bmc.update"]
+)
+AC_DEFINE_UNQUOTED(
+    [UPDATE_STATUS_FILENAME],
+    ["$UPDATE_STATUS_FILENAME"],
+    [The file checked for the update status.]
+)
+
+AC_ARG_VAR(
     PREPARATION_BIOS_TARGET,
     [The systemd target started when the host starts to send an update.]
 )
@@ -556,5 +579,6 @@ AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bios-verify.target])
 AC_CONFIG_FILES([bmc/phosphor-ipmi-flash-bios-update.target])
 AC_CONFIG_FILES([bmc/config-static-bmc-reboot.json])
 AC_CONFIG_FILES([bmc/config-static-bmc.json])
+AC_CONFIG_FILES([bmc/config-static-bmc-with-update-status.json])
 AC_CONFIG_FILES([bmc/config-bios.json])
 AC_OUTPUT

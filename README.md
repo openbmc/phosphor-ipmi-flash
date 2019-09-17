@@ -172,6 +172,14 @@ Option                   | Meaning
 ------------------------ | -------
 `--enable-reboot-update` | Enable use of reboot update mechanism.
 
+If you would like the update status to be tracked with a status file, this
+option can be enabled. Note that `--enable-update-status` option and the above
+`--enable-reboot-update` option cannot be enabled at the same time.
+
+Option                   | Meaning
+------------------------ | -------
+`--enable-update-status` | Enable use of update status file.
+
 ### Internal Configuration Details
 
 The following variables can be set to whatever you wish, however they have
@@ -186,6 +194,7 @@ Variable                      | Default                    | Meaning
 `VERIFY_STATUS_FILENAME`      | `/tmp/bmc.verify`          | The file checked for the verification status.
 `VERIFY_DBUS_SERVICE`         | `phosphor-ipmi-flash-bmc-verify.target`  | The systemd target started for verification.
 `UPDATE_DBUS_SERVICE`         | `phosphor-ipmi-flash-bmc-update.target`  | The systemd target started for updating the BMC.
+`UPDATE_STATUS_FILENAME`      | `/tmp/bmc.update`  | The file checked for the update status.
 `BIOS_STAGED_NAME`            | `/tmp/bios-image`  | The file to use for staging the bios firmware update.
 `BIOS_VERIFY_STATUS_FILENAME` | `/tmp/bios.verify` | The file checked for the verification status.
 `PREPARATION_BIOS_TARGET`     | `phosphor-ipmi-flash-bios-prepare.target` | The systemd target when the host starts to send an update.
