@@ -29,7 +29,8 @@ namespace ipmi_flash
 {
 std::vector<std::string> files = {STATIC_HANDLER_STAGED_NAME,
                                   TARBALL_STAGED_NAME, HASH_FILENAME,
-                                  VERIFY_STATUS_FILENAME};
+                                  VERIFY_STATUS_FILENAME,
+                                  UPDATE_STATUS_FILENAME};
 }
 
 extern "C" std::unique_ptr<blobs::GenericBlobInterface> createHandler()

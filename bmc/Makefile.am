@@ -13,7 +13,11 @@ if ENABLE_STATIC_LAYOUT
 if ENABLE_REBOOT_UPDATE
 dist_pkgdata_DATA += config-static-bmc-reboot.json
 else
+if ENABLE_UPDATE_STATUS
+dist_pkgdata_DATA += config-static-bmc-with-update-status.json
+else
 dist_pkgdata_DATA += config-static-bmc.json
+endif
 endif
 endif
 
