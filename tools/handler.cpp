@@ -106,7 +106,8 @@ void UpdateHandler::sendFile(const std::string& target, const std::string& path)
     blob->closeBlob(session);
 }
 
-bool UpdateHandler::verifyFile(const std::string& target)
+bool UpdateHandler::verifyFile(const std::string& target,
+                               bool ignoreStatus = false)
 {
     std::uint16_t session;
     bool success = false;
@@ -137,18 +138,25 @@ bool UpdateHandler::verifyFile(const std::string& target)
                             std::string(b.what()));
     }
 
-    std::fprintf(stderr, "Calling stat on %s session to check status\n",
-                 target.c_str());
-
-    if (pollStatus(session, blob))
+    if (ignoreStatus)
     {
-        std::fprintf(stderr, "Returned success\n");
         success = true;
     }
     else
     {
-        std::fprintf(stderr, "Returned non-success (could still "
-                             "be running (unlikely))\n");
+        std::fprintf(stderr, "Calling stat on %s session to check status\n",
+                     target.c_str());
+
+        if (pollStatus(session, blob))
+        {
+            std::fprintf(stderr, "Returned success\n");
+            success = true;
+        }
+        else
+        {
+            std::fprintf(stderr, "Returned non-success (could still "
+                                 "be running (unlikely))\n");
+        }
     }
 
     blob->closeBlob(session);
