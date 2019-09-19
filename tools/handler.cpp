@@ -106,7 +106,7 @@ void UpdateHandler::sendFile(const std::string& target, const std::string& path)
     blob->closeBlob(session);
 }
 
-bool UpdateHandler::verifyFile(const std::string& target)
+bool UpdateHandler::verifyFile(const std::string& target, bool ignoreStatus)
 {
     std::uint16_t session;
     bool success = false;
@@ -135,6 +135,13 @@ bool UpdateHandler::verifyFile(const std::string& target)
         blob->closeBlob(session);
         throw ToolException("blob exception received: " +
                             std::string(b.what()));
+    }
+
+    if (ignoreStatus)
+    {
+        // Skip checking the blob for status if ignoreStatus is enabled
+        blob->closeBlob(session);
+        return true;
     }
 
     std::fprintf(stderr, "Calling stat on %s session to check status\n",
