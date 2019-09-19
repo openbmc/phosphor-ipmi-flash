@@ -36,7 +36,7 @@ namespace host_tool
 
 void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
                  const std::string& signaturePath,
-                 const std::string& layoutType)
+                 const std::string& layoutType, bool ignoreUpdate)
 {
     /* TODO: validate the layoutType isn't a special value such as: 'update',
      * 'verify', or 'hash'
@@ -75,7 +75,7 @@ void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
 
         /* Trigger the update by opening and committing the update file. */
         std::fprintf(stderr, "Opening the update file\n");
-        if (updater->verifyFile(ipmi_flash::updateBlobId))
+        if (updater->verifyFile(ipmi_flash::updateBlobId, ignoreUpdate))
         {
             std::fprintf(stderr, "succeeded\n");
         }
