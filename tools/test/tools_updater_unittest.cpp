@@ -87,7 +87,7 @@ TEST_F(UpdateHandlerTest, VerifyFileHandleReturnsTrueOnSuccess)
         .WillOnce(Return(verificationResponse));
     EXPECT_CALL(blobMock, closeBlob(session)).WillOnce(Return());
 
-    EXPECT_TRUE(updater.verifyFile(ipmi_flash::verifyBlobId));
+    EXPECT_TRUE(updater.verifyFile(ipmi_flash::verifyBlobId, false));
 }
 
 class UpdaterTest : public ::testing::Test
@@ -95,6 +95,7 @@ class UpdaterTest : public ::testing::Test
   protected:
     ipmiblob::BlobInterfaceMock blobMock;
     std::uint16_t session = 0xbeef;
+    bool defaultIgnore = false;
 };
 
 TEST_F(UpdaterTest, UpdateMainReturnsSuccessIfAllSuccess)
@@ -106,12 +107,30 @@ TEST_F(UpdaterTest, UpdateMainReturnsSuccessIfAllSuccess)
     EXPECT_CALL(handler, checkAvailable(_)).WillOnce(Return(true));
     EXPECT_CALL(handler, sendFile(_, image)).WillOnce(Return());
     EXPECT_CALL(handler, sendFile(_, signature)).WillOnce(Return());
-    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId))
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore))
         .WillOnce(Return(true));
-    EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId))
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, defaultIgnore))
         .WillOnce(Return(true));
 
-    updaterMain(&handler, image, signature, "static");
+    updaterMain(&handler, image, signature, "static", defaultIgnore);
+}
+
+TEST_F(UpdaterTest, UpdateMainReturnsSuccessWithIgnoreUpdate)
+{
+    const std::string image = "image.bin";
+    const std::string signature = "signature.bin";
+    UpdateHandlerMock handler;
+    bool updateIgnore = true;
+
+    EXPECT_CALL(handler, checkAvailable(_)).WillOnce(Return(true));
+    EXPECT_CALL(handler, sendFile(_, image)).WillOnce(Return());
+    EXPECT_CALL(handler, sendFile(_, signature)).WillOnce(Return());
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId), defaultIgnore)
+        .WillOnce(Return(false));
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, updateIgnore))
+        .WillOnce(Return(true));
+
+    updaterMain(&handler, image, signature, "static", updateIgnore);
 }
 
 TEST_F(UpdaterTest, UpdateMainCleansUpOnFailure)
@@ -123,12 +142,13 @@ TEST_F(UpdaterTest, UpdateMainCleansUpOnFailure)
     EXPECT_CALL(handler, checkAvailable(_)).WillOnce(Return(true));
     EXPECT_CALL(handler, sendFile(_, image)).WillOnce(Return());
     EXPECT_CALL(handler, sendFile(_, signature)).WillOnce(Return());
-    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId))
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId), defaultIgnore)
         .WillOnce(Return(false));
     EXPECT_CALL(handler, cleanArtifacts()).WillOnce(Return());
 
-    EXPECT_THROW(updaterMain(&handler, image, signature, "static"),
-                 ToolException);
+    EXPECT_THROW(
+        updaterMain(&handler, image, signature, "static", defaultIgnore),
+        ToolException);
 }
 
 } // namespace host_tool
