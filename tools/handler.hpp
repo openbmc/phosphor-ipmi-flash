@@ -36,9 +36,12 @@ class UpdateHandlerInterface
      *
      * @param[in] target - the verification blob id (may support multiple in the
      * future.
+     * @param[in] ignoreStatus - optional arg to ignore the verification status.
+     * Default set to false.
      * @return true if verified, false if verification errors.
      */
-    virtual bool verifyFile(const std::string& target) = 0;
+    virtual bool verifyFile(const std::string& target,
+                            bool ignoreStatus = false) = 0;
 
     /**
      * Cleanup the artifacts by triggering this action.
@@ -67,7 +70,8 @@ class UpdateHandler : public UpdateHandlerInterface
     /**
      * @throw ToolException on failure (TODO: throw on timeout.)
      */
-    bool verifyFile(const std::string& target) override;
+    bool verifyFile(const std::string& target,
+                    bool ignoreStatus = false) override;
 
     void cleanArtifacts() override;
 

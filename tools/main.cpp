@@ -86,6 +86,7 @@ int main(int argc, char* argv[])
     long length = 0;
     std::uint32_t hostAddress = 0;
     std::uint32_t hostLength = 0;
+    bool ignoreUpdate = false;
 
     while (1)
     {
@@ -98,12 +99,13 @@ int main(int argc, char* argv[])
             {"address", required_argument, 0, 'a'},
             {"length", required_argument, 0, 'l'},
             {"type", required_argument, 0, 't'},
+            {"ignore-update", optional_argument, 0, 'u'}
             {0, 0, 0, 0}
         };
         // clang-format on
 
         int option_index = 0;
-        int c = getopt_long(argc, argv, "c:i:m:s:a:l:t:", long_options,
+        int c = getopt_long(argc, argv, "c:i:m:s:a:l:t:u:", long_options,
                             &option_index);
         if (c == -1)
         {
@@ -167,6 +169,11 @@ int main(int argc, char* argv[])
                 break;
             case 't':
                 type = std::string{optarg};
+                break;
+            case 'u':
+                // Only lower case "true" is supported
+                if (std::string{optarg} == "true")
+                    ignoreUpdate = true;
                 break;
             default:
                 usage(argv[0]);
@@ -232,7 +239,8 @@ int main(int argc, char* argv[])
         try
         {
             host_tool::UpdateHandler updater(&blob, handler.get());
-            host_tool::updaterMain(&updater, imagePath, signaturePath, type);
+            host_tool::updaterMain(&updater, imagePath, signaturePath, type,
+                                   ignoreUpdate);
         }
         catch (const host_tool::ToolException& e)
         {
