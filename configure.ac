@@ -25,6 +25,8 @@ AS_IF([test "x$enable_tests" = "xyes"], [enable_static_layout=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_tarball_ubi=yes])
 
 AS_IF([test "x$enable_tests" = "xyes"], [enable_aspeed_p2a=yes])
+AS_IF([test "x$enable_tests" = "xyes"], [enable_nuvoton_p2a_vga=yes])
+AS_IF([test "x$enable_tests" = "xyes"], [enable_nuvoton_p2a_mbox=yes])
 
 # You can only build main.o with one of the lpc implementations, however, specify both.
 AS_IF([test "x$enable_tests" = "xyes"], [enable_aspeed_lpc=yes])
@@ -251,10 +253,54 @@ AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
     AX_APPEND_COMPILE_FLAGS([-DENABLE_PCI_BRIDGE], [CXXFLAGS])
 ])
 
+AC_ARG_ENABLE([nuvoton-p2a-vga],
+    AS_HELP_STRING([--enable-nuvoton-p2a-vga],
+                   [Enable external transfers using Nuvoton PCI-to-AHB via VGA]))
+
+AM_CONDITIONAL(ENABLE_NUVOTON_P2A_VGA, [test "x$enable_nuvoton_p2a_vga" = "xyes"])
+AS_IF([test "x$enable_nuvoton_p2a_vga" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DNUVOTON_P2A_VGA], [CXXFLAGS])
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_PCI_BRIDGE], [CXXFLAGS])
+])
+
+AC_ARG_ENABLE([nuvoton-p2a-mbox],
+    AS_HELP_STRING([--enable-nuvoton-p2a-mbox],
+                   [Enable external transfers using Nuvoton PCI-to-AHB via MBOX]))
+
+AM_CONDITIONAL(ENABLE_NUVOTON_P2A_MBOX, [test "x$enable_nuvoton_p2a_mbox" = "xyes"])
+AS_IF([test "x$enable_nuvoton_p2a_mbox" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DNUVOTON_P2A_MBOX], [CXXFLAGS])
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_PCI_BRIDGE], [CXXFLAGS])
+])
+
 AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
     AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
         AS_IF([test "x$enable_tests" != "xyes"], [
+                AC_MSG_ERROR([Invalid configuration enabling both ASPEED and Nuvoton.])
+        ])
+    ])
+])
+
+AS_IF([test "x$enable_aspeed_p2a" = "xyes"], [
+    AS_IF([test "x$enable_nuvoton_p2a_vga" = "xyes" -o "x$enable_nuvoton_p2a_mbox" = "xyes"], [
+        AS_IF([test "x$enable_tests" != "xyes"], [
             AC_MSG_ERROR([Invalid configuration enabling both ASPEED and Nuvoton.])
+        ])
+    ])
+])
+
+AS_IF([test "x$enable_nuvoton_lpc" = "xyes"], [
+    AS_IF([test "x$enable_nuvoton_p2a_vga" = "xyes" -o "x$enable_nuvoton_p2a_mbox" = "xyes"], [
+        AS_IF([test "x$enable_tests" != "xyes"], [
+            AC_MSG_ERROR([Invalid configuration enabling both PCI and LPC of Nuvoton.])
+        ])
+    ])
+])
+
+AS_IF([test "x$enable_nuvoton_p2a_vga" = "xyes"], [
+    AS_IF([test "x$enable_nuvoton_p2a_mbox" = "xyes"], [
+        AS_IF([test "x$enable_tests" != "xyes"], [
+            AC_MSG_ERROR([Invalid configuration enabling both PCI-VGA and PCI-MBOX of Nuvoton.])
         ])
     ])
 ])
