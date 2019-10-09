@@ -67,6 +67,10 @@ if ENABLE_NUVOTON_P2A_MBOX
 libfirmwareblob_common_la_SOURCES += pci_nuvoton_handler.cpp
 endif
 
+if ENABLE_NET_BRIDGE
+libfirmwareblob_common_la_SOURCES += net_handler.cpp
+endif
+
 libfirmwareblob_common_la_CXXFLAGS = \
 	-I$(top_srcdir) \
 	$(SDBUSPLUS_CFLAGS) \

@@ -303,6 +303,14 @@ AS_IF([test "x$enable_nuvoton_p2a_vga" = "xyes"], [
     ])
 ])
 
+AC_ARG_ENABLE([net-bridge],
+    AS_HELP_STRING([--enable-net-bridge],
+                   [Enable external transfers using a TCP connection]))
+AM_CONDITIONAL(ENABLE_NET_BRIDGE, [test "x$enable_net_bridge" = "xyes"])
+AS_IF([test "x$enable_net_bridge" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_NET_BRIDGE], [CXXFLAGS])
+])
+
 AC_ARG_VAR(
     STATIC_HANDLER_STAGED_NAME,
     [The file to use for staging the firmware update.]
