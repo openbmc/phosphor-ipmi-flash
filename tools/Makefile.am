@@ -20,6 +20,7 @@ libupdater_la_SOURCES = \
 	bt.cpp \
 	lpc.cpp \
 	io.cpp \
+	net.cpp \
 	pci.cpp \
 	p2a.cpp \
 	progress.cpp
