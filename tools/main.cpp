@@ -17,6 +17,7 @@
 #include "bt.hpp"
 #include "io.hpp"
 #include "lpc.hpp"
+#include "net.hpp"
 #include "p2a.hpp"
 #include "pci.hpp"
 #include "progress.hpp"
@@ -42,10 +43,12 @@
 #define IPMILPC "ipmilpc"
 #define IPMIPCI "ipmipci"
 #define IPMIBT "ipmibt"
+#define IPMINET "ipminet"
 
 namespace
 {
-const std::vector<std::string> interfaceList = {IPMIBT, IPMILPC, IPMIPCI};
+const std::vector<std::string> interfaceList = {IPMINET, IPMIBT, IPMILPC,
+                                                IPMIPCI};
 } // namespace
 
 void usage(const char* program)
@@ -81,7 +84,7 @@ bool checkInterface(const std::string& interface)
 
 int main(int argc, char* argv[])
 {
-    std::string command, interface, imagePath, signaturePath, type;
+    std::string command, interface, imagePath, signaturePath, type, host, port;
     char* valueEnd = nullptr;
     long address = 0;
     long length = 0;
@@ -101,12 +104,14 @@ int main(int argc, char* argv[])
             {"length", required_argument, 0, 'l'},
             {"type", required_argument, 0, 't'},
             {"ignore-update", no_argument, 0, 'u'},
+            {"host", required_argument, 0, 'H'},
+            {"port", required_argument, 0, 'p'},
             {0, 0, 0, 0}
         };
         // clang-format on
 
         int option_index = 0;
-        int c = getopt_long(argc, argv, "c:i:m:s:a:l:t:u", long_options,
+        int c = getopt_long(argc, argv, "c:i:m:s:a:l:t:uH:p:", long_options,
                             &option_index);
         if (c == -1)
         {
@@ -174,6 +179,12 @@ int main(int argc, char* argv[])
             case 'u':
                 ignoreUpdate = true;
                 break;
+            case 'H':
+                host = std::string{optarg};
+                break;
+            case 'p':
+                port = std::string{optarg};
+                break;
             default:
                 usage(argv[0]);
                 exit(EXIT_FAILURE);
@@ -209,6 +220,16 @@ int main(int argc, char* argv[])
         {
             handler =
                 std::make_unique<host_tool::BtDataHandler>(&blob, &progress);
+        }
+        else if (interface == IPMINET)
+        {
+            if (host.empty() || port.empty())
+            {
+                std::fprintf(stderr, "Host or port not specified\n");
+                exit(EXIT_FAILURE);
+            }
+            handler = std::make_unique<host_tool::NetDataHandler>(
+                &blob, &progress, host, port);
         }
         else if (interface == IPMILPC)
         {
