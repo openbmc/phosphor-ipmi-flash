@@ -77,7 +77,8 @@ you've reserved memory to be used for the transfer window.
 
 If you're using a net data transfer mechanism, you'll also need two additional
 parameters: `hostname` and `port`. These specify which address and port the tool
-should attempt to connect to the BMC using.
+should attempt to connect to the BMC using. If unspecified, the `port` option
+defaults to 623, the same port as IPMI LAN+.
 
 ## Introduction
 
