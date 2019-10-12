@@ -19,6 +19,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/sendfile.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -79,6 +80,35 @@ int SysImpl::ioctl(int fd, unsigned long request, void* param) const
 int SysImpl::poll(struct pollfd* fds, nfds_t nfds, int timeout) const
 {
     return ::poll(fds, nfds, timeout);
+}
+
+int SysImpl::socket(int domain, int type, int protocol) const
+{
+    return ::socket(domain, type, protocol);
+}
+
+int SysImpl::connect(int sockfd, const struct sockaddr* addr,
+                     socklen_t addrlen) const
+{
+    return ::connect(sockfd, addr, addrlen);
+}
+
+ssize_t SysImpl::sendfile(int out_fd, int in_fd, off_t* offset,
+                          size_t count) const
+{
+    return ::sendfile(out_fd, in_fd, offset, count);
+}
+
+int SysImpl::getaddrinfo(const char* node, const char* service,
+                         const struct addrinfo* hints,
+                         struct addrinfo** res) const
+{
+    return ::getaddrinfo(node, service, hints, res);
+}
+
+void SysImpl::freeaddrinfo(struct addrinfo* res) const
+{
+    ::freeaddrinfo(res);
 }
 
 SysImpl sys_impl;
