@@ -7,8 +7,12 @@
  * other pieces.
  */
 
+#include <netdb.h>
 #include <poll.h>
 #include <sys/mman.h>
+#include <sys/sendfile.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
 #include <cinttypes>
 #include <cstddef>
@@ -35,6 +39,15 @@ class Sys
     virtual int getpagesize() const = 0;
     virtual int ioctl(int fd, unsigned long request, void* param) const = 0;
     virtual int poll(struct pollfd* fds, nfds_t nfds, int timeout) const = 0;
+    virtual int socket(int domain, int type, int protocol) const = 0;
+    virtual int connect(int sockfd, const struct sockaddr* addr,
+                        socklen_t addrlen) const = 0;
+    virtual ssize_t sendfile(int out_fd, int in_fd, off_t* offset,
+                             size_t count) const = 0;
+    virtual int getaddrinfo(const char* node, const char* service,
+                            const struct addrinfo* hints,
+                            struct addrinfo** res) const = 0;
+    virtual void freeaddrinfo(struct addrinfo* res) const = 0;
     virtual std::int64_t getSize(const char* pathname) const = 0;
 };
 
@@ -55,6 +68,15 @@ class SysImpl : public Sys
     int getpagesize() const override;
     int ioctl(int fd, unsigned long request, void* param) const override;
     int poll(struct pollfd* fds, nfds_t nfds, int timeout) const override;
+    int socket(int domain, int type, int protocol) const override;
+    int connect(int sockfd, const struct sockaddr* addr,
+                socklen_t addrlen) const override;
+    ssize_t sendfile(int out_fd, int in_fd, off_t* offset,
+                     size_t count) const override;
+    int getaddrinfo(const char* node, const char* service,
+                    const struct addrinfo* hints,
+                    struct addrinfo** res) const override;
+    void freeaddrinfo(struct addrinfo* res) const override;
     /* returns 0 on failure, or if the file is zero bytes. */
     std::int64_t getSize(const char* pathname) const override;
 };
