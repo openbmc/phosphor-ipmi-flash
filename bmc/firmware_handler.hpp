@@ -210,6 +210,11 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
                       blobIDs.end());
     }
 
+    inline bool fileOpen()
+    {
+        return !lookup.empty();
+    }
+
     ActionStatus getVerifyStatus();
     ActionStatus getActionStatus();
 
@@ -251,9 +256,6 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
      */
     bool preparationTriggered = false;
     ActionMap actionPacks;
-
-    /** Temporary variable to track whether a blob is open. */
-    bool fileOpen = false;
 
     ActionStatus lastVerificationStatus = ActionStatus::unknown;
 

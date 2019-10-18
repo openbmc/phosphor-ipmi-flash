@@ -17,13 +17,13 @@ Opening the active image or hash always fails:
 
 The two files are only present once their corresponding blob has been opened.
 
-# The state of fileOpen per state
+# The state of fileOpen() per state
 
 You can only open one file at a time, and some of the states exist only when a
 file is open.
 
-State                   | fileOpen
-:---------------------- | :-------
+State                   | fileOpen()
+:---------------------- | :---------
 `notYetStarted`         | `false`
 `uploadInProgress`      | `true`
 `verificationPending`   | `false`
@@ -49,7 +49,7 @@ State                   | fileOpen
 
 **The BMC is expecting to receive bytes.**
 
-*   `open(/flash/*)` returns false because `fileOpen == true`
+*   `open(/flash/*)` returns false because `fileOpen() == true`
 
 *   `close(/flash/*)` triggers `state -> verificationPending`
 
@@ -95,7 +95,7 @@ State                   | fileOpen
 
 **The update process has started.**
 
-*   `open(/flash/*)`r eturns false because `fileOpen == true`
+*   `open(/flash/*)`r eturns false because `fileOpen() == true`
 
 ## `updatedCompleted`
 
