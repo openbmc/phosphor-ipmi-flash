@@ -101,21 +101,6 @@ std::vector<std::string> FirmwareBlobHandler::getBlobIds()
  */
 bool FirmwareBlobHandler::deleteBlob(const std::string& path)
 {
-    /* This cannot be called if you have an open session to the path.
-     * You can have an open session to verify/update/hash/image, but not active*
-     *
-     * Therefore, if this is called, it's either on a blob that isn't presently
-     * open.  However, there could be open blobs, so we need to close all open
-     * sessions. This closing on our is an invalid handler behavior.  Therefore,
-     * we cannot close an active session.  To enforce this, we only allow
-     * deleting if there isn't a file open.
-     */
-    if (fileOpen)
-    {
-        return false;
-    }
-
-    /* only includes states where fileOpen == false */
     switch (state)
     {
         case UpdateState::notYetStarted:
@@ -315,7 +300,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
      * verification process has begun -- which is done via commit() on the hash
      * blob_id, we no longer want to allow updating the contents.
      */
-    if (fileOpen)
+    if (fileOpen())
     {
         return false;
     }
@@ -356,8 +341,8 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
             break;
         case UpdateState::verificationPending:
             /* Handle opening the verifyBlobId --> we know the image and hash
-             * aren't open because of the fileOpen check.  They can still open
-             * other files from this state to transition back into
+             * aren't open because of the lookup.empty() check. They can still
+             * open other files from this state to transition back into
              * uploadInProgress.
              *
              * The file must be opened for writing, but no transport mechanism
@@ -369,7 +354,6 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
 
                 lookup[session] = &verifyImage;
 
-                fileOpen = true;
                 return true;
             }
             break;
@@ -386,7 +370,6 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
 
                 lookup[session] = &updateImage;
 
-                fileOpen = true;
                 return true;
             }
             else
@@ -516,7 +499,6 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     removeBlobId(verifyBlobId);
 
     changeState(UpdateState::uploadInProgress);
-    fileOpen = true;
 
     return true;
 }
@@ -743,17 +725,18 @@ bool FirmwareBlobHandler::close(uint16_t session)
             break;
     }
 
-    if (item->second->dataHandler)
+    if (!lookup.empty())
     {
-        item->second->dataHandler->close();
+        if (item->second->dataHandler)
+        {
+            item->second->dataHandler->close();
+        }
+        if (item->second->imageHandler)
+        {
+            item->second->imageHandler->close();
+        }
+        lookup.erase(item);
     }
-    if (item->second->imageHandler)
-    {
-        item->second->imageHandler->close();
-    }
-
-    lookup.erase(item);
-    fileOpen = false;
     return true;
 }
 
@@ -806,6 +789,19 @@ void FirmwareBlobHandler::abortProcess()
     removeBlobId(updateBlobId);
     removeBlobId(activeImageBlobId);
     removeBlobId(activeHashBlobId);
+
+    for (auto item : lookup)
+    {
+        if (item.second->dataHandler)
+        {
+            item.second->dataHandler->close();
+        }
+        if (item.second->imageHandler)
+        {
+            item.second->imageHandler->close();
+        }
+    }
+    lookup.clear();
 
     openedFirmwareType = "";
     changeState(UpdateState::notYetStarted);
