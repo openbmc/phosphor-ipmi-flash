@@ -101,21 +101,6 @@ std::vector<std::string> FirmwareBlobHandler::getBlobIds()
  */
 bool FirmwareBlobHandler::deleteBlob(const std::string& path)
 {
-    /* This cannot be called if you have an open session to the path.
-     * You can have an open session to verify/update/hash/image, but not active*
-     *
-     * Therefore, if this is called, it's either on a blob that isn't presently
-     * open.  However, there could be open blobs, so we need to close all open
-     * sessions. This closing on our is an invalid handler behavior.  Therefore,
-     * we cannot close an active session.  To enforce this, we only allow
-     * deleting if there isn't a file open.
-     */
-    if (fileOpen())
-    {
-        return false;
-    }
-
-    /* only includes states where fileOpen() == false */
     switch (state)
     {
         case UpdateState::notYetStarted:
@@ -740,16 +725,18 @@ bool FirmwareBlobHandler::close(uint16_t session)
             break;
     }
 
-    if (item->second->dataHandler)
+    if (!lookup.empty())
     {
-        item->second->dataHandler->close();
+        if (item->second->dataHandler)
+        {
+            item->second->dataHandler->close();
+        }
+        if (item->second->imageHandler)
+        {
+            item->second->imageHandler->close();
+        }
+        lookup.erase(item);
     }
-    if (item->second->imageHandler)
-    {
-        item->second->imageHandler->close();
-    }
-
-    lookup.erase(item);
     return true;
 }
 
@@ -802,6 +789,19 @@ void FirmwareBlobHandler::abortProcess()
     removeBlobId(updateBlobId);
     removeBlobId(activeImageBlobId);
     removeBlobId(activeHashBlobId);
+
+    for (auto item : lookup)
+    {
+        if (item.second->dataHandler)
+        {
+            item.second->dataHandler->close();
+        }
+        if (item.second->imageHandler)
+        {
+            item.second->imageHandler->close();
+        }
+    }
+    lookup.clear();
 
     openedFirmwareType = "";
     changeState(UpdateState::notYetStarted);
