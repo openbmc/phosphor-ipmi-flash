@@ -56,7 +56,15 @@ libfirmwareblob_common_la_SOURCES += lpc_nuvoton.cpp
 endif
 
 if ENABLE_ASPEED_P2A
-libfirmwareblob_common_la_SOURCES += pci_handler.cpp
+libfirmwareblob_common_la_SOURCES += pci_aspeed_handler.cpp
+endif
+
+if ENABLE_NUVOTON_P2A_MBOX
+libfirmwareblob_common_la_SOURCES += pci_nuvoton_handler.cpp
+endif
+
+if ENABLE_NUVOTON_P2A_VGA
+libfirmwareblob_common_la_SOURCES += pci_nuvoton_handler.cpp
 endif
 
 libfirmwareblob_common_la_CXXFLAGS = \

@@ -43,8 +43,14 @@ namespace ipmi_flash
 namespace
 {
 
+#ifdef NUVOTON_P2A_MBOX
+static constexpr std::size_t memoryRegionSize = 16 * 1024UL;
+#elif defined NUVOTON_P2A_VGA
+static constexpr std::size_t memoryRegionSize = 4 * 1024 * 1024UL;
+#else
 /* The maximum external buffer size we expect is 64KB. */
 static constexpr std::size_t memoryRegionSize = 64 * 1024UL;
+#endif
 
 static constexpr const char* jsonConfigurationPath =
     "/usr/share/phosphor-ipmi-flash/";
@@ -65,7 +71,7 @@ LpcDataHandler lpcDataHandler(
 #if defined(ASPEED_P2A)
 PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
 #else
-#error "You must specify a hardware implementation."
+PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
 #endif
 #endif
 
