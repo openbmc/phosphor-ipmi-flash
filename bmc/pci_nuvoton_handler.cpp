@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 #include "data.hpp"
 #include "pci_handler.hpp"
 
 #include <fcntl.h>
-#include <linux/aspeed-p2a-ctrl.h>
 
 #include <cstdint>
 #include <cstring>
@@ -29,51 +27,26 @@
 namespace ipmi_flash
 {
 
-const std::string PciDataHandler::p2aControlPath = "/dev/aspeed-p2a-ctrl";
-
 bool PciDataHandler::open()
 {
-    mappedFd = sys->open(p2aControlPath.c_str(), O_RDWR);
+    static constexpr auto devmem = "/dev/mem";
+
+    mappedFd = sys->open(devmem, O_RDWR | O_SYNC);
     if (mappedFd == -1)
     {
+        std::fprintf(stderr, "PciDataHandler::Unable to open /dev/mem");
         return false;
     }
 
-    struct aspeed_p2a_ctrl_mapping map;
-    map.addr = regionAddress;
-    map.length = memoryRegionSize;
-    map.flags = ASPEED_P2A_CTRL_READWRITE;
-
-    if (sys->ioctl(mappedFd, ASPEED_P2A_CTRL_IOCTL_SET_WINDOW, &map))
-    {
-        sys->close(mappedFd);
-        mappedFd = -1;
-
-        return false;
-    }
-
-    if (sys->ioctl(mappedFd, ASPEED_P2A_CTRL_IOCTL_GET_MEMORY_CONFIG, &map))
-    {
-        sys->close(mappedFd);
-        mappedFd = -1;
-
-        return false;
-    }
-
-    /* The length of the region reserved is reported, and it's important
-     * because the offset + memory region could be beyond that reserved
-     * region.
-     */
-    std::uint64_t offset = regionAddress - map.addr;
-
-    mapped = reinterpret_cast<std::uint8_t*>(
-        mmap(0, memoryRegionSize, PROT_READ, MAP_SHARED, mappedFd, offset));
+    mapped = reinterpret_cast<uint8_t*>(sys->mmap(
+        0, memoryRegionSize, PROT_READ, MAP_SHARED, mappedFd, regionAddress));
     if (mapped == MAP_FAILED)
     {
         sys->close(mappedFd);
         mappedFd = -1;
         mapped = nullptr;
 
+        std::fprintf(stderr, "PciDataHandler::Unable to map region");
         return false;
     }
 
