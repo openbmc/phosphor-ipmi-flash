@@ -64,8 +64,12 @@ LpcDataHandler lpcDataHandler(
 #ifdef ENABLE_PCI_BRIDGE
 #if defined(ASPEED_P2A)
 PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
-#else
-#error "You must specify a hardware implementation."
+#endif
+#if defined(NUVOTON_P2A_MBOX)
+PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
+#endif
+#if defined(NUVOTON_P2A_VGA)
+PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
 #endif
 #endif
 
