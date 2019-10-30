@@ -65,7 +65,7 @@ LpcDataHandler lpcDataHandler(
 #if defined(ASPEED_P2A)
 PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
 #else
-#error "You must specify a hardware implementation."
+PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
 #endif
 #endif
 
