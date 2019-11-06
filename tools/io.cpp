@@ -91,4 +91,63 @@ bool DevMemDevice::write(const std::size_t offset, const std::size_t length,
     return true;
 }
 
+PpcMemDevice::PpcMemDevice(const std::string ppcMemPath,
+                           const internal::Sys* sys) :
+    ppcMemPath(ppcMemPath),
+    sys(sys)
+{
+    ppcMemFd = sys->open(ppcMemPath.c_str(), O_RDWR);
+    if (ppcMemFd < 0)
+    {
+        std::fprintf(stderr, "Failed to open PPC LPC access path: %s",
+                     ppcMemPath.c_str());
+    }
+}
+
+PpcMemDevice::~PpcMemDevice()
+{
+    if (ppcMemFd >= 0)
+    {
+        sys->close(ppcMemFd);
+    }
+}
+
+bool PpcMemDevice::read(const std::size_t offset, const std::size_t length,
+                        void* const destination)
+{
+    if (ppcMemFd < 0)
+    {
+        return false;
+    }
+
+    int ret = sys->pread(ppcMemFd, destination, length, offset);
+    if (ret < 0)
+    {
+        std::fprintf(stderr, "IO read failed at offset: 0x%zx, length: %zu\n",
+                     offset, length);
+        return false;
+    }
+
+    return true;
+}
+
+bool PpcMemDevice::write(const std::size_t offset, const std::size_t length,
+                         const void* const source)
+{
+    if (ppcMemFd < 0)
+    {
+        return false;
+    }
+
+    ssize_t ret = sys->pwrite(ppcMemFd, source, length, offset);
+    if (ret < 0)
+    {
+        std::fprintf(stderr, "IO write failed at offset: 0x%zx, length: %zu\n",
+                     offset, length);
+        return false;
+    }
+
+    return true;
+}
+
 } // namespace host_tool

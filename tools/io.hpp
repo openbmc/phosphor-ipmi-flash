@@ -68,4 +68,29 @@ class DevMemDevice : public HostIoInterface
     const internal::Sys* sys;
 };
 
+class PpcMemDevice : public HostIoInterface
+{
+  public:
+    explicit PpcMemDevice(const std::string ppcMemPath,
+                          const internal::Sys* sys = &internal::sys_impl);
+    ~PpcMemDevice() override;
+
+    /* Don't allow copying or assignment, only moving. */
+    PpcMemDevice(const PpcMemDevice&) = delete;
+    PpcMemDevice& operator=(const PpcMemDevice&) = delete;
+    PpcMemDevice(PpcMemDevice&&) = default;
+    PpcMemDevice& operator=(PpcMemDevice&&) = default;
+
+    bool read(const std::size_t offset, const std::size_t length,
+              void* const destination) override;
+
+    bool write(const std::size_t offset, const std::size_t length,
+               const void* const source) override;
+
+  private:
+    int ppcMemFd = -1;
+    const std::string ppcMemPath;
+    const internal::Sys* sys;
+};
+
 } // namespace host_tool
