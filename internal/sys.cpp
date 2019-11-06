@@ -50,6 +50,17 @@ int SysImpl::read(int fd, void* buf, std::size_t count) const
     return static_cast<int>(::read(fd, buf, count));
 }
 
+int SysImpl::pread(int fd, void* buf, std::size_t count, off_t offset) const
+{
+    return static_cast<int>(::pread(fd, buf, count, offset));
+}
+
+int SysImpl::pwrite(int fd, const void* buf, std::size_t count,
+                    off_t offset) const
+{
+    return static_cast<int>(::pwrite(fd, buf, count, offset));
+}
+
 int SysImpl::close(int fd) const
 {
     return ::close(fd);

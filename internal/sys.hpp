@@ -28,6 +28,10 @@ class Sys
 
     virtual int open(const char* pathname, int flags) const = 0;
     virtual int read(int fd, void* buf, std::size_t count) const = 0;
+    virtual int pread(int fd, void* buf, std::size_t count,
+                      off_t offset) const = 0;
+    virtual int pwrite(int fd, const void* buf, std::size_t count,
+                       off_t offset) const = 0;
     virtual int close(int fd) const = 0;
     virtual void* mmap(void* addr, std::size_t length, int prot, int flags,
                        int fd, off_t offset) const = 0;
@@ -48,6 +52,10 @@ class SysImpl : public Sys
   public:
     int open(const char* pathname, int flags) const override;
     int read(int fd, void* buf, std::size_t count) const override;
+    int pread(int fd, void* buf, std::size_t count,
+              off_t offset) const override;
+    int pwrite(int fd, const void* buf, std::size_t count,
+               off_t offset) const override;
     int close(int fd) const override;
     void* mmap(void* addr, std::size_t length, int prot, int flags, int fd,
                off_t offset) const override;

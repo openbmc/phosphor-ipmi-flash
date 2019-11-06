@@ -18,6 +18,8 @@ class InternalSysMock : public Sys
 
     MOCK_CONST_METHOD2(open, int(const char*, int));
     MOCK_CONST_METHOD3(read, int(int, void*, std::size_t));
+    MOCK_CONST_METHOD4(pread, int(int, void*, std::size_t, off_t));
+    MOCK_CONST_METHOD4(pwrite, int(int, const void*, std::size_t, off_t));
     MOCK_CONST_METHOD1(close, int(int));
     MOCK_CONST_METHOD6(mmap, void*(void*, std::size_t, int, int, int, off_t));
     MOCK_CONST_METHOD2(munmap, int(void*, std::size_t));
