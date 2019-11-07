@@ -42,13 +42,17 @@ std::unique_ptr<blobs::GenericBlobInterface>
         std::vector<HandlerPack>&& firmwares,
         const std::vector<DataHandlerPack>& transports, ActionMap&& actionPacks)
 {
-    /* There must be at least one. */
-    if (!firmwares.size())
+    /* There must be at least one in addition to the hash blob handler. */
+    if (firmwares.size() < 2)
     {
         log<level::ERR>("Must provide at least one firmware handler.");
         return nullptr;
     }
     if (!transports.size())
+    {
+        return nullptr;
+    }
+    if (actionPacks.empty())
     {
         return nullptr;
     }
