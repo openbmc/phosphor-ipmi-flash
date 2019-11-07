@@ -22,7 +22,6 @@ AM_LDFLAGS = \
 
 # Run all 'check' test programs
 check_PROGRAMS = \
-	firmware_createhandler_unittest \
 	firmware_handler_unittest \
 	firmware_stat_unittest \
 	firmware_canhandle_unittest \
@@ -45,9 +44,6 @@ check_PROGRAMS = \
 	firmware_json_unittest
 
 TESTS = $(check_PROGRAMS)
-
-firmware_createhandler_unittest_SOURCES = firmware_createhandler_unittest.cpp
-firmware_createhandler_unittest_LDADD = $(top_builddir)/bmc/libfirmwareblob_common.la
 
 firmware_handler_unittest_SOURCES = firmware_handler_unittest.cpp
 firmware_handler_unittest_LDADD = $(top_builddir)/bmc/libfirmwareblob_common.la
