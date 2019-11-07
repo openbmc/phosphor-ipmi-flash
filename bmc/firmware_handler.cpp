@@ -48,7 +48,7 @@ std::unique_ptr<blobs::GenericBlobInterface>
         log<level::ERR>("Must provide at least two firmware handlers.");
         return nullptr;
     }
-    if (!transports.size())
+    if (transports.empty())
     {
         return nullptr;
     }
