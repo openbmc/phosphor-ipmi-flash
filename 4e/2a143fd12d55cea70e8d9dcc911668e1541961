@@ -1,0 +1,9 @@
+Code-Review+1: Brandon Kim <brandonkim@google.com>
+Ok-To-Test+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Verified+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Code-Review+2: Patrick Venture <venture@google.com>
+Submitted-by: Patrick Venture <venture@google.com>
+Submitted-at: Thu, 07 Nov 2019 20:04:53 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-ipmi-flash/+/27002
+Project: openbmc/phosphor-ipmi-flash
+Branch: refs/heads/master
