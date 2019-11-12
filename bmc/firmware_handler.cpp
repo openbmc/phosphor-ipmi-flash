@@ -68,16 +68,8 @@ std::unique_ptr<blobs::GenericBlobInterface>
         return nullptr;
     }
 
-    std::uint16_t bitmask = 0;
-    for (const auto& item : transports)
-    {
-        /* TODO: can use std::accumulate() unless I'm mistaken. :D */
-        bitmask |= item.bitmask;
-    }
-
-    return std::make_unique<FirmwareBlobHandler>(std::move(firmwares), blobs,
-                                                 transports, bitmask,
-                                                 std::move(actionPacks));
+    return std::make_unique<FirmwareBlobHandler>(
+        std::move(firmwares), blobs, transports, std::move(actionPacks));
 }
 
 /* Check if the path is in our supported list (or active list). */
@@ -146,12 +138,13 @@ bool FirmwareBlobHandler::stat(const std::string& path, blobs::BlobMeta* meta)
     }
 
     /* They are requesting information about the generic blob_id. */
-    meta->blobState = bitmask;
-    meta->size = 0;
 
-    /* The generic blob_ids state is only the bits related to the transport
-     * mechanisms.
+    /* Older host tools expect the blobState to contain a bitmask of available
+     * transport backends, so report that we support all of them in order to
+     * preserve backwards compatibility.
      */
+    meta->blobState = transportMask;
+    meta->size = 0;
     return true;
 }
 
@@ -424,26 +417,19 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
      * layout flash update or a UBI tarball.
      */
 
-    /* Check the flags for the transport mechanism: if none match we don't
-     * support what they request.
-     */
-    if ((flags & bitmask) == 0)
-    {
-        return false;
-    }
+    std::uint16_t transportFlag = flags & transportMask;
 
     /* How are they expecting to copy this data? */
-    auto d = std::find_if(
-        transports.begin(), transports.end(),
-        [&flags](const auto& iter) { return (iter.bitmask & flags); });
+    auto d = std::find_if(transports.begin(), transports.end(),
+                          [&transportFlag](const auto& iter) {
+                              return (iter.bitmask == transportFlag);
+                          });
     if (d == transports.end())
     {
         return false;
     }
 
-    /* We found the transport handler they requested, no surprise since
-     * above we verify they selected at least one we wanted.
-     */
+    /* We found the transport handler they requested */
 
     /* Elsewhere I do this check by checking "if ::ipmi" because that's the
      * only non-external data pathway -- but this is just a more generic

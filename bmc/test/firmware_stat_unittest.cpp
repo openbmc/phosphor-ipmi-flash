@@ -14,7 +14,9 @@ namespace ipmi_flash
 namespace
 {
 
-TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
+/* This test ensures the stat() method preserves compatibility with older host
+ * tools by reporting that all transports are supported. */
+TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsAllTransports)
 {
     /* Test that the metadata information returned matches expectations for this
      * case.
@@ -38,7 +40,8 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsTransport)
 
     blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));
-    EXPECT_EQ(FirmwareFlags::UpdateFlags::ipmi, meta.blobState);
+    /* All transport flags are set */
+    EXPECT_EQ(0xff00, meta.blobState);
 }
 
 } // namespace

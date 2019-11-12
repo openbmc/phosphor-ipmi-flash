@@ -73,18 +73,15 @@ TEST_F(FirmwareHandlerNotYetStartedTest, GetBlobListValidateListContents)
 TEST_F(FirmwareHandlerNotYetStartedTest, StatEachBlobIdVerifyResults)
 {
     /* In this original state, calling stat() on the blob ids will return the
-     * transported supported.
+     * idle status
      */
-    blobs::BlobMeta expected;
-    expected.blobState = FirmwareFlags::UpdateFlags::ipmi;
-    expected.size = 0;
 
     auto blobs = handler->getBlobIds();
     for (const auto& blob : blobs)
     {
         blobs::BlobMeta meta = {};
         EXPECT_TRUE(handler->stat(blob, &meta));
-        EXPECT_EQ(expected, meta);
+        EXPECT_EQ(expectedIdleMeta, meta);
     }
 }
 

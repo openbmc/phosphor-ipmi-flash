@@ -187,6 +187,8 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     std::uint16_t flags =
         blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi;
 
+    blobs::BlobMeta expectedIdleMeta = {0xff00, 0, {}};
+
     std::vector<std::string> startingBlobs = {staticLayoutBlobId, hashBlobId};
 };
 

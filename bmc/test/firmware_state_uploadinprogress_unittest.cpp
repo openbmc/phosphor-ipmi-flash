@@ -95,10 +95,6 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnNormalBlobsReturnsSuccess)
     /* Calling stat() on the normal blobs (not the active) ones will work and
      * return the same information as in the notYetStarted state.
      */
-    blobs::BlobMeta expected;
-    expected.blobState = FirmwareFlags::UpdateFlags::ipmi;
-    expected.size = 0;
-
     openToInProgress(staticLayoutBlobId);
 
     std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
@@ -106,7 +102,7 @@ TEST_F(FirmwareHandlerUploadInProgressTest, StatOnNormalBlobsReturnsSuccess)
     {
         blobs::BlobMeta meta = {};
         EXPECT_TRUE(handler->stat(blob, &meta));
-        EXPECT_EQ(expected, meta);
+        EXPECT_EQ(expectedIdleMeta, meta);
     }
 }
 

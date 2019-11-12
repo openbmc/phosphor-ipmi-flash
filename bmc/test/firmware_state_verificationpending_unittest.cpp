@@ -174,17 +174,13 @@ TEST_F(FirmwareHandlerVerificationPendingTest, StatOnNormalBlobsReturnsSuccess)
 {
     getToVerificationPending(staticLayoutBlobId);
 
-    blobs::BlobMeta expected;
-    expected.blobState = FirmwareFlags::UpdateFlags::ipmi;
-    expected.size = 0;
-
     std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
     for (const auto& blob : testBlobs)
     {
         ASSERT_TRUE(handler->canHandleBlob(blob));
         blobs::BlobMeta meta = {};
         EXPECT_TRUE(handler->stat(blob, &meta));
-        EXPECT_EQ(expected, meta);
+        EXPECT_EQ(expectedIdleMeta, meta);
     }
 }
 
