@@ -122,10 +122,6 @@ TEST_F(FirmwareHandlerUpdateCompletedTest, StatOnNormalBlobsReturnsSuccess)
 {
     getToUpdateCompleted(ActionStatus::success);
 
-    blobs::BlobMeta expected;
-    expected.blobState = FirmwareFlags::UpdateFlags::ipmi;
-    expected.size = 0;
-
     std::vector<std::string> testBlobs = {staticLayoutBlobId, hashBlobId};
     for (const auto& blob : testBlobs)
     {
@@ -133,7 +129,7 @@ TEST_F(FirmwareHandlerUpdateCompletedTest, StatOnNormalBlobsReturnsSuccess)
 
         blobs::BlobMeta meta = {};
         EXPECT_TRUE(handler->stat(blob, &meta));
-        EXPECT_EQ(expected, meta);
+        EXPECT_EQ(expectedIdleMeta, meta);
     }
 }
 

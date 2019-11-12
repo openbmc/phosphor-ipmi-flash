@@ -163,17 +163,13 @@ TEST_F(FirmwareHandlerUpdatePendingTest, StatOnNormalBlobsReturnsSuccess)
 {
     getToUpdatePending();
 
-    blobs::BlobMeta expected;
-    expected.blobState = FirmwareFlags::UpdateFlags::ipmi;
-    expected.size = 0;
-
     for (const auto& blob : startingBlobs)
     {
         ASSERT_TRUE(handler->canHandleBlob(blob));
 
         blobs::BlobMeta meta = {};
         EXPECT_TRUE(handler->stat(blob, &meta));
-        EXPECT_EQ(expected, meta);
+        EXPECT_EQ(expectedIdleMeta, meta);
     }
 }
 
