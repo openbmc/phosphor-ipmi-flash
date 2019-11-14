@@ -31,19 +31,9 @@ class UpdateHandlerTest : public ::testing::Test
 
 TEST_F(UpdateHandlerTest, CheckAvailableSuccess)
 {
-    ipmiblob::StatResponse statObj = {};
-    statObj.blob_state = ipmi_flash::FirmwareFlags::UpdateFlags::ipmi |
-                         ipmi_flash::FirmwareFlags::UpdateFlags::lpc;
-
     EXPECT_CALL(blobMock, getBlobList())
         .WillOnce(
             Return(std::vector<std::string>({ipmi_flash::staticLayoutBlobId})));
-    EXPECT_CALL(blobMock, getStat(TypedEq<const std::string&>(
-                              ipmi_flash::staticLayoutBlobId)))
-        .WillOnce(Return(statObj));
-
-    EXPECT_CALL(handlerMock, supportedType())
-        .WillOnce(Return(ipmi_flash::FirmwareFlags::UpdateFlags::lpc));
 
     EXPECT_TRUE(updater.checkAvailable(ipmi_flash::staticLayoutBlobId));
 }

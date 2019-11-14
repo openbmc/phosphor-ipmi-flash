@@ -51,28 +51,6 @@ bool UpdateHandler::checkAvailable(const std::string& goalFirmware)
         return false;
     }
 
-    /* Call stat on /flash/image (or /flash/tarball) and check if data interface
-     * is supported.
-     */
-    ipmiblob::StatResponse stat;
-
-    try
-    {
-        stat = blob->getStat(goalFirmware);
-    }
-    catch (const ipmiblob::BlobException& b)
-    {
-        std::fprintf(stderr, "Received exception '%s' on getStat\n", b.what());
-        return false;
-    }
-
-    auto supported = handler->supportedType();
-    if ((stat.blob_state & supported) == 0)
-    {
-        std::fprintf(stderr, "data interface selected not supported.\n");
-        return false;
-    }
-
     return true;
 }
 

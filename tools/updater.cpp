@@ -46,10 +46,10 @@ void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
     bool goalSupported = updater->checkAvailable(layout);
     if (!goalSupported)
     {
-        throw ToolException("Goal firmware or interface not supported");
+        throw ToolException("Goal firmware not supported");
     }
 
-    /* Yay, our data handler is supported. */
+    /* Yay, our layout type is supported. */
     try
     {
         /* Send over the firmware image. */
