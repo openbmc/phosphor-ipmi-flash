@@ -27,6 +27,132 @@
 namespace ipmi_flash
 {
 
+static constexpr auto systemdService = "org.freedesktop.systemd1";
+static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
+static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
+
+bool SystemdNoFile::trigger()
+{
+    if (job)
+    {
+        std::fprintf(stderr, "Job alreading running %s: %s\n",
+                     triggerService.c_str(), job->c_str());
+        return false;
+    }
+
+    try
+    {
+        jobMonitor.emplace(
+            bus,
+            "type='signal',"
+            "sender='org.freedesktop.systemd1',"
+            "path='/org/freedesktop/systemd1',"
+            "interface='org.freedesktop.systemd1.Manager',"
+            "member='JobRemoved',",
+            [&](sdbusplus::message::message& m) { this->match(m); });
+
+        auto method = bus.new_method_call(systemdService, systemdRoot,
+                                          systemdInterface, "StartUnit");
+        method.append(triggerService);
+        method.append(mode);
+
+        sdbusplus::message::object_path obj_path;
+        bus.call(method).read(obj_path);
+        job = std::move(obj_path);
+        std::fprintf(stderr, "Triggered %s mode %s: %s\n", triggerService.c_str(),
+                     mode.c_str(), job->c_str());
+        currentStatus = ActionStatus::running;
+        return true;
+    }
+    catch (const std::exception& e)
+    {
+        job = std::nullopt;
+        jobMonitor = std::nullopt;
+        currentStatus = ActionStatus::failed;
+        std::fprintf(stderr, "Failed to trigger %s mode %s: %s\n",
+                     triggerService.c_str(), mode.c_str(), e.what());
+        return false;
+    }
+}
+
+void SystemdNoFile::abort()
+{
+    if (!job)
+    {
+        std::fprintf(stderr, "No running job %s\n", triggerService.c_str());
+        return;
+    }
+
+    // Cancel the job
+    auto cancel_req = bus.new_method_call(systemdService, job->c_str(),
+                                          systemdInterface, "Cancel");
+    try
+    {
+        bus.call_noreply(cancel_req);
+        std::fprintf(stderr, "Canceled %s: %s\n", triggerService.c_str(), job->c_str());
+    }
+    catch (const sdbusplus::exception::SdBusError& ex)
+    {
+        std::fprintf(stderr, "Failed to cancel job %s %s: %s\n", triggerService.c_str(), job->c_str(),
+                     ex.what());
+    }
+}
+
+ActionStatus SystemdNoFile::status()
+{
+    return currentStatus;
+}
+
+const std::string& SystemdNoFile::getMode() const
+{
+    return mode;
+}
+
+void SystemdNoFile::match(sdbusplus::message::message& m)
+{
+    if (!job)
+    {
+        std::fprintf(stderr, "No running job %s\n", triggerService.c_str());
+        return;
+    }
+
+    uint32_t job_id;
+    sdbusplus::message::object_path job_path;
+    std::string unit;
+    std::string result;
+    try
+    {
+        m.read(job_id, job_path, unit, result);
+    }
+    catch (const sdbusplus::exception::SdBusError& e)
+    {
+        std::fprintf(stderr, "Bad JobRemoved signal %s: %s\n",
+                     triggerService.c_str(), e.what());
+        return;
+    }
+
+    if (*job != job_path.str)
+    {
+        std::fprintf(stderr, "Not matching %s: %s != %s\n",
+                     triggerService.c_str(), job->c_str(),
+                     job_path.str.c_str());
+        return;
+    }
+
+    jobMonitor = std::nullopt;
+    job = std::nullopt;
+    currentStatus =
+        result == "done" ? ActionStatus::success : ActionStatus::failed;
+}
+
+std::unique_ptr<TriggerableActionInterface>
+    SystemdNoFile::CreateSystemdNoFile(sdbusplus::bus::bus&& bus,
+                                       const std::string& service,
+                                       const std::string& mode)
+{
+    return std::make_unique<SystemdNoFile>(std::move(bus), service, mode);
+}
+
 std::unique_ptr<TriggerableActionInterface>
     SystemdWithStatusFile::CreateSystemdWithStatusFile(
         sdbusplus::bus::bus&& bus, const std::string& path,
@@ -36,40 +162,10 @@ std::unique_ptr<TriggerableActionInterface>
                                                    service, mode);
 }
 
-bool SystemdWithStatusFile::trigger()
-{
-    static constexpr auto systemdService = "org.freedesktop.systemd1";
-    static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
-    static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
-
-    auto method = bus.new_method_call(systemdService, systemdRoot,
-                                      systemdInterface, "StartUnit");
-    method.append(triggerService);
-    method.append(mode);
-
-    try
-    {
-        bus.call_noreply(method);
-    }
-    catch (const sdbusplus::exception::SdBusError& ex)
-    {
-        /* TODO: Once logging supports unit-tests, add a log message to test
-         * this failure.
-         */
-        return false;
-    }
-
-    return true;
-}
-
-void SystemdWithStatusFile::abort()
-{
-    /* TODO: Implement this. */
-}
-
 ActionStatus SystemdWithStatusFile::status()
 {
-    ActionStatus result = ActionStatus::unknown;
+    // Assume a status based on job execution if there is no file
+    ActionStatus result = job ? ActionStatus::running : ActionStatus::failed;
 
     std::ifstream ifs;
     ifs.open(checkPath);
@@ -96,61 +192,6 @@ ActionStatus SystemdWithStatusFile::status()
     }
 
     return result;
-}
-
-const std::string SystemdWithStatusFile::getMode() const
-{
-    return mode;
-}
-
-std::unique_ptr<TriggerableActionInterface>
-    SystemdNoFile::CreateSystemdNoFile(sdbusplus::bus::bus&& bus,
-                                       const std::string& service,
-                                       const std::string& mode)
-{
-    return std::make_unique<SystemdNoFile>(std::move(bus), service, mode);
-}
-
-bool SystemdNoFile::trigger()
-{
-    static constexpr auto systemdService = "org.freedesktop.systemd1";
-    static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
-    static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
-
-    auto method = bus.new_method_call(systemdService, systemdRoot,
-                                      systemdInterface, "StartUnit");
-    method.append(triggerService);
-    method.append(mode);
-
-    try
-    {
-        bus.call_noreply(method);
-        state = ActionStatus::running;
-        return true;
-    }
-    catch (const sdbusplus::exception::SdBusError& ex)
-    {
-        /* TODO: Once logging supports unit-tests, add a log message to test
-         * this failure.
-         */
-        state = ActionStatus::failed;
-        return false;
-    }
-}
-
-void SystemdNoFile::abort()
-{
-    return;
-}
-
-ActionStatus SystemdNoFile::status()
-{
-    return state;
-}
-
-const std::string SystemdNoFile::getMode() const
-{
-    return mode;
 }
 
 } // namespace ipmi_flash
