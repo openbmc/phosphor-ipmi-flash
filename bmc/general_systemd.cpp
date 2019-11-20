@@ -27,21 +27,20 @@
 namespace ipmi_flash
 {
 
+static constexpr auto systemdService = "org.freedesktop.systemd1";
+static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
+static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
+
 std::unique_ptr<TriggerableActionInterface>
-    SystemdWithStatusFile::CreateSystemdWithStatusFile(
-        sdbusplus::bus::bus&& bus, const std::string& path,
-        const std::string& service, const std::string& mode)
+    SystemdNoFile::CreateSystemdNoFile(sdbusplus::bus::bus&& bus,
+                                       const std::string& service,
+                                       const std::string& mode)
 {
-    return std::make_unique<SystemdWithStatusFile>(std::move(bus), path,
-                                                   service, mode);
+    return std::make_unique<SystemdNoFile>(std::move(bus), service, mode);
 }
 
-bool SystemdWithStatusFile::trigger()
+bool SystemdNoFile::trigger()
 {
-    static constexpr auto systemdService = "org.freedesktop.systemd1";
-    static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
-    static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
-
     auto method = bus.new_method_call(systemdService, systemdRoot,
                                       systemdInterface, "StartUnit");
     method.append(triggerService);
@@ -50,6 +49,7 @@ bool SystemdWithStatusFile::trigger()
     try
     {
         bus.call_noreply(method);
+        return true;
     }
     catch (const sdbusplus::exception::SdBusError& ex)
     {
@@ -58,13 +58,70 @@ bool SystemdWithStatusFile::trigger()
          */
         return false;
     }
-
-    return true;
 }
 
-void SystemdWithStatusFile::abort()
+void SystemdNoFile::abort()
 {
-    /* TODO: Implement this. */
+    return;
+}
+
+ActionStatus SystemdNoFile::status()
+{
+    auto obj_req = bus.new_method_call(systemdService, systemdRoot,
+                                       systemdInterface, "GetUnit");
+    obj_req.append(triggerService);
+
+    std::string obj;
+    try
+    {
+        bus.call(obj_req).read(obj);
+    }
+    catch (const sdbusplus::exception::SdBusError& ex)
+    {
+        return ActionStatus::unknown;
+    }
+
+    auto status_req = bus.new_method_call(
+        systemdService, obj.c_str(), "org.freedesktop.DBus.Properties", "Get");
+    status_req.append("org.freedesktop.systemd1.Service", "ActiveState");
+    std::string status;
+    try
+    {
+        bus.call(status_req).read(status);
+    }
+    catch (const sdbusplus::exception::SdBusError& ex)
+    {
+        return ActionStatus::unknown;
+    }
+
+    if (status == "activating" || status == "deactivating" ||
+        status == "reloading")
+    {
+        return ActionStatus::running;
+    }
+    if (status == "active" || status == "inactive")
+    {
+        return ActionStatus::success;
+    }
+    if (status == "failed")
+    {
+        return ActionStatus::failed;
+    }
+    return ActionStatus::unknown;
+}
+
+const std::string& SystemdNoFile::getMode() const
+{
+    return mode;
+}
+
+std::unique_ptr<TriggerableActionInterface>
+    SystemdWithStatusFile::CreateSystemdWithStatusFile(
+        sdbusplus::bus::bus&& bus, const std::string& path,
+        const std::string& service, const std::string& mode)
+{
+    return std::make_unique<SystemdWithStatusFile>(std::move(bus), path,
+                                                   service, mode);
 }
 
 ActionStatus SystemdWithStatusFile::status()
@@ -96,61 +153,6 @@ ActionStatus SystemdWithStatusFile::status()
     }
 
     return result;
-}
-
-const std::string SystemdWithStatusFile::getMode() const
-{
-    return mode;
-}
-
-std::unique_ptr<TriggerableActionInterface>
-    SystemdNoFile::CreateSystemdNoFile(sdbusplus::bus::bus&& bus,
-                                       const std::string& service,
-                                       const std::string& mode)
-{
-    return std::make_unique<SystemdNoFile>(std::move(bus), service, mode);
-}
-
-bool SystemdNoFile::trigger()
-{
-    static constexpr auto systemdService = "org.freedesktop.systemd1";
-    static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
-    static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
-
-    auto method = bus.new_method_call(systemdService, systemdRoot,
-                                      systemdInterface, "StartUnit");
-    method.append(triggerService);
-    method.append(mode);
-
-    try
-    {
-        bus.call_noreply(method);
-        state = ActionStatus::running;
-        return true;
-    }
-    catch (const sdbusplus::exception::SdBusError& ex)
-    {
-        /* TODO: Once logging supports unit-tests, add a log message to test
-         * this failure.
-         */
-        state = ActionStatus::failed;
-        return false;
-    }
-}
-
-void SystemdNoFile::abort()
-{
-    return;
-}
-
-ActionStatus SystemdNoFile::status()
-{
-    return state;
-}
-
-const std::string SystemdNoFile::getMode() const
-{
-    return mode;
 }
 
 } // namespace ipmi_flash

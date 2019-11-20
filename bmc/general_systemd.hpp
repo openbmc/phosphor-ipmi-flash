@@ -9,55 +9,6 @@
 namespace ipmi_flash
 {
 
-/**
- * Representation of what is used for triggering an action with systemd and
- * checking the result by reading a file.
- */
-class SystemdWithStatusFile : public TriggerableActionInterface
-{
-  public:
-    /**
-     * Create a default SystemdWithStatusFile object that uses systemd to
-     * trigger the process.
-     *
-     * @param[in] bus - an sdbusplus handler for a bus to use.
-     * @param[in] path - the path to check for verification status.
-     * @param[in] service - the systemd service to start to trigger
-     * verification.
-     * @param[in] mode - the job-mode when starting the systemd Unit.
-     */
-    static std::unique_ptr<TriggerableActionInterface>
-        CreateSystemdWithStatusFile(sdbusplus::bus::bus&& bus,
-                                    const std::string& path,
-                                    const std::string& service,
-                                    const std::string& mode);
-
-    SystemdWithStatusFile(sdbusplus::bus::bus&& bus, const std::string& path,
-                          const std::string& service, const std::string& mode) :
-        bus(std::move(bus)),
-        checkPath(path), triggerService(service), mode(mode)
-    {
-    }
-
-    ~SystemdWithStatusFile() = default;
-    SystemdWithStatusFile(const SystemdWithStatusFile&) = delete;
-    SystemdWithStatusFile& operator=(const SystemdWithStatusFile&) = delete;
-    SystemdWithStatusFile(SystemdWithStatusFile&&) = default;
-    SystemdWithStatusFile& operator=(SystemdWithStatusFile&&) = default;
-
-    bool trigger() override;
-    void abort() override;
-    ActionStatus status() override;
-
-    const std::string getMode() const;
-
-  private:
-    sdbusplus::bus::bus bus;
-    const std::string checkPath;
-    const std::string triggerService;
-    const std::string mode;
-};
-
 class SystemdNoFile : public TriggerableActionInterface
 {
   public:
@@ -83,13 +34,54 @@ class SystemdNoFile : public TriggerableActionInterface
     void abort() override;
     ActionStatus status() override;
 
-    const std::string getMode() const;
+    const std::string& getMode() const;
 
   private:
     sdbusplus::bus::bus bus;
     const std::string triggerService;
     const std::string mode;
-    ActionStatus state = ActionStatus::unknown;
+};
+
+/**
+ * Representation of what is used for triggering an action with systemd and
+ * checking the result by reading a file.
+ */
+class SystemdWithStatusFile : public SystemdNoFile
+{
+  public:
+    /**
+     * Create a default SystemdWithStatusFile object that uses systemd to
+     * trigger the process.
+     *
+     * @param[in] bus - an sdbusplus handler for a bus to use.
+     * @param[in] path - the path to check for verification status.
+     * @param[in] service - the systemd service to start to trigger
+     * verification.
+     * @param[in] mode - the job-mode when starting the systemd Unit.
+     */
+    static std::unique_ptr<TriggerableActionInterface>
+        CreateSystemdWithStatusFile(sdbusplus::bus::bus&& bus,
+                                    const std::string& path,
+                                    const std::string& service,
+                                    const std::string& mode);
+
+    SystemdWithStatusFile(sdbusplus::bus::bus&& bus, const std::string& path,
+                          const std::string& service, const std::string& mode) :
+        SystemdNoFile(std::move(bus), service, mode),
+        checkPath(path)
+    {
+    }
+
+    ~SystemdWithStatusFile() = default;
+    SystemdWithStatusFile(const SystemdWithStatusFile&) = delete;
+    SystemdWithStatusFile& operator=(const SystemdWithStatusFile&) = delete;
+    SystemdWithStatusFile(SystemdWithStatusFile&&) = default;
+    SystemdWithStatusFile& operator=(SystemdWithStatusFile&&) = default;
+
+    ActionStatus status() override;
+
+  private:
+    const std::string checkPath;
 };
 
 } // namespace ipmi_flash
