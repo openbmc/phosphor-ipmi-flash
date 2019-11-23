@@ -133,6 +133,10 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             {
                 pack->verification = std::move(buildFileSystemd(verify));
             }
+            else if (verifyType == "systemd")
+            {
+                pack->verification = std::move(buildSystemd(verify));
+            }
             else
             {
                 throw std::runtime_error("Invalid verification type:" +
