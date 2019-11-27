@@ -49,11 +49,11 @@ class DevMemDevice : public HostIoInterface
 
     ~DevMemDevice() = default;
 
-    /* Don't allow copying or assignment, only moving. */
+    /* Don't allow copying, assignment or move assignment, only moving. */
     DevMemDevice(const DevMemDevice&) = delete;
     DevMemDevice& operator=(const DevMemDevice&) = delete;
     DevMemDevice(DevMemDevice&&) = default;
-    DevMemDevice& operator=(DevMemDevice&&) = default;
+    DevMemDevice& operator=(DevMemDevice&&) = delete;
 
     bool read(const std::size_t offset, const std::size_t length,
               void* const destination) override;
