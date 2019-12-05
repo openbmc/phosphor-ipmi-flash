@@ -64,7 +64,7 @@ class NetHandleTest : public ::testing::Test
             sysMock,
             getaddrinfo(StrEq(host), StrEq(port),
                         AllOf(Field(&addrinfo::ai_flags, AI_NUMERICHOST),
-                              Field(&addrinfo::ai_family, AF_INET),
+                              Field(&addrinfo::ai_family, AF_UNSPEC),
                               Field(&addrinfo::ai_socktype, SOCK_STREAM)),
                         NotNull()))
             .WillOnce(DoAll(SetArgPointee<3>(&addr), Return(0)));
@@ -127,7 +127,7 @@ TEST_F(NetHandleTest, getaddrinfoFail)
     EXPECT_CALL(sysMock,
                 getaddrinfo(StrEq(host), StrEq(port),
                             AllOf(Field(&addrinfo::ai_flags, AI_NUMERICHOST),
-                                  Field(&addrinfo::ai_family, AF_INET),
+                                  Field(&addrinfo::ai_family, AF_UNSPEC),
                                   Field(&addrinfo::ai_socktype, SOCK_STREAM)),
                             NotNull()))
         .WillOnce(Return(EAI_ADDRFAMILY));
