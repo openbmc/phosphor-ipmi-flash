@@ -81,7 +81,7 @@ bool NetDataHandler::sendContents(const std::string& input,
         struct addrinfo hints;
         std::memset(&hints, 0, sizeof(hints));
         hints.ai_flags = AI_NUMERICHOST;
-        hints.ai_family = AF_INET;
+        hints.ai_family = AF_UNSPEC;
         hints.ai_socktype = SOCK_STREAM;
 
         struct addrinfo *addrs, *addr;
