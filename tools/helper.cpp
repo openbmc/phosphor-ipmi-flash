@@ -38,12 +38,12 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
 
     try
     {
-        /* sleep for 5 seconds and check 65 times, for a timeout of: 325
+        /* sleep for 5 seconds and check 125 times, for a timeout of: 625
          * seconds.
          * TODO: make this command line configurable and provide smaller
          * default value.
          */
-        static constexpr int commandAttempts = 65;
+        static constexpr int commandAttempts = 125;
         int attempts = 0;
         bool exitLoop = false;
 
