@@ -38,6 +38,18 @@ make
 make install
 ```
 
+#### Building stdplus
+
+Check out the [stdplus source](https://github.com/openbmc/stdplus).
+
+Then run these commands in the source directory.
+
+```
+meson setup -Dexamples=false -Dtests=disabled builddir
+ninja -C builddir
+ninja -C builddir install
+```
+
 #### Building burn_my_bmc (the host-tool)
 
 Check out the [phosphor-ipmi-flash source](https://github.com/openbmc/phosphor-ipmi-flash).
