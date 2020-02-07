@@ -27,6 +27,19 @@ make install-lib
 
 #### Building ipmi-blob-tool
 
+Check out the [stdplus source](https://github.com/openbmc/stdplus).
+
+Then run these commands in the source directory.
+
+```
+meson setup builddir
+meson configure -Dexamples=false -Dtests=disabled builddir
+ninja -C builddir
+ninja -C builddir install
+```
+
+#### Building stdplus
+
 Check out the [ipmi-blob-tool source](https://github.com/openbmc/ipmi-blob-tool).
 
 Then run these commands in the source directory.
