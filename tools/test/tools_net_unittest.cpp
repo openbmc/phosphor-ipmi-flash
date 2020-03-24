@@ -18,6 +18,7 @@ using namespace std::literals;
 using ::testing::_;
 using ::testing::AllOf;
 using ::testing::ContainerEq;
+using ::testing::DoAll;
 using ::testing::Field;
 using ::testing::Gt;
 using ::testing::InSequence;
