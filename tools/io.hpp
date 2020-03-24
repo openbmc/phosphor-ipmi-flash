@@ -71,7 +71,7 @@ class DevMemDevice : public HostIoInterface
 class PpcMemDevice : public HostIoInterface
 {
   public:
-    explicit PpcMemDevice(const std::string ppcMemPath,
+    explicit PpcMemDevice(const std::string& ppcMemPath,
                           const internal::Sys* sys = &internal::sys_impl) :
         ppcMemPath(ppcMemPath),
         sys(sys)
