@@ -209,6 +209,12 @@ Option                   | Meaning
 ------------------------ | -------
 `--enable-update-status` | Enable use of update status file.
 
+If you would like to use host memory access to update on a PPC platform, this configuration option needs to be enabled.
+
+Option          | Meaning
+--------------- | -------
+`--enable-ppc`  | Enable PPC host memory access.
+
 ### Internal Configuration Details
 
 The following variables can be set to whatever you wish, however they have
