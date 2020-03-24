@@ -145,6 +145,15 @@ AX_PTHREAD([], [AC_MSG_ERROR(["pthread required and not found"])])
 
 # Configurability
 
+# Enable ppc host memory access
+AC_ARG_ENABLE([ppc],
+    AS_HELP_STRING([--enable-ppc],
+                   [Enable ppc host memory access.]
+AM_CONDITIONAL([ENABLE_PPC], [test "x$enable_ppc" = >
+AS_IF([test "x$enable_ppc" = "xyes"], [
+    AX_APPEND_COMPILE_FLAGS([-DENABLE_PPC], [CXXFLAG>
+])
+
 # Enable the reboot update mechanism
 AC_ARG_ENABLE([reboot-update],
     AS_HELP_STRING([--enable-reboot-update],

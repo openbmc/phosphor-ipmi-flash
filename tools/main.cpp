@@ -45,6 +45,12 @@
 #define IPMIBT "ipmibt"
 #define IPMINET "ipminet"
 
+#ifdef ENABLE_PPC
+  host_tool::PpcMemDevice devmem;
+#else
+  host_tool::DevMemDevice devmem;
+#endif
+
 namespace
 {
 const std::vector<std::string> interfaceList = {IPMINET, IPMIBT, IPMILPC,
@@ -210,7 +216,6 @@ int main(int argc, char* argv[])
 
         auto ipmi = ipmiblob::IpmiHandler::CreateIpmiHandler();
         ipmiblob::BlobHandler blob(std::move(ipmi));
-        host_tool::DevMemDevice devmem;
         host_tool::PciUtilImpl pci;
         host_tool::ProgressStdoutIndicator progress;
 
