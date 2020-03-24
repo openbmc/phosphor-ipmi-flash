@@ -210,7 +210,12 @@ int main(int argc, char* argv[])
 
         auto ipmi = ipmiblob::IpmiHandler::CreateIpmiHandler();
         ipmiblob::BlobHandler blob(std::move(ipmi));
+#ifdef ENABLE_PPC
+        const std::string ppcMemPath = "/sys/kernel/debug/powerpc/lpc/fw";
+        host_tool::PpcMemDevice devmem(&ppcMemPath);
+#else
         host_tool::DevMemDevice devmem;
+#endif
         host_tool::PciUtilImpl pci;
         host_tool::ProgressStdoutIndicator progress;
 
