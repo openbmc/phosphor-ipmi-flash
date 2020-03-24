@@ -209,6 +209,12 @@ Option                   | Meaning
 ------------------------ | -------
 `--enable-update-status` | Enable use of update status file.
 
+If you use the PPC platform, you need to enable the PP>
+
+Option          | Meaning
+--------------- | -------
+`--enable-ppc`  | Enable ppc host memory access.
+
 ### Internal Configuration Details
 
 The following variables can be set to whatever you wish, however they have
