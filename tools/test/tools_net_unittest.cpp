@@ -27,6 +27,7 @@ using ::testing::Return;
 using ::testing::SetArgPointee;
 using ::testing::SetErrnoAndReturn;
 using ::testing::StrEq;
+using ::testing::DoAll;
 
 class NetHandleTest : public ::testing::Test
 {
