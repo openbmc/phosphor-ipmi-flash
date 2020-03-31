@@ -23,7 +23,8 @@ libupdater_la_SOURCES = \
 	net.cpp \
 	pci.cpp \
 	p2a.cpp \
-	progress.cpp
+	progress.cpp \
+
 libupdater_la_LIBADD = $(top_builddir)/libfirmware_common.la
 
 SUBDIRS = . test
