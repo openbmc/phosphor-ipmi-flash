@@ -22,8 +22,18 @@ libupdater_la_SOURCES = \
 	io.cpp \
 	net.cpp \
 	pci.cpp \
-	p2a.cpp \
 	progress.cpp
+
+if ENABLE_ASPEED_NUVOTON_VGA
+libupdater_la_SOURCES += p2a_nuvoton.cpp
+endif
+
+if ENABLE_ASPEED_NUVOTON_MBOX
+libupdater_la_SOURCES += p2a_nuvoton.cpp
+else
+libupdater_la_SOURCES += p2a_aspeed.cpp
+endif
+
 libupdater_la_LIBADD = $(top_builddir)/libfirmware_common.la
 
 SUBDIRS = . test
