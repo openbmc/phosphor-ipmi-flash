@@ -18,6 +18,7 @@
 #include "file_handler.hpp"
 #include "fs.hpp"
 #include "general_systemd.hpp"
+#include "skip_action.hpp"
 
 #include <algorithm>
 #include <cstdio>
@@ -109,17 +110,16 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             const auto& a = item.at("actions");
             std::unique_ptr<ActionPack> pack = std::make_unique<ActionPack>();
 
-            /* It hasn't been fully determined if any action being optional is
-             * useful, so for now they will be required.
-             * TODO: Evaluate how the behaviors change if some actions are
-             * missing, does the code just assume it was successful?  I would
-             * think not.
-             */
+            /* to make an action optional, assign type "skip" */
             const auto& prep = a.at("preparation");
             const std::string prepareType = prep.at("type");
             if (prepareType == "systemd")
             {
                 pack->preparation = std::move(buildSystemd(prep));
+            }
+            else if (prepareType == "skip")
+            {
+                pack->preparation = std::move(SkipAction::CreateSkipAction());
             }
             else
             {
@@ -136,6 +136,10 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             else if (verifyType == "systemd")
             {
                 pack->verification = std::move(buildSystemd(verify));
+            }
+            else if (verifyType == "skip")
+            {
+                pack->verification = std::move(SkipAction::CreateSkipAction());
             }
             else
             {
@@ -158,6 +162,10 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
             else if (updateType == "systemd")
             {
                 pack->update = std::move(buildSystemd(update));
+            }
+            else if (updateType == "skip")
+            {
+                pack->update = std::move(SkipAction::CreateSkipAction());
             }
             else
             {
