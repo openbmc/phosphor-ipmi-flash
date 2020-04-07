@@ -1,5 +1,6 @@
 #include "buildjson.hpp"
 #include "general_systemd.hpp"
+#include "skip_action.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -579,6 +580,40 @@ TEST(FirmwareJsonTest, VerifyValidUpdateWithFilePath)
     auto updater =
         reinterpret_cast<SystemdWithStatusFile*>(h[0].actions->update.get());
     EXPECT_THAT(updater->getMode(), "replace-fake");
+}
+
+TEST(FirmwareJsonTest, VerifySkipFields)
+{
+    // In this configuration, nothing happens because all actions are set to
+    // skip.
+    auto j2 = R"(
+        [{
+            "blob" : "/flash/image",
+            "handler" : {
+                "type" : "file",
+                "path" : "/run/initramfs/bmc-image"
+            },
+            "actions" : {
+                "preparation" : {
+                    "type" : "skip"
+                },
+                "verification" : {
+                    "type" : "skip"
+                },
+                "update" : {
+                    "type" : "skip"
+                }
+            }
+         }]
+    )"_json;
+
+    auto h = buildHandlerFromJson(j2);
+    EXPECT_EQ(h[0].blobId, "/flash/image");
+    EXPECT_FALSE(h[0].handler == nullptr);
+    EXPECT_FALSE(h[0].actions == nullptr);
+    EXPECT_FALSE(h[0].actions->preparation == nullptr);
+    EXPECT_FALSE(h[0].actions->verification == nullptr);
+    EXPECT_FALSE(h[0].actions->update == nullptr);
 }
 
 } // namespace
