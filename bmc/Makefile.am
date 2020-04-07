@@ -45,7 +45,8 @@ libfirmwareblob_common_la_SOURCES = \
 	firmware_handler.cpp \
 	file_handler.cpp \
 	general_systemd.cpp \
-	lpc_handler.cpp
+	lpc_handler.cpp \
+	skip_action.cpp
 
 if ENABLE_ASPEED_LPC
 libfirmwareblob_common_la_SOURCES += lpc_aspeed.cpp

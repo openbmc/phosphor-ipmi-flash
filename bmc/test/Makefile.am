@@ -42,7 +42,8 @@ check_PROGRAMS = \
 	firmware_state_updatecompleted_unittest \
 	firmware_state_notyetstarted_tarball_unittest \
 	firmware_multiplebundle_unittest \
-	firmware_json_unittest
+	firmware_json_unittest \
+	firmware_skip_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -108,3 +109,6 @@ firmware_multiplebundle_unittest_LDADD = $(top_builddir)/bmc/libfirmwareblob_com
 
 firmware_json_unittest_SOURCES = firmware_json_unittest.cpp
 firmware_json_unittest_LDADD = $(top_builddir)/bmc/libfirmwareblob_common.la
+
+firmware_skip_unittest_SOURCES = firmware_skip_unittest.cpp
+firmware_skip_unittest_LDADD = $(top_builddir)/bmc/libfirmwareblob_common.la
