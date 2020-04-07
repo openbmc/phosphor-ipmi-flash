@@ -210,6 +210,10 @@ required parameter `path`.
 Action types are used to define what to do for a specific requested action, such
 as "verify the blob contents."
 
+#### `skip`
+
+The `skip` type will effectively make that action a no-op and always return success.
+
 #### `systemd`
 
 The `systemd` type should be used when you wish to start a systemd service or
