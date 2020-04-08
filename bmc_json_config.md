@@ -31,9 +31,8 @@ replaced, here we're using the defaults.
             "unit": "phosphor-ipmi-flash-bios-prepare.target"
         },
         "verification": {
-            "type": "fileSystemdVerify",
-            "unit": "phosphor-ipmi-flash-bios-verify.target",
-            "path": "/tmp/bios.verify"
+            "type": "systemd",
+            "unit": "phosphor-ipmi-flash-bios-verify.target"
         },
         "update": {
             "type": "systemd",
@@ -104,16 +103,12 @@ the name of the systemd unit to start. In this case, it'll start
 `phosphor-ipmi-flash-bios-prepare.target`. This can be a single service name, or
 a target.
 
-In this configuration the `verification` type is `fileSystemdVerify`. This is
-similar to the `systemd` type except it also expects a `path`. The `path` is
-used to read back the status of whatever was triggered via the `unit` field. Was
-the verification successful? Is the verification still in progress? This
-information is read back from the file specified by the `path` field.
+In this configuration the `verification` type is `systemd`. This will query
+systemd for the status of the verification unit to determine running, success,
+or failure.
 
 In this configuration the `update` type is `systemd`. This is the same object as
-with the `preparation` action. In this case, though the status cannot be read
-back with something useful. Typically, the `fileSystemdVerify` type should be
-used as it provides information on success.
+with the `preparation` action.
 
 ## config-static-bmc-reboot.json
 
@@ -133,9 +128,8 @@ replaced, here we're using the defaults.
             "unit": "phosphor-ipmi-flash-bmc-prepare.target"
         },
         "verification": {
-            "type": "fileSystemdVerify",
-            "unit": "phosphor-ipmi-flash-bmc-verify.target",
-            "path": "/tmp/bmc.verify"
+            "type": "systemd",
+            "unit": "phosphor-ipmi-flash-bmc-verify.target"
         },
         "update": {
             "type": "reboot"
@@ -166,9 +160,8 @@ replaced, here we're using the defaults.
             "unit": "phosphor-ipmi-flash-bmc-prepare.target"
         },
         "verification": {
-            "type": "fileSystemdVerify",
-            "unit": "phosphor-ipmi-flash-bmc-verify.target",
-            "path": "/tmp/bmc.verify"
+            "type": "systemd",
+            "unit": "phosphor-ipmi-flash-bmc-verify.target"
         },
         "update": {
             "type": "systemd",

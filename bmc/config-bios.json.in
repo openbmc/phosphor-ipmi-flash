@@ -10,9 +10,8 @@
 			"unit": "@PREPARATION_BIOS_TARGET@"
 		},
 		"verification": {
-			"type": "fileSystemdVerify",
-			"unit": "@VERIFY_BIOS_TARGET@",
-			"path": "@BIOS_VERIFY_STATUS_FILENAME@"
+			"type": "systemd",
+			"unit": "@VERIFY_BIOS_TARGET@"
 		},
 		"update": {
 			"type": "systemd",

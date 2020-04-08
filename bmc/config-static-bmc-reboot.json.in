@@ -10,9 +10,8 @@
 			"unit": "@PREPARATION_DBUS_SERVICE@"
 		},
 		"verification": {
-			"type": "fileSystemdVerify",
-			"unit": "@VERIFY_DBUS_SERVICE@",
-			"path": "@VERIFY_STATUS_FILENAME@"
+			"type": "systemd",
+			"unit": "@VERIFY_DBUS_SERVICE@"
 		},
 		"update": {
 			"type": "reboot"
