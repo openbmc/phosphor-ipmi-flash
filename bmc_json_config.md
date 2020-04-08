@@ -211,8 +211,8 @@ success.
 #### `systemd`
 
 The `systemd` type should be used when you wish to start a systemd service or
-target but only care about the status of whether or not you were able to start
-it, not whether it did what you ultimately wanted.
+target. For verification and update operations this will track the status of the
+systemd service to determine success or failure.
 
 *   `unit` - required - string - the systemd unit to start.
 *   `mode` - optional - string - default: replace - the mode for starting the
@@ -223,7 +223,8 @@ it, not whether it did what you ultimately wanted.
 Because one may care about the result of their actions, the `fileSystemdVerify`
 and `fileSystemdUpdate` action type exists. It will start the service and when
 asked for a status, it'll read the contents of a file. Therefore, whatever is
-performing the action will want to update that file.
+performing the action will want to update that file. NOTE: Now that the systemd
+type action tracks unit status, that action is now preferred.
 
 *   `path` - required - string - the full file system path to where one finds
     the status.
