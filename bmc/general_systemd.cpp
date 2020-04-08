@@ -162,6 +162,24 @@ std::unique_ptr<TriggerableActionInterface>
                                                    service, mode);
 }
 
+bool SystemdWithStatusFile::trigger()
+{
+    if (SystemdNoFile::status() != ActionStatus::running)
+    {
+        try
+        {
+            std::ofstream ofs;
+            ofs.open(checkPath);
+            ofs << "unknown";
+        }
+        catch (const std::exception& e)
+        {
+            return false;
+        }
+    }
+    return SystemdNoFile::trigger();
+}
+
 ActionStatus SystemdWithStatusFile::status()
 {
     // Assume a status based on job execution if there is no file
@@ -190,6 +208,10 @@ ActionStatus SystemdWithStatusFile::status()
         else if (status == "failed")
         {
             result = ActionStatus::failed;
+        }
+        else
+        {
+            result = ActionStatus::unknown;
         }
     }
 

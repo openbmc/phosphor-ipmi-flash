@@ -79,6 +79,7 @@ class SystemdWithStatusFile : public SystemdNoFile
     {
     }
 
+    bool trigger() override;
     ActionStatus status() override;
 
   private:
