@@ -30,6 +30,7 @@ namespace ipmi_flash
 static constexpr auto systemdService = "org.freedesktop.systemd1";
 static constexpr auto systemdRoot = "/org/freedesktop/systemd1";
 static constexpr auto systemdInterface = "org.freedesktop.systemd1.Manager";
+static constexpr auto jobInterface = "org.freedesktop.systemd1.Job";
 
 bool SystemdNoFile::trigger()
 {
@@ -85,7 +86,7 @@ void SystemdNoFile::abort()
 
     // Cancel the job
     auto cancel_req = bus.new_method_call(systemdService, job->c_str(),
-                                          systemdInterface, "Cancel");
+                                          jobInterface, "Cancel");
     try
     {
         bus.call_noreply(cancel_req);
