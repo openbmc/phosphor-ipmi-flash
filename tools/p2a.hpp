@@ -16,6 +16,14 @@ constexpr std::size_t aspeedP2aConfig = 0x0f000;
 constexpr std::size_t aspeedP2aBridge = 0x0f004;
 constexpr std::uint32_t p2ABridgeEnabled = 0x1;
 
+#ifdef NUVOTON_P2A_VGA
+constexpr std::uint16_t nuvotonVGAVendorId = 0x102B;
+constexpr std::uint16_t nuvotonVGADeviceId = 0x0536;
+#else
+constexpr std::uint16_t nuvotonMBOXVendorId = 0x1050;
+constexpr std::uint16_t nuvotonMBOXDeviceId = 0x0750;
+#endif
+
 namespace host_tool
 {
 
