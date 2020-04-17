@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include "p2a.hpp"
 
 #include "data.hpp"
 #include "flags.hpp"
+#include "p2a.hpp"
 #include "pci.hpp"
 
 #include <cstdint>
