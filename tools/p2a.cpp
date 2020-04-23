@@ -52,35 +52,55 @@ bool P2aDataHandler::sendContents(const std::string& input,
     PciDevice result;
     PciFilter filter;
     bool found = false;
-    pciaddr_t bar1;
+    pciaddr_t bar;
     bool returnValue = false;
     int inputFd = -1;
     ipmi_flash::PciConfigResponse pciResp;
     std::int64_t fileSize;
-    const std::uint32_t p2aLength = aspeedP2aOffset;
     std::unique_ptr<std::uint8_t[]> readBuffer;
 
-    filter.vid = aspeedVendorId;
-    filter.did = aspeedDeviceId;
+    std::uint16_t PciDevicevid;
+    std::uint16_t PciDevicedid;
+    std::uint32_t P2aOffset;
+    std::uint32_t p2aLength;
 
-    /* Find the ASPEED PCI device entry we want. */
-    auto output = pci->getPciDevices(filter);
-    for (const auto& d : output)
+    for (auto device : PCIDeviceList)
     {
-        std::fprintf(stderr, "[0x%x 0x%x] ", d.vid, d.did);
+        filter.vid = device.VID;
+        filter.did = device.DID;
 
-        /* Verify it's a memory-based bar -- we want bar1. */
-        bar1 = d.bars[1];
-        if ((bar1 & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO)
+        /* Find the PCI device entry we want. */
+        auto output = pci->getPciDevices(filter);
+        for (const auto& d : output)
         {
-            /* We want it to not be IO-based access. */
-            continue;
+            std::fprintf(stderr, "[0x%x 0x%x] \n", d.vid, d.did);
+
+            /* Verify it's a memory-based bar. */
+            bar = d.bars[device.bar];
+
+            if ((bar & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO)
+            {
+                /* We want it to not be IO-based access. */
+                continue;
+            }
+
+            /* For now capture the entire device even if we're only using BAR0
+             */
+            result = d;
+            found = true;
         }
 
-        /* For now capture the entire device even if we're only using BAR1 */
-        result = d;
-        found = true;
-        break;
+        if (found)
+        {
+            std::fprintf(stderr, "Find [0x%x 0x%x] \n", device.VID, device.DID);
+            std::fprintf(stderr, "bar%u[0x%x] \n", device.bar,
+                         (unsigned int)bar);
+            PciDevicevid = device.VID;
+            PciDevicedid = device.DID;
+            P2aOffset = device.Offset;
+            p2aLength = device.Length;
+            break;
+        }
     }
 
     if (!found)
@@ -93,27 +113,30 @@ bool P2aDataHandler::sendContents(const std::string& input,
     /* We sent the open command before this, so the window should be open and
      * the bridge enabled on the BMC.
      */
-    std::uint32_t value;
-    if (!io->read(bar1 + aspeedP2aConfig, sizeof(value), &value))
+    if (PciDevicevid == 0x1a03 && PciDevicedid == 0x2000)
     {
-        std::fprintf(stderr, "PCI config read failed\n");
-        return false;
-    }
-
-    if (0 == (value & p2ABridgeEnabled))
-    {
-        std::fprintf(stderr, "Bridge not enabled - Enabling from host\n");
-
-        value |= p2ABridgeEnabled;
-        if (!io->write(bar1 + aspeedP2aConfig, sizeof(value), &value))
+        std::uint32_t value;
+        if (!io->read(bar + aspeedP2aConfig, sizeof(value), &value))
         {
-            std::fprintf(stderr, "PCI config write failed\n");
+            std::fprintf(stderr, "PCI config read failed\n");
             return false;
         }
-    }
 
-    /* From this point down we need to disable the bridge. */
-    std::fprintf(stderr, "The bridge is enabled!\n");
+        if (0 == (value & p2ABridgeEnabled))
+        {
+            std::fprintf(stderr, "Bridge not enabled - Enabling from host\n");
+
+            value |= p2ABridgeEnabled;
+            if (!io->write(bar + aspeedP2aConfig, sizeof(value), &value))
+            {
+                std::fprintf(stderr, "PCI config write failed\n");
+                return false;
+            }
+        }
+
+        /* From this point down we need to disable the bridge. */
+        std::fprintf(stderr, "The bridge is enabled!\n");
+    }
 
     /* Read the configuration via blobs metadata (stat). */
     ipmiblob::StatResponse stat = blob->getStat(session);
@@ -127,13 +150,16 @@ bool P2aDataHandler::sendContents(const std::string& input,
     std::memcpy(&pciResp, stat.metadata.data(), sizeof(pciResp));
     std::fprintf(stderr, "Received address: 0x%x\n", pciResp.address);
 
-    /* Configure the mmio to point there. */
-    if (!io->write(bar1 + aspeedP2aBridge, sizeof(pciResp.address),
-                   &pciResp.address))
+    if (PciDevicevid == 0x1a03 && PciDevicedid == 0x2000)
     {
-        // Failed to set it up, so fall back.
-        std::fprintf(stderr, "Failed to update the bridge address\n");
-        goto exit;
+        /* Configure the mmio to point there. */
+        if (!io->write(bar + aspeedP2aBridge, sizeof(pciResp.address),
+                       &pciResp.address))
+        {
+            // Failed to set it up, so fall back.
+            std::fprintf(stderr, "Failed to update the bridge address\n");
+            goto exit;
+        }
     }
 
     /* For data blocks in 64kb, stage data, and send blob write command. */
@@ -170,19 +196,18 @@ bool P2aDataHandler::sendContents(const std::string& input,
             bytesRead = sys->read(inputFd, readBuffer.get(), p2aLength);
             if (bytesRead > 0)
             {
-                /* TODO: Will likely need to store an rv somewhere to know
-                 * when we're exiting from failure.
+                /* TODO: Will likely need to store an rv somewhere to know when
+                 * we're exiting from failure.
                  */
-                if (!io->write(bar1 + aspeedP2aOffset, bytesRead,
-                               readBuffer.get()))
+                if (!io->write(bar + P2aOffset, bytesRead, readBuffer.get()))
                 {
                     std::fprintf(stderr,
                                  "Failed to write to region in memory!\n");
                     goto exit;
                 }
 
-                /* Ok, so the data is staged, now send the blob write with
-                 * the details.
+                /* Ok, so the data is staged, now send the blob write with the
+                 * details.
                  */
                 struct ipmi_flash::ExtChunkHdr chunk;
                 chunk.length = bytesRead;
@@ -205,8 +230,11 @@ bool P2aDataHandler::sendContents(const std::string& input,
     returnValue = true;
 
 exit:
-    /* disable PCI bridge. */
-    disablePciBridge(io, bar1);
+    /* disable ASPEED PCI bridge. */
+    if (PciDevicevid == 0x1a03 && PciDevicedid == 0x2000)
+    {
+        disablePciBridge(io, bar);
+    }
 
     /* close input file. */
     if (inputFd != -1)
