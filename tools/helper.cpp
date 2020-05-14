@@ -29,7 +29,8 @@ namespace host_tool
 /* Poll an open verification session.  Handling closing the session is not yet
  * owned by this method.
  */
-bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
+bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob,
+                std::chrono::seconds timeout)
 {
     using namespace std::chrono_literals;
 
@@ -38,18 +39,14 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
 
     try
     {
-        /* sleep for 5 seconds and check 360 times, for a timeout of: 1800
-         * seconds (30 minutes).
-         * TODO: make this command line configurable and provide smaller
-         * default value.
-         */
-        static constexpr int commandAttempts = 360;
-        int attempts = 0;
+        /* sleep for 5 seconds between each attempt */
+        auto commandAttempts = timeout / verificationSleep;
+        decltype(commandAttempts) attempts = 0;
         bool exitLoop = false;
 
         /* Reach back the current status from the verification service output.
          */
-        while (attempts++ < commandAttempts)
+        do
         {
             ipmiblob::StatResponse resp = blob->getStat(session);
 
@@ -89,7 +86,7 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
                 break;
             }
             std::this_thread::sleep_for(verificationSleep);
-        }
+        } while (++attempts < commandAttempts);
     }
     catch (const ipmiblob::BlobException& b)
     {

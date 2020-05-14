@@ -2,6 +2,7 @@
 
 #include "updater.hpp"
 
+#include <chrono>
 #include <string>
 
 #include <gmock/gmock.h>
@@ -14,7 +15,8 @@ class UpdateHandlerMock : public UpdateHandlerInterface
   public:
     MOCK_METHOD1(checkAvailable, bool(const std::string&));
     MOCK_METHOD2(sendFile, void(const std::string&, const std::string&));
-    MOCK_METHOD2(verifyFile, bool(const std::string&, bool));
+    MOCK_METHOD3(verifyFile,
+                 bool(const std::string&, bool, std::chrono::seconds));
     MOCK_METHOD0(cleanArtifacts, void());
 };
 

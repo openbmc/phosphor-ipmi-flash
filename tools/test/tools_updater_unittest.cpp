@@ -6,6 +6,7 @@
 #include "updater_mock.hpp"
 #include "util.hpp"
 
+#include <chrono>
 #include <ipmiblob/test/blob_interface_mock.hpp>
 #include <string>
 
@@ -19,10 +20,13 @@ using ::testing::Eq;
 using ::testing::Return;
 using ::testing::TypedEq;
 
+using namespace std::literals::chrono_literals;
+
 class UpdateHandlerTest : public ::testing::Test
 {
   protected:
     const std::uint16_t session = 0xbeef;
+    std::chrono::seconds defaultTimeout = 1s;
 
     DataInterfaceMock handlerMock;
     ipmiblob::BlobInterfaceMock blobMock;
@@ -77,7 +81,8 @@ TEST_F(UpdateHandlerTest, VerifyFileHandleReturnsTrueOnSuccess)
         .WillOnce(Return(verificationResponse));
     EXPECT_CALL(blobMock, closeBlob(session)).WillOnce(Return());
 
-    EXPECT_TRUE(updater.verifyFile(ipmi_flash::verifyBlobId, false));
+    EXPECT_TRUE(updater.verifyFile(ipmi_flash::verifyBlobId, false,
+                                   defaultVerifyTimeout));
 }
 
 class UpdaterTest : public ::testing::Test
@@ -86,6 +91,7 @@ class UpdaterTest : public ::testing::Test
     ipmiblob::BlobInterfaceMock blobMock;
     std::uint16_t session = 0xbeef;
     bool defaultIgnore = false;
+    std::chrono::seconds defaultTimeout = 1s;
 };
 
 TEST_F(UpdaterTest, UpdateMainReturnsSuccessIfAllSuccess)
@@ -97,12 +103,15 @@ TEST_F(UpdaterTest, UpdateMainReturnsSuccessIfAllSuccess)
     EXPECT_CALL(handler, checkAvailable(_)).WillOnce(Return(true));
     EXPECT_CALL(handler, sendFile(_, image)).WillOnce(Return());
     EXPECT_CALL(handler, sendFile(_, signature)).WillOnce(Return());
-    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore))
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore,
+                                    defaultVerifyTimeout))
         .WillOnce(Return(true));
-    EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, defaultIgnore))
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, defaultIgnore,
+                                    defaultTimeout))
         .WillOnce(Return(true));
 
-    updaterMain(&handler, image, signature, "static", defaultIgnore);
+    updaterMain(&handler, image, signature, "static", defaultIgnore,
+                defaultTimeout);
 }
 
 TEST_F(UpdaterTest, UpdateMainReturnsSuccessWithIgnoreUpdate)
@@ -115,12 +124,15 @@ TEST_F(UpdaterTest, UpdateMainReturnsSuccessWithIgnoreUpdate)
     EXPECT_CALL(handler, checkAvailable(_)).WillOnce(Return(true));
     EXPECT_CALL(handler, sendFile(_, image)).WillOnce(Return());
     EXPECT_CALL(handler, sendFile(_, signature)).WillOnce(Return());
-    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore))
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore,
+                                    defaultVerifyTimeout))
         .WillOnce(Return(true));
-    EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, updateIgnore))
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, updateIgnore,
+                                    defaultTimeout))
         .WillOnce(Return(true));
 
-    updaterMain(&handler, image, signature, "static", updateIgnore);
+    updaterMain(&handler, image, signature, "static", updateIgnore,
+                defaultTimeout);
 }
 
 TEST_F(UpdaterTest, UpdateMainCleansUpOnFailure)
@@ -132,13 +144,14 @@ TEST_F(UpdaterTest, UpdateMainCleansUpOnFailure)
     EXPECT_CALL(handler, checkAvailable(_)).WillOnce(Return(true));
     EXPECT_CALL(handler, sendFile(_, image)).WillOnce(Return());
     EXPECT_CALL(handler, sendFile(_, signature)).WillOnce(Return());
-    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore))
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore,
+                                    defaultVerifyTimeout))
         .WillOnce(Return(false));
     EXPECT_CALL(handler, cleanArtifacts()).WillOnce(Return());
 
-    EXPECT_THROW(
-        updaterMain(&handler, image, signature, "static", defaultIgnore),
-        ToolException);
+    EXPECT_THROW(updaterMain(&handler, image, signature, "static",
+                             defaultIgnore, defaultTimeout),
+                 ToolException);
 }
 
 } // namespace host_tool

@@ -23,6 +23,7 @@
 #include "util.hpp"
 
 #include <algorithm>
+#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <ipmiblob/blob_errors.hpp>
@@ -84,7 +85,8 @@ void UpdateHandler::sendFile(const std::string& target, const std::string& path)
     blob->closeBlob(session);
 }
 
-bool UpdateHandler::verifyFile(const std::string& target, bool ignoreStatus)
+bool UpdateHandler::verifyFile(const std::string& target, bool ignoreStatus,
+                               std::chrono::seconds timeout)
 {
     std::uint16_t session;
     bool success = false;
@@ -125,7 +127,7 @@ bool UpdateHandler::verifyFile(const std::string& target, bool ignoreStatus)
     std::fprintf(stderr, "Calling stat on %s session to check status\n",
                  target.c_str());
 
-    if (pollStatus(session, blob))
+    if (pollStatus(session, blob, timeout))
     {
         std::fprintf(stderr, "Returned success\n");
         success = true;

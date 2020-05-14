@@ -2,11 +2,16 @@
 
 #include "interface.hpp"
 
+#include <chrono>
 #include <ipmiblob/blob_interface.hpp>
 #include <string>
 
 namespace host_tool
 {
+
+using namespace std::literals::chrono_literals;
+
+constexpr auto defaultVerifyTimeout = 300s;
 
 class UpdateHandlerInterface
 {
@@ -38,9 +43,12 @@ class UpdateHandlerInterface
      * future.
      * @param[in] ignoreStatus - determines whether to ignore the verification
      * status.
+     * @param[in] timeout - maximum time to wait for verification status.
      * @return true if verified, false if verification errors.
      */
-    virtual bool verifyFile(const std::string& target, bool ignoreStatus) = 0;
+    virtual bool
+        verifyFile(const std::string& target, bool ignoreStatus,
+                   std::chrono::seconds timeout = defaultVerifyTimeout) = 0;
 
     /**
      * Cleanup the artifacts by triggering this action.
@@ -69,7 +77,8 @@ class UpdateHandler : public UpdateHandlerInterface
     /**
      * @throw ToolException on failure (TODO: throw on timeout.)
      */
-    bool verifyFile(const std::string& target, bool ignoreStatus) override;
+    bool verifyFile(const std::string& target, bool ignoreStatus,
+                    std::chrono::seconds timeout) override;
 
     void cleanArtifacts() override;
 

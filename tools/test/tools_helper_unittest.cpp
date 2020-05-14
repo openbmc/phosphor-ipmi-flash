@@ -11,11 +11,14 @@ namespace host_tool
 using ::testing::Return;
 using ::testing::TypedEq;
 
+using namespace std::literals::chrono_literals;
+
 class UpdaterTest : public ::testing::Test
 {
   protected:
     ipmiblob::BlobInterfaceMock blobMock;
     std::uint16_t session = 0xbeef;
+    std::chrono::seconds timeout = 1s;
 };
 
 TEST_F(UpdaterTest, PollStatusReturnsAfterSuccess)
@@ -28,7 +31,7 @@ TEST_F(UpdaterTest, PollStatusReturnsAfterSuccess)
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(verificationResponse));
 
-    EXPECT_TRUE(pollStatus(session, &blobMock));
+    EXPECT_TRUE(pollStatus(session, &blobMock, timeout));
 }
 
 TEST_F(UpdaterTest, PollStatusReturnsAfterFailure)
@@ -41,7 +44,7 @@ TEST_F(UpdaterTest, PollStatusReturnsAfterFailure)
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(verificationResponse));
 
-    EXPECT_FALSE(pollStatus(session, &blobMock));
+    EXPECT_FALSE(pollStatus(session, &blobMock, timeout));
 }
 
 } // namespace host_tool

@@ -28,6 +28,7 @@
 #include <getopt.h>
 
 #include <algorithm>
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
 #include <exception>
@@ -47,8 +48,13 @@
 
 namespace
 {
+
+using namespace std::literals::chrono_literals;
+
 const std::vector<std::string> interfaceList = {IPMINET, IPMIBT, IPMILPC,
                                                 IPMIPCI};
+constexpr auto defaultTimeout = 625s;
+
 } // namespace
 
 void usage(const char* program)
@@ -57,7 +63,7 @@ void usage(const char* program)
         stderr,
         "Usage: %s --command <command> --interface <interface> --image "
         "<image file> --sig <signature file> --type <layout> "
-        "[--ignore-update]\n",
+        "[--ignore-update] [--timeout <seconds>]\n",
         program);
 
     std::fprintf(stderr, "interfaces: ");
@@ -92,6 +98,8 @@ int main(int argc, char* argv[])
     std::uint32_t hostAddress = 0;
     std::uint32_t hostLength = 0;
     bool ignoreUpdate = false;
+    long timeoutLong = 0;
+    std::chrono::seconds timeout = defaultTimeout;
 
     while (1)
     {
@@ -105,6 +113,7 @@ int main(int argc, char* argv[])
             {"length", required_argument, 0, 'l'},
             {"type", required_argument, 0, 't'},
             {"ignore-update", no_argument, 0, 'u'},
+            {"timeout", required_argument, 0, 'w'},
             {"host", required_argument, 0, 'H'},
             {"port", optional_argument, 0, 'p'},
             {0, 0, 0, 0}
@@ -112,7 +121,7 @@ int main(int argc, char* argv[])
         // clang-format on
 
         int option_index = 0;
-        int c = getopt_long(argc, argv, "c:i:m:s:a:l:t:uH:p:", long_options,
+        int c = getopt_long(argc, argv, "c:i:m:s:a:l:t:uw:H:p:", long_options,
                             &option_index);
         if (c == -1)
         {
@@ -179,6 +188,15 @@ int main(int argc, char* argv[])
                 break;
             case 'u':
                 ignoreUpdate = true;
+                break;
+            case 'w':
+                timeoutLong = std::strtol(&optarg[0], &valueEnd, 0);
+                if (valueEnd == nullptr)
+                {
+                    usage(argv[0]);
+                    exit(EXIT_FAILURE);
+                }
+                timeout = std::chrono::seconds(timeoutLong);
                 break;
             case 'H':
                 host = std::string{optarg};
@@ -266,7 +284,7 @@ int main(int argc, char* argv[])
         {
             host_tool::UpdateHandler updater(&blob, handler.get());
             host_tool::updaterMain(&updater, imagePath, signaturePath, type,
-                                   ignoreUpdate);
+                                   ignoreUpdate, timeout);
         }
         catch (const host_tool::ToolException& e)
         {

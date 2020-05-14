@@ -23,6 +23,7 @@
 #include "util.hpp"
 
 #include <algorithm>
+#include <chrono>
 #include <cstring>
 #include <ipmiblob/blob_errors.hpp>
 #include <memory>
@@ -36,7 +37,8 @@ namespace host_tool
 
 void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
                  const std::string& signaturePath,
-                 const std::string& layoutType, bool ignoreUpdate)
+                 const std::string& layoutType, bool ignoreUpdate,
+                 std::chrono::seconds timeout)
 {
     /* TODO: validate the layoutType isn't a special value such as: 'update',
      * 'verify', or 'hash'
@@ -75,7 +77,8 @@ void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
 
         /* Trigger the update by opening and committing the update file. */
         std::fprintf(stderr, "Opening the update file\n");
-        if (updater->verifyFile(ipmi_flash::updateBlobId, ignoreUpdate))
+        if (updater->verifyFile(ipmi_flash::updateBlobId, ignoreUpdate,
+                                timeout))
         {
             std::fprintf(stderr, "succeeded\n");
         }

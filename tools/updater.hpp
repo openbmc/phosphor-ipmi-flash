@@ -2,6 +2,7 @@
 
 #include "handler.hpp"
 
+#include <chrono>
 #include <ipmiblob/blob_interface.hpp>
 #include <string>
 
@@ -16,10 +17,12 @@ namespace host_tool
  * @param[in] signaturePath - the path to the signature file.
  * @param[in] layoutType - the image update layout type (static/ubi/other)
  * @param[in] ignoreUpdate - determines whether to ignore the update status
+ * @param[in] timeout - maximum time in seconds to wait for update status
  * @throws ToolException on failures.
  */
 void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
                  const std::string& signaturePath,
-                 const std::string& layoutType, bool ignoreUpdate);
+                 const std::string& layoutType, bool ignoreUpdate,
+                 std::chrono::seconds timeout);
 
 } // namespace host_tool
