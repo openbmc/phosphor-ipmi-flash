@@ -284,5 +284,22 @@ TEST_F(FirmwareHandlerVerificationStartedTest,
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
 }
 
+/*
+ * expire(session)
+ */
+TEST_F(FirmwareHandlerVerificationStartedTest,
+       ExpireOnSessionDuringVerificationAbortsProcess)
+{
+    getToVerificationStarted(staticLayoutBlobId);
+    EXPECT_CALL(*verifyMockPtr, abort()).Times(0);
+
+    EXPECT_TRUE(handler->expire(session));
+
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(startingBlobs));
+
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
+
 } // namespace
 } // namespace ipmi_flash

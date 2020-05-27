@@ -129,6 +129,24 @@ TEST_F(FirmwareHandlerVerificationPendingTest, DeleteHashAbortsProcess)
 }
 
 /*
+ * expire(session)
+ */
+TEST_F(FirmwareHandlerVerificationPendingTest,
+       ExpireVerificationPendingAbortsProcess)
+{
+    getToVerificationPending(staticLayoutBlobId);
+
+    EXPECT_CALL(*verifyMockPtr, abort()).Times(0);
+
+    EXPECT_TRUE(handler->expire(session));
+
+    std::vector<std::string> expectedBlobs = {staticLayoutBlobId, hashBlobId};
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(expectedBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
+
+/*
  * stat(blob)
  */
 TEST_F(FirmwareHandlerVerificationPendingTest, StatOnActiveImageReturnsFailure)
