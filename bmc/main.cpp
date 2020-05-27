@@ -32,7 +32,6 @@
 
 #include <cstdint>
 #include <memory>
-#include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus.hpp>
 #include <string>
 #include <unordered_map>
@@ -136,9 +135,7 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 
     if (!handler)
     {
-        using namespace phosphor::logging;
-
-        log<level::ERR>("Firmware Handler has invalid configuration");
+        std::fprintf(stderr, "Firmware Handler has an invalid configuration");
         return nullptr;
     }
 
