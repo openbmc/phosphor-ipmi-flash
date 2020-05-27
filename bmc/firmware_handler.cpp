@@ -753,7 +753,8 @@ void FirmwareBlobHandler::changeState(UpdateState next)
 
 bool FirmwareBlobHandler::expire(uint16_t session)
 {
-    return false;
+    abortProcess();
+    return true;
 }
 
 /*

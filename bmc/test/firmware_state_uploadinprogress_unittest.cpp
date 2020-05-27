@@ -278,5 +278,18 @@ TEST_F(FirmwareHandlerUploadInProgressTest, DeleteBlobReturnsFalse)
     }
 }
 
+/*
+ * expire(session)
+ */
+TEST_F(FirmwareHandlerUploadInProgressTest, ExpireAbortsProcess)
+{
+    openToInProgress(staticLayoutBlobId);
+
+    ASSERT_TRUE(handler->expire(session));
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(startingBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
+
 } // namespace
 } // namespace ipmi_flash

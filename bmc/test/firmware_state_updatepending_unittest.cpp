@@ -291,5 +291,20 @@ TEST_F(FirmwareHandlerUpdatePendingTest, DeleteHashAbortsProcess)
     expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
 }
 
+/*
+ * expire(session)
+ */
+TEST_F(FirmwareHandlerUpdatePendingTest, ExpireOnUpdatePendingAborstsProcess)
+{
+    getToUpdatePending();
+
+    EXPECT_CALL(*updateMockPtr, abort()).Times(0);
+
+    ASSERT_TRUE(handler->expire(session));
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(startingBlobs));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+}
+
 } // namespace
 } // namespace ipmi_flash

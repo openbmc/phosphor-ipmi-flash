@@ -308,5 +308,19 @@ TEST_F(FirmwareHandlerVerificationCompletedTest, CloseAfterFailureAborts)
                 UnorderedElementsAreArray(startingBlobs));
 }
 
+/*
+ * expire(session)
+ */
+TEST_F(FirmwareHandlerVerificationCompletedTest,
+       ExpireAfterVerificationCompletedAborts)
+{
+    getToVerificationCompleted(ActionStatus::failed);
+
+    ASSERT_TRUE(handler->expire(session));
+    expectedState(FirmwareBlobHandler::UpdateState::notYetStarted);
+    EXPECT_THAT(handler->getBlobIds(),
+                UnorderedElementsAreArray(startingBlobs));
+}
+
 } // namespace
 } // namespace ipmi_flash
