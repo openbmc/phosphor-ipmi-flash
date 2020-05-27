@@ -35,14 +35,12 @@ std::vector<std::string> files = {
 
 extern "C" std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
-    using namespace phosphor::logging;
-
     auto handler = ipmi_flash::FileCleanupHandler::CreateCleanupHandler(
         ipmi_flash::cleanupBlobId, ipmi_flash::files);
 
     if (!handler)
     {
-        log<level::ERR>("Unable to create FileCleanupHandle for Firmware");
+        std::fprintf(stderr, "Unable to create FileCleanupHandle for Firmware");
         return nullptr;
     }
 

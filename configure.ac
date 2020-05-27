@@ -77,8 +77,6 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
         [AC_MSG_ERROR([The openbmc/sdbusplus package is required])]
     )
 
-    PKG_CHECK_MODULES([PHOSPHOR_LOGGING], [phosphor-logging])
-
     AC_CHECK_HEADER(
         [blobs-ipmid/blobs.hpp],
         [],

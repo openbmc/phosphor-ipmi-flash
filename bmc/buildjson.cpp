@@ -192,8 +192,6 @@ std::vector<HandlerConfig> buildHandlerFromJson(const nlohmann::json& data)
 
 std::vector<HandlerConfig> BuildHandlerConfigs(const std::string& directory)
 {
-    using namespace phosphor::logging;
-
     std::vector<HandlerConfig> output;
 
     std::vector<std::string> jsonPaths = GetJsonList(directory);
@@ -203,17 +201,15 @@ std::vector<HandlerConfig> BuildHandlerConfigs(const std::string& directory)
         std::ifstream jsonFile(path);
         if (!jsonFile.is_open())
         {
-            log<level::ERR>("Unable to open json file",
-                            entry("PATH=%s", path.c_str()));
+            std::fprintf(stderr, "Unable to open json file: %s\n",
+                         path.c_str());
             continue;
         }
 
         auto data = nlohmann::json::parse(jsonFile, nullptr, false);
         if (data.is_discarded())
         {
-            log<level::ERR>("Parsing json failed",
-                            entry("PATH=%s", path.c_str()));
-            continue;
+            std::fprintf(stderr, "Parsing json failed: %s\n", path.c_str());
         }
 
         std::vector<HandlerConfig> configs = buildHandlerFromJson(data);

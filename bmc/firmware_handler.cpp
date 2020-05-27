@@ -33,8 +33,6 @@
 #include <string>
 #include <vector>
 
-using namespace phosphor::logging;
-
 namespace ipmi_flash
 {
 
@@ -46,7 +44,7 @@ std::unique_ptr<blobs::GenericBlobInterface>
     /* There must be at least one in addition to the hash blob handler. */
     if (firmwares.size() < 2)
     {
-        log<level::ERR>("Must provide at least two firmware handlers.");
+        std::fprintf(stderr, "Must provide at least two firmware handlers.");
         return nullptr;
     }
     if (transports.empty())
