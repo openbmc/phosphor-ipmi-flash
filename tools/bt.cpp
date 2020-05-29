@@ -1,7 +1,8 @@
 #include "bt.hpp"
 
-#include <cstdint>
 #include <ipmiblob/blob_errors.hpp>
+
+#include <cstdint>
 #include <vector>
 
 namespace host_tool

@@ -21,12 +21,10 @@ using ::testing::Eq;
 using ::testing::Return;
 
 class FirmwareHandlerWriteTestIpmiOnly : public IpmiOnlyFirmwareTest
-{
-};
+{};
 
 class FirmwareHandlerWriteTestLpc : public FakeLpcFirmwareTest
-{
-};
+{};
 
 TEST_F(FirmwareHandlerWriteTestIpmiOnly, DataTypeIpmiWriteSuccess)
 {

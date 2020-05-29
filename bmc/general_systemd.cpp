@@ -18,9 +18,10 @@
 
 #include "status.hpp"
 
+#include <sdbusplus/bus.hpp>
+
 #include <fstream>
 #include <memory>
-#include <sdbusplus/bus.hpp>
 #include <string>
 #include <vector>
 

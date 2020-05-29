@@ -19,8 +19,9 @@
 #include "status.hpp"
 #include "tool_errors.hpp"
 
-#include <chrono>
 #include <ipmiblob/blob_errors.hpp>
+
+#include <chrono>
 #include <thread>
 
 namespace host_tool

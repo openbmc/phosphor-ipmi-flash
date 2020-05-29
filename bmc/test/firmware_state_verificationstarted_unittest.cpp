@@ -41,8 +41,7 @@ using ::testing::UnorderedElementsAreArray;
  */
 
 class FirmwareHandlerVerificationStartedTest : public IpmiOnlyFirmwareStaticTest
-{
-};
+{};
 
 /*
  * canHandleBlob(blob)

@@ -30,10 +30,11 @@
 #include "status.hpp"
 #include "util.hpp"
 
-#include <cstdint>
-#include <memory>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus.hpp>
+
+#include <cstdint>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -105,8 +106,9 @@ HandlerPack CreateFileHandlerPack(const std::string& name,
 } // namespace
 } // namespace ipmi_flash
 
-extern "C" {
-std::unique_ptr<blobs::GenericBlobInterface> createHandler();
+extern "C"
+{
+    std::unique_ptr<blobs::GenericBlobInterface> createHandler();
 }
 
 std::unique_ptr<blobs::GenericBlobInterface> createHandler()

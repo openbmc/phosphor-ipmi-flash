@@ -40,8 +40,7 @@ using ::testing::UnorderedElementsAreArray;
  * will inform what canHandleBlob will return.
  */
 class FirmwareHandlerUploadInProgressTest : public IpmiOnlyFirmwareStaticTest
-{
-};
+{};
 
 TEST_F(FirmwareHandlerUploadInProgressTest, GetBlobIdsVerifyOutputActiveImage)
 {

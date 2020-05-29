@@ -28,8 +28,7 @@ class SkipAction : public TriggerableActionInterface
         return true;
     }
     void abort() override
-    {
-    }
+    {}
     ActionStatus status() override
     {
         return ActionStatus::success;

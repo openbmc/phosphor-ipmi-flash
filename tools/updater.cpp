@@ -22,9 +22,10 @@
 #include "tool_errors.hpp"
 #include "util.hpp"
 
+#include <ipmiblob/blob_errors.hpp>
+
 #include <algorithm>
 #include <cstring>
-#include <ipmiblob/blob_errors.hpp>
 #include <memory>
 #include <string>
 #include <thread>

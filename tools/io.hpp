@@ -44,8 +44,7 @@ class DevMemDevice : public HostIoInterface
   public:
     explicit DevMemDevice(const internal::Sys* sys = &internal::sys_impl) :
         sys(sys)
-    {
-    }
+    {}
 
     ~DevMemDevice() = default;
 
@@ -75,8 +74,7 @@ class PpcMemDevice : public HostIoInterface
                           const internal::Sys* sys = &internal::sys_impl) :
         ppcMemPath(ppcMemPath),
         sys(sys)
-    {
-    }
+    {}
 
     ~PpcMemDevice() override;
 

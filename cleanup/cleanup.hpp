@@ -3,6 +3,7 @@
 #include "fs.hpp"
 
 #include <blobs-ipmid/blobs.hpp>
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -22,8 +23,7 @@ class FileCleanupHandler : public blobs::GenericBlobInterface
                        const FileSystemInterface* helper = &fileSystemHelper) :
         supported(blobId),
         files(files), helper(helper)
-    {
-    }
+    {}
 
     ~FileCleanupHandler() = default;
     FileCleanupHandler(const FileCleanupHandler&) = default;

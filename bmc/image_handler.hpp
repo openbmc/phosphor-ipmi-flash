@@ -55,8 +55,7 @@ class HandlerPack
                 std::unique_ptr<ImageHandlerInterface> handler) :
         blobName(name),
         handler(std::move(handler))
-    {
-    }
+    {}
 
     HandlerPack() = default;
     ~HandlerPack() = default;

@@ -2,8 +2,9 @@
 #include "internal_sys_mock.hpp"
 #include "progress_mock.hpp"
 
-#include <cstring>
 #include <ipmiblob/test/blob_interface_mock.hpp>
+
+#include <cstring>
 
 #include <gtest/gtest.h>
 

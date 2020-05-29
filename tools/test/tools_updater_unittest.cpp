@@ -7,6 +7,7 @@
 #include "util.hpp"
 
 #include <ipmiblob/test/blob_interface_mock.hpp>
+
 #include <string>
 
 #include <gtest/gtest.h>

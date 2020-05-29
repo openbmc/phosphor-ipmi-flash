@@ -34,8 +34,7 @@ class LpcDataHandler : public DataInterface
      */
     explicit LpcDataHandler(std::unique_ptr<HardwareMapperInterface> mapper) :
         mapper(std::move(mapper)), initialized(false)
-    {
-    }
+    {}
 
     bool open() override;
     bool close() override;

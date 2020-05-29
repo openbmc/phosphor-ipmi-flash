@@ -4,9 +4,10 @@
 
 #include <unistd.h>
 
+#include <stdplus/handle/managed.hpp>
+
 #include <cstdint>
 #include <optional>
-#include <stdplus/handle/managed.hpp>
 #include <vector>
 
 namespace ipmi_flash
@@ -19,8 +20,7 @@ class NetDataHandler : public DataInterface
 {
   public:
     NetDataHandler() : listenFd(std::nullopt), connFd(std::nullopt)
-    {
-    }
+    {}
 
     bool open() override;
     bool close() override;

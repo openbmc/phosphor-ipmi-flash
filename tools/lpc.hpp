@@ -5,8 +5,9 @@
 #include "io.hpp"
 #include "progress.hpp"
 
-#include <cstdint>
 #include <ipmiblob/blob_interface.hpp>
+
+#include <cstdint>
 
 namespace host_tool
 {

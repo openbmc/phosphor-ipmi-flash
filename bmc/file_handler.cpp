@@ -97,8 +97,7 @@ int FileHandler::getSize()
         return static_cast<int>(fs::file_size(filename));
     }
     catch (const fs::filesystem_error& e)
-    {
-    }
+    {}
 
     return 0;
 }

@@ -7,8 +7,9 @@
 #include "status.hpp"
 #include "util.hpp"
 
-#include <algorithm>
 #include <blobs-ipmid/blobs.hpp>
+
+#include <algorithm>
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -49,8 +50,7 @@ struct Session
      */
     explicit Session(const std::string& path) :
         dataHandler(nullptr), imageHandler(nullptr), flags(0), activePath(path)
-    {
-    }
+    {}
 
     /**
      * Pointer to the correct Data handler interface. (nullptr on BT (or KCS))
@@ -129,8 +129,7 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
         activeHash(activeHashBlobId), verifyImage(verifyBlobId),
         updateImage(updateBlobId), lookup(), state(UpdateState::notYetStarted),
         actionPacks(std::move(actionPacks))
-    {
-    }
+    {}
     ~FirmwareBlobHandler() = default;
     FirmwareBlobHandler(const FirmwareBlobHandler&) = delete;
     FirmwareBlobHandler& operator=(const FirmwareBlobHandler&) = delete;

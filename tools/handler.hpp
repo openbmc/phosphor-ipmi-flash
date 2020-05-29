@@ -3,6 +3,7 @@
 #include "interface.hpp"
 
 #include <ipmiblob/blob_interface.hpp>
+
 #include <string>
 
 namespace host_tool
@@ -54,8 +55,7 @@ class UpdateHandler : public UpdateHandlerInterface
   public:
     UpdateHandler(ipmiblob::BlobInterface* blob, DataInterface* handler) :
         blob(blob), handler(handler)
-    {
-    }
+    {}
 
     ~UpdateHandler() = default;
 

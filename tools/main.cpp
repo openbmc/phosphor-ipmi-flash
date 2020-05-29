@@ -27,13 +27,14 @@
 /* Use CLI11 argument parser once in openbmc/meta-oe or whatever. */
 #include <getopt.h>
 
+#include <ipmiblob/blob_handler.hpp>
+#include <ipmiblob/ipmi_handler.hpp>
+
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <exception>
 #include <iostream>
-#include <ipmiblob/blob_handler.hpp>
-#include <ipmiblob/ipmi_handler.hpp>
 #include <iterator>
 #include <limits>
 #include <memory>

@@ -16,8 +16,7 @@ namespace
 {
 
 class FirmwareOpenFailTest : public ::testing::TestWithParam<std::uint16_t>
-{
-};
+{};
 
 TEST_P(FirmwareOpenFailTest, WithFlags)
 {

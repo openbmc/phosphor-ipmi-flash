@@ -38,8 +38,7 @@ using ::testing::UnorderedElementsAreArray;
  */
 
 class FirmwareHandlerUpdateStartedTest : public IpmiOnlyFirmwareStaticTest
-{
-};
+{};
 
 /*
  * open(blob)

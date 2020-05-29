@@ -41,8 +41,7 @@ using ::testing::UnorderedElementsAreArray;
  */
 
 class FirmwareHandlerUpdatePendingTest : public IpmiOnlyFirmwareStaticTest
-{
-};
+{};
 
 /*
  * There are the following calls (parameters may vary):

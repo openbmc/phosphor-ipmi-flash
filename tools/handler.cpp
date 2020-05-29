@@ -22,10 +22,11 @@
 #include "tool_errors.hpp"
 #include "util.hpp"
 
+#include <ipmiblob/blob_errors.hpp>
+
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
-#include <ipmiblob/blob_errors.hpp>
 #include <string>
 #include <vector>
 
@@ -166,8 +167,7 @@ void UpdateHandler::cleanArtifacts()
         std::fprintf(stderr, "Closing cleanup blob\n");
     }
     catch (...)
-    {
-    }
+    {}
 
     blob->closeBlob(session);
 }

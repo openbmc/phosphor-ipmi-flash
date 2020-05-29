@@ -15,12 +15,10 @@ using ::testing::Eq;
 using ::testing::Return;
 
 class FirmwareSessionStateTestIpmiOnly : public IpmiOnlyFirmwareTest
-{
-};
+{};
 
 class FirmwareSessionStateTestLpc : public FakeLpcFirmwareTest
-{
-};
+{};
 
 TEST_F(FirmwareSessionStateTestIpmiOnly, DataTypeIpmiNoMetadata)
 {

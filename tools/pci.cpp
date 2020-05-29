@@ -16,7 +16,8 @@
 
 #include "pci.hpp"
 
-extern "C" {
+extern "C"
+{
 #include <pci/pci.h>
 } // extern "C"
 

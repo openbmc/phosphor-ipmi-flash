@@ -22,13 +22,14 @@
 #include "status.hpp"
 #include "util.hpp"
 
-#include <algorithm>
 #include <blobs-ipmid/blobs.hpp>
+#include <phosphor-logging/log.hpp>
+
+#include <algorithm>
 #include <cstdint>
 #include <cstring>
 #include <fstream>
 #include <memory>
-#include <phosphor-logging/log.hpp>
 #include <string>
 #include <vector>
 

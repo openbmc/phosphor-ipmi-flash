@@ -2,9 +2,10 @@
 
 #include "status.hpp"
 
-#include <memory>
 #include <sdbusplus/bus.hpp>
 #include <sdbusplus/bus/match.hpp>
+
+#include <memory>
 #include <string>
 
 namespace ipmi_flash
@@ -22,8 +23,7 @@ class SystemdNoFile : public TriggerableActionInterface
                   const std::string& mode) :
         bus(std::move(bus)),
         triggerService(service), mode(mode)
-    {
-    }
+    {}
 
     SystemdNoFile(const SystemdNoFile&) = delete;
     SystemdNoFile& operator=(const SystemdNoFile&) = delete;
@@ -76,8 +76,7 @@ class SystemdWithStatusFile : public SystemdNoFile
                           const std::string& service, const std::string& mode) :
         SystemdNoFile(std::move(bus), service, mode),
         checkPath(path)
-    {
-    }
+    {}
 
     bool trigger() override;
     ActionStatus status() override;

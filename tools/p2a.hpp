@@ -6,8 +6,9 @@
 #include "pci.hpp"
 #include "progress.hpp"
 
-#include <cstdint>
 #include <ipmiblob/blob_interface.hpp>
+
+#include <cstdint>
 #include <vector>
 
 constexpr std::size_t aspeedP2aConfig = 0x0f000;
@@ -34,8 +35,7 @@ class P2aDataHandler : public DataInterface
                    const internal::Sys* sys = &internal::sys_impl) :
         blob(blob),
         io(io), pci(pci), progress(progress), sys(sys)
-    {
-    }
+    {}
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
     ipmi_flash::FirmwareFlags::UpdateFlags supportedType() const override

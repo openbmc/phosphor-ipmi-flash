@@ -42,10 +42,9 @@ using ::testing::UnorderedElementsAreArray;
  * indicates a successful verification.
  */
 
-class FirmwareHandlerVerificationCompletedTest
-    : public IpmiOnlyFirmwareStaticTest
-{
-};
+class FirmwareHandlerVerificationCompletedTest :
+    public IpmiOnlyFirmwareStaticTest
+{};
 
 /*
  * deleteBlob(blob)

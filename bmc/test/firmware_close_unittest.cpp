@@ -21,8 +21,7 @@ using ::testing::Return;
 using ::testing::StrEq;
 
 class FirmwareHandlerCloseTest : public FakeLpcFirmwareTest
-{
-};
+{};
 
 TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithDataHandler)
 {

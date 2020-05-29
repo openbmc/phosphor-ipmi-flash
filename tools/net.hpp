@@ -6,9 +6,10 @@
 
 #include <unistd.h>
 
-#include <cstdint>
 #include <ipmiblob/blob_interface.hpp>
 #include <stdplus/handle/managed.hpp>
+
+#include <cstdint>
 #include <string>
 
 namespace host_tool

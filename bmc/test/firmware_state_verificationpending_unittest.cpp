@@ -43,8 +43,7 @@ using ::testing::UnorderedElementsAreArray;
  */
 
 class FirmwareHandlerVerificationPendingTest : public IpmiOnlyFirmwareStaticTest
-{
-};
+{};
 
 /*
  * getBlobIds

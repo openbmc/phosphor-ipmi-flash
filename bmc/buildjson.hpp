@@ -3,8 +3,9 @@
 #include "firmware_handler.hpp"
 #include "image_handler.hpp"
 
-#include <memory>
 #include <nlohmann/json.hpp>
+
+#include <memory>
 #include <string>
 #include <vector>
 

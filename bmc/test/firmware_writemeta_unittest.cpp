@@ -19,8 +19,7 @@ using ::testing::Eq;
 using ::testing::Return;
 
 class FirmwareHandlerWriteMetaTest : public FakeLpcFirmwareTest
-{
-};
+{};
 
 TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
 {

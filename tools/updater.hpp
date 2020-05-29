@@ -3,6 +3,7 @@
 #include "handler.hpp"
 
 #include <ipmiblob/blob_interface.hpp>
+
 #include <string>
 
 namespace host_tool

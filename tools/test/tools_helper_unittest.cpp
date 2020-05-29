@@ -1,8 +1,9 @@
 #include "helper.hpp"
 #include "status.hpp"
 
-#include <cstdint>
 #include <ipmiblob/test/blob_interface_mock.hpp>
+
+#include <cstdint>
 
 #include <gtest/gtest.h>
 

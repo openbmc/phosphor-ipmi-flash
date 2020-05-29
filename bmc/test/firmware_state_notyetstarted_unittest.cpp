@@ -20,8 +20,7 @@ using ::testing::Return;
 using ::testing::UnorderedElementsAreArray;
 
 class FirmwareHandlerNotYetStartedTest : public IpmiOnlyFirmwareStaticTest
-{
-};
+{};
 
 /*
  * There are the following calls (parameters may vary):

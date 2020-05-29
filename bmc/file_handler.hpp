@@ -21,8 +21,7 @@ class FileHandler : public ImageHandlerInterface
      * qualified file system path.
      */
     explicit FileHandler(const std::string& filename) : filename(filename)
-    {
-    }
+    {}
 
     bool open(const std::string& path) override;
     void close() override;

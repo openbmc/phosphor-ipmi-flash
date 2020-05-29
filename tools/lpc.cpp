@@ -18,10 +18,11 @@
 
 #include "data.hpp"
 
+#include <ipmiblob/blob_errors.hpp>
+
 #include <cerrno>
 #include <cstdint>
 #include <cstring>
-#include <ipmiblob/blob_errors.hpp>
 #include <memory>
 #include <string>
 
