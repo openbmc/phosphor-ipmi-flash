@@ -4,6 +4,7 @@ extern "C" {
 #include <pci/pci.h>
 } // extern "C"
 
+#include <cstdint>
 #include <optional>
 #include <vector>
 
