@@ -16,6 +16,7 @@
 #include <cinttypes>
 #include <cstddef>
 #include <cstdint>
+#include <system_error>
 
 namespace internal
 {
@@ -87,6 +88,11 @@ class SysImpl : public Sys
     /* returns 0 on failure, or if the file is zero bytes. */
     std::int64_t getSize(const char* pathname) const override;
 };
+
+inline std::system_error errnoException(const std::string& message)
+{
+    return std::system_error(errno, std::generic_category(), message);
+}
 
 /** @brief Default instantiation of sys */
 extern SysImpl sys_impl;

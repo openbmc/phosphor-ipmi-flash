@@ -123,10 +123,10 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
 # If not building the host-tool, we're building the BMC.
 AS_IF([test "x$enable_build_host_tool" != "xno"], [
     PKG_CHECK_MODULES(
-        [PCILIB],
-        [libpci],
+        [PCIACCESS],
+        [pciaccess >= 0.8.0],
         [],
-        [AC_MSG_ERROR([Could not find libpci... pciutils package required])]
+        [AC_MSG_ERROR([Could not find libpciaccess... pciaccess package required])]
     )
 ])
 
