@@ -1,13 +1,22 @@
 #pragma once
 
+#include "internal/sys.hpp"
+
 extern "C"
 {
-#include <pci/pci.h>
+#include <pciaccess.h>
 } // extern "C"
 
+#include <linux/pci_regs.h>
+
 #include <cstdint>
+#include <memory>
 #include <optional>
 #include <vector>
+
+#ifndef PCI_STD_NUM_BARS
+#define PCI_STD_NUM_BARS 6
+#endif // !PCI_STD_NUM_BARS
 
 namespace host_tool
 {
@@ -25,7 +34,7 @@ struct PciDevice
     std::uint8_t bus;
     std::uint8_t dev;
     std::uint8_t func;
-    pciaddr_t bars[6];
+    pciaddr_t bars[PCI_STD_NUM_BARS];
 };
 
 /**
@@ -56,21 +65,32 @@ class PciUtilInterface
 class PciUtilImpl : public PciUtilInterface
 {
   public:
-    PciUtilImpl()
+    static PciUtilImpl& getInstance()
     {
-        pacc = pci_alloc();
-        pci_init(pacc);
-    }
-    ~PciUtilImpl()
-    {
-        pci_cleanup(pacc);
+        static PciUtilImpl instance;
+        return instance;
     }
 
     std::vector<PciDevice>
         getPciDevices(std::optional<PciFilter> filter = std::nullopt) override;
 
+    PciUtilImpl(const PciUtilImpl&) = delete;
+    PciUtilImpl& operator=(const PciUtilImpl&) = delete;
+
   private:
-    struct pci_access* pacc;
+    PciUtilImpl()
+    {
+        int ret = pci_system_init();
+        if (ret)
+        {
+            throw internal::errnoException("pci_system_init");
+        }
+    }
+
+    ~PciUtilImpl()
+    {
+        pci_system_cleanup();
+    }
 };
 
 } // namespace host_tool
