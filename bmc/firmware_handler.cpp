@@ -358,8 +358,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
         case UpdateState::verificationCompleted:
             /* Unreachable code because if it's started a file is open. */
             return false;
-        case UpdateState::updatePending:
-        {
+        case UpdateState::updatePending: {
             /* When in this state, they can only open the updateBlobId */
             if (path == updateBlobId)
             {
