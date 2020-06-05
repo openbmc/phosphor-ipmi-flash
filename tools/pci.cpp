@@ -18,8 +18,10 @@
 
 extern "C"
 {
-#include <pci/pci.h>
+#include <pciaccess.h>
 } // extern "C"
+
+#include <linux/pci_regs.h>
 
 #include <cstring>
 #include <optional>
@@ -31,45 +33,40 @@ namespace host_tool
 std::vector<PciDevice>
     PciUtilImpl::getPciDevices(std::optional<PciFilter> filter)
 {
-    PciFilter test;
-    bool check = false;
+    struct pci_id_match match = {PCI_MATCH_ANY, PCI_MATCH_ANY, PCI_MATCH_ANY,
+                                 PCI_MATCH_ANY};
     std::vector<PciDevice> results;
 
     if (filter.has_value())
     {
-        test = filter.value();
-        check = true;
+        match.vendor_id = filter.value().vid;
+        match.device_id = filter.value().did;
     }
 
-    pci_scan_bus(pacc);
-    struct pci_dev* dev;
+    auto it = pci_id_match_iterator_create(&match);
+    struct pci_device* dev;
 
-    for (dev = pacc->devices; dev; dev = dev->next)
+    while (dev = pci_device_next(it))
     {
         PciDevice item;
 
-        pci_fill_info(dev, PCI_FILL_IDENT | PCI_FILL_BASES | PCI_FILL_CLASS);
+        pci_device_probe(dev);
 
         item.bus = dev->bus;
         item.dev = dev->dev;
         item.func = dev->func;
         item.vid = dev->vendor_id;
         item.did = dev->device_id;
-        std::memcpy(item.bars, dev->base_addr, sizeof(dev->base_addr));
 
-        if (check)
+        for (int i = 0; i < PCI_STD_NUM_BARS; i++)
         {
-            if (test.vid == dev->vendor_id && test.did == dev->device_id)
-            {
-                results.push_back(item);
-            }
+            item.bars[i] = dev->regions[i].base_addr;
         }
-        else
-        {
-            results.push_back(item);
-        }
+
+        results.push_back(item);
     }
 
+    pci_iterator_destroy(it);
     return results;
 }
 
