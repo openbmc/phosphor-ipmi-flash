@@ -14,15 +14,25 @@ BMC blob handler.
 
 The host-tool depends on ipmi-blob-tool and pciutils.
 
-#### Building pciutils
+#### Building libpciaccess
 
-Check out the [pciutils source](https://github.com/pciutils/pciutils).
+Check out the [xorg-macros source](https://gitlab.freedesktop.org/xorg/util/macros).
 
 Then run these commands in the source directory.
+
 ```
-make SHARED=yes
-make SHARED=yes install
-make install-lib
+./autogen.sh --prefix=/usr
+make install
+```
+
+Check out the [libpciaccess source](https://gitlab.freedesktop.org/xorg/lib/libpciaccess).
+
+Then run these commands in the source directory.
+
+```
+./autogen.sh
+make
+make install
 ```
 
 #### Building ipmi-blob-tool
