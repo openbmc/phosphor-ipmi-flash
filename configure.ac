@@ -128,6 +128,18 @@ AS_IF([test "x$enable_build_host_tool" != "xno"], [
         [],
         [AC_MSG_ERROR([Could not find libpciaccess... pciaccess package required])]
     )
+    PKG_CHECK_MODULES(
+        [STDPLUS],
+        [stdplus],
+        [],
+        [AC_MSG_ERROR([Could not find stdplus... openbmc/stdplus package required])]
+    )
+    PKG_CHECK_MODULES(
+        [FMT],
+        [fmt],
+        [],
+        [AC_MSG_ERROR([Could not find fmt... fmtlib/fmt package required])]
+    )
 ])
 
 # These packages are required for both the BMC and the host-tool.

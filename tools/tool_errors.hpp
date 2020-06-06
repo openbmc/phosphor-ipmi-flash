@@ -20,4 +20,11 @@ class ToolException : public std::exception
     std::string message;
 };
 
+class NotFoundException : public ToolException
+{
+  public:
+    explicit NotFoundException(const std::string& device) :
+        ToolException(std::string("Couldn't find " + device)){};
+};
+
 } // namespace host_tool

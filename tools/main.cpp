@@ -217,7 +217,6 @@ int main(int argc, char* argv[])
 #else
         host_tool::DevMemDevice devmem;
 #endif
-        host_tool::PciUtilImpl pci;
         host_tool::ProgressStdoutIndicator progress;
 
         std::unique_ptr<host_tool::DataInterface> handler;
@@ -250,8 +249,8 @@ int main(int argc, char* argv[])
         }
         else if (interface == IPMIPCI)
         {
-            handler = std::make_unique<host_tool::P2aDataHandler>(
-                &blob, &devmem, &pci, &progress);
+            handler =
+                std::make_unique<host_tool::P2aDataHandler>(&blob, &progress);
         }
 
         if (!handler)
