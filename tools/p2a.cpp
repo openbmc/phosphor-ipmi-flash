@@ -19,8 +19,12 @@
 #include "data.hpp"
 #include "flags.hpp"
 #include "pci.hpp"
+#include "tool_errors.hpp"
+
+#include <fmt/format.h>
 
 #include <ipmiblob/blob_errors.hpp>
+#include <stdplus/handle/managed.hpp>
 
 #include <cstdint>
 #include <cstring>
@@ -32,221 +36,99 @@ namespace host_tool
 
 namespace
 {
-void disablePciBridge(HostIoInterface* io, std::size_t address)
-{
-    /* Read current value, and just blindly unset the bit. */
-    std::uint32_t value;
-    if (!io->read(address + aspeedP2aConfig, sizeof(value), &value))
-    {
-        return;
-    }
 
-    value &= ~p2ABridgeEnabled;
-    io->write(address + aspeedP2aConfig, sizeof(value), &value);
+/** @brief RAII wrapper and its destructor for opening a file descriptor */
+static void closeFd(int&& fd, const internal::Sys* const& sys)
+{
+    sys->close(fd);
 }
+using Fd = stdplus::Managed<int, const internal::Sys* const>::Handle<closeFd>;
 
 } // namespace
 
 bool P2aDataHandler::sendContents(const std::string& input,
                                   std::uint16_t session)
 {
-    PciDevice result;
-    PciFilter filter;
-    bool found = false;
-    pciaddr_t bar;
-    bool returnValue = false;
-    int inputFd = -1;
+    std::unique_ptr<PciBridgeIntf> bridge;
     ipmi_flash::PciConfigResponse pciResp;
     std::int64_t fileSize;
-    std::unique_ptr<std::uint8_t[]> readBuffer;
 
-    std::uint16_t pciDeviceVID;
-    std::uint16_t pciDeviceDID;
-    std::uint32_t p2aOffset;
-    std::uint32_t p2aLength;
-
-    for (auto device : PCIDeviceList)
+    try
     {
-        filter.vid = device.VID;
-        filter.did = device.DID;
-
-        /* Find the PCI device entry we want. */
-        auto output = pci->getPciDevices(filter);
-        for (const auto& d : output)
-        {
-            std::fprintf(stderr, "[0x%x 0x%x] \n", d.vid, d.did);
-
-            /* Verify it's a memory-based bar. */
-            bar = d.bars[device.bar];
-
-            if ((bar & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO)
-            {
-                /* We want it to not be IO-based access. */
-                continue;
-            }
-
-            /* For now capture the entire device even if we're only using BAR0
-             */
-            result = d;
-            found = true;
-            break;
-        }
-
-        if (found)
-        {
-            std::fprintf(stderr, "Find [0x%x 0x%x] \n", device.VID, device.DID);
-            std::fprintf(stderr, "bar%u[0x%x] \n", device.bar,
-                         (unsigned int)bar);
-            pciDeviceVID = device.VID;
-            pciDeviceDID = device.DID;
-            p2aOffset = device.Offset;
-            p2aLength = device.Length;
-            break;
-        }
+        bridge = std::make_unique<NuvotonPciBridge>(pci);
     }
+    catch (NotFoundException& e)
+    {}
 
-    if (!found)
+    try
     {
-        return false;
+        bridge = std::make_unique<AspeedPciBridge>(pci);
     }
+    catch (NotFoundException& e)
+    {}
 
-    std::fprintf(stderr, "\n");
-
-    /* We sent the open command before this, so the window should be open and
-     * the bridge enabled on the BMC.
-     */
-    if (pciDeviceVID == aspeedPciDeviceInfo.VID &&
-        pciDeviceDID == aspeedPciDeviceInfo.DID)
+    if (!bridge)
     {
-        std::uint32_t value;
-        if (!io->read(bar + aspeedP2aConfig, sizeof(value), &value))
-        {
-            std::fprintf(stderr, "PCI config read failed\n");
-            return false;
-        }
-
-        if (0 == (value & p2ABridgeEnabled))
-        {
-            std::fprintf(stderr, "Bridge not enabled - Enabling from host\n");
-
-            value |= p2ABridgeEnabled;
-            if (!io->write(bar + aspeedP2aConfig, sizeof(value), &value))
-            {
-                std::fprintf(stderr, "PCI config write failed\n");
-                return false;
-            }
-        }
-
-        /* From this point down we need to disable the bridge. */
-        std::fprintf(stderr, "The bridge is enabled!\n");
+        throw NotFoundException("supported PCI device");
     }
 
     /* Read the configuration via blobs metadata (stat). */
     ipmiblob::StatResponse stat = blob->getStat(session);
     if (stat.metadata.size() != sizeof(ipmi_flash::PciConfigResponse))
     {
-        std::fprintf(stderr, "Didn't receive expected size of metadata for "
-                             "PCI Configuration response\n");
-        goto exit;
+        throw ToolException("Didn't receive expected size of metadata for "
+                            "PCI Configuration response");
     }
 
     std::memcpy(&pciResp, stat.metadata.data(), sizeof(pciResp));
-    std::fprintf(stderr, "Received address: 0x%x\n", pciResp.address);
-
-    if (pciDeviceVID == aspeedPciDeviceInfo.VID &&
-        pciDeviceDID == aspeedPciDeviceInfo.DID)
-    {
-        /* Configure the mmio to point there. */
-        if (!io->write(bar + aspeedP2aBridge, sizeof(pciResp.address),
-                       &pciResp.address))
-        {
-            // Failed to set it up, so fall back.
-            std::fprintf(stderr, "Failed to update the bridge address\n");
-            goto exit;
-        }
-    }
+    bridge->configure(pciResp);
 
     /* For data blocks in 64kb, stage data, and send blob write command. */
-    inputFd = sys->open(input.c_str(), 0);
-    if (inputFd < 0)
+    Fd inputFd(sys->open(input.c_str(), 0), sys);
+    if (*inputFd < 0)
     {
-        std::fprintf(stderr, "Unable to open file: '%s'\n", input.c_str());
-        goto exit;
+        (void)inputFd.release();
+        throw internal::errnoException(
+            fmt::format("Error opening file '{}'", input));
     }
 
     fileSize = sys->getSize(input.c_str());
     if (fileSize == 0)
     {
-        std::fprintf(stderr, "Zero-length file, or other file access error\n");
-        goto exit;
+        throw ToolException("Zero-length file, or other file access error");
     }
 
     progress->start(fileSize);
 
-    readBuffer = std::make_unique<std::uint8_t[]>(p2aLength);
-    if (nullptr == readBuffer)
-    {
-        std::fprintf(stderr, "Unable to allocate memory for read buffer.\n");
-        goto exit;
-    }
+    std::vector<std::uint8_t> readBuffer(bridge->getDataLength());
 
-    try
-    {
-        int bytesRead = 0;
-        std::uint32_t offset = 0;
+    int bytesRead = 0;
+    std::uint32_t offset = 0;
 
-        do
+    do
+    {
+        bytesRead = sys->read(*inputFd, readBuffer.data(), readBuffer.size());
+        if (bytesRead > 0)
         {
-            bytesRead = sys->read(inputFd, readBuffer.get(), p2aLength);
-            if (bytesRead > 0)
-            {
-                /* TODO: Will likely need to store an rv somewhere to know when
-                 * we're exiting from failure.
-                 */
-                if (!io->write(bar + p2aOffset, bytesRead, readBuffer.get()))
-                {
-                    std::fprintf(stderr,
-                                 "Failed to write to region in memory!\n");
-                    goto exit;
-                }
+            bridge->write(stdplus::span<const std::uint8_t>(readBuffer.data(),
+                                                            bytesRead));
 
-                /* Ok, so the data is staged, now send the blob write with the
-                 * details.
-                 */
-                struct ipmi_flash::ExtChunkHdr chunk;
-                chunk.length = bytesRead;
-                std::vector<std::uint8_t> chunkBytes(sizeof(chunk));
-                std::memcpy(chunkBytes.data(), &chunk, sizeof(chunk));
+            /* Ok, so the data is staged, now send the blob write with the
+             * details.
+             */
+            struct ipmi_flash::ExtChunkHdr chunk;
+            chunk.length = bytesRead;
+            std::vector<std::uint8_t> chunkBytes(sizeof(chunk));
+            std::memcpy(chunkBytes.data(), &chunk, sizeof(chunk));
 
-                /* This doesn't return anything on success. */
-                blob->writeBytes(session, offset, chunkBytes);
-                offset += bytesRead;
-                progress->updateProgress(bytesRead);
-            }
-        } while (bytesRead > 0);
-    }
-    catch (const ipmiblob::BlobException& b)
-    {
-        goto exit;
-    }
+            /* This doesn't return anything on success. */
+            blob->writeBytes(session, offset, chunkBytes);
+            offset += bytesRead;
+            progress->updateProgress(bytesRead);
+        }
+    } while (bytesRead > 0);
 
-    /* defaults to failure. */
-    returnValue = true;
-
-exit:
-    /* disable ASPEED PCI bridge. */
-    if (pciDeviceVID == aspeedPciDeviceInfo.VID &&
-        pciDeviceDID == aspeedPciDeviceInfo.DID)
-    {
-        disablePciBridge(io, bar);
-    }
-
-    /* close input file. */
-    if (inputFd != -1)
-    {
-        sys->close(inputFd);
-    }
-    return returnValue;
+    return true;
 }
 
 } // namespace host_tool
