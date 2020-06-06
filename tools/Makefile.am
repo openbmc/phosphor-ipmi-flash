@@ -7,12 +7,20 @@ burn_my_bmc_CXXFLAGS = \
 	$(CODE_COVERAGE_CXXFLAGS)
 
 noinst_LTLIBRARIES = libupdater.la
-libupdater_la_LDFLAGS = -static $(CODE_COVERAGE_LIBS) $(IPMIBLOB_LIBS) $(PCIACCESS_LIBS)
+libupdater_la_LDFLAGS = \
+	-static \
+	$(CODE_COVERAGE_LIBS) \
+	$(FMT_LIBS) \
+	$(IPMIBLOB_LIBS) \
+	$(PCIACCESS_LIBS) \
+	$(STDPLUS_LIBS)
 libupdater_la_CXXFLAGS = \
 	-I$(top_srcdir) \
 	$(CODE_COVERAGE_CXXFLAGS) \
+	$(FMT_CFLAGS) \
 	$(IPMIBLOB_CFLAGS) \
-	$(PCIACCESS_CFLAGS)
+	$(PCIACCESS_CFLAGS) \
+	$(STDPLUS_CFLAGS)
 libupdater_la_SOURCES = \
 	updater.cpp \
 	handler.cpp \
