@@ -48,6 +48,19 @@ make
 make install
 ```
 
+#### Building fmtlib
+
+Check out the [fmtlib source](https://github.com/fmtlib/fmt).
+
+Then run these commands in the source directory.
+
+```
+mkdir build && cd build
+cmake ..
+make
+make install
+```
+
 #### Building stdplus
 
 Check out the [stdplus source](https://github.com/openbmc/stdplus).
