@@ -1,5 +1,30 @@
+/*
+ * Copyright 2020 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "internal_sys_mock.hpp"
+#include "pci.hpp"
 #include "pciaccess_mock.hpp"
+#include "tool_errors.hpp"
+
+#include <stdplus/raw.hpp>
+
+#include <algorithm>
+#include <cstdlib>
+#include <string>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -8,11 +33,444 @@ namespace host_tool
 namespace
 {
 
-TEST(PciHandleTest, empty)
+using namespace std::string_literals;
+
+using ::testing::Assign;
+using ::testing::ContainerEq;
+using ::testing::DoAll;
+using ::testing::Each;
+using ::testing::Eq;
+using ::testing::InSequence;
+using ::testing::NotNull;
+using ::testing::Return;
+using ::testing::SetArgPointee;
+
+// TODO: switch to ConainerEq for C++20
+MATCHER_P(SpanEq, s, "")
+{
+    return arg.size() == s.size() && !memcmp(arg.data(), s.data(), s.size());
+}
+
+MATCHER_P(PciIdMatch, m, "")
+{
+    return (arg->vendor_id == m->vendor_id && arg->device_id == m->device_id &&
+            arg->subvendor_id == m->subvendor_id &&
+            arg->subdevice_id == m->subdevice_id);
+}
+
+pci_device_iterator* mockIter = reinterpret_cast<pci_device_iterator*>(0x42);
+
+constexpr pciaddr_t mockBaseAddr = 0xdeadbeef;
+constexpr pciaddr_t mockRegionSize = 0x20000;
+
+class Device
+{
+  public:
+    virtual const struct pci_id_match* getMatch() const = 0;
+    virtual struct pci_device getDevice() const = 0;
+    virtual std::unique_ptr<PciBridgeIntf> getBridge(PciAccess* pci) const = 0;
+    virtual std::string getName() const = 0;
+};
+
+class NuvotonDevice : public Device
+{
+  public:
+    const struct pci_id_match* getMatch() const override
+    {
+        return &match;
+    }
+
+    struct pci_device getDevice() const override
+    {
+        struct pci_device dev;
+
+        dev.vendor_id = match.vendor_id;
+        dev.device_id = match.device_id;
+
+        dev.regions[0].is_IO = false;
+        dev.regions[0].base_addr = mockBaseAddr;
+        dev.regions[0].size = mockRegionSize;
+
+        return dev;
+    }
+
+    std::unique_ptr<PciBridgeIntf> getBridge(PciAccess* pci) const override
+    {
+        return std::make_unique<NuvotonPciBridge>(pci);
+    }
+
+    std::string getName() const override
+    {
+        return "Nuvoton"s;
+    }
+
+  private:
+    static constexpr struct pci_id_match match
+    {
+        0x1050, 0x0750, PCI_MATCH_ANY, PCI_MATCH_ANY
+    };
+};
+
+class AspeedDevice : public Device
+{
+  public:
+    const struct pci_id_match* getMatch() const override
+    {
+        return &match;
+    }
+
+    struct pci_device getDevice() const override
+    {
+        struct pci_device dev;
+
+        dev.vendor_id = match.vendor_id;
+        dev.device_id = match.device_id;
+
+        dev.regions[1].is_IO = false;
+        dev.regions[1].base_addr = mockBaseAddr;
+        dev.regions[1].size = mockRegionSize;
+
+        return dev;
+    }
+
+    std::unique_ptr<PciBridgeIntf> getBridge(PciAccess* pci) const override
+    {
+        return std::make_unique<AspeedPciBridge>(pci);
+    }
+
+    std::string getName() const override
+    {
+        return "Aspeed"s;
+    }
+
+  private:
+    static constexpr struct pci_id_match match
+    {
+        0x1a03, 0x2000, PCI_MATCH_ANY, PCI_MATCH_ANY
+    };
+};
+
+NuvotonDevice nuvotonDevice;
+AspeedDevice aspeedDevice;
+
+class PciSetupTest : public testing::TestWithParam<Device*>
+{};
+
+/* Handle device not found */
+TEST_P(PciSetupTest, NotFound)
 {
     PciAccessMock pciMock;
 
-    (void)pciMock;
+    InSequence in;
+
+    EXPECT_CALL(pciMock, pci_id_match_iterator_create(
+                             PciIdMatch(GetParam()->getMatch())))
+        .WillOnce(Return(mockIter));
+    EXPECT_CALL(pciMock, pci_device_next(Eq(mockIter)))
+        .WillOnce(Return(nullptr));
+    EXPECT_CALL(pciMock, pci_iterator_destroy(Eq(mockIter))).Times(1);
+
+    EXPECT_THROW(GetParam()->getBridge(&pciMock), NotFoundException);
+}
+
+/* Test finding device but probe fails */
+TEST_P(PciSetupTest, ProbeFail)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+
+    EXPECT_CALL(pciMock, pci_id_match_iterator_create(
+                             PciIdMatch(GetParam()->getMatch())))
+        .WillOnce(Return(mockIter));
+    EXPECT_CALL(pciMock, pci_device_next(Eq(mockIter)))
+        .WillOnce(Return(&dev))
+        .WillRepeatedly(Return(nullptr));
+
+    EXPECT_CALL(pciMock, pci_device_probe(Eq(&dev))).WillOnce(Return(EFAULT));
+
+    EXPECT_CALL(pciMock, pci_iterator_destroy(Eq(mockIter))).Times(1);
+
+    EXPECT_THROW(GetParam()->getBridge(&pciMock), std::system_error);
+}
+
+/* Test finding device but mapping fails */
+TEST_P(PciSetupTest, MapFail)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+
+    EXPECT_CALL(pciMock, pci_id_match_iterator_create(
+                             PciIdMatch(GetParam()->getMatch())))
+        .WillOnce(Return(mockIter));
+    EXPECT_CALL(pciMock, pci_device_next(Eq(mockIter)))
+        .WillOnce(Return(&dev))
+        .WillRepeatedly(Return(nullptr));
+
+    EXPECT_CALL(pciMock, pci_device_probe(Eq(&dev)))
+        .WillOnce(DoAll(Assign(&dev, GetParam()->getDevice()), Return(0)));
+
+    EXPECT_CALL(pciMock,
+                pci_device_map_range(Eq(&dev), mockBaseAddr, mockRegionSize,
+                                     PCI_DEV_MAP_FLAG_WRITABLE, NotNull()))
+        .WillOnce(Return(EFAULT));
+
+    EXPECT_CALL(pciMock, pci_iterator_destroy(Eq(mockIter))).Times(1);
+
+    EXPECT_THROW(GetParam()->getBridge(&pciMock), std::system_error);
+}
+
+/* Test finding device but unmapping fails */
+TEST_P(PciSetupTest, UnmapFail)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    EXPECT_CALL(pciMock, pci_id_match_iterator_create(
+                             PciIdMatch(GetParam()->getMatch())))
+        .WillOnce(Return(mockIter));
+    EXPECT_CALL(pciMock, pci_device_next(Eq(mockIter)))
+        .WillOnce(Return(&dev))
+        .WillRepeatedly(Return(nullptr));
+
+    EXPECT_CALL(pciMock, pci_device_probe(Eq(&dev)))
+        .WillOnce(DoAll(Assign(&dev, GetParam()->getDevice()), Return(0)));
+
+    EXPECT_CALL(pciMock,
+                pci_device_map_range(Eq(&dev), mockBaseAddr, mockRegionSize,
+                                     PCI_DEV_MAP_FLAG_WRITABLE, NotNull()))
+        .WillOnce(DoAll(SetArgPointee<4>(region.data()), Return(0)));
+
+    EXPECT_CALL(pciMock, pci_iterator_destroy(Eq(mockIter))).Times(1);
+    EXPECT_CALL(pciMock, pci_device_unmap_range(Eq(&dev), Eq(region.data()),
+                                                mockRegionSize))
+        .WillOnce(Return(EFAULT));
+
+    // This will print an error but not throw
+    GetParam()->getBridge(&pciMock);
+}
+
+/* Create expectations on pciMock for finding device and mapping memory region
+ */
+void expectSetup(PciAccessMock& pciMock, struct pci_device& dev, Device* param,
+                 std::uint8_t* region)
+{
+    EXPECT_CALL(pciMock,
+                pci_id_match_iterator_create(PciIdMatch(param->getMatch())))
+        .WillOnce(Return(mockIter));
+    EXPECT_CALL(pciMock, pci_device_next(Eq(mockIter)))
+        .WillOnce(Return(&dev))
+        .WillRepeatedly(Return(nullptr));
+
+    EXPECT_CALL(pciMock, pci_device_probe(Eq(&dev)))
+        .WillOnce(DoAll(Assign(&dev, param->getDevice()), Return(0)));
+
+    EXPECT_CALL(pciMock,
+                pci_device_map_range(Eq(&dev), mockBaseAddr, mockRegionSize,
+                                     PCI_DEV_MAP_FLAG_WRITABLE, NotNull()))
+        .WillOnce(DoAll(SetArgPointee<4>(region), Return(0)));
+
+    EXPECT_CALL(pciMock, pci_iterator_destroy(Eq(mockIter))).Times(1);
+    EXPECT_CALL(pciMock,
+                pci_device_unmap_range(Eq(&dev), Eq(region), mockRegionSize))
+        .WillOnce(Return(0));
+}
+
+/* Test finding device and mapping memory region */
+TEST_P(PciSetupTest, Success)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    expectSetup(pciMock, dev, GetParam(), region.data());
+
+    GetParam()->getBridge(&pciMock);
+}
+
+INSTANTIATE_TEST_SUITE_P(Default, PciSetupTest,
+                         ::testing::Values(&nuvotonDevice, &aspeedDevice),
+                         [](const testing::TestParamInfo<Device*>& info) {
+                             return info.param->getName();
+                         });
+
+TEST(NuvotonWriteTest, TooLarge)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+    std::vector<std::uint8_t> data(0x4001);
+
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data());
+
+    std::unique_ptr<PciBridgeIntf> bridge = nuvotonDevice.getBridge(&pciMock);
+    EXPECT_THROW(bridge->write(stdplus::span<std::uint8_t>(data)),
+                 ToolException);
+}
+
+TEST(NuvotonWriteTest, Success)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+    std::vector<std::uint8_t> data(0x4000);
+
+    std::generate(data.begin(), data.end(), std::rand);
+
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data());
+
+    std::unique_ptr<PciBridgeIntf> bridge = nuvotonDevice.getBridge(&pciMock);
+    bridge->write(stdplus::span<std::uint8_t>(data));
+
+    EXPECT_THAT(stdplus::span<uint8_t>(&region[0], data.size()),
+                SpanEq(stdplus::span<uint8_t>(data)));
+}
+
+TEST(NuvotonConfigureTest, Success)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+    ipmi_flash::PciConfigResponse config{0x123bea51};
+
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data());
+
+    std::unique_ptr<PciBridgeIntf> bridge = nuvotonDevice.getBridge(&pciMock);
+    bridge->configure(config);
+
+    /* No effect from calling configure() */
+    EXPECT_THAT(region, Each(0));
+}
+
+TEST(NuvotonDataLengthTest, Success)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data());
+
+    std::unique_ptr<PciBridgeIntf> bridge = nuvotonDevice.getBridge(&pciMock);
+    EXPECT_EQ(bridge->getDataLength(), 0x4000);
+}
+
+TEST(AspeedWriteTest, TooLarge)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+    std::vector<std::uint8_t> data(0x10001);
+
+    expectSetup(pciMock, dev, &aspeedDevice, region.data());
+
+    std::unique_ptr<PciBridgeIntf> bridge = aspeedDevice.getBridge(&pciMock);
+    EXPECT_THROW(bridge->write(stdplus::span<std::uint8_t>(data)),
+                 ToolException);
+}
+
+TEST(AspeedWriteTest, Success)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+    std::vector<std::uint8_t> data(0x10000);
+
+    std::generate(data.begin(), data.end(), std::rand);
+
+    expectSetup(pciMock, dev, &aspeedDevice, region.data());
+
+    std::unique_ptr<PciBridgeIntf> bridge = aspeedDevice.getBridge(&pciMock);
+    bridge->write(stdplus::span<std::uint8_t>(data));
+
+    EXPECT_THAT(stdplus::span<uint8_t>(&region[0x10000], data.size()),
+                SpanEq(stdplus::span<uint8_t>(data)));
+}
+
+TEST(AspeedConfigureTest, Success)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+    ipmi_flash::PciConfigResponse config{0x123bea51};
+
+    expectSetup(pciMock, dev, &aspeedDevice, region.data());
+
+    std::unique_ptr<PciBridgeIntf> bridge = aspeedDevice.getBridge(&pciMock);
+    bridge->configure(config);
+
+    auto configSpan = stdplus::raw::asSpan<uint8_t>(config);
+    EXPECT_THAT(stdplus::span<uint8_t>(&region[0x0f004], sizeof(config)),
+                SpanEq(configSpan));
+}
+
+TEST(AspeedDataLengthTest, Success)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    expectSetup(pciMock, dev, &aspeedDevice, region.data());
+
+    std::unique_ptr<PciBridgeIntf> bridge = aspeedDevice.getBridge(&pciMock);
+    EXPECT_EQ(bridge->getDataLength(), 0x10000);
+}
+
+/* Make sure config region is left alone if the bridge is already enabled */
+TEST(AspeedBridgeTest, AlreadyEnabled)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    /* Lower bit determines whether bridge is enabled */
+    region[0x0f000] = 0x43;
+
+    expectSetup(pciMock, dev, &aspeedDevice, region.data());
+
+    std::unique_ptr<PciBridgeIntf> bridge = aspeedDevice.getBridge(&pciMock);
+
+    {
+        std::vector<std::uint8_t> enabledRegion(mockRegionSize);
+        enabledRegion[0x0f000] = 0x43;
+        EXPECT_THAT(region, ContainerEq(enabledRegion));
+    }
+
+    bridge.reset();
+
+    {
+        std::vector<std::uint8_t> disabledRegion(mockRegionSize);
+        disabledRegion[0x0f000] = 0x42;
+        EXPECT_THAT(region, ContainerEq(disabledRegion));
+    }
+}
+
+/* Make sure the bridge gets enabled when needed */
+TEST(AspeedBridgeTest, NotEnabled)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    /* Lower bit determines whether bridge is enabled */
+    region[0x0f000] = 0x42;
+
+    expectSetup(pciMock, dev, &aspeedDevice, region.data());
+
+    std::unique_ptr<PciBridgeIntf> bridge = aspeedDevice.getBridge(&pciMock);
+
+    {
+        std::vector<std::uint8_t> enabledRegion(mockRegionSize);
+        enabledRegion[0x0f000] = 0x43;
+        EXPECT_THAT(region, ContainerEq(enabledRegion));
+    }
+
+    bridge.reset();
+
+    {
+        std::vector<std::uint8_t> disabledRegion(mockRegionSize);
+        disabledRegion[0x0f000] = 0x42;
+        EXPECT_THAT(region, ContainerEq(disabledRegion));
+    }
 }
 
 } // namespace
