@@ -20,6 +20,7 @@
 #include "net.hpp"
 #include "p2a.hpp"
 #include "pci.hpp"
+#include "pciaccess.hpp"
 #include "progress.hpp"
 #include "tool_errors.hpp"
 #include "updater.hpp"
@@ -249,9 +250,9 @@ int main(int argc, char* argv[])
         }
         else if (interface == IPMIPCI)
         {
-            auto& pci = host_tool::PciUtilImpl::getInstance();
-            handler = std::make_unique<host_tool::P2aDataHandler>(
-                &blob, &devmem, &pci, &progress);
+            auto& pci = host_tool::PciAccessImpl::getInstance();
+            handler = std::make_unique<host_tool::P2aDataHandler>(&blob, &pci,
+                                                                  &progress);
         }
 
         if (!handler)
