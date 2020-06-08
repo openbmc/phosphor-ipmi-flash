@@ -18,6 +18,7 @@ AM_LDFLAGS = \
 check_PROGRAMS = \
 	tools_bt_unittest \
 	tools_lpc_unittest \
+	tools_pci_unittest \
 	tools_net_unittest \
 	tools_updater_unittest \
 	tools_helper_unittest
@@ -29,6 +30,9 @@ tools_bt_unittest_LDADD = $(top_builddir)/tools/libupdater.la
 
 tools_lpc_unittest_SOURCES = tools_lpc_unittest.cpp
 tools_lpc_unittest_LDADD = $(top_builddir)/tools/libupdater.la
+
+tools_pci_unittest_SOURCES = tools_pci_unittest.cpp
+tools_pci_unittest_LDADD = $(top_builddir)/tools/libupdater.la
 
 tools_net_unittest_SOURCES = tools_net_unittest.cpp
 tools_net_unittest_LDADD = $(top_builddir)/tools/libupdater.la
