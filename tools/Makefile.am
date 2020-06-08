@@ -22,6 +22,7 @@ libupdater_la_SOURCES = \
 	io.cpp \
 	net.cpp \
 	pci.cpp \
+	pciaccess.cpp \
 	p2a.cpp \
 	progress.cpp
 libupdater_la_LIBADD = $(top_builddir)/libfirmware_common.la
