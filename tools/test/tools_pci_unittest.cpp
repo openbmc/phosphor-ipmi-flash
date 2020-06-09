@@ -68,6 +68,8 @@ class Device
   public:
     virtual const struct pci_id_match* getMatch() const = 0;
     virtual struct pci_device getDevice() const = 0;
+    virtual void expectSetup(PciAccessMock& pciMock,
+                             const struct pci_device& dev) const {};
     virtual std::unique_ptr<PciBridgeIntf> getBridge(PciAccess* pci) const = 0;
     virtual std::string getName() const = 0;
 };
@@ -94,6 +96,29 @@ class NuvotonDevice : public Device
         return dev;
     }
 
+    void expectSetup(PciAccessMock& pciMock,
+                     const struct pci_device& dev) const override
+    {
+        static constexpr std::uint8_t defaultVal = 0x40;
+
+        InSequence in;
+
+        EXPECT_CALL(pciMock,
+                    pci_device_cfg_read_u8(Eq(&dev), NotNull(), config))
+            .WillOnce(DoAll(SetArgPointee<1>(defaultVal), Return(0)));
+        EXPECT_CALL(pciMock, pci_device_cfg_write_u8(
+                                 Eq(&dev), defaultVal | bridgeEnabled, config))
+            .WillOnce(Return(0));
+
+        EXPECT_CALL(pciMock,
+                    pci_device_cfg_read_u8(Eq(&dev), NotNull(), config))
+            .WillOnce(
+                DoAll(SetArgPointee<1>(defaultVal | bridgeEnabled), Return(0)));
+        EXPECT_CALL(pciMock,
+                    pci_device_cfg_write_u8(Eq(&dev), defaultVal, config))
+            .WillOnce(Return(0));
+    }
+
     std::unique_ptr<PciBridgeIntf> getBridge(PciAccess* pci) const override
     {
         return std::make_unique<NuvotonPciBridge>(pci);
@@ -103,6 +128,11 @@ class NuvotonDevice : public Device
     {
         return "Nuvoton"s;
     }
+
+    /* Offset to the config register */
+    static constexpr int config = 0x04;
+    /* Second bit determines whether bridge is enabled */
+    static constexpr std::uint8_t bridgeEnabled = 0x02;
 
   private:
     static constexpr struct pci_id_match match
@@ -253,6 +283,7 @@ TEST_P(PciSetupTest, UnmapFail)
                                                 mockRegionSize))
         .WillOnce(Return(EFAULT));
 
+    GetParam()->expectSetup(pciMock, dev);
     // This will print an error but not throw
     GetParam()->getBridge(&pciMock);
 }
@@ -260,7 +291,7 @@ TEST_P(PciSetupTest, UnmapFail)
 /* Create expectations on pciMock for finding device and mapping memory region
  */
 void expectSetup(PciAccessMock& pciMock, struct pci_device& dev, Device* param,
-                 std::uint8_t* region)
+                 std::uint8_t* region, bool deviceExpectations = true)
 {
     EXPECT_CALL(pciMock,
                 pci_id_match_iterator_create(PciIdMatch(param->getMatch())))
@@ -281,6 +312,9 @@ void expectSetup(PciAccessMock& pciMock, struct pci_device& dev, Device* param,
     EXPECT_CALL(pciMock,
                 pci_device_unmap_range(Eq(&dev), Eq(region), mockRegionSize))
         .WillOnce(Return(0));
+
+    if (deviceExpectations)
+        param->expectSetup(pciMock, dev);
 }
 
 /* Test finding device and mapping memory region */
@@ -359,6 +393,161 @@ TEST(NuvotonDataLengthTest, Success)
 
     std::unique_ptr<PciBridgeIntf> bridge = nuvotonDevice.getBridge(&pciMock);
     EXPECT_EQ(bridge->getDataLength(), 0x4000);
+}
+
+/* Make sure config register is left alone if the bridge is already enabled */
+TEST(NuvotonBridgeTest, AlreadyEnabledSuccess)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    constexpr std::uint8_t defaultVal = 0x40;
+
+    /* Only set standard expectations; not those from nuvotonDevice */
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data(), false);
+
+    {
+        InSequence in;
+
+        EXPECT_CALL(pciMock, pci_device_cfg_read_u8(Eq(&dev), NotNull(),
+                                                    NuvotonDevice::config))
+            .WillOnce(DoAll(
+                SetArgPointee<1>(defaultVal | NuvotonDevice::bridgeEnabled),
+                Return(0)));
+
+        EXPECT_CALL(pciMock, pci_device_cfg_read_u8(Eq(&dev), NotNull(),
+                                                    NuvotonDevice::config))
+            .WillOnce(DoAll(
+                SetArgPointee<1>(defaultVal | NuvotonDevice::bridgeEnabled),
+                Return(0)));
+        EXPECT_CALL(pciMock, pci_device_cfg_write_u8(Eq(&dev), defaultVal,
+                                                     NuvotonDevice::config))
+            .WillOnce(Return(0));
+    }
+
+    nuvotonDevice.getBridge(&pciMock);
+}
+
+/* Read fails when attempting to setup the bridge */
+TEST(NuvotonBridgeTest, ReadSetupFail)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    /* Only set standard expectations; not those from nuvotonDevice */
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data(), false);
+
+    EXPECT_CALL(pciMock, pci_device_cfg_read_u8(Eq(&dev), NotNull(),
+                                                NuvotonDevice::config))
+        .WillOnce(Return(EFAULT));
+
+    EXPECT_THROW(nuvotonDevice.getBridge(&pciMock), std::system_error);
+}
+
+/* Write fails when attempting to setup the bridge */
+TEST(NuvotonBridgeTest, WriteSetupFail)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    constexpr std::uint8_t defaultVal = 0x40;
+
+    /* Only set standard expectations; not those from nuvotonDevice */
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data(), false);
+
+    EXPECT_CALL(pciMock, pci_device_cfg_read_u8(Eq(&dev), NotNull(),
+                                                NuvotonDevice::config))
+        .WillOnce(DoAll(SetArgPointee<1>(defaultVal), Return(0)));
+    EXPECT_CALL(pciMock,
+                pci_device_cfg_write_u8(
+                    Eq(&dev), defaultVal | NuvotonDevice::bridgeEnabled,
+                    NuvotonDevice::config))
+        .WillOnce(Return(EFAULT));
+
+    EXPECT_THROW(nuvotonDevice.getBridge(&pciMock), std::system_error);
+}
+
+/* Read fails when attempting to disable the bridge */
+TEST(NuvotonBridgeTest, ReadDisableFail)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    constexpr std::uint8_t defaultVal = 0x40;
+
+    /* Only set standard expectations; not those from nuvotonDevice */
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data(), false);
+
+    {
+        InSequence in;
+
+        EXPECT_CALL(pciMock, pci_device_cfg_read_u8(Eq(&dev), NotNull(),
+                                                    NuvotonDevice::config))
+            .WillOnce(DoAll(SetArgPointee<1>(defaultVal), Return(0)));
+        EXPECT_CALL(pciMock,
+                    pci_device_cfg_write_u8(
+                        Eq(&dev), defaultVal | NuvotonDevice::bridgeEnabled,
+                        NuvotonDevice::config))
+            .WillOnce(Return(0));
+
+        EXPECT_CALL(pciMock, pci_device_cfg_read_u8(Eq(&dev), NotNull(),
+                                                    NuvotonDevice::config))
+            .WillOnce(Return(EFAULT));
+    }
+
+    nuvotonDevice.getBridge(&pciMock);
+}
+
+/* Write fails when attempting to disable the bridge */
+TEST(NuvotonBridgeTest, WriteDisableFail)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    constexpr std::uint8_t defaultVal = 0x40;
+
+    /* Only set standard expectations; not those from nuvotonDevice */
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data(), false);
+
+    {
+        InSequence in;
+
+        EXPECT_CALL(pciMock, pci_device_cfg_read_u8(Eq(&dev), NotNull(),
+                                                    NuvotonDevice::config))
+            .WillOnce(DoAll(SetArgPointee<1>(defaultVal), Return(0)));
+        EXPECT_CALL(pciMock,
+                    pci_device_cfg_write_u8(
+                        Eq(&dev), defaultVal | NuvotonDevice::bridgeEnabled,
+                        NuvotonDevice::config))
+            .WillOnce(Return(0));
+
+        EXPECT_CALL(pciMock, pci_device_cfg_read_u8(Eq(&dev), NotNull(),
+                                                    NuvotonDevice::config))
+            .WillOnce(DoAll(
+                SetArgPointee<1>(defaultVal | NuvotonDevice::bridgeEnabled),
+                Return(0)));
+        EXPECT_CALL(pciMock, pci_device_cfg_write_u8(Eq(&dev), defaultVal,
+                                                     NuvotonDevice::config))
+            .WillOnce(Return(EFAULT));
+    }
+
+    nuvotonDevice.getBridge(&pciMock);
+}
+
+/* Make sure the bridge gets enabled when needed */
+TEST(NuvotonBridgeTest, NotEnabledSuccess)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data());
+    nuvotonDevice.getBridge(&pciMock);
 }
 
 TEST(AspeedWriteTest, TooLarge)
