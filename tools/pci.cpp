@@ -114,6 +114,56 @@ void PciAccessBridge::write(const stdplus::span<const std::uint8_t> data)
     std::memcpy(addr + dataOffset, data.data(), data.size());
 }
 
+void NuvotonPciBridge::enableBridge()
+{
+    std::uint8_t value;
+    int ret;
+
+    ret = pci->pci_device_cfg_read_u8(dev, &value, bridge);
+    if (ret)
+    {
+        throw std::system_error(ret, std::generic_category(),
+                                "Error reading bridge status");
+    }
+
+    if (value & bridgeEnabled)
+    {
+        std::fprintf(stderr, "Bridge already enabled\n");
+        return;
+    }
+
+    value |= bridgeEnabled;
+
+    ret = pci->pci_device_cfg_write_u8(dev, value, bridge);
+    if (ret)
+    {
+        throw std::system_error(ret, std::generic_category(),
+                                "Error enabling bridge");
+    }
+}
+
+void NuvotonPciBridge::disableBridge()
+{
+    std::uint8_t value;
+    int ret;
+
+    ret = pci->pci_device_cfg_read_u8(dev, &value, bridge);
+    if (ret)
+    {
+        std::fprintf(stderr, "Error reading bridge status: %s\n",
+                     std::strerror(ret));
+        return;
+    }
+    value &= ~bridgeEnabled;
+
+    ret = pci->pci_device_cfg_write_u8(dev, value, bridge);
+    if (ret)
+    {
+        std::fprintf(stderr, "Error disabling bridge: %s\n",
+                     std::strerror(ret));
+    }
+}
+
 void AspeedPciBridge::enableBridge()
 {
     /* We sent the open command before this, so the window should be open and
