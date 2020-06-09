@@ -84,10 +84,14 @@ class NuvotonPciBridge : public PciAccessBridge
   public:
     explicit NuvotonPciBridge(const PciAccess* pci) :
         PciAccessBridge(&match, bar, dataOffset, dataLength, pci)
-    {}
+    {
+        enableBridge();
+    }
 
     ~NuvotonPciBridge()
-    {}
+    {
+        disableBridge();
+    }
 
   private:
     static constexpr std::uint32_t vid = 0x1050;
@@ -104,6 +108,9 @@ class NuvotonPciBridge : public PciAccessBridge
 
     static constexpr std::size_t dataOffset = 0x0;
     static constexpr std::size_t dataLength = 0x4000;
+
+    void enableBridge();
+    void disableBridge();
 };
 
 class AspeedPciBridge : public PciAccessBridge

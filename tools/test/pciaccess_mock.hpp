@@ -16,6 +16,12 @@ class PciAccessMock : public PciAccess
     MOCK_CONST_METHOD1(pci_device_next,
                        struct pci_device*(struct pci_device_iterator*));
     MOCK_CONST_METHOD1(pci_device_probe, int(struct pci_device*));
+    MOCK_CONST_METHOD3(pci_device_cfg_read_u8,
+                       int(struct pci_device* dev, std::uint8_t* data,
+                           pciaddr_t offset));
+    MOCK_CONST_METHOD3(pci_device_cfg_write_u8,
+                       int(struct pci_device* dev, std::uint8_t data,
+                           pciaddr_t offset));
     MOCK_CONST_METHOD5(pci_device_map_range, int(struct pci_device*, pciaddr_t,
                                                  pciaddr_t, unsigned, void**));
     MOCK_CONST_METHOD3(pci_device_unmap_range,
