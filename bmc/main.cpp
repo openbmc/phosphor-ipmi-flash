@@ -30,7 +30,6 @@
 #include "status.hpp"
 #include "util.hpp"
 
-#include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus.hpp>
 
 #include <cstdint>

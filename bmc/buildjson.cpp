@@ -21,7 +21,6 @@
 #include "skip_action.hpp"
 
 #include <nlohmann/json.hpp>
-#include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus.hpp>
 
 #include <algorithm>

@@ -20,7 +20,6 @@
 #include "util.hpp"
 
 #include <blobs-ipmid/blobs.hpp>
-#include <phosphor-logging/log.hpp>
 
 #include <memory>
 #include <string>
