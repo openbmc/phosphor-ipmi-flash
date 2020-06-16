@@ -1,0 +1,9 @@
+Ok-To-Test+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Verified+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Code-Review+1: William A. Kennington III <wak@google.com>
+Code-Review+2: Brandon Kim <brandonkim@google.com>
+Submitted-by: Benjamin Fair <benjaminfair@google.com>
+Submitted-at: Tue, 16 Jun 2020 23:15:11 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-ipmi-flash/+/33331
+Project: openbmc/phosphor-ipmi-flash
+Branch: refs/heads/master
