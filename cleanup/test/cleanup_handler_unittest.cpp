@@ -18,9 +18,17 @@ using ::testing::UnorderedElementsAreArray;
 class CleanupHandlerTest : public ::testing::Test
 {
   protected:
+    CleanupHandlerTest() : mock(std::make_unique<FileSystemMock>())
+    {
+        mock_ptr = mock.get();
+        handler = std::make_unique<FileCleanupHandler>(cleanupBlobId, blobs,
+                                                       std::move(mock));
+    }
+
     std::vector<std::string> blobs = {"abcd", "efgh"};
-    FileSystemMock mock;
-    FileCleanupHandler handler{cleanupBlobId, blobs, &mock};
+    std::unique_ptr<FileSystem> mock;
+    FileSystemMock* mock_ptr;
+    std::unique_ptr<FileCleanupHandler> handler;
 };
 
 TEST_F(CleanupHandlerTest, GetBlobListReturnsExpectedList)
@@ -32,8 +40,8 @@ TEST_F(CleanupHandlerTest, GetBlobListReturnsExpectedList)
 
 TEST_F(CleanupHandlerTest, CommitShouldDeleteFiles)
 {
-    EXPECT_CALL(mock, remove("abcd")).WillOnce(Return());
-    EXPECT_CALL(mock, remove("efgh")).WillOnce(Return());
+    EXPECT_CALL(*mock_ptr, remove("abcd")).WillOnce(Return());
+    EXPECT_CALL(*mock_ptr, remove("efgh")).WillOnce(Return());
 
     EXPECT_TRUE(handler.commit(1, {}));
 }
