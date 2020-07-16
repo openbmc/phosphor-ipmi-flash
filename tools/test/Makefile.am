@@ -4,16 +4,12 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/ \
 	-I$(top_srcdir)/tools/ \
 	$(GTEST_CFLAGS) \
-	$(GMOCK_CFLAGS) \
-	$(CODE_COVERAGE_CPPFLAGS)
-AM_CXXFLAGS = \
-	$(CODE_COVERAGE_CXXFLAGS)
+	$(GMOCK_CFLAGS)
 AM_LDFLAGS = \
 	$(GTEST_LIBS) \
 	$(GMOCK_LIBS) \
 	-lgmock_main \
-	$(OESDK_TESTCASE_FLAGS) \
-	$(CODE_COVERAGE_LIBS)
+	$(OESDK_TESTCASE_FLAGS)
 
 check_PROGRAMS = \
 	tools_bt_unittest \
