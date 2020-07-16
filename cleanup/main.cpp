@@ -17,6 +17,7 @@
 #include "config.h"
 
 #include "cleanup.hpp"
+#include "fs.hpp"
 #include "util.hpp"
 
 #include <blobs-ipmid/blobs.hpp>
@@ -30,12 +31,15 @@ namespace ipmi_flash
 std::vector<std::string> files = {
     STATIC_HANDLER_STAGED_NAME, TARBALL_STAGED_NAME, HASH_FILENAME,
     VERIFY_STATUS_FILENAME, UPDATE_STATUS_FILENAME};
-}
+
+FileSystem fileSystemHelper;
+} // namespace ipmi_flash
 
 extern "C" std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
     auto handler = ipmi_flash::FileCleanupHandler::CreateCleanupHandler(
-        ipmi_flash::cleanupBlobId, ipmi_flash::files);
+        ipmi_flash::cleanupBlobId, ipmi_flash::files,
+        &ipmi_flash::fileSystemHelper);
 
     if (!handler)
     {

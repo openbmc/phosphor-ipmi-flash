@@ -21,6 +21,4 @@ class FileSystem : public FileSystemInterface
     void remove(const std::string& path) const override;
 };
 
-extern FileSystem fileSystemHelper;
-
 } // namespace ipmi_flash

@@ -37,6 +37,4 @@ void FileSystem::remove(const std::string& path) const
     return;
 }
 
-FileSystem fileSystemHelper;
-
 } // namespace ipmi_flash
