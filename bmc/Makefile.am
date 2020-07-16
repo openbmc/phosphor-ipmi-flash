@@ -76,12 +76,10 @@ libfirmwareblob_common_la_CXXFLAGS = \
 	-I$(top_srcdir) \
 	$(SDBUSPLUS_CFLAGS) \
         $(PHOSPHOR_LOGGING_CFLAGS) \
-        $(CODE_COVERAGE_CXXFLAGS) \
         -flto
 libfirmwareblob_common_la_LDFLAGS = \
         $(SDBUSPLUS_LIBS) \
         $(PHOSPHOR_LOGGING_LIBS) \
-        $(CODE_COVERAGE_LIBS) \
         -lstdc++fs
 libfirmwareblob_common_la_LIBADD = $(top_builddir)/libfirmware_common.la
 
@@ -92,14 +90,12 @@ libfirmwareblob_la_LIBADD = libfirmwareblob_common.la
 libfirmwareblob_la_LDFLAGS = \
 	$(SDBUSPLUS_LIBS) \
 	$(PHOSPHOR_LOGGING_LIBS) \
-	$(CODE_COVERAGE_LIBS) \
 	-lstdc++fs \
 	-version-info 0:0:0 -shared
 libfirmwareblob_la_CXXFLAGS = \
 	-I$(top_srcdir) \
 	$(SDBUSPLUS_CFLAGS) \
 	$(PHOSPHOR_LOGGING_CFLAGS) \
-	$(CODE_COVERAGE_CXXFLAGS) \
 	-flto
 
 SUBDIRS = . test
