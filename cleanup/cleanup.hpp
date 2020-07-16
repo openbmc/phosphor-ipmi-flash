@@ -16,13 +16,14 @@ class FileCleanupHandler : public blobs::GenericBlobInterface
   public:
     static std::unique_ptr<blobs::GenericBlobInterface>
         CreateCleanupHandler(const std::string& blobId,
-                             const std::vector<std::string>& files);
+                             const std::vector<std::string>& files,
+                             std::unique_ptr<FileSystemInterface> helper);
 
     FileCleanupHandler(const std::string& blobId,
                        const std::vector<std::string>& files,
-                       const FileSystemInterface* helper) :
+                       std::unique_ptr<FileSystemInterface> helper) :
         supported(blobId),
-        files(files), helper(helper)
+        files(files), helper(std::move(helper))
     {}
 
     ~FileCleanupHandler() = default;
@@ -82,7 +83,7 @@ class FileCleanupHandler : public blobs::GenericBlobInterface
   private:
     std::string supported;
     std::vector<std::string> files;
-    const FileSystemInterface* helper;
+    std::unique_ptr<FileSystemInterface> helper;
 };
 
 } // namespace ipmi_flash
