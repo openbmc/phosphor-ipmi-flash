@@ -7,19 +7,6 @@ AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE([subdir-objects -Wall -Wno-portability -Werror foreign dist-xz])
 AM_SILENT_RULES([yes])
 
-# Make sure the default CFLAGS of `-O2 -g` don't override CODE_COVERAGE_CFLAGS
-# It is important that this comes before AC_PROG_C{C,XX}, as we are attempting
-# to stop them from populating default CFLAGS and CXXFLAGS.
-AS_IF([test "x$enable_tests" = "xno"], [enable_code_coverage=no])
-AS_IF([test "x$enable_code_coverage" != "xno"], [
-    AS_IF([test "x${CXXFLAGS+set}" != "xset"], [
-        AC_SUBST(CXXFLAGS, [""])
-    ])
-    AS_IF([test "x${CFLAGS+set}" != "xset"], [
-        AC_SUBST(CFLAGS, [""])
-    ])
-])
-
 # If building tests, enable both hardware options that are configuration controlled
 AS_IF([test "x$enable_tests" = "xyes"], [enable_static_layout=yes])
 AS_IF([test "x$enable_tests" = "xyes"], [enable_tarball_ubi=yes])
@@ -602,16 +589,6 @@ AX_VALGRIND_CHECK
 AM_EXTRA_RECURSIVE_TARGETS([check-valgrind])
 m4_foreach([vgtool], [valgrind_tool_list],
     [AM_EXTRA_RECURSIVE_TARGETS([check-valgrind-]vgtool)])
-
-# Code coverage
-AX_CODE_COVERAGE
-AS_IF([test "x$CODE_COVERAGE_ENABLED" = "xyes"], [
-    AX_APPEND_COMPILE_FLAGS([-DHAVE_GCOV], [CODE_COVERAGE_CPPFLAGS])
-])
-m4_ifdef([_AX_CODE_COVERAGE_RULES],
-    [AM_CONDITIONAL(AUTOCONF_CODE_COVERAGE_2019_01_06, [true])],
-    [AM_CONDITIONAL(AUTOCONF_CODE_COVERAGE_2019_01_06, [false])])
-AX_ADD_AM_MACRO_STATIC([])
 
 # Add --enable-oe-sdk flag to configure script
 AC_ARG_ENABLE([oe-sdk],
