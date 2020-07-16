@@ -18,7 +18,6 @@
 
 #include <blobs-ipmid/blobs.hpp>
 
-#include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
@@ -46,8 +45,6 @@ std::vector<std::string> FileCleanupHandler::getBlobIds()
 bool FileCleanupHandler::commit(uint16_t session,
                                 const std::vector<uint8_t>& data)
 {
-    namespace fs = std::filesystem;
-
     for (const auto& file : files)
     {
         helper->remove(file);
