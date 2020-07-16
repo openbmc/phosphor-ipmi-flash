@@ -27,9 +27,11 @@ namespace ipmi_flash
 
 std::unique_ptr<blobs::GenericBlobInterface>
     FileCleanupHandler::CreateCleanupHandler(
-        const std::string& blobId, const std::vector<std::string>& files)
+        const std::string& blobId, const std::vector<std::string>& files,
+        std::unique_ptr<FileSystemInterface> helper)
 {
-    return std::make_unique<FileCleanupHandler>(blobId, files);
+    return std::make_unique<FileCleanupHandler>(blobId, files,
+                                                std::move(helper));
 }
 
 bool FileCleanupHandler::canHandleBlob(const std::string& path)
