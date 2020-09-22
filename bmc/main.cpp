@@ -112,28 +112,30 @@ extern "C"
 
 std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
-    ipmi_flash::ActionMap actionPacks = {};
+    using namespace ipmi_flash;
 
-    std::vector<ipmi_flash::HandlerConfig> configsFromJson =
-        ipmi_flash::BuildHandlerConfigs(ipmi_flash::jsonConfigurationPath);
+    ActionMap actionPacks = {};
 
-    std::vector<ipmi_flash::HandlerPack> supportedFirmware;
+    std::vector<HandlerConfig> configsFromJson =
+        BuildHandlerConfigs(jsonConfigurationPath);
 
-    supportedFirmware.push_back(std::move(ipmi_flash::CreateFileHandlerPack(
-        ipmi_flash::hashBlobId, HASH_FILENAME)));
+    std::vector<HandlerPack> supportedFirmware;
+
+    supportedFirmware.push_back(
+        std::move(CreateFileHandlerPack(hashBlobId, HASH_FILENAME)));
 
     for (auto& config : configsFromJson)
     {
-        supportedFirmware.push_back(std::move(
-            ipmi_flash::HandlerPack(config.blobId, std::move(config.handler))));
+        supportedFirmware.push_back(
+            std::move(HandlerPack(config.blobId, std::move(config.handler))));
         actionPacks[config.blobId] = std::move(config.actions);
 
         std::fprintf(stderr, "config loaded: %s\n", config.blobId.c_str());
     }
 
-    auto handler = ipmi_flash::FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(supportedFirmware),
-        std::move(ipmi_flash::supportedTransports), std::move(actionPacks));
+    auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
+        std::move(supportedFirmware), std::move(supportedTransports),
+        std::move(actionPacks));
 
     if (!handler)
     {
