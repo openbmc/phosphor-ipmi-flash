@@ -76,19 +76,6 @@ PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
 NetDataHandler netDataHandler;
 #endif
 
-std::vector<DataHandlerPack> supportedTransports = {
-    {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-#ifdef ENABLE_PCI_BRIDGE
-    {FirmwareFlags::UpdateFlags::p2a, &pciDataHandler},
-#endif
-#ifdef ENABLE_LPC_BRIDGE
-    {FirmwareFlags::UpdateFlags::lpc, &lpcDataHandler},
-#endif
-#ifdef ENABLE_NET_BRIDGE
-    {FirmwareFlags::UpdateFlags::net, &netDataHandler},
-#endif
-};
-
 /**
  * Given a name and path, create a HandlerPack.
  *
@@ -113,6 +100,19 @@ extern "C"
 std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
     using namespace ipmi_flash;
+
+    std::vector<DataHandlerPack> supportedTransports = {
+        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
+#ifdef ENABLE_PCI_BRIDGE
+        {FirmwareFlags::UpdateFlags::p2a, &pciDataHandler},
+#endif
+#ifdef ENABLE_LPC_BRIDGE
+        {FirmwareFlags::UpdateFlags::lpc, &lpcDataHandler},
+#endif
+#ifdef ENABLE_NET_BRIDGE
+        {FirmwareFlags::UpdateFlags::net, &netDataHandler},
+#endif
+    };
 
     ActionMap actionPacks = {};
 
