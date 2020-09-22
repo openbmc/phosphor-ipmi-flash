@@ -88,7 +88,7 @@ class IpmiOnlyTwoFirmwaresTest : public ::testing::Test
         packs[biosBlobId] = std::move(biosPack);
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            std::move(blobs), data, std::move(packs));
+            std::move(blobs), std::move(data), std::move(packs));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)

@@ -56,7 +56,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
         std::make_unique<StrictMock<TriggerMock>>();
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs), data, std::move(CreateActionMap("asdf")));
+        std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
 
     EXPECT_CALL(*imageMock2, open("asdf")).WillOnce(Return(true));
 
@@ -77,7 +77,7 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
         std::make_unique<StrictMock<TriggerMock>>();
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs), data, std::move(CreateActionMap("asdf")));
+        std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
 
     EXPECT_CALL(*imageMock1, open(StrEq(hashBlobId))).WillOnce(Return(true));
 

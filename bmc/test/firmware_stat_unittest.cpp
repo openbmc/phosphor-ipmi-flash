@@ -36,7 +36,7 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsAllTransports)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs), data, std::move(CreateActionMap("asdf")));
+        std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
 
     blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));

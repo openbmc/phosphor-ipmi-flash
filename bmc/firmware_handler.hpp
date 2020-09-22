@@ -106,10 +106,9 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
      * @param[in] update - point to object for triggering the update
      */
     static std::unique_ptr<blobs::GenericBlobInterface>
-        CreateFirmwareBlobHandler(
-            std::vector<HandlerPack>&& firmwares,
-            const std::vector<DataHandlerPack>& transports,
-            ActionMap&& actionPacks);
+        CreateFirmwareBlobHandler(std::vector<HandlerPack>&& firmwares,
+                                  std::vector<DataHandlerPack>&& transports,
+                                  ActionMap&& actionPacks);
 
     /**
      * Create a FirmwareBlobHandler.
@@ -122,13 +121,13 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
      */
     FirmwareBlobHandler(std::vector<HandlerPack>&& firmwares,
                         const std::vector<std::string>& blobs,
-                        const std::vector<DataHandlerPack>& transports,
+                        std::vector<DataHandlerPack>&& transports,
                         ActionMap&& actionPacks) :
         handlers(std::move(firmwares)),
-        blobIDs(blobs), transports(transports), activeImage(activeImageBlobId),
-        activeHash(activeHashBlobId), verifyImage(verifyBlobId),
-        updateImage(updateBlobId), lookup(), state(UpdateState::notYetStarted),
-        actionPacks(std::move(actionPacks))
+        blobIDs(blobs), transports(std::move(transports)),
+        activeImage(activeImageBlobId), activeHash(activeHashBlobId),
+        verifyImage(verifyBlobId), updateImage(updateBlobId), lookup(),
+        state(UpdateState::notYetStarted), actionPacks(std::move(actionPacks))
     {}
     ~FirmwareBlobHandler() = default;
     FirmwareBlobHandler(const FirmwareBlobHandler&) = delete;

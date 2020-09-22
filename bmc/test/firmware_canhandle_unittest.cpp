@@ -37,7 +37,7 @@ TEST(FirmwareHandlerCanHandleTest, VerifyItemsInListAreOk)
     };
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs), data, std::move(CreateActionMap("asdf")));
+        std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
 
     for (const auto& item : items)
     {

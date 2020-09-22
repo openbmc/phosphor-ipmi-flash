@@ -33,7 +33,7 @@ TEST_P(FirmwareOpenFailTest, WithFlags)
         std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs), data, std::move(CreateActionMap("asdf")));
+        std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
 
     EXPECT_FALSE(handler->open(0, GetParam(), "asdf"));
 }

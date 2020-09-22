@@ -132,8 +132,8 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
     }
 
     auto handler = ipmi_flash::FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(supportedFirmware), ipmi_flash::supportedTransports,
-        std::move(actionPacks));
+        std::move(supportedFirmware),
+        std::move(ipmi_flash::supportedTransports), std::move(actionPacks));
 
     if (!handler)
     {

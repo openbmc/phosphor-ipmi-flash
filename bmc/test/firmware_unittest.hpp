@@ -60,7 +60,7 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         packs[staticLayoutBlobId] = std::move(actionPack);
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            std::move(blobs), data, std::move(packs));
+            std::move(blobs), std::move(data), std::move(packs));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)
@@ -213,7 +213,8 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
         blobs.push_back(std::move(HandlerPack("asdf", std::move(image))));
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            std::move(blobs), data, std::move(CreateActionMap("asdf")));
+            std::move(blobs), std::move(data),
+            std::move(CreateActionMap("asdf")));
     }
 };
 
@@ -242,7 +243,8 @@ class FakeLpcFirmwareTest : public ::testing::Test
             {FirmwareFlags::UpdateFlags::lpc, &dataMock},
         };
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            std::move(blobs), data, std::move(CreateActionMap("asdf")));
+            std::move(blobs), std::move(data),
+            std::move(CreateActionMap("asdf")));
     }
 };
 

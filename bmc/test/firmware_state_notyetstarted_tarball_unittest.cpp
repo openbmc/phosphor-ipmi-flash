@@ -50,7 +50,7 @@ class FirmwareHandlerNotYetStartedUbitTest : public ::testing::Test
         packs[ubiTarballBlobId] = std::move(actionPack);
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            std::move(blobs), data, std::move(packs));
+            std::move(blobs), std::move(data), std::move(packs));
     }
 
     void expectedState(FirmwareBlobHandler::UpdateState state)
