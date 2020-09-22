@@ -87,6 +87,9 @@ class IpmiOnlyTwoFirmwaresTest : public ::testing::Test
         packs[staticLayoutBlobId] = std::move(bmcPack);
         packs[biosBlobId] = std::move(biosPack);
 
+        std::vector<DataHandlerPack> data;
+        data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
+
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
             std::move(blobs), std::move(data), std::move(packs));
     }
@@ -100,8 +103,6 @@ class IpmiOnlyTwoFirmwaresTest : public ::testing::Test
     ImageHandlerMock *hashImageMock, *staticImageMock, *biosImageMock;
 
     std::vector<HandlerPack> blobs;
-    std::vector<DataHandlerPack> data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr}};
 
     std::unique_ptr<blobs::GenericBlobInterface> handler;
 

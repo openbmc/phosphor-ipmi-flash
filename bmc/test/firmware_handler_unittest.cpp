@@ -19,9 +19,8 @@ using ::testing::UnorderedElementsAreArray;
 
 TEST(FirmwareHandlerTest, CreateEmptyHandlerListVerifyFails)
 {
-    std::vector<DataHandlerPack> data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-    };
+    std::vector<DataHandlerPack> data;
+    data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         {}, std::move(data), std::move(CreateActionMap("abcd")));
@@ -47,9 +46,8 @@ TEST(FirmwareHandlerTest, CreateEmptyActionPackVerifyFails)
     /* The ActionPack map corresponds to the firmware list passed in, but
      * they're not checked against each other yet.
      */
-    std::vector<DataHandlerPack> data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-    };
+    std::vector<DataHandlerPack> data;
+    data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
     std::vector<HandlerPack> blobs;
     blobs.push_back(
@@ -68,9 +66,8 @@ TEST(FirmwareHandlerTest, FirmwareHandlerListRequiresAtLeastTwoEntries)
     /* The hashblob handler must be one of the entries, but it cannot be the
      * only entry.
      */
-    std::vector<DataHandlerPack> data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-    };
+    std::vector<DataHandlerPack> data;
+    data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
     /* Provide a firmware list that has the hash blob, which is the required one
      * -- tested in a different test.
@@ -90,11 +87,12 @@ TEST(FirmwareHandlerTest, FirmwareHandlerListRequiresAtLeastTwoEntries)
     blobs2.push_back(
         std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
 
-    data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-    };
+    std::vector<DataHandlerPack> data2;
+    data2.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
+
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs2), std::move(data), std::move(CreateActionMap("asdf")));
+        std::move(blobs2), std::move(data2),
+        std::move(CreateActionMap("asdf")));
 
     auto result = handler->getBlobIds();
     std::vector<std::string> expectedBlobs = {"asdf", hashBlobId};
@@ -102,9 +100,8 @@ TEST(FirmwareHandlerTest, FirmwareHandlerListRequiresAtLeastTwoEntries)
 }
 TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
 {
-    std::vector<DataHandlerPack> data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-    };
+    std::vector<DataHandlerPack> data;
+    data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
     /* This works fine only if you also pass in the hash handler. */
     std::vector<HandlerPack> blobs;
@@ -121,11 +118,12 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
     blobs2.push_back(std::move(
         HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
 
-    data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-    };
+    std::vector<DataHandlerPack> data2;
+    data2.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
+
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs2), std::move(data), std::move(CreateActionMap("asdf")));
+        std::move(blobs2), std::move(data2),
+        std::move(CreateActionMap("asdf")));
 
     auto result = handler->getBlobIds();
     std::vector<std::string> expectedBlobs = {"asdf", hashBlobId};

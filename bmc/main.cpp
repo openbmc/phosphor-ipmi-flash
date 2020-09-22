@@ -44,37 +44,8 @@ namespace ipmi_flash
 namespace
 {
 
-#ifdef NUVOTON_P2A_MBOX
-static constexpr std::size_t memoryRegionSize = 16 * 1024UL;
-#elif defined NUVOTON_P2A_VGA
-static constexpr std::size_t memoryRegionSize = 4 * 1024 * 1024UL;
-#else
-/* The maximum external buffer size we expect is 64KB. */
-static constexpr std::size_t memoryRegionSize = 64 * 1024UL;
-#endif
-
 static constexpr const char* jsonConfigurationPath =
     "/usr/share/phosphor-ipmi-flash/";
-
-#ifdef ENABLE_LPC_BRIDGE
-#if defined(ASPEED_LPC)
-LpcDataHandler lpcDataHandler(
-    LpcMapperAspeed::createAspeedMapper(MAPPED_ADDRESS, memoryRegionSize));
-#elif defined(NUVOTON_LPC)
-LpcDataHandler lpcDataHandler(
-    LpcMapperNuvoton::createNuvotonMapper(MAPPED_ADDRESS, memoryRegionSize));
-#else
-#error "You must specify a hardware implementation."
-#endif
-#endif
-
-#ifdef ENABLE_PCI_BRIDGE
-PciDataHandler pciDataHandler(MAPPED_ADDRESS, memoryRegionSize);
-#endif
-
-#ifdef ENABLE_NET_BRIDGE
-NetDataHandler netDataHandler;
-#endif
 
 /**
  * Given a name and path, create a HandlerPack.
@@ -101,18 +72,45 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
     using namespace ipmi_flash;
 
-    std::vector<DataHandlerPack> supportedTransports = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
+#ifdef NUVOTON_P2A_MBOX
+    constexpr std::size_t memoryRegionSize = 16 * 1024UL;
+#elif defined NUVOTON_P2A_VGA
+    constexpr std::size_t memoryRegionSize = 4 * 1024 * 1024UL;
+#else
+    /* The maximum external buffer size we expect is 64KB. */
+    constexpr std::size_t memoryRegionSize = 64 * 1024UL;
+#endif
+
+    std::vector<DataHandlerPack> supportedTransports;
+
+    supportedTransports.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
+
 #ifdef ENABLE_PCI_BRIDGE
-        {FirmwareFlags::UpdateFlags::p2a, &pciDataHandler},
+    supportedTransports.emplace_back(
+        FirmwareFlags::UpdateFlags::p2a,
+        std::make_unique<PciDataHandler>(MAPPED_ADDRESS, memoryRegionSize));
 #endif
+
 #ifdef ENABLE_LPC_BRIDGE
-        {FirmwareFlags::UpdateFlags::lpc, &lpcDataHandler},
+#if defined(ASPEED_LPC)
+    supportedTransports.emplace_back(
+        FirmwareFlags::UpdateFlags::lpc,
+        std::make_unique<LpcDataHandler>(LpcMapperAspeed::createAspeedMapper(
+            MAPPED_ADDRESS, memoryRegionSize)));
+#elif defined(NUVOTON_LPC)
+    supportedTransports.emplace_back(
+        FirmwareFlags::UpdateFlags::lpc,
+        std::make_unique<LpcDataHandler>(LpcMapperNuvoton::createNuvotonMapper(
+            MAPPED_ADDRESS, memoryRegionSize)));
+#else
+#error "You must specify a hardware implementation."
 #endif
+#endif
+
 #ifdef ENABLE_NET_BRIDGE
-        {FirmwareFlags::UpdateFlags::net, &netDataHandler},
+    supportedTransports.emplace_back(FirmwareFlags::UpdateFlags::net,
+                                     std::make_unique<NetDataHandler>());
 #endif
-    };
 
     ActionMap actionPacks = {};
 

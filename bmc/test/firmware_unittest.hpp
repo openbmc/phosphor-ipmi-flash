@@ -59,6 +59,9 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         ActionMap packs;
         packs[staticLayoutBlobId] = std::move(actionPack);
 
+        std::vector<DataHandlerPack> data;
+        data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
+
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
             std::move(blobs), std::move(data), std::move(packs));
     }
@@ -174,8 +177,6 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     ImageHandlerMock *hashImageMock, *imageMock2;
 
     std::vector<HandlerPack> blobs;
-    std::vector<DataHandlerPack> data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr}};
 
     std::unique_ptr<blobs::GenericBlobInterface> handler;
 
@@ -197,8 +198,6 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
   protected:
     ImageHandlerMock *hashImageMock, *imageMock;
     std::vector<HandlerPack> blobs;
-    std::vector<DataHandlerPack> data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr}};
     std::unique_ptr<blobs::GenericBlobInterface> handler;
 
     void SetUp() override
@@ -211,6 +210,9 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
         image = std::make_unique<ImageHandlerMock>();
         imageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
         blobs.push_back(std::move(HandlerPack("asdf", std::move(image))));
+
+        std::vector<DataHandlerPack> data;
+        data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
             std::move(blobs), std::move(data),
@@ -221,10 +223,9 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
 class FakeLpcFirmwareTest : public ::testing::Test
 {
   protected:
-    DataHandlerMock dataMock;
+    DataHandlerMock* dataMock;
     ImageHandlerMock *hashImageMock, *imageMock;
     std::vector<HandlerPack> blobs;
-    std::vector<DataHandlerPack> data;
     std::unique_ptr<blobs::GenericBlobInterface> handler;
 
     void SetUp() override
@@ -238,10 +239,13 @@ class FakeLpcFirmwareTest : public ::testing::Test
         imageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
         blobs.push_back(std::move(HandlerPack("asdf", std::move(image))));
 
-        data = {
-            {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-            {FirmwareFlags::UpdateFlags::lpc, &dataMock},
-        };
+        auto dataMockInstance = std::make_unique<DataHandlerMock>();
+        dataMock = dataMockInstance.get();
+
+        std::vector<DataHandlerPack> data;
+        data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
+        data.emplace_back(FirmwareFlags::UpdateFlags::lpc,
+                          std::move(dataMockInstance));
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
             std::move(blobs), std::move(data),
             std::move(CreateActionMap("asdf")));

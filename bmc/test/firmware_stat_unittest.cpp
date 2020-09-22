@@ -31,9 +31,8 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsAllTransports)
     blobs.push_back(
         std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
 
-    std::vector<DataHandlerPack> data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-    };
+    std::vector<DataHandlerPack> data;
+    data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));

@@ -28,7 +28,7 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithDataHandler)
     /* Boring test where you open a blob_id, then verify that when it's closed
      * everything looks right.
      */
-    EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
+    EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(*hashImageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
@@ -42,7 +42,7 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithDataHandler)
                             activeHashBlobId));
 
     /* Set up close() expectations. */
-    EXPECT_CALL(dataMock, close());
+    EXPECT_CALL(*dataMock, close());
     EXPECT_CALL(*hashImageMock, close());
     EXPECT_TRUE(handler->close(0));
 

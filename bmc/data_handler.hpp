@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 namespace ipmi_flash
@@ -57,7 +58,19 @@ class DataInterface
 struct DataHandlerPack
 {
     std::uint16_t bitmask;
-    DataInterface* handler;
+    std::unique_ptr<DataInterface> handler;
+
+    DataHandlerPack(std::uint16_t bitmask,
+                    std::unique_ptr<DataInterface> handler) :
+        bitmask(bitmask),
+        handler(std::move(handler))
+    {}
+
+    /* Don't allow copying, assignment or move assignment, only moving. */
+    DataHandlerPack(const DataHandlerPack&) = delete;
+    DataHandlerPack& operator=(const DataHandlerPack&) = delete;
+    DataHandlerPack(DataHandlerPack&&) = default;
+    DataHandlerPack& operator=(DataHandlerPack&&) = delete;
 };
 
 } // namespace ipmi_flash

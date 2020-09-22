@@ -49,6 +49,9 @@ class FirmwareHandlerNotYetStartedUbitTest : public ::testing::Test
         ActionMap packs;
         packs[ubiTarballBlobId] = std::move(actionPack);
 
+        std::vector<DataHandlerPack> data;
+        data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
+
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
             std::move(blobs), std::move(data), std::move(packs));
     }
@@ -75,8 +78,6 @@ class FirmwareHandlerNotYetStartedUbitTest : public ::testing::Test
 
     ImageHandlerMock *hashImageMock, *imageMock;
     std::vector<HandlerPack> blobs;
-    std::vector<DataHandlerPack> data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr}};
     std::unique_ptr<blobs::GenericBlobInterface> handler;
     TriggerMock* verifyMockPtr;
     TriggerMock* updateMockPtr;
