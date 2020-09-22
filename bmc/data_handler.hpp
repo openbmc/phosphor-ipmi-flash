@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 namespace ipmi_flash
@@ -57,7 +58,7 @@ class DataInterface
 struct DataHandlerPack
 {
     std::uint16_t bitmask;
-    DataInterface* handler;
+    std::unique_ptr<DataInterface> handler;
 };
 
 } // namespace ipmi_flash

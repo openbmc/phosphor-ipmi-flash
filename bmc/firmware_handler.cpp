@@ -38,7 +38,7 @@ namespace ipmi_flash
 std::unique_ptr<blobs::GenericBlobInterface>
     FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::vector<HandlerPack>&& firmwares,
-        const std::vector<DataHandlerPack>& transports, ActionMap&& actionPacks)
+        std::vector<DataHandlerPack>&& transports, ActionMap&& actionPacks)
 {
     /* There must be at least one in addition to the hash blob handler. */
     if (firmwares.size() < 2)
@@ -66,8 +66,9 @@ std::unique_ptr<blobs::GenericBlobInterface>
         return nullptr;
     }
 
-    return std::make_unique<FirmwareBlobHandler>(
-        std::move(firmwares), blobs, transports, std::move(actionPacks));
+    return std::make_unique<FirmwareBlobHandler>(std::move(firmwares), blobs,
+                                                 std::move(transports),
+                                                 std::move(actionPacks));
 }
 
 /* Check if the path is in our supported list (or active list). */
@@ -478,7 +479,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     }
 
     curr->flags = flags;
-    curr->dataHandler = d->handler;
+    curr->dataHandler = d->handler.get();
     curr->imageHandler = h->handler.get();
 
     lookup[session] = curr;
