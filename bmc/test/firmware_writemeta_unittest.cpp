@@ -35,7 +35,7 @@ TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersFailIfOverIPMI)
 
 TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
 {
-    EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
+    EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
@@ -43,7 +43,7 @@ TEST_F(FirmwareHandlerWriteMetaTest, WriteConfigParametersPassedThrough)
 
     std::vector<std::uint8_t> bytes = {0x01, 0x02, 0x03, 0x04};
 
-    EXPECT_CALL(dataMock, writeMeta(Eq(bytes))).WillOnce(Return(true));
+    EXPECT_CALL(*dataMock, writeMeta(Eq(bytes))).WillOnce(Return(true));
     EXPECT_TRUE(handler->writeMeta(0, 0, bytes));
 }
 

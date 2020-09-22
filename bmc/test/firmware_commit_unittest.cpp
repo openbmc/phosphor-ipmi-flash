@@ -39,9 +39,8 @@ class FirmwareHandlerCommitTest : public ::testing::Test
         imageMock2 = reinterpret_cast<ImageHandlerMock*>(image.get());
         blobs.push_back(std::move(HandlerPack("asdf", std::move(image))));
 
-        data = {
-            {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-        };
+        data.emplace_back(
+            DataHandlerPack(FirmwareFlags::UpdateFlags::ipmi, nullptr));
     }
 };
 

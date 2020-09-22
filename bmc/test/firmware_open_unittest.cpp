@@ -20,11 +20,13 @@ class FirmwareOpenFailTest : public ::testing::TestWithParam<std::uint16_t>
 
 TEST_P(FirmwareOpenFailTest, WithFlags)
 {
-    std::vector<DataHandlerPack> data = {
-        {FirmwareFlags::UpdateFlags::ipmi, nullptr},
-        {FirmwareFlags::UpdateFlags::p2a, nullptr},
-        {FirmwareFlags::UpdateFlags::lpc, nullptr},
-    };
+    std::vector<DataHandlerPack> data;
+    data.emplace_back(
+        DataHandlerPack(FirmwareFlags::UpdateFlags::ipmi, nullptr));
+    data.emplace_back(
+        DataHandlerPack(FirmwareFlags::UpdateFlags::p2a, nullptr));
+    data.emplace_back(
+        DataHandlerPack(FirmwareFlags::UpdateFlags::lpc, nullptr));
 
     std::vector<HandlerPack> blobs;
     blobs.push_back(std::move(

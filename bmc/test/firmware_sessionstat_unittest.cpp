@@ -47,7 +47,7 @@ TEST_F(FirmwareSessionStateTestLpc, DataTypeP2AReturnsMetadata)
      * P2A to for now.  Later, LPC may have reason to provide data, and can by
      * simply implementing read().
      */
-    EXPECT_CALL(dataMock, open()).WillOnce(Return(true));
+    EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
@@ -56,7 +56,7 @@ TEST_F(FirmwareSessionStateTestLpc, DataTypeP2AReturnsMetadata)
     int size = 512;
     EXPECT_CALL(*imageMock, getSize()).WillOnce(Return(size));
     std::vector<std::uint8_t> mBytes = {0x01, 0x02};
-    EXPECT_CALL(dataMock, readMeta()).WillOnce(Return(mBytes));
+    EXPECT_CALL(*dataMock, readMeta()).WillOnce(Return(mBytes));
 
     blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat(0, &meta));
