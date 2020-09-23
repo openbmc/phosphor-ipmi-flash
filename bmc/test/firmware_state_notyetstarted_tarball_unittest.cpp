@@ -26,12 +26,11 @@ class FirmwareHandlerNotYetStartedUbitTest : public ::testing::Test
         std::unique_ptr<ImageHandlerInterface> image =
             std::make_unique<ImageHandlerMock>();
         hashImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+        blobs.emplace_back(hashBlobId, std::move(image));
 
         image = std::make_unique<ImageHandlerMock>();
         imageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(
-            std::move(HandlerPack(ubiTarballBlobId, std::move(image))));
+        blobs.emplace_back(ubiTarballBlobId, std::move(image));
 
         std::unique_ptr<TriggerableActionInterface> verifyMock =
             std::make_unique<TriggerMock>();

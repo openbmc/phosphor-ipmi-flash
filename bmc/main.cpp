@@ -124,8 +124,8 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 
     for (auto& config : configsFromJson)
     {
-        supportedFirmware.push_back(
-            std::move(HandlerPack(config.blobId, std::move(config.handler))));
+        supportedFirmware.emplace_back(config.blobId,
+                                       std::move(config.handler));
         actionPacks[config.blobId] = std::move(config.actions);
 
         std::fprintf(stderr, "config loaded: %s\n", config.blobId.c_str());

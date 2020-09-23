@@ -26,10 +26,8 @@ TEST_P(FirmwareOpenFailTest, WithFlags)
     data.emplace_back(FirmwareFlags::UpdateFlags::lpc, nullptr);
 
     std::vector<HandlerPack> blobs;
-    blobs.push_back(std::move(
-        HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
-    blobs.push_back(
-        std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
+    blobs.emplace_back(hashBlobId, std::make_unique<ImageHandlerMock>());
+    blobs.emplace_back("asdf", std::make_unique<ImageHandlerMock>());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));

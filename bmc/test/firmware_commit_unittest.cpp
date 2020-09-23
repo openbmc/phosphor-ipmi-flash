@@ -33,11 +33,11 @@ class FirmwareHandlerCommitTest : public ::testing::Test
         std::unique_ptr<ImageHandlerInterface> image =
             std::make_unique<ImageHandlerMock>();
         imageMock1 = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+        blobs.emplace_back(hashBlobId, std::move(image));
 
         image = std::make_unique<ImageHandlerMock>();
         imageMock2 = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(std::move(HandlerPack("asdf", std::move(image))));
+        blobs.emplace_back("asdf", std::move(image));
 
         data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
     }

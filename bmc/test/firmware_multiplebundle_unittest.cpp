@@ -33,16 +33,15 @@ class IpmiOnlyTwoFirmwaresTest : public ::testing::Test
         std::unique_ptr<ImageHandlerInterface> image =
             std::make_unique<ImageHandlerMock>();
         hashImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+        blobs.emplace_back(hashBlobId, std::move(image));
 
         image = std::make_unique<ImageHandlerMock>();
         staticImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(
-            std::move(HandlerPack(staticLayoutBlobId, std::move(image))));
+        blobs.emplace_back(staticLayoutBlobId, std::move(image));
 
         image = std::make_unique<ImageHandlerMock>();
         biosImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(std::move(HandlerPack(biosBlobId, std::move(image))));
+        blobs.emplace_back(biosBlobId, std::move(image));
 
         std::unique_ptr<TriggerableActionInterface> bmcPrepareMock =
             std::make_unique<TriggerMock>();

@@ -26,10 +26,8 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsAllTransports)
      */
 
     std::vector<HandlerPack> blobs;
-    blobs.push_back(std::move(
-        HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
-    blobs.push_back(
-        std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
+    blobs.emplace_back(hashBlobId, std::make_unique<ImageHandlerMock>());
+    blobs.emplace_back("asdf", std::make_unique<ImageHandlerMock>());
 
     std::vector<DataHandlerPack> data;
     data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
