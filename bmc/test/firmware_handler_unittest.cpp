@@ -31,10 +31,8 @@ TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
     ImageHandlerMock imageMock;
 
     std::vector<HandlerPack> blobs;
-    blobs.push_back(std::move(
-        HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
-    blobs.push_back(
-        std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
+    blobs.emplace_back(hashBlobId, std::make_unique<ImageHandlerMock>());
+    blobs.emplace_back("asdf", std::make_unique<ImageHandlerMock>());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(blobs), std::move(std::vector<DataHandlerPack>()),
@@ -50,10 +48,8 @@ TEST(FirmwareHandlerTest, CreateEmptyActionPackVerifyFails)
     data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
     std::vector<HandlerPack> blobs;
-    blobs.push_back(
-        std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
-    blobs.push_back(std::move(
-        HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
+    blobs.emplace_back("asdf", std::make_unique<ImageHandlerMock>());
+    blobs.emplace_back(hashBlobId, std::make_unique<ImageHandlerMock>());
 
     ActionMap emptyMap;
 
@@ -73,8 +69,7 @@ TEST(FirmwareHandlerTest, FirmwareHandlerListRequiresAtLeastTwoEntries)
      * -- tested in a different test.
      */
     std::vector<HandlerPack> blobs;
-    blobs.push_back(std::move(
-        HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
+    blobs.emplace_back(hashBlobId, std::make_unique<ImageHandlerMock>());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
@@ -82,10 +77,8 @@ TEST(FirmwareHandlerTest, FirmwareHandlerListRequiresAtLeastTwoEntries)
 
     /* Add second firmware and it'll now work. */
     std::vector<HandlerPack> blobs2;
-    blobs2.push_back(std::move(
-        HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
-    blobs2.push_back(
-        std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
+    blobs2.emplace_back(hashBlobId, std::make_unique<ImageHandlerMock>());
+    blobs2.emplace_back("asdf", std::make_unique<ImageHandlerMock>());
 
     std::vector<DataHandlerPack> data2;
     data2.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
@@ -105,18 +98,15 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
 
     /* This works fine only if you also pass in the hash handler. */
     std::vector<HandlerPack> blobs;
-    blobs.push_back(
-        std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
+    blobs.emplace_back("asdf", std::make_unique<ImageHandlerMock>());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
     EXPECT_EQ(handler, nullptr);
 
     std::vector<HandlerPack> blobs2;
-    blobs2.push_back(
-        std::move(HandlerPack("asdf", std::make_unique<ImageHandlerMock>())));
-    blobs2.push_back(std::move(
-        HandlerPack(hashBlobId, std::make_unique<ImageHandlerMock>())));
+    blobs2.emplace_back("asdf", std::make_unique<ImageHandlerMock>());
+    blobs2.emplace_back(hashBlobId, std::make_unique<ImageHandlerMock>());
 
     std::vector<DataHandlerPack> data2;
     data2.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);

@@ -32,12 +32,11 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
         std::unique_ptr<ImageHandlerInterface> image =
             std::make_unique<ImageHandlerMock>();
         hashImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+        blobs.emplace_back(hashBlobId, std::move(image));
 
         image = std::make_unique<ImageHandlerMock>();
         imageMock2 = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(
-            std::move(HandlerPack(staticLayoutBlobId, std::move(image))));
+        blobs.emplace_back(staticLayoutBlobId, std::move(image));
 
         std::unique_ptr<TriggerableActionInterface> prepareMock =
             std::make_unique<TriggerMock>();
@@ -205,11 +204,11 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
         std::unique_ptr<ImageHandlerInterface> image =
             std::make_unique<ImageHandlerMock>();
         hashImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+        blobs.emplace_back(hashBlobId, std::move(image));
 
         image = std::make_unique<ImageHandlerMock>();
         imageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(std::move(HandlerPack("asdf", std::move(image))));
+        blobs.emplace_back("asdf", std::move(image));
 
         std::vector<DataHandlerPack> data;
         data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
@@ -233,11 +232,11 @@ class FakeLpcFirmwareTest : public ::testing::Test
         std::unique_ptr<ImageHandlerInterface> image =
             std::make_unique<ImageHandlerMock>();
         hashImageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(std::move(HandlerPack(hashBlobId, std::move(image))));
+        blobs.emplace_back(hashBlobId, std::move(image));
 
         image = std::make_unique<ImageHandlerMock>();
         imageMock = reinterpret_cast<ImageHandlerMock*>(image.get());
-        blobs.push_back(std::move(HandlerPack("asdf", std::move(image))));
+        blobs.emplace_back("asdf", std::move(image));
 
         auto dataMockInstance = std::make_unique<DataHandlerMock>();
         dataMock = dataMockInstance.get();
