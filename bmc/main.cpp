@@ -60,26 +60,6 @@ HandlerPack CreateFileHandlerPack(const std::string& name,
     return HandlerPack(name, std::make_unique<FileHandler>(path));
 }
 
-/**
- * Returns the corresponding memory region size given the compiled
- * configuration.
- *
- * @return the size.
- */
-std::size_t GetMemoryRegionSize()
-{
-#ifdef NUVOTON_P2A_MBOX
-    constexpr std::size_t memoryRegionSize = 16 * 1024UL;
-#elif defined NUVOTON_P2A_VGA
-    constexpr std::size_t memoryRegionSize = 4 * 1024 * 1024UL;
-#else
-    /* The maximum external buffer size we expect is 64KB. */
-    constexpr std::size_t memoryRegionSize = 64 * 1024UL;
-#endif
-
-    return memoryRegionSize;
-}
-
 } // namespace
 } // namespace ipmi_flash
 
@@ -97,23 +77,35 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
     supportedTransports.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
 #ifdef ENABLE_PCI_BRIDGE
+
+#ifdef NUVOTON_P2A_MBOX
+    constexpr std::size_t memoryRegionSize = 16 * 1024UL;
+#elif defined NUVOTON_P2A_VGA
+    constexpr std::size_t memoryRegionSize = 4 * 1024 * 1024UL;
+#else
+    /* The maximum external buffer size we expect is 64KB. */
+    constexpr std::size_t memoryRegionSize = 64 * 1024UL;
+#endif
+
     supportedTransports.emplace_back(
         FirmwareFlags::UpdateFlags::p2a,
-        std::make_unique<PciDataHandler>(MAPPED_ADDRESS,
-                                         GetMemoryRegionSize()));
+        std::make_unique<PciDataHandler>(MAPPED_ADDRESS, memoryRegionSize));
 #endif
 
 #ifdef ENABLE_LPC_BRIDGE
+    /* The maximum external buffer size we expect is 64KB. */
+    constexpr std::size_t memoryRegionSize = 64 * 1024UL;
+
 #if defined(ASPEED_LPC)
     supportedTransports.emplace_back(
         FirmwareFlags::UpdateFlags::lpc,
         std::make_unique<LpcDataHandler>(LpcMapperAspeed::createAspeedMapper(
-            MAPPED_ADDRESS, GetMemoryRegionSize())));
+            MAPPED_ADDRESS, memoryRegionSize)));
 #elif defined(NUVOTON_LPC)
     supportedTransports.emplace_back(
         FirmwareFlags::UpdateFlags::lpc,
         std::make_unique<LpcDataHandler>(LpcMapperNuvoton::createNuvotonMapper(
-            MAPPED_ADDRESS, GetMemoryRegionSize())));
+            MAPPED_ADDRESS, memoryRegionSize)));
 #else
 #error "You must specify a hardware implementation."
 #endif
