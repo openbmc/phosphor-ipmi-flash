@@ -48,11 +48,6 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
     /* Verify the flash image returns failure on this command.  It's a fairly
      * artificial test.
      */
-
-    /* Verify it doesn't get called by using StrictMock. */
-    std::unique_ptr<TriggerableActionInterface> verifyMock =
-        std::make_unique<StrictMock<TriggerMock>>();
-
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
 
@@ -69,11 +64,6 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
     /* Verify the hash file returns failure on this command.  It's a fairly
      * artificial test.
      */
-
-    /* Verify it doesn't get called by using StrictMock. */
-    std::unique_ptr<TriggerableActionInterface> verifyMock =
-        std::make_unique<StrictMock<TriggerMock>>();
-
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
         std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
 
