@@ -33,7 +33,7 @@ TEST(FirmwareHandlerStatTest, StatOnInactiveBlobIDReturnsAllTransports)
     data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
+        std::move(blobs), std::move(data), CreateActionMap("asdf"));
 
     blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat("asdf", &meta));

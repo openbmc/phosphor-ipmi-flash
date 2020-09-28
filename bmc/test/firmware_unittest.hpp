@@ -214,8 +214,7 @@ class IpmiOnlyFirmwareTest : public ::testing::Test
         data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            std::move(blobs), std::move(data),
-            std::move(CreateActionMap("asdf")));
+            std::move(blobs), std::move(data), CreateActionMap("asdf"));
     }
 };
 
@@ -246,8 +245,7 @@ class FakeLpcFirmwareTest : public ::testing::Test
         data.emplace_back(FirmwareFlags::UpdateFlags::lpc,
                           std::move(dataMockInstance));
         handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-            std::move(blobs), std::move(data),
-            std::move(CreateActionMap("asdf")));
+            std::move(blobs), std::move(data), CreateActionMap("asdf"));
     }
 };
 

@@ -23,7 +23,7 @@ TEST(FirmwareHandlerTest, CreateEmptyHandlerListVerifyFails)
     data.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        {}, std::move(data), std::move(CreateActionMap("abcd")));
+        {}, std::move(data), CreateActionMap("abcd"));
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
@@ -35,8 +35,8 @@ TEST(FirmwareHandlerTest, CreateEmptyDataHandlerListFails)
     blobs.emplace_back("asdf", std::make_unique<ImageHandlerMock>());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs), std::move(std::vector<DataHandlerPack>()),
-        std::move(CreateActionMap("asdf")));
+        std::move(blobs), std::vector<DataHandlerPack>(),
+        CreateActionMap("asdf"));
     EXPECT_EQ(handler, nullptr);
 }
 TEST(FirmwareHandlerTest, CreateEmptyActionPackVerifyFails)
@@ -72,7 +72,7 @@ TEST(FirmwareHandlerTest, FirmwareHandlerListRequiresAtLeastTwoEntries)
     blobs.emplace_back(hashBlobId, std::make_unique<ImageHandlerMock>());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
+        std::move(blobs), std::move(data), CreateActionMap("asdf"));
     EXPECT_EQ(handler, nullptr);
 
     /* Add second firmware and it'll now work. */
@@ -84,8 +84,7 @@ TEST(FirmwareHandlerTest, FirmwareHandlerListRequiresAtLeastTwoEntries)
     data2.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs2), std::move(data2),
-        std::move(CreateActionMap("asdf")));
+        std::move(blobs2), std::move(data2), CreateActionMap("asdf"));
 
     auto result = handler->getBlobIds();
     std::vector<std::string> expectedBlobs = {"asdf", hashBlobId};
@@ -101,7 +100,7 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
     blobs.emplace_back("asdf", std::make_unique<ImageHandlerMock>());
 
     auto handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs), std::move(data), std::move(CreateActionMap("asdf")));
+        std::move(blobs), std::move(data), CreateActionMap("asdf"));
     EXPECT_EQ(handler, nullptr);
 
     std::vector<HandlerPack> blobs2;
@@ -112,8 +111,7 @@ TEST(FirmwareHandlerTest, VerifyHashRequiredForHappiness)
     data2.emplace_back(FirmwareFlags::UpdateFlags::ipmi, nullptr);
 
     handler = FirmwareBlobHandler::CreateFirmwareBlobHandler(
-        std::move(blobs2), std::move(data2),
-        std::move(CreateActionMap("asdf")));
+        std::move(blobs2), std::move(data2), CreateActionMap("asdf"));
 
     auto result = handler->getBlobIds();
     std::vector<std::string> expectedBlobs = {"asdf", hashBlobId};
