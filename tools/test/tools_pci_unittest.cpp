@@ -66,6 +66,7 @@ constexpr pciaddr_t mockRegionSize = 0x20000;
 class Device
 {
   public:
+    virtual ~Device() = default;
     virtual const struct pci_id_match* getMatch() const = 0;
     virtual struct pci_device getDevice() const = 0;
     virtual void expectSetup(PciAccessMock& pciMock,
