@@ -39,7 +39,6 @@ AM_DEFAULT_SOURCE_EXT = .cpp
 
 noinst_LTLIBRARIES = libfirmware_common.la
 libfirmware_common_la_SOURCES = \
-	util.cpp \
 	internal/sys.cpp
 libfirmware_common_la_CXXFLAGS = \
 	$(CODE_COVERAGE_CXXFLAGS) \
