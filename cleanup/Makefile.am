@@ -4,8 +4,7 @@ AM_DEFAULT_SOURCE_EXT = .cpp
 noinst_LTLIBRARIES = libfirmwarecleanupblob_common.la
 libfirmwarecleanupblob_common_la_SOURCES = \
 	cleanup.cpp \
-	fs.cpp \
-	$(top_srcdir)/util.cpp
+	fs.cpp
 libfirmwarecleanupblob_common_la_CXXFLAGS = \
 	-flto
 libfirmwarecleanupblob_common_la_LDFLAGS = \

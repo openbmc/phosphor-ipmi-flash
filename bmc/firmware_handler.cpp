@@ -464,18 +464,18 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     }
 
     Session* curr;
-    const std::string* active;
+    const char* active;
 
     if (path == hashBlobId)
     {
         /* 2c) are they opening the /flash/hash ? (to start the process) */
         curr = &activeHash;
-        active = &activeHashBlobId;
+        active = activeHashBlobId;
     }
     else
     {
         curr = &activeImage;
-        active = &activeImageBlobId;
+        active = activeImageBlobId;
     }
 
     curr->flags = flags;
@@ -484,7 +484,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
 
     lookup[session] = curr;
 
-    addBlobId(*active);
+    addBlobId(active);
     removeBlobId(verifyBlobId);
 
     changeState(UpdateState::uploadInProgress);
