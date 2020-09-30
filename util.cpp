@@ -17,16 +17,4 @@
 #include "util.hpp"
 
 namespace ipmi_flash
-{
-
-const std::string biosBlobId = "/flash/bios";
-const std::string updateBlobId = "/flash/update";
-const std::string verifyBlobId = "/flash/verify";
-const std::string hashBlobId = "/flash/hash";
-const std::string activeImageBlobId = "/flash/active/image";
-const std::string activeHashBlobId = "/flash/active/hash";
-const std::string staticLayoutBlobId = "/flash/image";
-const std::string ubiTarballBlobId = "/flash/tarball";
-const std::string cleanupBlobId = "/flash/cleanup";
-
-} // namespace ipmi_flash
+{} // namespace ipmi_flash
