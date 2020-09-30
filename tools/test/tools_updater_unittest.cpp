@@ -6,10 +6,13 @@
 #include "updater_mock.hpp"
 #include "util.hpp"
 
+#include <ipmiblob/blob_errors.hpp>
 #include <ipmiblob/test/blob_interface_mock.hpp>
 
 #include <string>
+#include <vector>
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 namespace host_tool
@@ -18,6 +21,7 @@ namespace host_tool
 using ::testing::_;
 using ::testing::Eq;
 using ::testing::Return;
+using ::testing::Throw;
 using ::testing::TypedEq;
 
 class UpdateHandlerTest : public ::testing::Test
@@ -37,6 +41,14 @@ TEST_F(UpdateHandlerTest, CheckAvailableSuccess)
             Return(std::vector<std::string>({ipmi_flash::staticLayoutBlobId})));
 
     EXPECT_TRUE(updater.checkAvailable(ipmi_flash::staticLayoutBlobId));
+}
+
+TEST_F(UpdateHandlerTest, CheckAvailableFailure)
+{
+    EXPECT_CALL(blobMock, getBlobList())
+        .WillOnce(Return(std::vector<std::string>()));
+
+    EXPECT_FALSE(updater.checkAvailable(ipmi_flash::staticLayoutBlobId));
 }
 
 TEST_F(UpdateHandlerTest, SendFileSuccess)
@@ -64,6 +76,53 @@ TEST_F(UpdateHandlerTest, SendFileSuccess)
     updater.sendFile(ipmi_flash::staticLayoutBlobId, firmwareImage);
 }
 
+TEST_F(UpdateHandlerTest, SendFileExceptsOnBlobOpening)
+{
+    std::string firmwareImage = "image.bin";
+
+    std::uint16_t supported =
+        static_cast<std::uint16_t>(
+            ipmi_flash::FirmwareFlags::UpdateFlags::lpc) |
+        static_cast<std::uint16_t>(
+            ipmi_flash::FirmwareFlags::UpdateFlags::openWrite);
+
+    EXPECT_CALL(handlerMock, supportedType())
+        .WillOnce(Return(ipmi_flash::FirmwareFlags::UpdateFlags::lpc));
+
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::staticLayoutBlobId, supported))
+        .WillOnce(Throw(ipmiblob::BlobException("asdf")));
+
+    EXPECT_THROW(
+        updater.sendFile(ipmi_flash::staticLayoutBlobId, firmwareImage),
+        ToolException);
+}
+
+TEST_F(UpdateHandlerTest, SendFileHandlerFailureCausesException)
+{
+    std::string firmwareImage = "image.bin";
+
+    std::uint16_t supported =
+        static_cast<std::uint16_t>(
+            ipmi_flash::FirmwareFlags::UpdateFlags::lpc) |
+        static_cast<std::uint16_t>(
+            ipmi_flash::FirmwareFlags::UpdateFlags::openWrite);
+
+    EXPECT_CALL(handlerMock, supportedType())
+        .WillOnce(Return(ipmi_flash::FirmwareFlags::UpdateFlags::lpc));
+
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::staticLayoutBlobId, supported))
+        .WillOnce(Return(session));
+
+    EXPECT_CALL(handlerMock, sendContents(firmwareImage, session))
+        .WillOnce(Return(false));
+
+    EXPECT_CALL(blobMock, closeBlob(session)).Times(1);
+
+    EXPECT_THROW(
+        updater.sendFile(ipmi_flash::staticLayoutBlobId, firmwareImage),
+        ToolException);
+}
+
 TEST_F(UpdateHandlerTest, VerifyFileHandleReturnsTrueOnSuccess)
 {
     EXPECT_CALL(blobMock, openBlob(ipmi_flash::verifyBlobId, _))
@@ -81,9 +140,83 @@ TEST_F(UpdateHandlerTest, VerifyFileHandleReturnsTrueOnSuccess)
     EXPECT_TRUE(updater.verifyFile(ipmi_flash::verifyBlobId, false));
 }
 
+TEST_F(UpdateHandlerTest, VerifyFileHandleSkipsPollingIfIgnoreStatus)
+{
+    /* if ignoreStatus, it'll skip polling for a verification result. */
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::verifyBlobId, _))
+        .WillOnce(Return(session));
+    EXPECT_CALL(blobMock, commit(session, _)).WillOnce(Return());
+
+    EXPECT_CALL(blobMock, closeBlob(session)).WillOnce(Return());
+
+    EXPECT_TRUE(updater.verifyFile(ipmi_flash::verifyBlobId, true));
+}
+
+TEST_F(UpdateHandlerTest, VerifyFileConvertsOpenBlobExceptionToToolException)
+{
+    /* On open, it can except and this is converted to a ToolException. */
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::verifyBlobId, _))
+        .WillOnce(Throw(ipmiblob::BlobException("asdf")));
+    EXPECT_THROW(updater.verifyFile(ipmi_flash::verifyBlobId, false),
+                 ToolException);
+}
+
+TEST_F(UpdateHandlerTest, VerifyFileCommitExceptionForwards)
+{
+    /* On commit, it can except. */
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::verifyBlobId, _))
+        .WillOnce(Return(session));
+    EXPECT_CALL(blobMock, commit(session, _))
+        .WillOnce(Throw(ipmiblob::BlobException("asdf")));
+    EXPECT_THROW(updater.verifyFile(ipmi_flash::verifyBlobId, false),
+                 ToolException);
+}
+
+TEST_F(UpdateHandlerTest, CleanArtifactsSkipsCleanupIfUnableToOpen)
+{
+    /* It only tries to commit if it's able to open the blob.  However, if
+     * committing fails, this error is ignored.
+     */
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::cleanupBlobId, _))
+        .WillOnce(Throw(ipmiblob::BlobException("asdf")));
+    EXPECT_CALL(blobMock, commit(_, _)).Times(0);
+    EXPECT_CALL(blobMock, closeBlob(_)).Times(0);
+
+    updater.cleanArtifacts();
+}
+
+TEST_F(UpdateHandlerTest, CleanArtifactsIfOpenDoesClose)
+{
+    /* The closeBlob call is called even if commit excepts. */
+    std::uint16_t session = 0xa5eb;
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::cleanupBlobId, _))
+        .WillOnce(Return(session));
+    EXPECT_CALL(blobMock, commit(session, _))
+        .WillOnce(Throw(ipmiblob::BlobException("asdf")));
+    EXPECT_CALL(blobMock, closeBlob(session));
+
+    updater.cleanArtifacts();
+}
+
+TEST_F(UpdateHandlerTest, CleanArtifactsSuccessPath)
+{
+    std::uint16_t session = 0xa5eb;
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::cleanupBlobId, _))
+        .WillOnce(Return(session));
+    EXPECT_CALL(blobMock, commit(session, _));
+    EXPECT_CALL(blobMock, closeBlob(session));
+
+    updater.cleanArtifacts();
+}
+
 class UpdaterTest : public ::testing::Test
 {
   protected:
+    static constexpr char image[] = "image.bin";
+    static constexpr char signature[] = "signature.bin";
+    static constexpr char layout[] = "static";
+    static constexpr char path[] = "/flash/static";
+
     ipmiblob::BlobInterfaceMock blobMock;
     std::uint16_t session = 0xbeef;
     bool defaultIgnore = false;
@@ -91,55 +224,79 @@ class UpdaterTest : public ::testing::Test
 
 TEST_F(UpdaterTest, UpdateMainReturnsSuccessIfAllSuccess)
 {
-    const std::string image = "image.bin";
-    const std::string signature = "signature.bin";
     UpdateHandlerMock handler;
 
-    EXPECT_CALL(handler, checkAvailable(_)).WillOnce(Return(true));
-    EXPECT_CALL(handler, sendFile(_, image)).WillOnce(Return());
-    EXPECT_CALL(handler, sendFile(_, signature)).WillOnce(Return());
+    EXPECT_CALL(handler, checkAvailable(path)).WillOnce(Return(true));
+    EXPECT_CALL(handler, sendFile(path, image)).WillOnce(Return());
+    EXPECT_CALL(handler, sendFile(ipmi_flash::hashBlobId, signature))
+        .WillOnce(Return());
     EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore))
         .WillOnce(Return(true));
     EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, defaultIgnore))
         .WillOnce(Return(true));
 
-    updaterMain(&handler, image, signature, "static", defaultIgnore);
+    updaterMain(&handler, image, signature, layout, defaultIgnore);
 }
 
 TEST_F(UpdaterTest, UpdateMainReturnsSuccessWithIgnoreUpdate)
 {
-    const std::string image = "image.bin";
-    const std::string signature = "signature.bin";
     UpdateHandlerMock handler;
     bool updateIgnore = true;
 
-    EXPECT_CALL(handler, checkAvailable(_)).WillOnce(Return(true));
-    EXPECT_CALL(handler, sendFile(_, image)).WillOnce(Return());
-    EXPECT_CALL(handler, sendFile(_, signature)).WillOnce(Return());
+    EXPECT_CALL(handler, checkAvailable(path)).WillOnce(Return(true));
+    EXPECT_CALL(handler, sendFile(path, image)).WillOnce(Return());
+    EXPECT_CALL(handler, sendFile(ipmi_flash::hashBlobId, signature))
+        .WillOnce(Return());
     EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore))
         .WillOnce(Return(true));
     EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, updateIgnore))
         .WillOnce(Return(true));
 
-    updaterMain(&handler, image, signature, "static", updateIgnore);
+    updaterMain(&handler, image, signature, layout, updateIgnore);
 }
 
 TEST_F(UpdaterTest, UpdateMainCleansUpOnFailure)
 {
-    const std::string image = "image.bin";
-    const std::string signature = "signature.bin";
     UpdateHandlerMock handler;
 
-    EXPECT_CALL(handler, checkAvailable(_)).WillOnce(Return(true));
-    EXPECT_CALL(handler, sendFile(_, image)).WillOnce(Return());
-    EXPECT_CALL(handler, sendFile(_, signature)).WillOnce(Return());
+    EXPECT_CALL(handler, checkAvailable(path)).WillOnce(Return(true));
+    EXPECT_CALL(handler, sendFile(path, image)).WillOnce(Return());
+    EXPECT_CALL(handler, sendFile(ipmi_flash::hashBlobId, signature))
+        .WillOnce(Return());
     EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore))
         .WillOnce(Return(false));
     EXPECT_CALL(handler, cleanArtifacts()).WillOnce(Return());
 
-    EXPECT_THROW(
-        updaterMain(&handler, image, signature, "static", defaultIgnore),
-        ToolException);
+    EXPECT_THROW(updaterMain(&handler, image, signature, layout, defaultIgnore),
+                 ToolException);
+}
+
+TEST_F(UpdaterTest, UpdateMainExceptsOnUpdateBlobFailure)
+{
+    UpdateHandlerMock handler;
+
+    EXPECT_CALL(handler, checkAvailable(path)).WillOnce(Return(true));
+    EXPECT_CALL(handler, sendFile(path, image)).WillOnce(Return());
+    EXPECT_CALL(handler, sendFile(ipmi_flash::hashBlobId, signature))
+        .WillOnce(Return());
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore))
+        .WillOnce(Return(true));
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, defaultIgnore))
+        .WillOnce(Return(false));
+    EXPECT_CALL(handler, cleanArtifacts()).WillOnce(Return());
+
+    EXPECT_THROW(updaterMain(&handler, image, signature, layout, defaultIgnore),
+                 ToolException);
+}
+
+TEST_F(UpdaterTest, UpdateMainExceptsIfAvailableNotFound)
+{
+    UpdateHandlerMock handler;
+
+    EXPECT_CALL(handler, checkAvailable(path)).WillOnce(Return(false));
+
+    EXPECT_THROW(updaterMain(&handler, image, signature, layout, defaultIgnore),
+                 ToolException);
 }
 
 } // namespace host_tool
