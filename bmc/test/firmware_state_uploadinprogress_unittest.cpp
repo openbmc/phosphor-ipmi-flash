@@ -5,6 +5,7 @@
  */
 #include "firmware_handler.hpp"
 #include "firmware_unittest.hpp"
+#include "util.hpp"
 
 #include <cstdint>
 #include <string>

@@ -5,6 +5,7 @@
 #include "flags.hpp"
 #include "image_mock.hpp"
 #include "triggerable_mock.hpp"
+#include "util.hpp"
 
 #include <memory>
 #include <string>
