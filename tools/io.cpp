@@ -94,9 +94,15 @@ bool DevMemDevice::write(const std::size_t offset, const std::size_t length,
 PpcMemDevice::~PpcMemDevice()
 {
     // Attempt to close in case reads or writes didn't close themselves
+    close();
+}
+
+void PpcMemDevice::close()
+{
     if (ppcMemFd >= 0)
     {
         sys->close(ppcMemFd);
+        ppcMemFd = -1;
     }
 }
 
@@ -116,11 +122,11 @@ bool PpcMemDevice::read(const std::size_t offset, const std::size_t length,
     {
         std::fprintf(stderr, "IO read failed at offset: 0x%zx, length: %zu\n",
                      offset, length);
-        sys->close(ppcMemFd);
+        close();
         return false;
     }
 
-    sys->close(ppcMemFd);
+    close();
     return true;
 }
 
@@ -140,11 +146,11 @@ bool PpcMemDevice::write(const std::size_t offset, const std::size_t length,
     {
         std::fprintf(stderr, "IO write failed at offset: 0x%zx, length: %zu\n",
                      offset, length);
-        sys->close(ppcMemFd);
+        close();
         return false;
     }
 
-    sys->close(ppcMemFd);
+    close();
     return true;
 }
 
