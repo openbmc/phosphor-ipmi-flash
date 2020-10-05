@@ -91,6 +91,8 @@ class PpcMemDevice : public HostIoInterface
                const void* const source) override;
 
   private:
+    void close();
+
     int ppcMemFd = -1;
     const std::string ppcMemPath;
     const internal::Sys* sys;
