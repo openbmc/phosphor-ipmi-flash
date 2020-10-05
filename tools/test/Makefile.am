@@ -21,7 +21,8 @@ check_PROGRAMS = \
 	tools_pci_unittest \
 	tools_net_unittest \
 	tools_updater_unittest \
-	tools_helper_unittest
+	tools_helper_unittest \
+	io_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -42,3 +43,6 @@ tools_updater_unittest_LDADD = $(top_builddir)/tools/libupdater.la
 
 tools_helper_unittest_SOURCES = tools_helper_unittest.cpp
 tools_helper_unittest_LDADD = $(top_builddir)/tools/libupdater.la
+
+io_unittest_SOURCES = io_unittest.cpp
+io_unittest_LDADD = $(top_builddir)/tools/libupdater.la
