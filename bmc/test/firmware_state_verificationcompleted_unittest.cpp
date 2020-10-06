@@ -20,7 +20,6 @@ namespace
 {
 
 using ::testing::IsEmpty;
-using ::testing::Return;
 using ::testing::UnorderedElementsAreArray;
 
 /*

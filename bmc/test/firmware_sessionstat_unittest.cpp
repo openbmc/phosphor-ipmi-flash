@@ -11,7 +11,7 @@
 
 namespace ipmi_flash
 {
-using ::testing::Eq;
+
 using ::testing::Return;
 
 class FirmwareSessionStateTestIpmiOnly : public IpmiOnlyFirmwareTest

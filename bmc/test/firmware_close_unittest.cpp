@@ -16,7 +16,6 @@ namespace ipmi_flash
 namespace
 {
 
-using ::testing::Eq;
 using ::testing::Return;
 using ::testing::StrEq;
 

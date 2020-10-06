@@ -14,12 +14,9 @@ namespace ipmi_flash
 {
 namespace
 {
-using ::testing::_;
-using ::testing::IsNull;
-using ::testing::NotNull;
+
 using ::testing::Return;
 using ::testing::StrEq;
-using ::testing::StrictMock;
 
 class FirmwareHandlerCommitTest : public ::testing::Test
 {
