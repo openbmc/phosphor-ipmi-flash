@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <fstream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -23,7 +24,7 @@ class ImageHandlerInterface
      * @param[in] path - the path passed to the handler (the blob_id).
      * @return bool - returns true on success.
      */
-    virtual bool open(const std::string& path) = 0;
+    virtual bool open(const std::string& path, std::ios_base::openmode mode = std::ios::out) = 0;
 
     /**
      * close the image.
