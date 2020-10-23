@@ -51,6 +51,7 @@ SUBDIRS = .
 
 if BUILD_BMC_HANDLER
 SUBDIRS += bmc
+SUBDIRS += bmc/firmware-handler
 endif
 
 if BUILD_HOST_TOOL
