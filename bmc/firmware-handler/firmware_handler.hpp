@@ -61,7 +61,7 @@ struct Session
      * Pointer to the correct image handler interface.  (nullptr on hash
      * blob_id)
      */
-    ImageHandlerInterface* imageHandler;
+    ipmi_flash::ImageHandlerInterface* imageHandler;
 
     /** The flags used to open the session. */
     std::uint16_t flags;
