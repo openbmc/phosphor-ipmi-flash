@@ -76,11 +76,13 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     {
         if (blobId == hashBlobId)
         {
-            EXPECT_CALL(*hashImageMock, open(blobId)).WillOnce(Return(true));
+            EXPECT_CALL(*hashImageMock, mock_open(blobId, std::ios::out))
+                .WillOnce(Return(true));
         }
         else
         {
-            EXPECT_CALL(*imageMock2, open(blobId)).WillOnce(Return(true));
+            EXPECT_CALL(*imageMock2, mock_open(blobId, std::ios::out))
+                .WillOnce(Return(true));
         }
 
         if (blobId != hashBlobId)

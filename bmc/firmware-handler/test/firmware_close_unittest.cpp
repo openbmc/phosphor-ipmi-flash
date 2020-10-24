@@ -28,7 +28,8 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithDataHandler)
      * everything looks right.
      */
     EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(*hashImageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
+    EXPECT_CALL(*hashImageMock, mock_open(StrEq(hashBlobId), std::ios::out))
+        .WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc,
@@ -55,7 +56,8 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithoutDataHandler)
     /* Boring test where you open a blob_id using ipmi, so there's no data
      * handler, and it's closed and everything looks right.
      */
-    EXPECT_CALL(*hashImageMock, open(StrEq(hashBlobId))).WillOnce(Return(true));
+    EXPECT_CALL(*hashImageMock, mock_open(StrEq(hashBlobId), std::ios::out))
+        .WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi,

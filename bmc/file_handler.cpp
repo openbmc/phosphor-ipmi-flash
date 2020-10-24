@@ -18,6 +18,7 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <ios>
 #include <memory>
 #include <string>
 #include <vector>
@@ -26,8 +27,10 @@ namespace ipmi_flash
 {
 namespace fs = std::filesystem;
 
-bool FileHandler::open(const std::string& path)
+bool FileHandler::open(const std::string& path, std::ios_base::openmode mode)
 {
+    /* force binary mode */
+    mode |= std::ios::binary;
     this->path = path;
 
     if (file.is_open())
@@ -39,8 +42,8 @@ bool FileHandler::open(const std::string& path)
     }
 
     /* using ofstream no need to set out */
-    file.open(filename, std::ios::binary);
-    if (file.bad())
+    file.open(filename, mode);
+    if (!file.good()) /* on success goodbit is set */
     {
         /* TODO: Oh no! Care about this. */
         return false;
@@ -88,6 +91,36 @@ bool FileHandler::write(std::uint32_t offset,
     }
 
     return true;
+}
+
+std::optional<std::vector<uint8_t>> FileHandler::read(std::uint32_t offset,
+                                                      std::uint32_t size)
+{
+    if (!file.is_open())
+    {
+        return std::nullopt;
+    }
+    file.seekg(0, std::ios_base::end);
+    uint32_t filesize = file.tellg();
+    uint32_t bytesToRead = size;
+    if (offset + size > filesize)
+    {
+        bytesToRead = filesize - offset;
+    }
+    if (0 == bytesToRead)
+    {
+        return std::nullopt;
+    }
+    file.seekg(offset);
+    std::vector<uint8_t> fileData(bytesToRead);
+    fprintf(stderr, "size=%d fileSize=%d bytesToRead=%d", size, filesize,
+            bytesToRead);
+    file.read(reinterpret_cast<char*>(fileData.data()), bytesToRead);
+    if (!file.good())
+    {
+        return std::nullopt;
+    }
+    return fileData;
 }
 
 int FileHandler::getSize()
