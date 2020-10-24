@@ -25,7 +25,7 @@ TEST_F(FirmwareSessionStateTestIpmiOnly, DataTypeIpmiNoMetadata)
     /* Verifying running stat if the type of data session is IPMI returns no
      * metadata.
      */
-    EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock, open("asdf", std::ios::out)).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi, "asdf"));
@@ -48,7 +48,7 @@ TEST_F(FirmwareSessionStateTestLpc, DataTypeP2AReturnsMetadata)
      * simply implementing read().
      */
     EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock, open("asdf", std::ios::out)).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc, "asdf"));

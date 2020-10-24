@@ -29,7 +29,7 @@ class FirmwareHandlerWriteTestLpc : public FakeLpcFirmwareTest
 TEST_F(FirmwareHandlerWriteTestIpmiOnly, DataTypeIpmiWriteSuccess)
 {
     /* Verify if data type ipmi, it calls write with the bytes. */
-    EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock, open("asdf", std::ios::out)).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi, "asdf"));
@@ -44,7 +44,7 @@ TEST_F(FirmwareHandlerWriteTestLpc, DataTypeNonIpmiWriteSuccess)
 {
     /* Verify if data type non-ipmi, it calls write with the length. */
     EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock, open("asdf", std::ios::out)).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc, "asdf"));
@@ -67,7 +67,7 @@ TEST_F(FirmwareHandlerWriteTestLpc, DataTypeNonIpmiWriteFailsBadRequest)
     /* Verify the data type non-ipmi, if the request's structure doesn't match,
      * return failure. */
     EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
-    EXPECT_CALL(*imageMock, open("asdf")).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock, open("asdf", std::ios::out)).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc, "asdf"));
