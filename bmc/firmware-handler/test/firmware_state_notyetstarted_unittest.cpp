@@ -88,7 +88,8 @@ TEST_F(FirmwareHandlerNotYetStartedTest, StatEachBlobIdVerifyResults)
  */
 TEST_F(FirmwareHandlerNotYetStartedTest, OpenStaticImageFileVerifyStateChange)
 {
-    EXPECT_CALL(*imageMock2, open(staticLayoutBlobId)).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock2, mock_open(staticLayoutBlobId, std::ios::out))
+        .WillOnce(Return(true));
     EXPECT_CALL(*prepareMockPtr, trigger()).WillOnce(Return(true));
 
     EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
@@ -100,7 +101,8 @@ TEST_F(FirmwareHandlerNotYetStartedTest, OpenStaticImageFileVerifyStateChange)
 
 TEST_F(FirmwareHandlerNotYetStartedTest, OpenHashFileVerifyStateChange)
 {
-    EXPECT_CALL(*hashImageMock, open(hashBlobId)).WillOnce(Return(true));
+    EXPECT_CALL(*hashImageMock, mock_open(hashBlobId, std::ios::out))
+        .WillOnce(Return(true));
     /* Opening the hash blob id doesn't trigger a preparation, only a firmware
      * blob.
      */

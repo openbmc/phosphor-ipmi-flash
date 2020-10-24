@@ -240,7 +240,8 @@ TEST_F(FirmwareHandlerVerificationPendingTest,
     /* Verifies it isn't triggered again. */
     EXPECT_CALL(*prepareMockPtr, trigger()).Times(0);
 
-    EXPECT_CALL(*imageMock2, open(staticLayoutBlobId)).WillOnce(Return(true));
+    EXPECT_CALL(*imageMock2, mock_open(staticLayoutBlobId, std::ios::out))
+        .WillOnce(Return(true));
     EXPECT_TRUE(handler->open(session, flags, staticLayoutBlobId));
     expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
 

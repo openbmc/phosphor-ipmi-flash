@@ -65,11 +65,13 @@ class FirmwareHandlerNotYetStartedUbitTest : public ::testing::Test
     {
         if (blobId == hashBlobId)
         {
-            EXPECT_CALL(*hashImageMock, open(blobId)).WillOnce(Return(true));
+            EXPECT_CALL(*hashImageMock, mock_open(blobId, std::ios::out))
+                .WillOnce(Return(true));
         }
         else
         {
-            EXPECT_CALL(*imageMock, open(blobId)).WillOnce(Return(true));
+            EXPECT_CALL(*imageMock, mock_open(blobId, std::ios::out))
+                .WillOnce(Return(true));
         }
         EXPECT_TRUE(handler->open(session, flags, blobId));
         expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);

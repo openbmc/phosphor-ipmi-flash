@@ -118,7 +118,7 @@ TEST_F(IpmiOnlyTwoFirmwaresTest, OpeningBiosAfterBlobFails)
     /* You can only have one file open at a time, and the first firmware file
      * you open locks it down
      */
-    EXPECT_CALL(*staticImageMock, open(staticLayoutBlobId))
+    EXPECT_CALL(*staticImageMock, mock_open(staticLayoutBlobId, std::ios::out))
         .WillOnce(Return(true));
     EXPECT_CALL(*bmcPrepareMockPtr, trigger()).WillOnce(Return(true));
 
@@ -130,14 +130,15 @@ TEST_F(IpmiOnlyTwoFirmwaresTest, OpeningBiosAfterBlobFails)
 
     expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
 
-    EXPECT_CALL(*biosImageMock, open(biosBlobId)).Times(0);
+    EXPECT_CALL(*biosImageMock, mock_open(biosBlobId, std::ios::out)).Times(0);
     EXPECT_FALSE(handler->open(session, flags, biosBlobId));
 }
 
 TEST_F(IpmiOnlyTwoFirmwaresTest, OpeningHashBeforeBiosSucceeds)
 {
     /* Opening the hash blob does nothing special in this regard. */
-    EXPECT_CALL(*hashImageMock, open(hashBlobId)).WillOnce(Return(true));
+    EXPECT_CALL(*hashImageMock, mock_open(hashBlobId, std::ios::out))
+        .WillOnce(Return(true));
     EXPECT_TRUE(handler->open(session, flags, hashBlobId));
 
     expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
@@ -148,7 +149,8 @@ TEST_F(IpmiOnlyTwoFirmwaresTest, OpeningHashBeforeBiosSucceeds)
     expectedState(FirmwareBlobHandler::UpdateState::verificationPending);
     ASSERT_FALSE(handler->canHandleBlob(verifyBlobId));
 
-    EXPECT_CALL(*biosImageMock, open(biosBlobId)).WillOnce(Return(true));
+    EXPECT_CALL(*biosImageMock, mock_open(biosBlobId, std::ios::out))
+        .WillOnce(Return(true));
     EXPECT_TRUE(handler->open(session, flags, biosBlobId));
 
     expectedState(FirmwareBlobHandler::UpdateState::uploadInProgress);
