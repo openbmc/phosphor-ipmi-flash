@@ -23,10 +23,13 @@ class FileHandler : public ImageHandlerInterface
     explicit FileHandler(const std::string& filename) : filename(filename)
     {}
 
-    bool open(const std::string& path) override;
+    bool open(const std::string& path,
+              std::ios_base::openmode mode = std::ios::out) override;
     void close() override;
     bool write(std::uint32_t offset,
                const std::vector<std::uint8_t>& data) override;
+    virtual std::optional<std::vector<uint8_t>>
+        read(std::uint32_t offset, std::uint32_t size) override;
     int getSize() override;
 
   private:
@@ -34,7 +37,7 @@ class FileHandler : public ImageHandlerInterface
     std::string path;
 
     /** The file handle. */
-    std::ofstream file;
+    std::fstream file;
 
     /** The filename (including path) to use to write bytes. */
     std::string filename;
