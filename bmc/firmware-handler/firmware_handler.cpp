@@ -458,7 +458,7 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     }
 
     /* Ok, so we found a handler that matched, so call open() */
-    if (!h->handler->open(path))
+    if (!h->handler->open(path, std::ios::out))
     {
         return false;
     }
