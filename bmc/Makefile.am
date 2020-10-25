@@ -3,6 +3,7 @@ noinst_LTLIBRARIES = libbmc_common.la
 
 # shared functionality between firmware and version blob handlers
 libbmc_common_la_SOURCES = \
+	buildjson.cpp \
 	file_handler.cpp \
 	fs.cpp \
 	general_systemd.cpp \

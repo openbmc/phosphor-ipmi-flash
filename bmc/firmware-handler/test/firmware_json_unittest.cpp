@@ -1,4 +1,4 @@
-#include "buildjson.hpp"
+#include "firmware_handlers_builder.hpp"
 #include "general_systemd.hpp"
 #include "skip_action.hpp"
 
@@ -40,8 +40,7 @@ TEST(FirmwareJsonTest, InvalidHandlerType)
             }
          }]
     )"_json;
-
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, InvalidPreparationType)
@@ -70,7 +69,7 @@ TEST(FirmwareJsonTest, InvalidPreparationType)
          }]
     )"_json;
 
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, InvalidVerificationType)
@@ -99,7 +98,7 @@ TEST(FirmwareJsonTest, InvalidVerificationType)
          }]
     )"_json;
 
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, InvalidUpdateType)
@@ -128,7 +127,7 @@ TEST(FirmwareJsonTest, InvalidUpdateType)
          }]
     )"_json;
 
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, MissingHandler)
@@ -153,7 +152,7 @@ TEST(FirmwareJsonTest, MissingHandler)
         }]
     )"_json;
 
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, MissingActions)
@@ -168,7 +167,7 @@ TEST(FirmwareJsonTest, MissingActions)
         }]
     )"_json;
 
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, MissingActionPreparation)
@@ -193,7 +192,7 @@ TEST(FirmwareJsonTest, MissingActionPreparation)
         }]
     )"_json;
 
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, MissingActionVerification)
@@ -217,7 +216,7 @@ TEST(FirmwareJsonTest, MissingActionVerification)
         }]
     )"_json;
 
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, MissingActionUpdate)
@@ -243,7 +242,7 @@ TEST(FirmwareJsonTest, MissingActionUpdate)
         }]
     )"_json;
 
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, TwoConfigsOneInvalidReturnsValid)
@@ -289,7 +288,7 @@ TEST(FirmwareJsonTest, TwoConfigsOneInvalidReturnsValid)
         }]
     )"_json;
 
-    auto h = buildHandlerFromJson(j2);
+    auto h = firmwareHandlersBuilder().buildHandlerFromJson(j2);
     EXPECT_EQ(h[0].blobId, "/flash/image2");
     EXPECT_EQ(h.size(), 1);
 }
@@ -329,7 +328,7 @@ TEST(FirmwareJsonTest, VerifyBlobNameMatches)
          }]
     )"_json;
 
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, VerifyMinimumBlobNameLength)
@@ -360,7 +359,7 @@ TEST(FirmwareJsonTest, VerifyMinimumBlobNameLength)
          }]
     )"_json;
 
-    EXPECT_THAT(buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(firmwareHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
 }
 
 TEST(FirmwareJsonTest, VerifySystemdWithReboot)
@@ -389,7 +388,7 @@ TEST(FirmwareJsonTest, VerifySystemdWithReboot)
          }]
     )"_json;
 
-    auto h = buildHandlerFromJson(j2);
+    auto h = firmwareHandlersBuilder().buildHandlerFromJson(j2);
     EXPECT_EQ(h[0].blobId, "/flash/image");
     EXPECT_FALSE(h[0].handler == nullptr);
     EXPECT_FALSE(h[0].actions == nullptr);
@@ -447,7 +446,7 @@ TEST(FirmwareJsonTest, VerifyMultipleHandlersReturned)
         }]
     )"_json;
 
-    auto h = buildHandlerFromJson(j2);
+    auto h = firmwareHandlersBuilder().buildHandlerFromJson(j2);
     EXPECT_EQ(h.size(), 2);
     EXPECT_EQ(h[0].blobId, "/flash/image");
     EXPECT_EQ(h[1].blobId, "/flash/bios");
@@ -480,7 +479,7 @@ TEST(FirmwareJsonTest, VerifyValidSingleNonReboot)
          }]
     )"_json;
 
-    auto h = buildHandlerFromJson(j2);
+    auto h = firmwareHandlersBuilder().buildHandlerFromJson(j2);
     EXPECT_EQ(h[0].blobId, "/flash/image");
     EXPECT_FALSE(h[0].handler == nullptr);
     EXPECT_FALSE(h[0].actions == nullptr);
@@ -523,7 +522,7 @@ TEST(FirmwareJsonTest, VerifyValidWithModes)
          }]
     )"_json;
 
-    auto h = buildHandlerFromJson(j2);
+    auto h = firmwareHandlersBuilder().buildHandlerFromJson(j2);
     EXPECT_EQ(h[0].blobId, "/flash/image");
     EXPECT_FALSE(h[0].handler == nullptr);
     EXPECT_FALSE(h[0].actions == nullptr);
@@ -567,7 +566,7 @@ TEST(FirmwareJsonTest, VerifyValidUpdateWithFilePath)
          }]
     )"_json;
 
-    auto h = buildHandlerFromJson(j2);
+    auto h = firmwareHandlersBuilder().buildHandlerFromJson(j2);
     EXPECT_EQ(h[0].blobId, "/flash/image");
     EXPECT_FALSE(h[0].handler == nullptr);
     EXPECT_FALSE(h[0].actions == nullptr);
@@ -607,7 +606,7 @@ TEST(FirmwareJsonTest, VerifySkipFields)
          }]
     )"_json;
 
-    auto h = buildHandlerFromJson(j2);
+    auto h = firmwareHandlersBuilder().buildHandlerFromJson(j2);
     EXPECT_EQ(h[0].blobId, "/flash/image");
     EXPECT_FALSE(h[0].handler == nullptr);
     EXPECT_FALSE(h[0].actions == nullptr);
