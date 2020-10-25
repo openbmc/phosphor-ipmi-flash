@@ -16,9 +16,9 @@
 
 #include "config.h"
 
-#include "buildjson.hpp"
 #include "file_handler.hpp"
 #include "firmware_handler.hpp"
+#include "firmware_handlers_builder.hpp"
 #include "flags.hpp"
 #include "general_systemd.hpp"
 #include "image_handler.hpp"
@@ -113,9 +113,10 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 #endif
 
     ActionMap actionPacks = {};
+    FirmwareHandlersBuilder builder;
 
-    std::vector<HandlerConfig> configsFromJson =
-        BuildHandlerConfigs(jsonConfigurationPath);
+    std::vector<HandlerConfig<ActionPack>> configsFromJson =
+        builder.buildHandlerConfigs(jsonConfigurationPath);
 
     std::vector<HandlerPack> supportedFirmware;
 
