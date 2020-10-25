@@ -42,7 +42,7 @@ noinst_LTLIBRARIES = libfirmwareblob_common.la
 
 # firmware blob handler specific
 libfirmwareblob_common_la_SOURCES = \
-	buildjson.cpp \
+	firmware_handlers_builder.cpp \
 	firmware_handler.cpp \
 	lpc_handler.cpp
 
