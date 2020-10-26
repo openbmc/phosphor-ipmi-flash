@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e9cbed4e_33e954dd",
+        "filename": "bmc/firmware-handler/test/image_mock.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000100
+      },
+      "writtenOn": "2020-10-26T15:10:44Z",
+      "side": 1,
+      "message": "Why did you need to do this pass-through mocking?",
+      "revId": "1992313cb08abfe878f905101c7aff80b44e36a7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ae36f9d_65c29eef",
+        "filename": "bmc/image_handler.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1000100
+      },
+      "writtenOn": "2020-10-26T15:10:44Z",
+      "side": 1,
+      "message": "typically we\u0027ve been using exceptions for failures, but I\u0027d much rather use optional for this type of failure +1\n\nAlso, statusor may be coming to openbmc - since abseil now includes it.",
+      "revId": "1992313cb08abfe878f905101c7aff80b44e36a7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    }
+  ]
+}
