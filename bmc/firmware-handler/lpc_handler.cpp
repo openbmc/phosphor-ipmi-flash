@@ -16,12 +16,35 @@
 
 #include "lpc_handler.hpp"
 
+#include "mapper_errors.hpp"
+
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
 #include <vector>
 
 namespace ipmi_flash
 {
+
+bool LpcDataHandler::setInitializedAndReturn(bool value)
+{
+    if (value)
+    {
+        try
+        {
+            /* Try really opening the map. */
+            memory = mapper->open();
+        }
+        catch (const MapperException& e)
+        {
+            std::fprintf(stderr, "received mapper exception: %s\n", e.what());
+            return false;
+        }
+    }
+
+    initialized = value;
+    return value;
+}
 
 bool LpcDataHandler::open()
 {
