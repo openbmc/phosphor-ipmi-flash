@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "92726baf_07f336c9",
+        "filename": "bmc/file_handler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1000100
+      },
+      "writtenOn": "2020-10-27T16:22:46Z",
+      "side": 1,
+      "message": "nit: this is harder to read by not breaking the code into blocks or groups of functionality.",
+      "revId": "e2061a94c85b122a062450bfabed2c25b4682235",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
