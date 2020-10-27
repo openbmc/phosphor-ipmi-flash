@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9e35b35d_78308aac",
+        "filename": "bmc/buildjson.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1000100
+      },
+      "writtenOn": "2020-10-27T18:11:29Z",
+      "side": 1,
+      "message": "Please insert a space here.",
+      "revId": "2c0d5781ee0a497d486618cdc82d2f7cdd58e6d2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2db0106_d8d1b2e8",
+        "filename": "bmc/buildjson.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000100
+      },
+      "writtenOn": "2020-10-27T18:11:29Z",
+      "side": 1,
+      "message": "Please add class description.",
+      "revId": "2c0d5781ee0a497d486618cdc82d2f7cdd58e6d2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0dc68361_fa98bc66",
+        "filename": "bmc/buildjson.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000100
+      },
+      "writtenOn": "2020-10-27T18:11:29Z",
+      "side": 1,
+      "message": "Uppercase, also please add a description to the class.",
+      "revId": "2c0d5781ee0a497d486618cdc82d2f7cdd58e6d2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "15a6a89d_14e1acaa",
+        "filename": "bmc/firmware-handler/firmware_handlers_builder.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000100
+      },
+      "writtenOn": "2020-10-27T18:11:29Z",
+      "side": 1,
+      "message": "*FirmwareHandlerBuilder",
+      "revId": "2c0d5781ee0a497d486618cdc82d2f7cdd58e6d2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
