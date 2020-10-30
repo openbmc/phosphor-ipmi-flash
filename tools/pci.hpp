@@ -83,14 +83,17 @@ class NuvotonPciBridge : public PciAccessBridge
 {
   public:
     explicit NuvotonPciBridge(const PciAccess* pci) :
-        PciAccessBridge(&match, bar, dataOffset, dataLength, pci)
+        PciAccessBridge(&match, bar, dataOffset, dataLength, pci,
+                        bool skipBridgeDisable = false) :
+        skipBridgeDisable(skipBridgeDisable)
     {
         enableBridge();
     }
 
     ~NuvotonPciBridge()
     {
-        disableBridge();
+        if (!skipBridgeDisable)
+            disableBridge();
     }
 
   private:
@@ -110,20 +113,25 @@ class NuvotonPciBridge : public PciAccessBridge
 
     void enableBridge();
     void disableBridge();
+
+    bool skipBridgeDisable;
 };
 
 class AspeedPciBridge : public PciAccessBridge
 {
   public:
     explicit AspeedPciBridge(const PciAccess* pci) :
-        PciAccessBridge(&match, bar, dataOffset, dataLength, pci)
+        PciAccessBridge(&match, bar, dataOffset, dataLength, pci,
+                        skipBridgeDisable = false) :
+        skipBridgeDisable(skipBridgeDisable)
     {
         enableBridge();
     }
 
     ~AspeedPciBridge()
     {
-        disableBridge();
+        if (!skipBridgeDisable)
+            disableBridge();
     }
 
     void configure(const ipmi_flash::PciConfigResponse& configResp) override;
@@ -146,6 +154,8 @@ class AspeedPciBridge : public PciAccessBridge
 
     void enableBridge();
     void disableBridge();
+
+    bool skipBridgeDisable;
 };
 
 } // namespace host_tool
