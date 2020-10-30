@@ -20,8 +20,17 @@ class P2aDataHandler : public DataInterface
                    ProgressInterface* progress,
                    const internal::Sys* sys = &internal::sys_impl) :
         blob(blob),
-        pci(pci), progress(progress), sys(sys)
+        pci(pci), progress(progress), sys(sys),
+        skipBridgeDisable(false)
     {}
+
+    P2aDataHandler(ipmiblob::BlobInterface* blob, const PciAccess* pci,
+                   ProgressInterface* progress, bool skipBridgeDisable,
+                   const internal::Sys* sys = &internal::sys_impl) :
+        P2aDataHandler(blob, pci, progress, sys)
+    {
+        this->skipBridgeDisable = skipBridgeDisable;
+    }
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
     ipmi_flash::FirmwareFlags::UpdateFlags supportedType() const override
@@ -34,6 +43,7 @@ class P2aDataHandler : public DataInterface
     const PciAccess* pci;
     ProgressInterface* progress;
     const internal::Sys* sys;
+    bool skipBridgeDisable;
 };
 
 } // namespace host_tool
