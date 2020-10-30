@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "57a6ac50_723f95e8",
+        "filename": "bmc/buildjson.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-10-30T04:03:50Z",
+      "side": 1,
+      "message": "nit: It would be nice if we had doxygen comments on these functions (even though we previously didn\u0027t have them).",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 45
+      },
+      "revId": "c893f43d5f8a3c0b05c0f6f67d1b232a8117cf71",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
