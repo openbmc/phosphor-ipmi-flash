@@ -44,13 +44,14 @@
 
 #define IPMILPC "ipmilpc"
 #define IPMIPCI "ipmipci"
+#define IPMIPCI_SKIP_BRIDGE_DISABLE "ipmipci-skip-bridge-disable"
 #define IPMIBT "ipmibt"
 #define IPMINET "ipminet"
 
 namespace
 {
-const std::vector<std::string> interfaceList = {IPMINET, IPMIBT, IPMILPC,
-                                                IPMIPCI};
+const std::vector<std::string> interfaceList = {
+    IPMINET, IPMIBT, IPMILPC, IPMIPCI, IPMIPCI_SKIP_BRIDGE_DISABLE};
 } // namespace
 
 void usage(const char* program)
@@ -253,6 +254,12 @@ int main(int argc, char* argv[])
             auto& pci = host_tool::PciAccessImpl::getInstance();
             handler = std::make_unique<host_tool::P2aDataHandler>(&blob, &pci,
                                                                   &progress);
+        }
+        else if (interface == IPMIPCI_SKIP_BRIDGE_DISABLE)
+        {
+            auto& pci = host_tool::PciAccessImpl::getInstance();
+            handler = std::make_unique<host_tool::P2aDataHandler>(
+                &blob, &pci, &progress, true);
         }
 
         if (!handler)
