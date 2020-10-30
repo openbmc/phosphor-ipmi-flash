@@ -101,7 +101,7 @@ The required parameters are:
  Parameter  | Options  | Meaning
 ----------- | -------- | -------
 `command`   | `update` | The tool should try to update the BMC firmware.
-`interface` | `ipmibt`, `ipmilpc`, `ipmipci`, `ipminet` | The data transport mechanism, typically `ipmilpc`
+`interface` | `ipmibt`, `ipmilpc`, `ipmipci`, `ipminet`, `ipmipci-skip-bridge-disable` | The data transport mechanism, typically `ipmilpc`. The `ipmipci-skip-bridge-disable` is `ipmipci` but does not disable the bridge after.
 `image`     | path     | The BMC firmware image file (or tarball)
 `sig`       | path     | The path to a signature file to send to the BMC along with the image file.
 `type`      | blob ending | The ending of the blob id.  For instance `/flash/image` becomes a type of `image`.

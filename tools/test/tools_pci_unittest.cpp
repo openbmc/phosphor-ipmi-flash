@@ -71,7 +71,8 @@ class Device
     virtual struct pci_device getDevice() const = 0;
     virtual void expectSetup(PciAccessMock& pciMock,
                              const struct pci_device& dev) const {};
-    virtual std::unique_ptr<PciBridgeIntf> getBridge(PciAccess* pci) const = 0;
+    virtual std::unique_ptr<PciBridgeIntf>
+        getBridge(PciAccess* pci, bool skipBridgeDisable = false) const = 0;
     virtual std::string getName() const = 0;
 };
 
@@ -120,9 +121,10 @@ class NuvotonDevice : public Device
             .WillOnce(Return(0));
     }
 
-    std::unique_ptr<PciBridgeIntf> getBridge(PciAccess* pci) const override
+    std::unique_ptr<PciBridgeIntf>
+        getBridge(PciAccess* pci, bool skipBridgeDisable = false) const override
     {
-        return std::make_unique<NuvotonPciBridge>(pci);
+        return std::make_unique<NuvotonPciBridge>(pci, skipBridgeDisable);
     }
 
     std::string getName() const override
@@ -164,9 +166,10 @@ class AspeedDevice : public Device
         return dev;
     }
 
-    std::unique_ptr<PciBridgeIntf> getBridge(PciAccess* pci) const override
+    std::unique_ptr<PciBridgeIntf>
+        getBridge(PciAccess* pci, bool skipBridgeDisable = false) const override
     {
-        return std::make_unique<AspeedPciBridge>(pci);
+        return std::make_unique<AspeedPciBridge>(pci, skipBridgeDisable);
     }
 
     std::string getName() const override
@@ -551,6 +554,33 @@ TEST(NuvotonBridgeTest, NotEnabledSuccess)
     nuvotonDevice.getBridge(&pciMock);
 }
 
+/* Make sure it skips the disable bridge call when skipBridgeDisable is true */
+TEST(NuvotonBridgeTest, SkipDisable)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    constexpr std::uint8_t defaultVal = 0x40;
+
+    /* Only set standard expectations; not those from nuvotonDevice */
+    expectSetup(pciMock, dev, &nuvotonDevice, region.data(), false);
+
+    {
+        InSequence in;
+
+        /* Only expect call for enableBridge() */
+        EXPECT_CALL(pciMock, pci_device_cfg_read_u8(Eq(&dev), NotNull(),
+                                                    NuvotonDevice::config))
+            .WillOnce(DoAll(
+                SetArgPointee<1>(defaultVal | NuvotonDevice::bridgeEnabled),
+                Return(0)));
+    }
+
+    /* Setting skipBridgeDisable to true */
+    nuvotonDevice.getBridge(&pciMock, true);
+}
+
 TEST(AspeedWriteTest, TooLarge)
 {
     PciAccessMock pciMock;
@@ -640,6 +670,41 @@ TEST(AspeedBridgeTest, AlreadyEnabledSuccess)
     {
         std::vector<std::uint8_t> disabledRegion(mockRegionSize);
         disabledRegion[AspeedDevice::config] = defaultVal;
+        EXPECT_THAT(region, ContainerEq(disabledRegion));
+    }
+}
+
+/* Make sure the config region remains the same even after cleanup if
+ * skipBridgeDisable is true */
+TEST(AspeedBridgeTest, SkipDisable)
+{
+    PciAccessMock pciMock;
+    struct pci_device dev;
+    std::vector<std::uint8_t> region(mockRegionSize);
+
+    constexpr std::uint8_t defaultVal = 0x42;
+
+    region[AspeedDevice::config] = defaultVal | AspeedDevice::bridgeEnabled;
+
+    expectSetup(pciMock, dev, &aspeedDevice, region.data());
+
+    /* Setting skipBridgeDisable to true */
+    std::unique_ptr<PciBridgeIntf> bridge =
+        aspeedDevice.getBridge(&pciMock, true);
+
+    {
+        std::vector<std::uint8_t> enabledRegion(mockRegionSize);
+        enabledRegion[AspeedDevice::config] =
+            defaultVal | AspeedDevice::bridgeEnabled;
+        EXPECT_THAT(region, ContainerEq(enabledRegion));
+    }
+
+    bridge.reset();
+
+    {
+        std::vector<std::uint8_t> disabledRegion(mockRegionSize);
+        disabledRegion[AspeedDevice::config] =
+            defaultVal | AspeedDevice::bridgeEnabled;
         EXPECT_THAT(region, ContainerEq(disabledRegion));
     }
 }
