@@ -1,0 +1,10 @@
+Ok-To-Test+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+1: Patrick Venture <venture@google.com>
+Ok-To-Test+1: Patrick Venture <venture@google.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: Brandon Kim <brandonkim@google.com>
+Submitted-by: Jason Ling <jasonling@google.com>
+Submitted-at: Mon, 02 Nov 2020 23:57:12 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-ipmi-flash/+/37664
+Project: openbmc/phosphor-ipmi-flash
+Branch: refs/heads/master
