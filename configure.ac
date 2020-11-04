@@ -43,7 +43,7 @@ AC_PROG_MAKE_SET
 
 # Checks for typedefs, structures, and compiler characteristics.
 AX_CXX_COMPILE_STDCXX_17([noext])
-AX_APPEND_COMPILE_FLAGS([-Wall -Werror], [CXXFLAGS])
+AX_APPEND_COMPILE_FLAGS([-Wall -Werror -Wshadow-field], [CXXFLAGS])
 
 # Checks for library functions.
 LT_INIT
