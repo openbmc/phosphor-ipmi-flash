@@ -82,9 +82,9 @@ class PciAccessBridge : public PciBridgeIntf
 class NuvotonPciBridge : public PciAccessBridge
 {
   public:
-    explicit NuvotonPciBridge(const PciAccess* pci,
+    explicit NuvotonPciBridge(const PciAccess* pciAccess,
                               bool skipBridgeDisable = false) :
-        PciAccessBridge(&match, bar, dataOffset, dataLength, pci),
+        PciAccessBridge(&match, bar, dataOffset, dataLength, pciAccess),
         skipBridgeDisable(skipBridgeDisable)
     {
         enableBridge();
@@ -120,9 +120,9 @@ class NuvotonPciBridge : public PciAccessBridge
 class AspeedPciBridge : public PciAccessBridge
 {
   public:
-    explicit AspeedPciBridge(const PciAccess* pci,
+    explicit AspeedPciBridge(const PciAccess* pciAccess,
                              bool skipBridgeDisable = false) :
-        PciAccessBridge(&match, bar, dataOffset, dataLength, pci),
+        PciAccessBridge(&match, bar, dataOffset, dataLength, pciAccess),
         skipBridgeDisable(skipBridgeDisable)
     {
         enableBridge();
