@@ -641,6 +641,7 @@ AS_IF([test "x$enable_oe_sdk" == "xyes"],
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([bmc/Makefile])
 AC_CONFIG_FILES([bmc/firmware-handler/Makefile bmc/firmware-handler/test/Makefile])
+AC_CONFIG_FILES([bmc/version-handler/Makefile bmc/version-handler/test/Makefile])
 AC_CONFIG_FILES([tools/Makefile tools/test/Makefile])
 AC_CONFIG_FILES([cleanup/Makefile cleanup/test/Makefile])
 AC_CONFIG_FILES([bmc/firmware-handler/phosphor-ipmi-flash-bmc-prepare.target])
