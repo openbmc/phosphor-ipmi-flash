@@ -30,7 +30,6 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithDataHandler)
     EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(*hashImageMock, open(StrEq(hashBlobId), std::ios::out))
         .WillOnce(Return(true));
-
     EXPECT_TRUE(handler->open(
         0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc,
         hashBlobId));
