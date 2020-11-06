@@ -1,5 +1,6 @@
 #pragma once
 
+#include "create_action_map.hpp"
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "flags.hpp"
