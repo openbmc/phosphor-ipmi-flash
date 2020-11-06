@@ -3,6 +3,7 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/ \
 	-I$(top_srcdir)/bmc/ \
+	-I$(top_srcdir)/bmc/test \
 	-I$(top_srcdir)/bmc/version-handler \
 	$(GTEST_CFLAGS) \
 	$(GMOCK_CFLAGS) \
@@ -22,9 +23,29 @@ AM_LDFLAGS = \
 
 # Run all 'check' test programs
 check_PROGRAMS = \
-	version_json_unittest
+	version_json_unittest \
+	version_canhandle_enumerate_unittest \
+	version_createhandler_unittest \
+	version_open_unittest \
+	version_close_unittest \
+	version_read_unittest
 
 TESTS = $(check_PROGRAMS)
 
 version_json_unittest_SOURCES = version_json_unittest.cpp
 version_json_unittest_LDADD = $(top_builddir)/bmc/version-handler/libversionblob_common.la
+
+version_canhandle_enumerate_unittest_SOURCES = version_canhandle_enumerate_unittest.cpp
+version_canhandle_enumerate_unittest_LDADD = $(top_builddir)/bmc/version-handler/libversionblob_common.la
+
+version_createhandler_unittest_SOURCES = version_createhandler_unittest.cpp
+version_createhandler_unittest_LDADD = $(top_builddir)/bmc/version-handler/libversionblob_common.la
+
+version_open_unittest_SOURCES = version_open_unittest.cpp
+version_open_unittest_LDADD = $(top_builddir)/bmc/version-handler/libversionblob_common.la
+
+version_close_unittest_SOURCES = version_close_unittest.cpp
+version_close_unittest_LDADD = $(top_builddir)/bmc/version-handler/libversionblob_common.la
+
+version_read_unittest_SOURCES = version_read_unittest.cpp
+version_read_unittest_LDADD = $(top_builddir)/bmc/version-handler/libversionblob_common.la

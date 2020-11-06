@@ -1,6 +1,7 @@
 #pragma once
 
 #include "image_handler.hpp"
+#include <memory>
 
 #include <gmock/gmock.h>
 
@@ -18,5 +19,12 @@ class ImageHandlerMock : public ImageHandlerInterface
                                                                 std::uint32_t));
     MOCK_METHOD0(getSize, int());
 };
+
+std::unique_ptr<ImageHandlerMock> CreateImageMock()
+{
+  return std::make_unique<ImageHandlerMock>();
+}
+
+
 
 } // namespace ipmi_flash
