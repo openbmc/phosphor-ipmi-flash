@@ -1,8 +1,8 @@
+#include "create_action_map.hpp"
 #include "data_mock.hpp"
 #include "firmware_handler.hpp"
 #include "flags.hpp"
 #include "image_mock.hpp"
-#include "triggerable_mock.hpp"
 #include "util.hpp"
 
 #include <vector>
