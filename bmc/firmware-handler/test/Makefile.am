@@ -4,6 +4,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/ \
 	-I$(top_srcdir)/tools/ \
 	-I$(top_srcdir)/bmc/ \
+	-I$(top_srcdir)/bmc/test \
 	-I$(top_srcdir)/bmc/firmware-handler \
 	$(GTEST_CFLAGS) \
 	$(GMOCK_CFLAGS) \
