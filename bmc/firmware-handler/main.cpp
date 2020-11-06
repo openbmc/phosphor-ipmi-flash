@@ -117,7 +117,6 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 
     std::vector<HandlerConfig<ActionPack>> configsFromJson =
         builder.buildHandlerConfigs(jsonConfigurationPath);
-
     std::vector<HandlerPack> supportedFirmware;
 
     supportedFirmware.push_back(
