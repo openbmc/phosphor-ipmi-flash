@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "0688c0c7_5cc2b023",
+        "filename": "bmc/version-handler/version_handlers_builder.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-11-09T19:33:54Z",
+      "side": 1,
+      "message": "or /version/?",
+      "range": {
+        "startLine": 48,
+        "startChar": 36,
+        "endLine": 48,
+        "endChar": 39
+      },
+      "revId": "57acb07d6556ecaa632642979848a65ed52fe164",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f9f8f46e_6a693ada",
         "filename": "bmc/version-handler/version_handlers_builder.cpp",
         "patchSetId": 2
@@ -13,6 +36,52 @@
       "writtenOn": "2020-11-06T21:54:51Z",
       "side": 1,
       "message": "please add include on memory.",
+      "revId": "57acb07d6556ecaa632642979848a65ed52fe164",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4898c4f3_49e0b1d4",
+        "filename": "bmc/version-handler/version_handlers_builder.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-11-09T19:33:54Z",
+      "side": 1,
+      "message": "Am I missing a patch? I can\u0027t seem to find this file in this CL or in current master.\n\nIt looks like the CI is failing because of this as well.",
+      "range": {
+        "startLine": 3,
+        "startChar": 10,
+        "endLine": 3,
+        "endChar": 25
+      },
+      "revId": "57acb07d6556ecaa632642979848a65ed52fe164",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6768a436_45d6e9d3",
+        "filename": "bmc/version-handler/version_handlers_builder.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-11-09T19:33:54Z",
+      "side": 1,
+      "message": "I\u0027m guessing this is defined in version_handler.hpp - which I cannot find.",
+      "range": {
+        "startLine": 18,
+        "startChar": 30,
+        "endLine": 18,
+        "endChar": 47
+      },
       "revId": "57acb07d6556ecaa632642979848a65ed52fe164",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
