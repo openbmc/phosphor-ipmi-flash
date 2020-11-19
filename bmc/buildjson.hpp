@@ -1,5 +1,6 @@
 #pragma once
 
+#include "fs.hpp"
 #include "general_systemd.hpp"
 #include "image_handler.hpp"
 
@@ -11,9 +12,15 @@
 
 namespace ipmi_flash
 {
+/**
+ * build a systemd file triggerable action from json data
+ */
 std::unique_ptr<TriggerableActionInterface>
     buildFileSystemd(const nlohmann::json& data);
 
+/**
+ * build a systemd triggerable action from json data
+ */
 std::unique_ptr<TriggerableActionInterface>
     buildSystemd(const nlohmann::json& data);
 
@@ -73,7 +80,35 @@ class HandlersBuilderIfc
      * @return list of HandlerConfig objects.
      */
     std::vector<HandlerConfig<T>>
-        buildHandlerConfigs(const std::string& directory);
+        buildHandlerConfigs(const std::string& directory)
+    {
+
+        std::vector<HandlerConfig<T>> output;
+
+        std::vector<std::string> jsonPaths = GetJsonList(directory);
+        for (const auto& path : jsonPaths)
+        {
+            std::ifstream jsonFile(path);
+            if (!jsonFile.is_open())
+            {
+                std::fprintf(stderr, "Unable to open json file: %s\n",
+                             path.c_str());
+                continue;
+            }
+
+            auto data = nlohmann::json::parse(jsonFile, nullptr, false);
+            if (data.is_discarded())
+            {
+                std::fprintf(stderr, "Parsing json failed: %s\n", path.c_str());
+                continue;
+            }
+
+            std::vector<HandlerConfig<T>> configs = buildHandlerFromJson(data);
+            std::move(configs.begin(), configs.end(),
+                      std::back_inserter(output));
+        }
+        return output;
+    };
     /**
      * Given a list of handlers as json data, construct the appropriate
      * HandlerConfig objects.  This method is meant to be called per json
