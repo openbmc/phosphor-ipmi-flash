@@ -16,7 +16,6 @@
 #include "buildjson.hpp"
 
 #include "file_handler.hpp"
-#include "fs.hpp"
 
 #include <nlohmann/json.hpp>
 #include <sdbusplus/bus.hpp>
@@ -66,36 +65,6 @@ std::unique_ptr<TriggerableActionInterface>
 
     return SystemdNoFile::CreateSystemdNoFile(sdbusplus::bus::new_default(),
                                               unit, systemdMode);
-}
-
-template <typename T>
-std::vector<HandlerConfig<T>>
-    HandlersBuilderIfc<T>::buildHandlerConfigs(const std::string& directory)
-{
-    std::vector<HandlerConfig<T>> output;
-
-    std::vector<std::string> jsonPaths = GetJsonList(directory);
-
-    for (const auto& path : jsonPaths)
-    {
-        std::ifstream jsonFile(path);
-        if (!jsonFile.is_open())
-        {
-            std::fprintf(stderr, "Unable to open json file: %s\n",
-                         path.c_str());
-            continue;
-        }
-
-        auto data = nlohmann::json::parse(jsonFile, nullptr, false);
-        if (data.is_discarded())
-        {
-            std::fprintf(stderr, "Parsing json failed: %s\n", path.c_str());
-        }
-
-        std::vector<HandlerConfig<T>> configs = buildHandlerFromJson(data);
-        std::move(configs.begin(), configs.end(), std::back_inserter(output));
-    }
-    return output;
 }
 
 } // namespace ipmi_flash
