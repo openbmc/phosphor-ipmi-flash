@@ -13,8 +13,8 @@ namespace
 {
 using ::testing::IsEmpty;
 
+static constexpr auto TESTFNAME = "test.json";
 using json = nlohmann::json;
-
 TEST(FirmwareJsonTest, InvalidHandlerType)
 {
     auto j2 = R"(
@@ -613,6 +613,64 @@ TEST(FirmwareJsonTest, VerifySkipFields)
     EXPECT_FALSE(h[0].actions->preparation == nullptr);
     EXPECT_FALSE(h[0].actions->verification == nullptr);
     EXPECT_FALSE(h[0].actions->update == nullptr);
+}
+
+TEST(FirmwareJsonTest, BuildFromFile)
+{
+    std::ofstream testfile;
+    testfile.open(TESTFNAME, std::ios::out);
+    auto good = R"(
+        [{
+            "blob" : "/flash/image",
+            "handler" : {
+                "type" : "file",
+                "path" : "/run/initramfs/bmc-image"
+            },
+            "actions" : {
+                "preparation" : {
+                    "type" : "skip"
+                },
+                "verification" : {
+                    "type" : "skip"
+                },
+                "update" : {
+                    "type" : "skip"
+                }
+            }
+         }]
+    )"_json;
+    testfile << good.dump(4);
+    testfile.flush();
+    FirmwareHandlersBuilder b;
+    auto h = b.buildHandlerConfigs("./");
+    std::remove("buildfromfile.json");
+    EXPECT_EQ(h.size(), 1);
+    EXPECT_EQ(h[0].blobId, "/flash/image");
+    EXPECT_FALSE(h[0].handler == nullptr);
+    EXPECT_FALSE(h[0].actions == nullptr);
+    EXPECT_FALSE(h[0].actions->preparation == nullptr);
+    EXPECT_FALSE(h[0].actions->verification == nullptr);
+    EXPECT_FALSE(h[0].actions->update == nullptr);
+    if (std::remove(TESTFNAME) != 0)
+    {
+        fprintf(stderr, "warning: filecleanup of %s failed\n", TESTFNAME);
+    }
+}
+
+TEST(FirmwareJsonTest, BuildFromBadFile)
+{
+    std::ofstream testfile;
+    testfile.open(TESTFNAME, std::ios::out);
+    testfile << "{] a malformed json {{";
+    testfile.flush();
+    FirmwareHandlersBuilder b;
+    auto h = b.buildHandlerConfigs("./");
+    std::remove("buildfromfile.json");
+    EXPECT_THAT(h, IsEmpty());
+    if (std::remove(TESTFNAME) != 0)
+    {
+        fprintf(stderr, "warning: filecleanup of %s failed\n", TESTFNAME);
+    }
 }
 
 } // namespace
