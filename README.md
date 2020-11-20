@@ -61,6 +61,19 @@ make
 make install
 ```
 
+#### Building span-lite
+
+Check out the [span-lite source](https://github.com/martinmoene/span-lite).
+
+Then run these commands in the source directory.
+
+```
+mkdir build && cd build
+cmake ..
+make
+make install
+```
+
 #### Building stdplus
 
 Check out the [stdplus source](https://github.com/openbmc/stdplus).
