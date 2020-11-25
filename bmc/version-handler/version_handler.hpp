@@ -49,7 +49,6 @@ struct VersionInfoPack
 /* convenience alias: the key (std::string) is blobId, same as
  * VersionInfoPack.blobId */
 using VersionInfoMap = std::unordered_map<std::string, VersionInfoPack>;
-
 class VersionBlobHandler : public blobs::GenericBlobInterface
 {
   public:
@@ -82,7 +81,6 @@ class VersionBlobHandler : public blobs::GenericBlobInterface
     VersionBlobHandler& operator=(const VersionBlobHandler&) = delete;
     VersionBlobHandler(VersionBlobHandler&&) = default;
     VersionBlobHandler& operator=(VersionBlobHandler&&) = default;
-
     bool canHandleBlob(const std::string& path) override;
     std::vector<std::string> getBlobIds() override;
     bool deleteBlob(const std::string& path) override;
