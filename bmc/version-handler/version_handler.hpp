@@ -40,7 +40,6 @@ class VersionBlobHandler : public blobs::GenericBlobInterface
     VersionBlobHandler& operator=(const VersionBlobHandler&) = delete;
     VersionBlobHandler(VersionBlobHandler&&) = default;
     VersionBlobHandler& operator=(VersionBlobHandler&&) = default;
-
     bool canHandleBlob(const std::string& path) override;
     std::vector<std::string> getBlobIds() override;
     bool deleteBlob(const std::string& path) override;
@@ -53,7 +52,7 @@ class VersionBlobHandler : public blobs::GenericBlobInterface
                const std::vector<uint8_t>& data) override
     {
         return false; /* not supported */
-    };
+    }
     bool writeMeta(uint16_t session, uint32_t offset,
                    const std::vector<uint8_t>& data) override
     {
