@@ -83,11 +83,41 @@ bool VersionBlobHandler::deleteBlob(const std::string& path)
 
 bool VersionBlobHandler::stat(const std::string& path, blobs::BlobMeta* meta)
 {
-    // TODO: stat should return the blob state and in the meta data information
-    // on whether a read is successful should be contained
-    // do things like determine if systemd target is triggered
-    // then check if file can be opened for read
-    return false; /* not yet implemented */
+    try
+    {
+        auto& v = blobInfoMap.at(path);
+        meta->blobState = v->sessionsToUpdate.empty()?0:blobs::StateFlags::open_read;
+        meta->size = v->handler->getSize();
+        meta->metadata.clear();
+        if (meta->blobState == blobs::StateFlags::open_read)
+        {
+            auto status = v->actions->onOpen->status();
+            meta->metadata.push_back(static_cast<std::uint8_t>(status));
+            if (status == ActionStatus::success)
+            {
+                meta->blobState = blobs::StateFlags::committed;
+            }
+            else if (status == ActionStatus::running)
+            {
+                meta->blobState = blobs::StateFlags::committing;
+            }
+            else if (status == ActionStatus::failed)
+            {
+                meta->blobState = blobs::StateFlags::commit_error;
+            }
+            meta->blobState |= blobs::StateFlags::open_read;
+        }
+        else
+        {
+            meta->metadata.push_back(
+                static_cast<std::uint8_t>(ActionStatus::unknown));
+        }
+        return true;
+    }
+    catch (const std::out_of_range& e)
+    {
+        return false;
+    }
 }
 
 bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
@@ -151,7 +181,15 @@ bool VersionBlobHandler::close(uint16_t session)
 
 bool VersionBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
 {
-    return false;
+    try
+    {
+        const auto& blobName = sessionInfoMap.at(session)->blob->blobId;
+        return stat(blobName, meta);
+    }
+    catch (const std::out_of_range& e)
+    {
+        return false;
+    }
 }
 
 bool VersionBlobHandler::expire(uint16_t session)
