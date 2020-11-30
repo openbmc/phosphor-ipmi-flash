@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa9bfec6_3dcda7fd",
+        "filename": "bmc/firmware-handler/main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1000100
+      },
+      "writtenOn": "2020-11-30T20:15:43Z",
+      "side": 0,
+      "message": "nit: revert the two firmwware-handler files with whitespace changes.",
+      "revId": "7af41c28ee9cf86be2c43c0a8f7d9b57bbd43e3d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
