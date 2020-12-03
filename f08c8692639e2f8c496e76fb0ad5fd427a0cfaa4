@@ -48,6 +48,149 @@
     },
     {
       "key": {
+        "uuid": "90f5aa3b_77241120",
+        "filename": "bmc/version-handler/test/version_close_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T20:21:12Z",
+      "side": 1,
+      "message": "nit: Just for consistency with the other test cases, could we have this call above the EXPECT_CALLs? Although I think we usually have all the EXPECT_CALLs at the top unless order matters so maybe it\u0027s better to change the first and third tests instead.\n\nI think it\u0027s also good to separate out the EXPECT_CALLs from the actual calls (like the ones in EXPECT_TRUE/FALSE) so that you see what method is actually being called and which are the mocks you\u0027re overriding with EXPECT_CALL.",
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "926f1fa5_da32140f",
+        "filename": "bmc/version-handler/test/version_handler_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T20:21:12Z",
+      "side": 1,
+      "message": "nit: I\u0027m guessing this is for reference to help the readers? I\u0027m not sure if it\u0027s too helpful with this test in particular though, as the structs are not really used too much here from what I see?\n\nIf you\u0027re keeping it, it\u0027d be good to put a comment explaining why you decided to put this here.",
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "763c7dff_3590c9c8",
+        "filename": "bmc/version-handler/test/version_handler_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T20:21:12Z",
+      "side": 1,
+      "message": "nit: newline after this.",
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2514bd0d_8435c3e2",
+        "filename": "bmc/version-handler/test/version_open_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T20:21:12Z",
+      "side": 1,
+      "message": "Not sure if you need to do the i++ here - seems like this is to be used in the test below?",
+      "range": {
+        "startLine": 57,
+        "startChar": 4,
+        "endLine": 58,
+        "endChar": 27
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b54eda00_373c9adc",
+        "filename": "bmc/version-handler/test/version_open_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T20:21:12Z",
+      "side": 1,
+      "message": "nit: you can define this as a constant session number in the class, so that you can show that it\u0027s the same number between close and open.",
+      "range": {
+        "startLine": 80,
+        "startChar": 24,
+        "endLine": 80,
+        "endChar": 25
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7abb910_3e21ea20",
+        "filename": "bmc/version-handler/test/version_open_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T20:21:12Z",
+      "side": 1,
+      "message": "continuing from the above comment, this could be the constant + 1 to show that it\u0027s different.",
+      "range": {
+        "startLine": 95,
+        "startChar": 24,
+        "endLine": 95,
+        "endChar": 25
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9e3339e_8529581d",
+        "filename": "bmc/version-handler/test/version_read_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T20:21:12Z",
+      "side": 1,
+      "message": "nit: Same as the above test, maybe this could be a constant defined in the class?",
+      "range": {
+        "startLine": 56,
+        "startChar": 24,
+        "endLine": 56,
+        "endChar": 27
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3e3b73b9_1e2e83f3",
         "filename": "bmc/version-handler/version_handler.cpp",
         "patchSetId": 8
