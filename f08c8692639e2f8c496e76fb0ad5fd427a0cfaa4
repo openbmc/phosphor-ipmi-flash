@@ -1,0 +1,228 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62a37468_36c0a16e",
+        "filename": "bmc/version-handler/main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T19:58:09Z",
+      "side": 1,
+      "message": "Seems like we\u0027re already in ipmi_flash namespace, could we take these out?",
+      "range": {
+        "startLine": 49,
+        "startChar": 16,
+        "endLine": 49,
+        "endChar": 26
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53bd5ce9_d4af6c0f",
+        "filename": "bmc/version-handler/main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T19:58:09Z",
+      "side": 1,
+      "message": "Huh, I didn\u0027t think the compiler would be smart enough to do this for a map where the value is a struct.",
+      "range": {
+        "startLine": 56,
+        "startChar": 12,
+        "endLine": 57,
+        "endChar": 37
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e3b73b9_1e2e83f3",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T19:58:09Z",
+      "side": 1,
+      "message": "nit: Maybe this could go in the header in doxygen format?",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 3
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af461eb8_44254da3",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T19:58:09Z",
+      "side": 1,
+      "message": "Could we explain why this is not allowed in a comment? (I\u0027m guessing it\u0027s because if this flag is already set, it means it\u0027s a stale session?)\n\nMaybe including an frprintf similar to other error paths to explain the failure.",
+      "range": {
+        "startLine": 85,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 9
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b54618cb_eca9c22d",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T19:58:09Z",
+      "side": 1,
+      "message": "I\u0027m a little confused by this, why do we pass in this \"don\u0027t care\" string here?",
+      "range": {
+        "startLine": 123,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 66
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec03d51e_93c59daf",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T19:58:09Z",
+      "side": 1,
+      "message": "nit: typo?",
+      "range": {
+        "startLine": 126,
+        "startChar": 34,
+        "endLine": 126,
+        "endChar": 40
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd003055_a150b76e",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T19:58:09Z",
+      "side": 1,
+      "message": "What if we had an exception after the imagehandler was opened? shouldn\u0027t we close?",
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11a87f62_b662607a",
+        "filename": "bmc/version-handler/version_handler.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T19:58:09Z",
+      "side": 1,
+      "message": "Unfortunately, the OpenBMC coding style is that we shouldn\u0027t use _ https://github.com/openbmc/docs/blob/master/cpp-style-and-conventions.md#variables\n\nIt\u0027s annoying when having to code back and forth between OpenBMC and Google\u0027s coding standard :(",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 33
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49c791c3_e8946b50",
+        "filename": "bmc/version-handler/version_handler.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T19:58:09Z",
+      "side": 1,
+      "message": "What is this string associated with? I\u0027m guessing blobId?\n\nEdit: I see from the code below that this is the case - Maybe it\u0027d be good to document that the key is _blobId of the VersionInfoPack?",
+      "range": {
+        "startLine": 48,
+        "startChar": 47,
+        "endLine": 48,
+        "endChar": 53
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5514e92_2f6e426f",
+        "filename": "bmc/version-handler/version_handler.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-03T19:58:09Z",
+      "side": 1,
+      "message": "Same as above with _",
+      "range": {
+        "startLine": 100,
+        "startChar": 0,
+        "endLine": 102,
+        "endChar": 61
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
