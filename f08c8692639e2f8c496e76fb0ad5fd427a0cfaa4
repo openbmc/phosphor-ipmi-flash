@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9e28018f_52d976e3",
+        "filename": "bmc/version-handler/main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "62a37468_36c0a16e",
+      "range": {
+        "startLine": 49,
+        "startChar": 16,
+        "endLine": 49,
+        "endChar": 26
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "53bd5ce9_d4af6c0f",
         "filename": "bmc/version-handler/main.cpp",
         "patchSetId": 8
@@ -36,6 +60,30 @@
       "writtenOn": "2020-12-03T19:58:09Z",
       "side": 1,
       "message": "Huh, I didn\u0027t think the compiler would be smart enough to do this for a map where the value is a struct.",
+      "range": {
+        "startLine": 56,
+        "startChar": 12,
+        "endLine": 57,
+        "endChar": 37
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0bad4aa0_e11f8b8c",
+        "filename": "bmc/version-handler/main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "IIRC, one of the benefits of try_emplace vs emplace.",
+      "parentUuid": "53bd5ce9_d4af6c0f",
       "range": {
         "startLine": 56,
         "startChar": 12,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "a67580d5_e8b296cf",
+        "filename": "bmc/version-handler/test/version_close_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "ack, moved EXPECT_CALL to the top of each test.",
+      "parentUuid": "90f5aa3b_77241120",
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "926f1fa5_da32140f",
         "filename": "bmc/version-handler/test/version_handler_unittest.cpp",
         "patchSetId": 8
@@ -82,6 +148,24 @@
     },
     {
       "key": {
+        "uuid": "94d45484_21c061e7",
+        "filename": "bmc/version-handler/test/version_handler_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "removed, was for my reference for copy-pasting and just never removed it.",
+      "parentUuid": "926f1fa5_da32140f",
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "763c7dff_3590c9c8",
         "filename": "bmc/version-handler/test/version_handler_unittest.cpp",
         "patchSetId": 8
@@ -96,6 +180,24 @@
       "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30a20a4c_d856f03b",
+        "filename": "bmc/version-handler/test/version_handler_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "763c7dff_3590c9c8",
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -122,6 +224,30 @@
     },
     {
       "key": {
+        "uuid": "a77e7fe7_6f487a61",
+        "filename": "bmc/version-handler/test/version_open_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2514bd0d_8435c3e2",
+      "range": {
+        "startLine": 57,
+        "startChar": 4,
+        "endLine": 58,
+        "endChar": 27
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b54eda00_373c9adc",
         "filename": "bmc/version-handler/test/version_open_unittest.cpp",
         "patchSetId": 8
@@ -142,6 +268,30 @@
       "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ecab0bcd_d2a74785",
+        "filename": "bmc/version-handler/test/version_open_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b54eda00_373c9adc",
+      "range": {
+        "startLine": 80,
+        "startChar": 24,
+        "endLine": 80,
+        "endChar": 25
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -168,6 +318,30 @@
     },
     {
       "key": {
+        "uuid": "f7afb1c9_8b5f6f49",
+        "filename": "bmc/version-handler/test/version_open_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b7abb910_3e21ea20",
+      "range": {
+        "startLine": 95,
+        "startChar": 24,
+        "endLine": 95,
+        "endChar": 25
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9e3339e_8529581d",
         "filename": "bmc/version-handler/test/version_read_unittest.cpp",
         "patchSetId": 8
@@ -188,6 +362,30 @@
       "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2cb30c5_1e3164c8",
+        "filename": "bmc/version-handler/test/version_read_unittest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9e3339e_8529581d",
+      "range": {
+        "startLine": 56,
+        "startChar": 24,
+        "endLine": 56,
+        "endChar": 27
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -214,6 +412,30 @@
     },
     {
       "key": {
+        "uuid": "36ce0093_42e22e0a",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3e3b73b9_1e2e83f3",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 3
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "af461eb8_44254da3",
         "filename": "bmc/version-handler/version_handler.cpp",
         "patchSetId": 8
@@ -234,6 +456,30 @@
       "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32efdecd_4ee0c575",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "It\u0027s to guard against double opens. fprintf stderr added, no need for comment since the fprintf explains in adequate detail.",
+      "parentUuid": "af461eb8_44254da3",
+      "range": {
+        "startLine": 85,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 9
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -260,6 +506,30 @@
     },
     {
       "key": {
+        "uuid": "853e1580_6e11c9bc",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "doesn\u0027t look like the FileHandler impl cares about what the path is; instead filename is used, which is set by the constructor. I put in \"don\u0027t care\" here to make it more obvious to readers of the code that the underlying impl doesn\u0027t do anything with this value.",
+      "parentUuid": "b54618cb_eca9c22d",
+      "range": {
+        "startLine": 123,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 66
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ec03d51e_93c59daf",
         "filename": "bmc/version-handler/version_handler.cpp",
         "patchSetId": 8
@@ -283,6 +553,30 @@
     },
     {
       "key": {
+        "uuid": "5b99beb8_ba8bfca2",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec03d51e_93c59daf",
+      "range": {
+        "startLine": 126,
+        "startChar": 34,
+        "endLine": 126,
+        "endChar": 40
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cd003055_a150b76e",
         "filename": "bmc/version-handler/version_handler.cpp",
         "patchSetId": 8
@@ -297,6 +591,24 @@
       "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02db6a2f_04c5c0b6",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "narrowed what ends up in the try clause to make clear that the exceptions that are intended to be caught are the ones thrown from std::unordered_map::at . If an exception is thrown at this case the file is never opened and so it doesn\u0027t need to be closed.",
+      "parentUuid": "cd003055_a150b76e",
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -323,6 +635,30 @@
     },
     {
       "key": {
+        "uuid": "4e6e4cb1_0ac5e8fe",
+        "filename": "bmc/version-handler/version_handler.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": ":(",
+      "parentUuid": "11a87f62_b662607a",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 33
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "49c791c3_e8946b50",
         "filename": "bmc/version-handler/version_handler.hpp",
         "patchSetId": 8
@@ -346,6 +682,30 @@
     },
     {
       "key": {
+        "uuid": "faabd7ab_c5fb72fd",
+        "filename": "bmc/version-handler/version_handler.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "49c791c3_e8946b50",
+      "range": {
+        "startLine": 48,
+        "startChar": 47,
+        "endLine": 48,
+        "endChar": 53
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d5514e92_2f6e426f",
         "filename": "bmc/version-handler/version_handler.hpp",
         "patchSetId": 8
@@ -366,6 +726,30 @@
       "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30504175_6d8a1244",
+        "filename": "bmc/version-handler/version_handler.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-07T22:36:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5514e92_2f6e426f",
+      "range": {
+        "startLine": 100,
+        "startChar": 0,
+        "endLine": 102,
+        "endChar": 61
+      },
+      "revId": "f08c8692639e2f8c496e76fb0ad5fd427a0cfaa4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
