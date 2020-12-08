@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "398770d1_ce285fed",
+        "filename": "bmc/version-handler/main.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-08T01:34:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c01064fe_816700fd",
+      "revId": "eae7fefa07514a5482ae215f2c91d97922ca4eff",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "be48e027_c26dbf16",
         "filename": "bmc/version-handler/main.cpp",
         "patchSetId": 11
@@ -30,6 +48,24 @@
       "writtenOn": "2020-12-08T00:53:45Z",
       "side": 1,
       "message": "Just wanted to validate that this is meant to be destroyed when this function exits, and if so, then why pass in a managed pointer reference? Instead of a raw pointer.\n\nauto builder \u003d make_unique\nbuilder.get() is typically the pattern.  You could also just create the builder on the stack since it doesn\u0027t need to survive.",
+      "revId": "eae7fefa07514a5482ae215f2c91d97922ca4eff",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "72483069_04842b8b",
+        "filename": "bmc/version-handler/main.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2020-12-08T01:34:20Z",
+      "side": 1,
+      "message": "I don\u0027t know why I made this a managed pointer. Create builder on the stack instead.",
+      "parentUuid": "be48e027_c26dbf16",
       "revId": "eae7fefa07514a5482ae215f2c91d97922ca4eff",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": false
