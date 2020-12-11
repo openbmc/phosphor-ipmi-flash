@@ -70,12 +70,6 @@ bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
         cleanup(session);
         return false;
     }
-    if (!canHandleBlob(path))
-    {
-        fprintf(stderr, "open %s fail: unrecognized blob\n", path.c_str());
-        cleanup(session);
-        return false;
-    }
 
     try
     {
