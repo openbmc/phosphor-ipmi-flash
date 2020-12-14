@@ -75,12 +75,8 @@ std::unique_ptr<blobs::GenericBlobInterface>
     return handler;
 }
 } // namespace ipmi_flash
-extern "C"
-{
-    std::unique_ptr<blobs::GenericBlobInterface> createHandler();
-}
 
-std::unique_ptr<blobs::GenericBlobInterface> createHandler()
+extern "C" std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
     ipmi_flash::VersionHandlersBuilder builder;
     return ipmi_flash::createHandlerFromJsons(
