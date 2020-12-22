@@ -26,6 +26,11 @@ CODE_COVERAGE_GENHTML_OPTIONS += --config-file $(abs_srcdir)/.lcovrc
 CODE_COVERAGE_GENHTML_OPTIONS += --prefix $(abs_srcdir) --prefix $(abs_builddir)
 export CODE_COVERAGE_GENHTML_OPTIONS
 
+export AM_CFLAGS = $(CODE_COVERAGE_CFLAGS)
+export AM_CXXFLAGS = $(CODE_COVERAGE_CXXFLAGS)
+
+export LDADD = $(CODE_COVERAGE_LIBS)
+
 if AUTOCONF_CODE_COVERAGE_2019_01_06
 include $(top_srcdir)/aminclude_static.am
 clean-local: code-coverage-clean
