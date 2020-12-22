@@ -61,7 +61,7 @@ std::vector<HandlerConfig<VersionActionPack>>
             /* version must have handler */
             const auto& h = v.at("handler");
 
-            const std::string handlerType = h.at("type");
+            const std::string& handlerType = h.at("type");
             if (handlerType == "file")
             {
                 const auto& path = h.at("path");
@@ -80,7 +80,7 @@ std::vector<HandlerConfig<VersionActionPack>>
 
             /* to make an action optional, assign type "skip" */
             const auto& onOpen = a.at("open");
-            const std::string onOpenType = onOpen.at("type");
+            const std::string& onOpenType = onOpen.at("type");
             if (onOpenType == "systemd")
             {
                 pack->onOpen = std::move(buildSystemd(onOpen));
