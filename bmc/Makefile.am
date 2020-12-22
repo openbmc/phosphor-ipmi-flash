@@ -12,11 +12,11 @@ libbmc_common_la_SOURCES = \
 libbmc_common_la_CXXFLAGS = \
 	-I$(top_srcdir) \
 	$(SDBUSPLUS_CFLAGS) \
-        $(PHOSPHOR_LOGGING_CFLAGS) \
-        $(CODE_COVERAGE_CXXFLAGS) \
-        -flto
+	$(PHOSPHOR_LOGGING_CFLAGS) \
+	$(CODE_COVERAGE_CXXFLAGS) \
+	-flto
 libbmc_common_la_LDFLAGS = \
-        $(SDBUSPLUS_LIBS) \
-        $(PHOSPHOR_LOGGING_LIBS) \
-        $(CODE_COVERAGE_LIBS) \
-        -lstdc++fs
+	$(SDBUSPLUS_LIBS) \
+	$(PHOSPHOR_LOGGING_LIBS) \
+	$(CODE_COVERAGE_LIBS) \
+	-lstdc++fs
