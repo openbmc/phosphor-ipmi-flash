@@ -29,16 +29,8 @@ std::unique_ptr<TriggerableActionInterface>
  * supported actions of type T.
  */
 template <typename T>
-class HandlerConfig
+struct HandlerConfig
 {
-  public:
-    HandlerConfig() = default;
-    ~HandlerConfig() = default;
-    HandlerConfig(const HandlerConfig&) = delete;
-    HandlerConfig& operator=(const HandlerConfig&) = delete;
-    HandlerConfig(HandlerConfig&&) = default;
-    HandlerConfig& operator=(HandlerConfig&&) = default;
-
     /* A string in the form: /flash/{unique}, s.t. unique is something like,
      * flash, ubitar, statictar, or bios
      */
@@ -64,15 +56,10 @@ class HandlerConfig
  *
  */
 template <typename T>
-class HandlersBuilderIfc
+struct HandlersBuilderIfc
 {
-  public:
-    HandlersBuilderIfc() = default;
-    ~HandlersBuilderIfc() = default;
-    HandlersBuilderIfc(const HandlersBuilderIfc&) = delete;
-    HandlersBuilderIfc& operator=(const HandlersBuilderIfc&) = delete;
-    HandlersBuilderIfc(HandlersBuilderIfc&&) = default;
-    HandlersBuilderIfc& operator=(HandlersBuilderIfc&&) = default;
+    virtual ~HandlersBuilderIfc() = default;
+
     /**
      * Given a folder of json configs, build the configurations.
      *
@@ -109,6 +96,7 @@ class HandlersBuilderIfc
         }
         return output;
     };
+
     /**
      * Given a list of handlers as json data, construct the appropriate
      * HandlerConfig objects.  This method is meant to be called per json
