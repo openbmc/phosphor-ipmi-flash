@@ -65,14 +65,7 @@ std::unique_ptr<blobs::GenericBlobInterface>
             std::fprintf(stderr, "config loaded: %s\n", config.blobId.c_str());
         }
     }
-    auto handler = VersionBlobHandler::create(std::move(handlerMap));
-    if (!handler)
-    {
-        std::fprintf(stderr, "Version Handler has an invalid configuration");
-        return nullptr;
-    }
-
-    return handler;
+    return VersionBlobHandler::create(std::move(handlerMap));
 }
 } // namespace ipmi_flash
 

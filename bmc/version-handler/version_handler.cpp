@@ -6,18 +6,9 @@ namespace ipmi_flash
 std::unique_ptr<blobs::GenericBlobInterface>
     VersionBlobHandler::create(VersionInfoMap&& versionMap)
 {
-    if (versionMap.empty())
-    {
-        return nullptr;
-    }
     std::vector<std::string> blobList;
     for (const auto& [key, val] : versionMap)
     {
-        if (val.blobId != key || val.actionPack == nullptr ||
-            val.imageHandler == nullptr || val.actionPack->onOpen == nullptr)
-        {
-            return nullptr;
-        }
         blobList.push_back(key);
     }
     return std::make_unique<VersionBlobHandler>(std::move(blobList),
