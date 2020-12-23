@@ -1,10 +1,7 @@
-#include "flags.hpp"
-#include "image_mock.hpp"
-#include "triggerable_mock.hpp"
-#include "util.hpp"
 #include "version_handler.hpp"
+#include "version_mock.hpp"
 
-#include <array>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -20,25 +17,8 @@ class VersionReadBlobTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        VersionInfoMap vim;
-        for (const auto& blobName : blobNames)
-        {
-            auto t = CreateTriggerMock();
-            auto i = CreateImageMock();
-            tm[blobName] = reinterpret_cast<TriggerMock*>(t.get());
-            im[blobName] = reinterpret_cast<ImageHandlerMock*>(i.get());
-            vim.try_emplace(
-                blobName,
-                VersionInfoPack(
-                    blobName, std::make_unique<VersionActionPack>(std::move(t)),
-                    std::move(i)));
-        }
-        h = VersionBlobHandler::create(std::move(vim));
-        ASSERT_NE(h, nullptr);
-        for (const auto& [key, val] : tm)
-        {
-            ON_CALL(*val, trigger()).WillByDefault(Return(true));
-        }
+        h = std::make_unique<VersionBlobHandler>(
+            createMockVersionConfigs(blobNames, &im, &tm));
     }
     std::unique_ptr<blobs::GenericBlobInterface> h;
     std::vector<std::string> blobNames{"blob0", "blob1", "blob2", "blob3"};
@@ -51,6 +31,7 @@ class VersionReadBlobTest : public ::testing::Test
 
 TEST_F(VersionReadBlobTest, VerifyValidRead)
 {
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
     EXPECT_CALL(*tm.at("blob0"), status())
         .Times(2)
         .WillRepeatedly(Return(ActionStatus::success));
@@ -71,37 +52,28 @@ TEST_F(VersionReadBlobTest, VerifyValidRead)
 
 TEST_F(VersionReadBlobTest, VerifyUnopenedReadFails)
 {
-    EXPECT_CALL(*tm.at("blob0"), status()).Times(0);
-    EXPECT_CALL(*im.at("blob0"), open(_, _)).Times(0);
-    EXPECT_CALL(*im.at("blob0"), read(_, _)).Times(0);
-
     EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());
 }
 
 TEST_F(VersionReadBlobTest, VerifyTriggerFailureReadFails)
 {
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
     EXPECT_CALL(*tm.at("blob0"), status())
-        .Times(1)
         .WillOnce(Return(ActionStatus::failed));
-    EXPECT_CALL(*im.at("blob0"), open(_, _)).Times(0);
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
     EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());
 }
 
 TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileReadFailure)
 {
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
     EXPECT_CALL(*tm.at("blob0"), status())
-        .Times(1)
         .WillOnce(Return(ActionStatus::success));
     /* file path gets bound to file_handler on creation so path parameter
      * doesn't actually matter
      */
-    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in))
-        .Times(1)
-        .WillOnce(Return(true));
-    EXPECT_CALL(*im.at("blob0"), read(_, _))
-        .Times(1)
-        .WillOnce(Return(std::nullopt));
+    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(true));
+    EXPECT_CALL(*im.at("blob0"), read(_, _)).WillOnce(Return(std::nullopt));
     EXPECT_CALL(*im.at("blob0"), close()).Times(1);
 
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
@@ -110,16 +82,14 @@ TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileReadFailure)
 
 TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileOpenFailure)
 {
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
     /* first call to trigger status fails, second succeeds */
     EXPECT_CALL(*tm.at("blob0"), status())
-        .Times(1)
         .WillOnce(Return(ActionStatus::success));
     /* file path gets bound to file_handler on creation so path parameter
      * doesn't actually matter
      */
-    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in))
-        .Times(1)
-        .WillOnce(Return(false));
+    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(false));
 
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
     EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());

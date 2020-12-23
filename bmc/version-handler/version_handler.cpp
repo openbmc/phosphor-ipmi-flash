@@ -1,28 +1,40 @@
 #include "version_handler.hpp"
 
 #include <stdexcept>
+#include <utility>
+#include <vector>
+
 namespace ipmi_flash
 {
-std::unique_ptr<blobs::GenericBlobInterface>
-    VersionBlobHandler::create(VersionInfoMap&& versionMap)
+
+VersionBlobHandler::VersionBlobHandler(
+    std::vector<HandlerConfig<ActionPack>>&& configs)
 {
-    std::vector<std::string> blobList;
-    for (const auto& [key, val] : versionMap)
+    for (auto& config : configs)
     {
-        blobList.push_back(key);
+        BlobInfo info = {std::move(config.blobId), std::move(config.actions),
+                         std::move(config.handler)};
+        if (!blobInfoMap.try_emplace(info.blobId, std::move(info)).second)
+        {
+            fprintf(stderr, "Ignoring duplicate config for %s\n",
+                    info.blobId.c_str());
+        }
     }
-    return std::make_unique<VersionBlobHandler>(std::move(blobList),
-                                                std::move(versionMap));
 }
 
 bool VersionBlobHandler::canHandleBlob(const std::string& path)
 {
-    return (std::find(blobIds.begin(), blobIds.end(), path) != blobIds.end());
+    return blobInfoMap.find(path) != blobInfoMap.end();
 }
 
 std::vector<std::string> VersionBlobHandler::getBlobIds()
 {
-    return blobIds;
+    std::vector<std::string> ret;
+    for (const auto& [key, _] : blobInfoMap)
+    {
+        ret.push_back(key);
+    }
+    return ret;
 }
 
 /**
@@ -64,7 +76,7 @@ bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
 
     try
     {
-        auto& v = versionInfoMap.at(path);
+        auto& v = blobInfoMap.at(path);
         if (v.blobState == blobs::StateFlags::open_read)
         {
             cleanup(session);
@@ -72,7 +84,7 @@ bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
                     path.c_str());
             return false;
         }
-        if (v.actionPack->onOpen->trigger() == false)
+        if (v.actions->onOpen->trigger() == false)
         {
             fprintf(stderr, "open %s fail: onOpen trigger failed\n",
                     path.c_str());
@@ -94,11 +106,11 @@ std::vector<uint8_t> VersionBlobHandler::read(uint16_t session, uint32_t offset,
                                               uint32_t requestedSize)
 {
     std::string* blobName;
-    VersionInfoPack* pack;
+    BlobInfo* pack;
     try
     {
         blobName = &sessionToBlob.at(session);
-        pack = &versionInfoMap.at(*blobName);
+        pack = &blobInfoMap.at(*blobName);
     }
     catch (const std::out_of_range& e)
     {
@@ -107,26 +119,26 @@ std::vector<uint8_t> VersionBlobHandler::read(uint16_t session, uint32_t offset,
     /* onOpen trigger must be successful, otherwise potential
      * for stale data to be read
      */
-    if (pack->actionPack->onOpen->status() != ActionStatus::success)
+    if (pack->actions->onOpen->status() != ActionStatus::success)
     {
         fprintf(stderr, "read failed: onOpen trigger not successful\n");
         return {};
     }
-    if (!pack->imageHandler->open("don't care", std::ios::in))
+    if (!pack->handler->open("don't care", std::ios::in))
     {
         fprintf(stderr, "read failed: file open unsuccessful blob=%s\n",
                 blobName->c_str());
         return {};
     }
-    auto d = pack->imageHandler->read(offset, requestedSize);
+    auto d = pack->handler->read(offset, requestedSize);
     if (!d)
     {
         fprintf(stderr, "read failed: unable to read file for blob %s\n",
                 blobName->c_str());
-        pack->imageHandler->close();
+        pack->handler->close();
         return {};
     }
-    pack->imageHandler->close();
+    pack->handler->close();
     return *d;
 }
 
@@ -150,10 +162,10 @@ bool VersionBlobHandler::cleanup(uint16_t session)
     try
     {
         const auto& blobName = sessionToBlob.at(session);
-        auto& pack = versionInfoMap.at(blobName);
-        if (pack.actionPack->onOpen->status() == ActionStatus::running)
+        auto& pack = blobInfoMap.at(blobName);
+        if (pack.actions->onOpen->status() == ActionStatus::running)
         {
-            pack.actionPack->onOpen->abort();
+            pack.actions->onOpen->abort();
         }
         pack.blobState = static_cast<blobs::StateFlags>(0);
         sessionToBlob.erase(session);

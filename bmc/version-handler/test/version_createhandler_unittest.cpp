@@ -1,12 +1,8 @@
-#include "flags.hpp"
-#include "image_mock.hpp"
-#include "triggerable_mock.hpp"
-#include "util.hpp"
 #include "version_handler.hpp"
+#include "version_mock.hpp"
 
 #include <array>
-#include <string>
-#include <vector>
+#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -15,18 +11,20 @@ namespace ipmi_flash
 
 TEST(VersionHandlerCanHandleTest, VerifyGoodInfoMapPasses)
 {
-    VersionInfoMap test;
-    std::array blobNames{"blob0", "blob1", "blob2", "blob3"};
-    for (const auto& blobName : blobNames)
-    {
-        test.try_emplace(blobName,
-                         VersionInfoPack(blobName,
-                                         std::make_unique<VersionActionPack>(
-                                             CreateTriggerMock()),
-                                         CreateImageMock()));
-    }
-    auto handler = VersionBlobHandler::create(std::move(test));
-    EXPECT_NE(handler, nullptr);
+    constexpr std::array blobs{"blob0", "blob1"};
+    VersionBlobHandler handler(createMockVersionConfigs(blobs));
+    EXPECT_THAT(handler.getBlobIds(),
+                testing::UnorderedElementsAreArray(blobs));
+}
+
+TEST(VersionHandlerCanHandleTest, VerifyDuplicatesIgnored)
+{
+    constexpr std::array blobs{"blob0"};
+    auto configs = createMockVersionConfigs(blobs);
+    configs.push_back(createMockVersionConfig(blobs[0]));
+    VersionBlobHandler handler(std::move(configs));
+    EXPECT_THAT(handler.getBlobIds(),
+                testing::UnorderedElementsAreArray(blobs));
 }
 
 } // namespace ipmi_flash

@@ -1,16 +1,16 @@
-#include "flags.hpp"
-#include "image_mock.hpp"
-#include "triggerable_mock.hpp"
-#include "util.hpp"
 #include "version_handler.hpp"
+#include "version_mock.hpp"
 
-#include <array>
+#include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <gtest/gtest.h>
+
 using ::testing::_;
 using ::testing::Return;
+
 namespace ipmi_flash
 {
 
@@ -19,32 +19,15 @@ class VersionOpenBlobTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        VersionInfoMap vim;
-        for (const auto& blobName : blobNames)
+        h = std::make_unique<VersionBlobHandler>(
+            createMockVersionConfigs(blobNames, &im, &tm));
+        for (const auto& blob : blobNames)
         {
-            auto t = CreateTriggerMock();
-            auto i = CreateImageMock();
-            tm[blobName] = reinterpret_cast<TriggerMock*>(t.get());
-            im[blobName] = reinterpret_cast<ImageHandlerMock*>(i.get());
-            vim.try_emplace(
-                blobName,
-                VersionInfoPack(
-                    blobName, std::make_unique<VersionActionPack>(std::move(t)),
-                    std::move(i)));
-        }
-        h = VersionBlobHandler::create(std::move(vim));
-        ASSERT_NE(h, nullptr);
-        for (const auto& [key, val] : tm)
-        {
-            /* by default no action triggers expected to be called */
-            EXPECT_CALL(*val, trigger()).Times(0);
-        }
-        for (const auto& [key, val] : im)
-        {
-            /* by default no image handler open is expected to be called */
-            EXPECT_CALL(*val, open(_, _)).Times(0);
+            EXPECT_CALL(*tm.at(blob), status())
+                .WillRepeatedly(Return(ActionStatus::unknown));
         }
     }
+
     std::unique_ptr<blobs::GenericBlobInterface> h;
     std::vector<std::string> blobNames{"blob0", "blob1", "blob2", "blob3"};
     std::unordered_map<std::string, TriggerMock*> tm;

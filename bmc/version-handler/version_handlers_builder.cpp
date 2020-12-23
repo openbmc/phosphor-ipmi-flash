@@ -32,16 +32,17 @@
 
 namespace ipmi_flash
 {
-std::vector<HandlerConfig<VersionActionPack>>
+
+std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
     VersionHandlersBuilder::buildHandlerFromJson(const nlohmann::json& data)
 {
-    std::vector<HandlerConfig<VersionActionPack>> handlers;
+    std::vector<HandlerConfig<VersionBlobHandler::ActionPack>> handlers;
 
     for (const auto& item : data)
     {
         try
         {
-            HandlerConfig<VersionActionPack> output;
+            HandlerConfig<VersionBlobHandler::ActionPack> output;
 
             /* at() throws an exception when the key is not present. */
             item.at("blob").get_to(output.blobId);
@@ -75,8 +76,7 @@ std::vector<HandlerConfig<VersionActionPack>>
 
             /* actions are required (presently). */
             const auto& a = v.at("actions");
-            std::unique_ptr<VersionActionPack> pack =
-                std::make_unique<VersionActionPack>();
+            auto pack = std::make_unique<VersionBlobHandler::ActionPack>();
 
             /* to make an action optional, assign type "skip" */
             const auto& onOpen = a.at("open");
@@ -111,4 +111,5 @@ std::vector<HandlerConfig<VersionActionPack>>
 
     return handlers;
 }
+
 } // namespace ipmi_flash
