@@ -65,19 +65,6 @@ TEST_F(VersionOpenBlobTest, VerifyOpenAfterClose)
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
 }
 
-TEST_F(VersionOpenBlobTest, VerifyDuplicateSessionNumberFails)
-{
-    EXPECT_CALL(*tm.at("blob0"), trigger()).Times(1).WillOnce(Return(true));
-    EXPECT_CALL(*tm.at("blob1"), trigger()).Times(1).WillOnce(Return(true));
-    EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob1"));
-    /* the duplicate session number of 0
-     *  should cause a failure for the open of a different blob
-     */
-    EXPECT_FALSE(h->open(defaultSessionNumber, blobs::read, "blob0"));
-    /* open after fail due to seq number works */
-    EXPECT_TRUE(h->open(defaultSessionNumber + 1, blobs::read, "blob0"));
-}
-
 TEST_F(VersionOpenBlobTest, VerifyDoubleOpenFails)
 {
     EXPECT_CALL(*tm.at("blob1"), trigger())
