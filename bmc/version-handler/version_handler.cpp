@@ -70,13 +70,7 @@ bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
     }
 
     auto& v = *blobInfoMap.at(path);
-    auto [it, emplaced] = sessionToBlob.try_emplace(session, &v);
-    if (!emplaced)
-    {
-        fprintf(stderr, "open %s fail: session number %d assigned to %s\n",
-                path.c_str(), session, it->second->blobId.c_str());
-        return false;
-    }
+    sessionToBlob[session] = &v;
 
     if (v.blobState == blobs::StateFlags::open_read)
     {
