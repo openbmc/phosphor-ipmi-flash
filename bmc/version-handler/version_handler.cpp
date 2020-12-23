@@ -153,11 +153,9 @@ bool VersionBlobHandler::cleanup(uint16_t session)
         }
         pack.blobState = static_cast<blobs::StateFlags>(0);
         sessionToBlob.erase(session);
-        return true;
     }
     catch (const std::out_of_range& e)
-    {
-        return false;
-    }
+    {}
+    return true;
 }
 } // namespace ipmi_flash
