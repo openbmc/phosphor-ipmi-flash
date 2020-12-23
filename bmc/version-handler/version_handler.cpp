@@ -147,10 +147,7 @@ bool VersionBlobHandler::cleanup(uint16_t session)
     try
     {
         auto& pack = *sessionToBlob.at(session);
-        if (pack.actions->onOpen->status() == ActionStatus::running)
-        {
-            pack.actions->onOpen->abort();
-        }
+        pack.actions->onOpen->abort();
         pack.blobState = static_cast<blobs::StateFlags>(0);
         sessionToBlob.erase(session);
     }

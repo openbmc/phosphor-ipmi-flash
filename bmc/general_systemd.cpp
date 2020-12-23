@@ -81,7 +81,6 @@ void SystemdNoFile::abort()
 {
     if (!job)
     {
-        std::fprintf(stderr, "No running job %s\n", triggerService.c_str());
         return;
     }
 
