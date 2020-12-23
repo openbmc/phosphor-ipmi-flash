@@ -12,12 +12,14 @@ VersionBlobHandler::VersionBlobHandler(
 {
     for (auto& config : configs)
     {
-        BlobInfo info = {std::move(config.blobId), std::move(config.actions),
-                         std::move(config.handler)};
-        if (!blobInfoMap.try_emplace(info.blobId, std::move(info)).second)
+        auto info = std::make_unique<BlobInfo>();
+        info->blobId = std::move(config.blobId);
+        info->actions = std::move(config.actions);
+        info->handler = std::move(config.handler);
+        if (!blobInfoMap.try_emplace(info->blobId, std::move(info)).second)
         {
             fprintf(stderr, "Ignoring duplicate config for %s\n",
-                    info.blobId.c_str());
+                    info->blobId.c_str());
         }
     }
 }
@@ -32,7 +34,7 @@ std::vector<std::string> VersionBlobHandler::getBlobIds()
     std::vector<std::string> ret;
     for (const auto& [key, _] : blobInfoMap)
     {
-        ret.push_back(key);
+        ret.emplace_back(key);
     }
     return ret;
 }
@@ -57,12 +59,6 @@ bool VersionBlobHandler::stat(const std::string& path, blobs::BlobMeta* meta)
 bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
                               const std::string& path)
 {
-    if (sessionToBlob.insert({session, path}).second == false)
-    {
-        fprintf(stderr, "open %s fail: session number %d assigned to %s\n",
-                path.c_str(), session, sessionToBlob.at(session).c_str());
-        return false;
-    }
     /* only reads are supported, check if blob is handled and make sure
      * the blob isn't already opened
      */
@@ -70,47 +66,42 @@ bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
     {
         fprintf(stderr, "open %s fail: unsupported flags(0x%04X.)\n",
                 path.c_str(), flags);
-        cleanup(session);
         return false;
     }
 
-    try
+    auto& v = *blobInfoMap.at(path);
+    auto [it, emplaced] = sessionToBlob.try_emplace(session, &v);
+    if (!emplaced)
     {
-        auto& v = blobInfoMap.at(path);
-        if (v.blobState == blobs::StateFlags::open_read)
-        {
-            cleanup(session);
-            fprintf(stderr, "open %s fail: blob already opened for read\n",
-                    path.c_str());
-            return false;
-        }
-        if (v.actions->onOpen->trigger() == false)
-        {
-            fprintf(stderr, "open %s fail: onOpen trigger failed\n",
-                    path.c_str());
-            cleanup(session);
-            return false;
-        }
-        v.blobState = blobs::StateFlags::open_read;
-        return true;
+        fprintf(stderr, "open %s fail: session number %d assigned to %s\n",
+                path.c_str(), session, it->second->blobId.c_str());
+        return false;
     }
-    catch (const std::out_of_range& e)
+
+    if (v.blobState == blobs::StateFlags::open_read)
     {
-        fprintf(stderr, "open %s fail, exception:%s\n", path.c_str(), e.what());
+        fprintf(stderr, "open %s fail: blob already opened for read\n",
+                path.c_str());
         cleanup(session);
         return false;
     }
+    if (v.actions->onOpen->trigger() == false)
+    {
+        fprintf(stderr, "open %s fail: onOpen trigger failed\n", path.c_str());
+        cleanup(session);
+        return false;
+    }
+    v.blobState = blobs::StateFlags::open_read;
+    return true;
 }
 
 std::vector<uint8_t> VersionBlobHandler::read(uint16_t session, uint32_t offset,
                                               uint32_t requestedSize)
 {
-    std::string* blobName;
     BlobInfo* pack;
     try
     {
-        blobName = &sessionToBlob.at(session);
-        pack = &blobInfoMap.at(*blobName);
+        pack = sessionToBlob.at(session);
     }
     catch (const std::out_of_range& e)
     {
@@ -127,14 +118,14 @@ std::vector<uint8_t> VersionBlobHandler::read(uint16_t session, uint32_t offset,
     if (!pack->handler->open("don't care", std::ios::in))
     {
         fprintf(stderr, "read failed: file open unsuccessful blob=%s\n",
-                blobName->c_str());
+                pack->blobId.c_str());
         return {};
     }
     auto d = pack->handler->read(offset, requestedSize);
     if (!d)
     {
         fprintf(stderr, "read failed: unable to read file for blob %s\n",
-                blobName->c_str());
+                pack->blobId.c_str());
         pack->handler->close();
         return {};
     }
@@ -161,8 +152,7 @@ bool VersionBlobHandler::cleanup(uint16_t session)
 {
     try
     {
-        const auto& blobName = sessionToBlob.at(session);
-        auto& pack = blobInfoMap.at(blobName);
+        auto& pack = *sessionToBlob.at(session);
         if (pack.actions->onOpen->status() == ActionStatus::running)
         {
             pack.actions->onOpen->abort();
