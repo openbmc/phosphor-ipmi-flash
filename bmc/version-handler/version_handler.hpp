@@ -10,6 +10,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -68,13 +69,13 @@ class VersionBlobHandler : public blobs::GenericBlobInterface
   private:
     struct BlobInfo
     {
-        std::string blobId;
+        Pinned<std::string> blobId;
         std::unique_ptr<ActionPack> actions;
         std::unique_ptr<ImageHandlerInterface> handler;
         blobs::StateFlags blobState = static_cast<blobs::StateFlags>(0);
     };
 
-    std::unordered_map<std::string, BlobInfo> blobInfoMap;
-    std::unordered_map<uint16_t, std::string> sessionToBlob;
+    std::unordered_map<std::string_view, std::unique_ptr<BlobInfo>> blobInfoMap;
+    std::unordered_map<uint16_t, BlobInfo*> sessionToBlob;
 };
 } // namespace ipmi_flash
