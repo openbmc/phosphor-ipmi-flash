@@ -36,6 +36,16 @@ TEST_F(VersionCloseExpireBlobTest, VerifyOpenThenClose)
     EXPECT_TRUE(h->close(0));
 }
 
+TEST_F(VersionCloseExpireBlobTest, VerifySingleAbort)
+{
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
+    EXPECT_TRUE(h->open(0, blobs::read, "blob0"));
+    EXPECT_TRUE(h->open(1, blobs::read, "blob0"));
+    EXPECT_TRUE(h->close(0));
+    EXPECT_CALL(*tm.at("blob0"), abort()).Times(1);
+    EXPECT_TRUE(h->close(1));
+}
+
 TEST_F(VersionCloseExpireBlobTest, VerifyUnopenedBlobCloseFails)
 {
     EXPECT_FALSE(h->close(0));
