@@ -26,4 +26,21 @@ std::unique_ptr<TriggerableActionInterface> SkipAction::CreateSkipAction()
     return std::make_unique<SkipAction>();
 }
 
+bool SkipAction::trigger()
+{
+    if (cb)
+    {
+        cb(*this);
+    }
+    return true;
+}
+
+void SkipAction::abort()
+{}
+
+ActionStatus SkipAction::status()
+{
+    return ActionStatus::success;
+}
+
 } // namespace ipmi_flash

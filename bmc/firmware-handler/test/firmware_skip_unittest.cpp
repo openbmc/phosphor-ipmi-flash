@@ -13,7 +13,12 @@ TEST(SkipActionTest, ValidateTriggerReturnsTrue)
 {
     SkipAction skip;
     EXPECT_TRUE(skip.trigger());
+    size_t i = 0;
+    skip.setCallback([&](TriggerableActionInterface&) { i++; });
     EXPECT_TRUE(skip.trigger());
+    EXPECT_EQ(1, i);
+    EXPECT_TRUE(skip.trigger());
+    EXPECT_EQ(2, i);
 }
 
 TEST(SkipActionTest, ValidateStatusAlwaysSuccess)
