@@ -70,22 +70,20 @@ bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
     }
 
     auto& v = *blobInfoMap.at(path);
-    sessionToBlob[session] = &v;
-
     if (v.blobState == blobs::StateFlags::open_read)
     {
         fprintf(stderr, "open %s fail: blob already opened for read\n",
                 path.c_str());
-        cleanup(session);
         return false;
     }
     if (v.actions->onOpen->trigger() == false)
     {
         fprintf(stderr, "open %s fail: onOpen trigger failed\n", path.c_str());
-        cleanup(session);
         return false;
     }
+
     v.blobState = blobs::StateFlags::open_read;
+    sessionToBlob[session] = &v;
     return true;
 }
 
@@ -147,10 +145,7 @@ bool VersionBlobHandler::cleanup(uint16_t session)
     try
     {
         auto& pack = *sessionToBlob.at(session);
-        if (pack.actions->onOpen->status() == ActionStatus::running)
-        {
-            pack.actions->onOpen->abort();
-        }
+        pack.actions->onOpen->abort();
         pack.blobState = static_cast<blobs::StateFlags>(0);
         sessionToBlob.erase(session);
         return true;
