@@ -50,11 +50,6 @@ TEST_F(VersionReadBlobTest, VerifyValidRead)
     EXPECT_EQ(h->read(defaultSessionNumber, 2, 10), vector1);
 }
 
-TEST_F(VersionReadBlobTest, VerifyUnopenedReadFails)
-{
-    EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());
-}
-
 TEST_F(VersionReadBlobTest, VerifyTriggerFailureReadFails)
 {
     EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));

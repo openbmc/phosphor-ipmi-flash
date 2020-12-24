@@ -1,6 +1,5 @@
 #include "version_handler.hpp"
 
-#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -90,15 +89,8 @@ bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
 std::vector<uint8_t> VersionBlobHandler::read(uint16_t session, uint32_t offset,
                                               uint32_t requestedSize)
 {
-    BlobInfo* pack;
-    try
-    {
-        pack = sessionToBlob.at(session);
-    }
-    catch (const std::out_of_range& e)
-    {
-        return {};
-    }
+    auto pack = sessionToBlob.at(session);
+
     /* onOpen trigger must be successful, otherwise potential
      * for stale data to be read
      */
