@@ -21,11 +21,6 @@ class VersionOpenBlobTest : public ::testing::Test
     {
         h = std::make_unique<VersionBlobHandler>(
             createMockVersionConfigs(blobNames, &im, &tm));
-        for (const auto& blob : blobNames)
-        {
-            EXPECT_CALL(*tm.at(blob), status())
-                .WillRepeatedly(Return(ActionStatus::unknown));
-        }
     }
 
     std::unique_ptr<blobs::GenericBlobInterface> h;
@@ -43,10 +38,10 @@ TEST_F(VersionOpenBlobTest, VerifySingleBlobOpen)
 
 TEST_F(VersionOpenBlobTest, VerifyMultipleBlobOpens)
 {
-    for (const auto& [key, val] : tm)
+    for (const auto& [_, val] : tm)
     {
         /* set the expectation that every onOpen will be triggered */
-        EXPECT_CALL(*val, trigger()).Times(1).WillOnce(Return(true));
+        EXPECT_CALL(*val, trigger()).WillOnce(Return(true));
     }
     int i{defaultSessionNumber};
     for (const auto& blob : blobNames)
@@ -57,37 +52,35 @@ TEST_F(VersionOpenBlobTest, VerifyMultipleBlobOpens)
 
 TEST_F(VersionOpenBlobTest, VerifyOpenAfterClose)
 {
-    EXPECT_CALL(*tm.at("blob0"), trigger())
-        .Times(2)
-        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
+
+    EXPECT_CALL(*tm.at("blob0"), abort()).Times(1);
     EXPECT_TRUE(h->close(defaultSessionNumber));
+
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
 }
 
 TEST_F(VersionOpenBlobTest, VerifyDoubleOpenFails)
 {
-    EXPECT_CALL(*tm.at("blob1"), trigger())
-        .Times(1)
-        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*tm.at("blob1"), trigger()).WillOnce(Return(true));
     EXPECT_TRUE(h->open(0, blobs::read, "blob1"));
     EXPECT_FALSE(h->open(2, blobs::read, "blob1"));
 }
 
 TEST_F(VersionOpenBlobTest, VerifyFailedTriggerFails)
 {
-    EXPECT_CALL(*tm.at("blob1"), trigger())
-        .Times(2)
-        .WillOnce(Return(false))
-        .WillOnce(Return(true));
+    EXPECT_CALL(*tm.at("blob1"), trigger()).WillOnce(Return(false));
     EXPECT_FALSE(h->open(0, blobs::read, "blob1"));
+    EXPECT_CALL(*tm.at("blob1"), trigger()).WillOnce(Return(true));
     EXPECT_TRUE(h->open(0, blobs::read, "blob1"));
 }
 
 TEST_F(VersionOpenBlobTest, VerifyUnsupportedOpenFlagsFails)
 {
-    EXPECT_CALL(*tm.at("blob1"), trigger()).Times(1).WillOnce(Return(true));
     EXPECT_FALSE(h->open(0, blobs::write, "blob1"));
+    EXPECT_CALL(*tm.at("blob1"), trigger()).WillOnce(Return(true));
     EXPECT_TRUE(h->open(0, blobs::read, "blob1"));
 }
 
