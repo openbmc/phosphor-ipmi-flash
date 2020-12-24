@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <optional>
+#include <set>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -66,15 +68,30 @@ class VersionBlobHandler : public blobs::GenericBlobInterface
     bool expire(uint16_t session) override;
 
   private:
+    struct SessionInfo;
+
     struct BlobInfo
     {
         Pinned<std::string> blobId;
         std::unique_ptr<ActionPack> actions;
         std::unique_ptr<ImageHandlerInterface> handler;
-        blobs::StateFlags blobState = static_cast<blobs::StateFlags>(0);
+        std::set<SessionInfo*> sessionsToUpdate;
+    };
+
+    struct SessionInfo
+    {
+        BlobInfo* blob;
+
+        // A cached copy of the version data shared by all clients for a single
+        // execution of the version retrieval action. This is is null until the
+        // TriggerableAction has completed. If the action is an error, the
+        // shared object is nullopt. Otherwise, contains a vector of the version
+        // data when successfully read.
+        std::shared_ptr<const std::optional<std::vector<uint8_t>>> data;
     };
 
     std::unordered_map<std::string_view, std::unique_ptr<BlobInfo>> blobInfoMap;
-    std::unordered_map<uint16_t, BlobInfo*> sessionToBlob;
+    std::unordered_map<uint16_t, std::unique_ptr<SessionInfo>> sessionInfoMap;
 };
+
 } // namespace ipmi_flash
