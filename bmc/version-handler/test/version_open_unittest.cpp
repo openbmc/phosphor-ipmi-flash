@@ -62,12 +62,12 @@ TEST_F(VersionOpenBlobTest, VerifyOpenAfterClose)
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
 }
 
-TEST_F(VersionOpenBlobTest, VerifyDoubleOpenFails)
+TEST_F(VersionOpenBlobTest, VerifyMultiOpenWorks)
 {
     EXPECT_CALL(*tm.at("blob1"), trigger()).WillOnce(Return(true));
     EXPECT_TRUE(h->open(0, blobs::read, "blob1"));
-    EXPECT_FALSE(h->open(2, blobs::read, "blob1"));
-    EXPECT_FALSE(h->open(2, blobs::read, "blob1"));
+    EXPECT_TRUE(h->open(1, blobs::read, "blob1"));
+    EXPECT_TRUE(h->open(2, blobs::read, "blob1"));
 }
 
 TEST_F(VersionOpenBlobTest, VerifyFailedTriggerFails)
