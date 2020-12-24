@@ -64,7 +64,6 @@ class VersionBlobHandler : public blobs::GenericBlobInterface
     bool close(uint16_t session) override;
     bool stat(uint16_t session, blobs::BlobMeta* meta) override;
     bool expire(uint16_t session) override;
-    bool cleanup(uint16_t session);
 
   private:
     struct BlobInfo

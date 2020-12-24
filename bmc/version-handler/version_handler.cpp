@@ -127,21 +127,6 @@ std::vector<uint8_t> VersionBlobHandler::read(uint16_t session, uint32_t offset,
 
 bool VersionBlobHandler::close(uint16_t session)
 {
-    return cleanup(session);
-}
-
-bool VersionBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
-{
-    return false;
-}
-
-bool VersionBlobHandler::expire(uint16_t session)
-{
-    return cleanup(session);
-}
-
-bool VersionBlobHandler::cleanup(uint16_t session)
-{
     try
     {
         auto& pack = *sessionToBlob.at(session);
@@ -155,4 +140,16 @@ bool VersionBlobHandler::cleanup(uint16_t session)
         return false;
     }
 }
+
+bool VersionBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
+{
+    return false;
+}
+
+bool VersionBlobHandler::expire(uint16_t session)
+{
+    close(session);
+    return true;
+}
+
 } // namespace ipmi_flash
