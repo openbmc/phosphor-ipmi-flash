@@ -144,6 +144,11 @@ void SystemdNoFile::match(sdbusplus::message::message& m)
     job = std::nullopt;
     currentStatus =
         result == "done" ? ActionStatus::success : ActionStatus::failed;
+
+    if (cb)
+    {
+        cb(*this);
+    }
 }
 
 std::unique_ptr<TriggerableActionInterface>

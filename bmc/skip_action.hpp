@@ -23,16 +23,9 @@ class SkipAction : public TriggerableActionInterface
     SkipAction(SkipAction&&) = default;
     SkipAction& operator=(SkipAction&&) = default;
 
-    bool trigger() override
-    {
-        return true;
-    }
-    void abort() override
-    {}
-    ActionStatus status() override
-    {
-        return ActionStatus::success;
-    }
+    bool trigger() override;
+    void abort() override;
+    ActionStatus status() override;
 };
 
 } // namespace ipmi_flash

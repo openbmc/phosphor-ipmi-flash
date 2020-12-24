@@ -18,6 +18,7 @@ class TriggerMock : public TriggerableActionInterface
     MOCK_METHOD0(trigger, bool());
     MOCK_METHOD0(abort, void());
     MOCK_METHOD0(status, ActionStatus());
+    using TriggerableActionInterface::cb;
 };
 
 std::unique_ptr<TriggerableActionInterface> CreateTriggerMock()

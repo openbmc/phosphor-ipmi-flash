@@ -84,6 +84,12 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
     )
 
     AC_CHECK_HEADER(
+        [function2/function2.hpp],
+        [],
+        [AC_MSG_ERROR([Could not find function2/function2.hpp])]
+    )
+
+    AC_CHECK_HEADER(
         [nlohmann/json.hpp],
         [],
         [AC_MSG_ERROR([Could not find nlohmann/json.hpp])]
