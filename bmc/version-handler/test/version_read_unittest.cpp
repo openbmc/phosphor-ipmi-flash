@@ -3,12 +3,18 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <gtest/gtest.h>
+
 using ::testing::_;
+using ::testing::DoAll;
+using ::testing::ElementsAreArray;
+using ::testing::Ge;
 using ::testing::IsEmpty;
 using ::testing::Return;
+
 namespace ipmi_flash
 {
 
@@ -27,64 +33,103 @@ class VersionReadBlobTest : public ::testing::Test
     const std::uint16_t defaultSessionNumber{200};
     std::vector<uint8_t> vector1{0xDE, 0xAD, 0xBE, 0xEF,
                                  0xBA, 0xDF, 0xEE, 0x0D};
+    std::vector<uint8_t> vector2{0xCE, 0xAD, 0xDE, 0xFF};
 };
 
 TEST_F(VersionReadBlobTest, VerifyValidRead)
 {
-    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
+    testing::InSequence seq;
+    EXPECT_CALL(*tm.at("blob0"), trigger())
+        .WillOnce(DoAll([&]() { tm.at("blob0")->cb(*tm.at("blob0")); },
+                        Return(true)));
     EXPECT_CALL(*tm.at("blob0"), status())
-        .Times(2)
-        .WillRepeatedly(Return(ActionStatus::success));
+        .WillOnce(Return(ActionStatus::success));
+    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(true));
+    EXPECT_CALL(*im.at("blob0"), read(0, Ge(vector1.size())))
+        .WillOnce(Return(vector1));
+    EXPECT_CALL(*im.at("blob0"), close()).Times(1);
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
-    /* file path gets bound to file_handler on creation so path parameter
-     * doesn't actually matter
-     */
-    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in))
-        .Times(2)
-        .WillRepeatedly(Return(true));
-    EXPECT_CALL(*im.at("blob0"), read(0, 10)).WillOnce(Return(vector1));
-    EXPECT_CALL(*im.at("blob0"), read(2, 10)).WillOnce(Return(vector1));
-    EXPECT_CALL(*im.at("blob0"), close()).Times(2);
 
-    EXPECT_EQ(h->read(defaultSessionNumber, 0, 10), vector1);
-    EXPECT_EQ(h->read(defaultSessionNumber, 2, 10), vector1);
+    std::basic_string_view<uint8_t> vectorS(vector1.data(), vector1.size());
+    EXPECT_THAT(h->read(defaultSessionNumber, 0, 7),
+                ElementsAreArray(vectorS.substr(0, 7)));
+    EXPECT_THAT(h->read(defaultSessionNumber, 2, 10),
+                ElementsAreArray(vectorS.substr(2, 6)));
+}
+
+TEST_F(VersionReadBlobTest, VerifyMultipleSession)
+{
+    testing::InSequence seq;
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
+    EXPECT_TRUE(h->open(0, blobs::read, "blob0"));
+    EXPECT_TRUE(h->open(1, blobs::read, "blob0"));
+
+    EXPECT_CALL(*tm.at("blob0"), status())
+        .WillOnce(Return(ActionStatus::success));
+    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(true));
+    EXPECT_CALL(*im.at("blob0"), read(0, Ge(vector1.size())))
+        .WillOnce(Return(vector1));
+    EXPECT_CALL(*im.at("blob0"), close()).Times(1);
+    tm.at("blob0")->cb(*tm.at("blob0"));
+
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
+    EXPECT_TRUE(h->open(2, blobs::read, "blob0"));
+
+    EXPECT_CALL(*tm.at("blob0"), status())
+        .WillOnce(Return(ActionStatus::success));
+    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(true));
+    EXPECT_CALL(*im.at("blob0"), read(0, Ge(vector2.size())))
+        .WillOnce(Return(vector2));
+    EXPECT_CALL(*im.at("blob0"), close()).Times(1);
+    tm.at("blob0")->cb(*tm.at("blob0"));
+
+    EXPECT_THAT(h->read(0, 0, 10), ElementsAreArray(vector1));
+    EXPECT_THAT(h->read(1, 0, 10), ElementsAreArray(vector1));
+    EXPECT_THAT(h->read(2, 0, 10), ElementsAreArray(vector2));
+}
+
+TEST_F(VersionReadBlobTest, VerifyReadEarlyFails)
+{
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
+
+    EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
+    EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());
 }
 
 TEST_F(VersionReadBlobTest, VerifyTriggerFailureReadFails)
 {
-    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
+    EXPECT_CALL(*tm.at("blob0"), trigger())
+        .WillOnce(DoAll([&]() { tm.at("blob0")->cb(*tm.at("blob0")); },
+                        Return(true)));
     EXPECT_CALL(*tm.at("blob0"), status())
         .WillOnce(Return(ActionStatus::failed));
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
     EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());
 }
 
-TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileReadFailure)
+TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileOpenFailure)
 {
-    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
+    EXPECT_CALL(*tm.at("blob0"), trigger())
+        .WillOnce(DoAll([&]() { tm.at("blob0")->cb(*tm.at("blob0")); },
+                        Return(true)));
     EXPECT_CALL(*tm.at("blob0"), status())
         .WillOnce(Return(ActionStatus::success));
-    /* file path gets bound to file_handler on creation so path parameter
-     * doesn't actually matter
-     */
-    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(true));
-    EXPECT_CALL(*im.at("blob0"), read(_, _)).WillOnce(Return(std::nullopt));
-    EXPECT_CALL(*im.at("blob0"), close()).Times(1);
+    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(false));
 
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
     EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());
 }
 
-TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileOpenFailure)
+TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileReadFailure)
 {
-    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
-    /* first call to trigger status fails, second succeeds */
+    EXPECT_CALL(*tm.at("blob0"), trigger())
+        .WillOnce(DoAll([&]() { tm.at("blob0")->cb(*tm.at("blob0")); },
+                        Return(true)));
     EXPECT_CALL(*tm.at("blob0"), status())
         .WillOnce(Return(ActionStatus::success));
-    /* file path gets bound to file_handler on creation so path parameter
-     * doesn't actually matter
-     */
-    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(false));
+    EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(true));
+    EXPECT_CALL(*im.at("blob0"), read(_, _)).WillOnce(Return(std::nullopt));
+    EXPECT_CALL(*im.at("blob0"), close()).Times(1);
 
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
     EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());

@@ -15,6 +15,41 @@ VersionBlobHandler::VersionBlobHandler(
         info->blobId = std::move(config.blobId);
         info->actions = std::move(config.actions);
         info->handler = std::move(config.handler);
+        info->actions->onOpen->setCallback(
+            [infoP = info.get()](TriggerableActionInterface& tai) {
+                auto data =
+                    std::make_shared<std::optional<std::vector<uint8_t>>>();
+                do
+                {
+                    if (tai.status() != ActionStatus::success)
+                    {
+                        fprintf(stderr, "Version file unit failed for %s\n",
+                                infoP->blobId.c_str());
+                        continue;
+                    }
+                    if (!infoP->handler->open("", std::ios::in))
+                    {
+                        fprintf(stderr, "Opening version file failed for %s\n",
+                                infoP->blobId.c_str());
+                        continue;
+                    }
+                    auto d = infoP->handler->read(
+                        0, std::numeric_limits<uint32_t>::max());
+                    infoP->handler->close();
+                    if (!d)
+                    {
+                        fprintf(stderr, "Reading version file failed for %s\n",
+                                infoP->blobId.c_str());
+                        continue;
+                    }
+                    *data = std::move(d);
+                } while (false);
+                for (auto sessionP : infoP->sessionsToUpdate)
+                {
+                    sessionP->data = data;
+                }
+                infoP->sessionsToUpdate.clear();
+            });
         if (!blobInfoMap.try_emplace(info->blobId, std::move(info)).second)
         {
             fprintf(stderr, "Ignoring duplicate config for %s\n",
@@ -68,69 +103,50 @@ bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
         return false;
     }
 
-    auto& v = *blobInfoMap.at(path);
-    if (v.blobState == blobs::StateFlags::open_read)
-    {
-        fprintf(stderr, "open %s fail: blob already opened for read\n",
-                path.c_str());
-        return false;
-    }
-    if (v.actions->onOpen->trigger() == false)
+    auto info = std::make_unique<SessionInfo>();
+    info->blob = blobInfoMap.at(path).get();
+    info->blob->sessionsToUpdate.emplace(info.get());
+    if (info->blob->sessionsToUpdate.size() == 1 &&
+        !info->blob->actions->onOpen->trigger())
     {
         fprintf(stderr, "open %s fail: onOpen trigger failed\n", path.c_str());
+        info->blob->sessionsToUpdate.erase(info.get());
         return false;
     }
 
-    v.blobState = blobs::StateFlags::open_read;
-    sessionToBlob[session] = &v;
+    sessionInfoMap[session] = std::move(info);
     return true;
 }
 
 std::vector<uint8_t> VersionBlobHandler::read(uint16_t session, uint32_t offset,
                                               uint32_t requestedSize)
 {
-    auto pack = sessionToBlob.at(session);
-
-    /* onOpen trigger must be successful, otherwise potential
-     * for stale data to be read
-     */
-    if (pack->actions->onOpen->status() != ActionStatus::success)
+    auto& data = sessionInfoMap.at(session)->data;
+    if (data == nullptr || !*data || (*data)->size() < offset)
     {
-        fprintf(stderr, "read failed: onOpen trigger not successful\n");
         return {};
     }
-    if (!pack->handler->open("don't care", std::ios::in))
-    {
-        fprintf(stderr, "read failed: file open unsuccessful blob=%s\n",
-                pack->blobId.c_str());
-        return {};
-    }
-    auto d = pack->handler->read(offset, requestedSize);
-    if (!d)
-    {
-        fprintf(stderr, "read failed: unable to read file for blob %s\n",
-                pack->blobId.c_str());
-        pack->handler->close();
-        return {};
-    }
-    pack->handler->close();
-    return *d;
+    std::vector<uint8_t> ret(
+        std::min<size_t>(requestedSize, (*data)->size() - offset));
+    memcpy(&ret[0], &(**data)[offset], ret.size());
+    return ret;
 }
 
 bool VersionBlobHandler::close(uint16_t session)
 {
-    try
-    {
-        auto& pack = *sessionToBlob.at(session);
-        pack.actions->onOpen->abort();
-        pack.blobState = static_cast<blobs::StateFlags>(0);
-        sessionToBlob.erase(session);
-        return true;
-    }
-    catch (const std::out_of_range& e)
+    auto it = sessionInfoMap.find(session);
+    if (it == sessionInfoMap.end())
     {
         return false;
     }
+    auto& info = *it->second;
+    info.blob->sessionsToUpdate.erase(&info);
+    if (info.blob->sessionsToUpdate.empty())
+    {
+        info.blob->actions->onOpen->abort();
+    }
+    sessionInfoMap.erase(it);
+    return true;
 }
 
 bool VersionBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
