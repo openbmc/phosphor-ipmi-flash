@@ -16,6 +16,24 @@
       "revId": "ecf268331b08073db5c288aee50d8516b3b261d2",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2073f75_cf87921e",
+        "filename": "status.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000100
+      },
+      "writtenOn": "2020-12-25T03:30:37Z",
+      "side": 1,
+      "message": "https://github.com/Naios/function2 ?  -- I\"m just looking at whether this is already explicitly requested and checked, and then further, how I\u0027ll handle bringing it into third_party (which should be easy).",
+      "parentUuid": "1932396a_f51d1aab",
+      "revId": "ecf268331b08073db5c288aee50d8516b3b261d2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
