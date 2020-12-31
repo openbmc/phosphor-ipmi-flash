@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ebd16e30_10a840fe",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2020-12-31T00:52:11Z",
+      "side": 1,
+      "message": "You can\u0027t continue / break out of a brace scope.",
+      "parentUuid": "8662454c_98a0e4ee",
+      "revId": "32f8992f7d92e3a5b26d6a98c6488bbcb2c1698f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e5b9b372_f13e7f5a",
         "filename": "bmc/version-handler/version_handler.cpp",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2020-12-30T22:08:58Z",
       "side": 1,
       "message": "nit: please use std::memcpy -- I think this style choice wasn\u0027t enforced (by me?) in the version handler, or in general.",
+      "revId": "32f8992f7d92e3a5b26d6a98c6488bbcb2c1698f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "63e42431_4f0756b9",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2020-12-31T00:52:11Z",
+      "side": 1,
+      "message": "Sure",
+      "parentUuid": "e5b9b372_f13e7f5a",
       "revId": "32f8992f7d92e3a5b26d6a98c6488bbcb2c1698f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": false
@@ -50,6 +86,24 @@
       "revId": "32f8992f7d92e3a5b26d6a98c6488bbcb2c1698f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "092c6b98_d91ec0fb",
+        "filename": "bmc/version-handler/version_handler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2020-12-31T00:52:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9b93ab69_713c87d8",
+      "revId": "32f8992f7d92e3a5b26d6a98c6488bbcb2c1698f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
