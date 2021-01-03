@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "2e153150_602c1126",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-01-03T04:57:51Z",
+      "side": 1,
+      "message": "Yeah, it\u0027s basically a convenient way to avoid using goto. Especially when you want temporaries to be destroyed at the end.",
+      "parentUuid": "5deb2665_68117300",
+      "revId": "32f8992f7d92e3a5b26d6a98c6488bbcb2c1698f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e5b9b372_f13e7f5a",
         "filename": "bmc/version-handler/version_handler.cpp",
         "patchSetId": 3
