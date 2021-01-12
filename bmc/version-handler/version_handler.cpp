@@ -83,11 +83,7 @@ bool VersionBlobHandler::deleteBlob(const std::string& path)
 
 bool VersionBlobHandler::stat(const std::string& path, blobs::BlobMeta* meta)
 {
-    // TODO: stat should return the blob state and in the meta data information
-    // on whether a read is successful should be contained
-    // do things like determine if systemd target is triggered
-    // then check if file can be opened for read
-    return false; /* not yet implemented */
+    return false;
 }
 
 bool VersionBlobHandler::open(uint16_t session, uint16_t flags,
@@ -151,7 +147,24 @@ bool VersionBlobHandler::close(uint16_t session)
 
 bool VersionBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
 {
-    return false;
+    const auto& data = sessionInfoMap.at(session)->data;
+    if (data == nullptr)
+    {
+        meta->blobState = blobs::StateFlags::committing;
+        meta->size = 0;
+    }
+    else if (!*data)
+    {
+        meta->blobState = blobs::StateFlags::commit_error;
+        meta->size = 0;
+    }
+    else
+    {
+        meta->blobState =
+            blobs::StateFlags::committed | blobs::StateFlags::open_read;
+        meta->size = (*data)->size();
+    }
+    return true;
 }
 
 bool VersionBlobHandler::expire(uint16_t session)

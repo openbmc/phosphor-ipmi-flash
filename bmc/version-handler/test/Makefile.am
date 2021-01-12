@@ -24,7 +24,8 @@ check_PROGRAMS = \
 	version_createhandler_unittest \
 	version_open_unittest \
 	version_close_unittest \
-	version_read_unittest
+	version_read_unittest \
+	version_stat_unittest
 
 TESTS = $(check_PROGRAMS)
 
@@ -45,3 +46,6 @@ version_close_unittest_LDADD = $(top_builddir)/bmc/version-handler/libversionblo
 
 version_read_unittest_SOURCES = version_read_unittest.cpp
 version_read_unittest_LDADD = $(top_builddir)/bmc/version-handler/libversionblob_common.la
+
+version_stat_unittest_SOURCES = version_stat_unittest.cpp
+version_stat_unittest_LDADD = $(top_builddir)/bmc/version-handler/libversionblob_common.la
