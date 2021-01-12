@@ -16,6 +16,24 @@
       "revId": "0674a6d7e2429d6577a4d08fac2ab882e1b4d454",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cfda0256_846c6c45",
+        "filename": "bmc/version-handler/version_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-01-12T22:57:23Z",
+      "side": 1,
+      "message": "It\u0027s not expecting it, but it is still safe to do so. The upper layer IPMI executor catches the error and translates it into an CCUnknownError.\n\nIn the future, I expect to use\nhttps://gerrit.openbmc-project.xyz/c/openbmc/phosphor-host-ipmid/+/39516\nto send a specific error code back to the caller.",
+      "parentUuid": "a4ff62af_78e8416a",
+      "revId": "0674a6d7e2429d6577a4d08fac2ab882e1b4d454",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
