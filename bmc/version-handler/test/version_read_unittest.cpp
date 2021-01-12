@@ -94,7 +94,7 @@ TEST_F(VersionReadBlobTest, VerifyReadEarlyFails)
     EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(Return(true));
 
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
-    EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());
+    EXPECT_THROW(h->read(defaultSessionNumber, 0, 10), std::runtime_error);
 }
 
 TEST_F(VersionReadBlobTest, VerifyTriggerFailureReadFails)
@@ -105,7 +105,7 @@ TEST_F(VersionReadBlobTest, VerifyTriggerFailureReadFails)
     EXPECT_CALL(*tm.at("blob0"), status())
         .WillOnce(Return(ActionStatus::failed));
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
-    EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());
+    EXPECT_THROW(h->read(defaultSessionNumber, 0, 10), std::runtime_error);
 }
 
 TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileOpenFailure)
@@ -118,7 +118,7 @@ TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileOpenFailure)
     EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(false));
 
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
-    EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());
+    EXPECT_THROW(h->read(defaultSessionNumber, 0, 10), std::runtime_error);
 }
 
 TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileReadFailure)
@@ -133,7 +133,7 @@ TEST_F(VersionReadBlobTest, VerifyReadFailsOnFileReadFailure)
     EXPECT_CALL(*im.at("blob0"), close()).Times(1);
 
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
-    EXPECT_THAT(h->read(defaultSessionNumber, 0, 10), IsEmpty());
+    EXPECT_THROW(h->read(defaultSessionNumber, 0, 10), std::runtime_error);
 }
 
 } // namespace ipmi_flash

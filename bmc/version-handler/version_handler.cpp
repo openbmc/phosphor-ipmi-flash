@@ -118,7 +118,11 @@ std::vector<uint8_t> VersionBlobHandler::read(uint16_t session, uint32_t offset,
                                               uint32_t requestedSize)
 {
     auto& data = sessionInfoMap.at(session)->data;
-    if (data == nullptr || !*data || (*data)->size() < offset)
+    if (data == nullptr || !*data)
+    {
+        throw std::runtime_error("Version data not ready for read");
+    }
+    if ((*data)->size() < offset)
     {
         return {};
     }
