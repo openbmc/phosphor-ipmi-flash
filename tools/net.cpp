@@ -91,6 +91,7 @@ bool NetDataHandler::sendContents(const std::string& input,
         {
             std::fprintf(stderr, "Couldn't parse address %s with port %s: %s\n",
                          host.c_str(), port.c_str(), gai_strerror(ret));
+            progress->abort();
             return false;
         }
 
@@ -111,6 +112,7 @@ bool NetDataHandler::sendContents(const std::string& input,
         if (addr == nullptr)
         {
             std::fprintf(stderr, "Failed to connect\n");
+            progress->abort();
             return false;
         }
     }
@@ -127,6 +129,7 @@ bool NetDataHandler::sendContents(const std::string& input,
             {
                 std::fprintf(stderr, "Failed to send data to BMC: %s\n",
                              strerror(errno));
+                progress->abort();
                 return false;
             }
             else if (bytesSent > 0)
@@ -147,9 +150,11 @@ bool NetDataHandler::sendContents(const std::string& input,
     }
     catch (const ipmiblob::BlobException& b)
     {
+        progress->abort();
         return false;
     }
 
+    progress->finish();
     return true;
 }
 

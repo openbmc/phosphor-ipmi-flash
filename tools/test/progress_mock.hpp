@@ -12,8 +12,10 @@ namespace host_tool
 class ProgressMock : public ProgressInterface
 {
   public:
-    MOCK_METHOD1(updateProgress, void(std::int64_t));
-    MOCK_METHOD1(start, void(std::int64_t));
+    MOCK_METHOD(void, updateProgress, (std::int64_t), (override));
+    MOCK_METHOD(void, start, (std::int64_t), (override));
+    MOCK_METHOD(void, finish, (), (override));
+    MOCK_METHOD(void, abort, (), (override));
 };
 
 } // namespace host_tool

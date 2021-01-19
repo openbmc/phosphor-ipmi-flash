@@ -39,4 +39,10 @@ void ProgressStdoutIndicator::start(std::int64_t bytes)
     currentBytes = 0;
 }
 
+void ProgressStdoutIndicator::finish()
+{}
+
+void ProgressStdoutIndicator::abort()
+{}
+
 } // namespace host_tool

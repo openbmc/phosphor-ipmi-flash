@@ -15,6 +15,8 @@ class ProgressInterface
      */
     virtual void updateProgress(std::int64_t bytes) = 0;
     virtual void start(std::int64_t bytes) = 0;
+    virtual void finish() = 0;
+    virtual void abort() = 0;
 };
 
 /**
@@ -29,6 +31,8 @@ class ProgressStdoutIndicator : public ProgressInterface
 
     void updateProgress(std::int64_t bytes) override;
     void start(std::int64_t bytes) override;
+    void finish() override;
+    void abort() override;
 
   private:
     std::int64_t totalBytes = 0;

@@ -117,6 +117,7 @@ bool LpcDataHandler::sendContents(const std::string& input,
     auto readBuffer = std::make_unique<std::uint8_t[]>(host_lpc_buf.length);
     if (nullptr == readBuffer)
     {
+        progress->abort();
         sys->close(inputFd);
         std::fprintf(stderr, "Unable to allocate memory for read buffer.\n");
         return false;
@@ -156,10 +157,12 @@ bool LpcDataHandler::sendContents(const std::string& input,
     }
     catch (const ipmiblob::BlobException& b)
     {
+        progress->abort();
         sys->close(inputFd);
         return false;
     }
 
+    progress->finish();
     sys->close(inputFd);
     return true;
 }

@@ -49,10 +49,12 @@ bool BtDataHandler::sendContents(const std::string& input,
     }
     catch (const ipmiblob::BlobException& b)
     {
+        progress->abort();
         sys->close(inputFd);
         return false;
     }
 
+    progress->finish();
     sys->close(inputFd);
     return true;
 }

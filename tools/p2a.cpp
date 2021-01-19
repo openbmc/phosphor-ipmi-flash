@@ -128,6 +128,7 @@ bool P2aDataHandler::sendContents(const std::string& input,
         }
     } while (bytesRead > 0);
 
+    progress->finish();
     return true;
 }
 
