@@ -17,6 +17,7 @@
 
 #include "file_handler.hpp"
 #include "fs.hpp"
+#include "general_systemd.hpp"
 #include "skip_action.hpp"
 
 #include <nlohmann/json.hpp>

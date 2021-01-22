@@ -16,6 +16,7 @@
 #include "buildjson.hpp"
 
 #include "file_handler.hpp"
+#include "general_systemd.hpp"
 
 #include <nlohmann/json.hpp>
 #include <sdbusplus/bus.hpp>
