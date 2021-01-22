@@ -1,5 +1,5 @@
 #pragma once
-#include "buildjson.hpp"
+#include "handler_config.hpp"
 #include "image_handler.hpp"
 #include "status.hpp"
 #include "util.hpp"

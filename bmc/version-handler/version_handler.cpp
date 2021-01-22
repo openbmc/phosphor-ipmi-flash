@@ -1,5 +1,11 @@
 #include "version_handler.hpp"
 
+#include <algorithm>
+#include <cstring>
+#include <ios>
+#include <limits>
+#include <memory>
+#include <optional>
 #include <utility>
 #include <vector>
 

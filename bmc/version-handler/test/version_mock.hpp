@@ -1,4 +1,4 @@
-#include "buildjson.hpp"
+#include "handler_config.hpp"
 #include "image_mock.hpp"
 #include "triggerable_mock.hpp"
 #include "version_handler.hpp"
