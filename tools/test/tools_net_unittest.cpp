@@ -56,8 +56,6 @@ class NetHandleTest : public ::testing::Test
         EXPECT_CALL(sysMock, close(inFd)).WillOnce(Return(0));
         EXPECT_CALL(sysMock, getSize(StrEq(filePath.c_str())))
             .WillOnce(Return(fakeFileSize));
-
-        EXPECT_CALL(progMock, start(fakeFileSize));
     }
 
     void expectAddrInfo()

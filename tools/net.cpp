@@ -56,24 +56,19 @@ bool NetDataHandler::sendContents(const std::string& input,
     constexpr size_t blockSize = 64 * 1024;
     Fd inputFd(std::nullopt, sys);
 
+    inputFd.reset(sys->open(input.c_str(), O_RDONLY));
+    if (*inputFd < 0)
     {
-        inputFd.reset(sys->open(input.c_str(), O_RDONLY));
-        if (*inputFd < 0)
-        {
-            (void)inputFd.release();
-            std::fprintf(stderr, "Unable to open file: '%s'\n", input.c_str());
-            return false;
-        }
+        (void)inputFd.release();
+        std::fprintf(stderr, "Unable to open file: '%s'\n", input.c_str());
+        return false;
+    }
 
-        std::int64_t fileSize = sys->getSize(input.c_str());
-        if (fileSize == 0)
-        {
-            std::fprintf(stderr,
-                         "Zero-length file, or other file access error\n");
-            return false;
-        }
-
-        progress->start(fileSize);
+    std::int64_t fileSize = sys->getSize(input.c_str());
+    if (fileSize == 0)
+    {
+        std::fprintf(stderr, "Zero-length file, or other file access error\n");
+        return false;
     }
 
     Fd connFd(std::nullopt, sys);
@@ -91,7 +86,6 @@ bool NetDataHandler::sendContents(const std::string& input,
         {
             std::fprintf(stderr, "Couldn't parse address %s with port %s: %s\n",
                          host.c_str(), port.c_str(), gai_strerror(ret));
-            progress->abort();
             return false;
         }
 
@@ -112,7 +106,6 @@ bool NetDataHandler::sendContents(const std::string& input,
         if (addr == nullptr)
         {
             std::fprintf(stderr, "Failed to connect\n");
-            progress->abort();
             return false;
         }
     }
@@ -121,6 +114,8 @@ bool NetDataHandler::sendContents(const std::string& input,
     {
         int bytesSent = 0;
         off_t offset = 0;
+
+        progress->start(fileSize);
 
         do
         {
