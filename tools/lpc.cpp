@@ -108,6 +108,7 @@ bool LpcDataHandler::sendContents(const std::string& input,
     if (fileSize == 0)
     {
         std::fprintf(stderr, "Zero-length file, or other file access error\n");
+        sys->close(inputFd);
         return false;
     }
 
