@@ -111,17 +111,16 @@ bool LpcDataHandler::sendContents(const std::string& input,
         return false;
     }
 
-    progress->start(fileSize);
-
     /* For Nuvoton the maximum is 4K */
     auto readBuffer = std::make_unique<std::uint8_t[]>(host_lpc_buf.length);
     if (nullptr == readBuffer)
     {
-        progress->abort();
         sys->close(inputFd);
         std::fprintf(stderr, "Unable to allocate memory for read buffer.\n");
         return false;
     }
+
+    progress->start(fileSize);
 
     /* TODO: This is similar to PCI insomuch as how it sends data, so combine.
      */

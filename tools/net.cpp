@@ -72,8 +72,6 @@ bool NetDataHandler::sendContents(const std::string& input,
                          "Zero-length file, or other file access error\n");
             return false;
         }
-
-        progress->start(fileSize);
     }
 
     Fd connFd(std::nullopt, sys);
@@ -91,7 +89,6 @@ bool NetDataHandler::sendContents(const std::string& input,
         {
             std::fprintf(stderr, "Couldn't parse address %s with port %s: %s\n",
                          host.c_str(), port.c_str(), gai_strerror(ret));
-            progress->abort();
             return false;
         }
 
@@ -112,7 +109,6 @@ bool NetDataHandler::sendContents(const std::string& input,
         if (addr == nullptr)
         {
             std::fprintf(stderr, "Failed to connect\n");
-            progress->abort();
             return false;
         }
     }
@@ -121,6 +117,8 @@ bool NetDataHandler::sendContents(const std::string& input,
     {
         int bytesSent = 0;
         off_t offset = 0;
+
+        progress->start(fileSize);
 
         do
         {
