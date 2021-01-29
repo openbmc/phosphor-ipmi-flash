@@ -671,5 +671,12 @@ TEST(FirmwareJsonTest, BuildFromBadFile)
     }
 }
 
+TEST(FirmwareJsonTest, BuildFromMissingDirectory)
+{
+    EXPECT_THAT(
+        FirmwareHandlersBuilder().buildHandlerConfigs("./no-such-directory"),
+        IsEmpty());
+}
+
 } // namespace
 } // namespace ipmi_flash
