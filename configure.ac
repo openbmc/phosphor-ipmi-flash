@@ -113,6 +113,24 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
     AC_SUBST([systemdsystemunitdir], ["$with_systemdsystemunitdir"])
     AM_CONDITIONAL([HAVE_SYSTEMUNITDIR], [test "x$with_systemdsystemunitdir" != "x"])
 
+    PKG_PROG_PKG_CONFIG
+    AC_ARG_WITH([tmpfilesdir],
+        [AS_HELP_STRING([--with-tmpfiledir=DIR], [Directory for systemd tmpfile config])],
+        [],
+        [with_tmpfilesdir=auto]
+    )
+    AS_IF([test "x$with_tmpfilesdir" = "xyes" -o "x$with_tmpfilesdir" = "xauto"], [
+        PKG_CHECK_VAR([TMPFILESDIR], [systemd], [tmpfilesdir], [with_tmpfilesdir="$TMPFILESDIR"], [])
+    ])
+    AS_IF([test "x$with_tmpfilesdir" = "xyes"], [
+        AC_MSG_ERROR([tmpfilesdir requested but pkg-config unable to query systemd package])
+    ])
+    AS_IF([test "x$with_tmpfilesdir" = "xno" -o "x$with_tmpfilesdir" = "xauto"], [
+        with_tmpfilesdir=''
+    ])
+    AC_SUBST([tmpfilesdir], ["$with_tmpfilesdir"])
+    AM_CONDITIONAL([HAVE_TMPFILESDIR], [test "x$with_tmpfilesdir" != "x"])
+
     # Only set if build-bmc-blob-handler wasn't unset.
     AM_CONDITIONAL([ENABLE_HOST_BIOS], [test "x$enable_host_bios" = "xyes"])
     AS_IF([test "x$enable_host_bios" = "xyes"], [
