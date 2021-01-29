@@ -25,7 +25,7 @@ if ENABLE_HOST_BIOS
 dist_pkgdata_DATA += config-bios.json
 endif
 
-if HAVE_SYSTEMD
+if HAVE_SYSTEMUNITDIR
 systemdsystemunit_DATA = \
 	phosphor-ipmi-flash-bmc-prepare.target \
 	phosphor-ipmi-flash-bmc-verify.target \
@@ -37,6 +37,7 @@ systemdsystemunit_DATA += \
 	phosphor-ipmi-flash-bios-update.target
 endif
 endif
+
 # Convenience libraries that are discarded after build
 noinst_LTLIBRARIES = libfirmwareblob_common.la
 
