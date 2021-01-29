@@ -17,7 +17,6 @@
 #include "fs.hpp"
 
 #include <filesystem>
-#include <regex>
 #include <string>
 #include <system_error>
 #include <vector>
@@ -34,14 +33,10 @@ std::vector<std::string> GetJsonList(const std::string& directory)
     {
         for (const auto& p : fs::recursive_directory_iterator(directory))
         {
-            auto ps = p.path().string();
-
-            /** TODO: openbmc/phosphor-ipmi-blobs/blob/de8a16e2e8/fs.cpp#L27 is
-             * nicer, may be worth finding a way to make this into a util.
-             */
-            if (std::regex_match(ps, std::regex(".+.json$")))
+            auto path = p.path();
+            if (path.extension().string() == ".json")
             {
-                output.push_back(ps);
+                output.push_back(path.string());
             }
         }
     }
