@@ -70,6 +70,7 @@ std::unique_ptr<TriggerableActionInterface>
 
 const std::vector<const char*> defaultConfigPaths = {
     "/usr/share/phosphor-ipmi-flash",
+    "/run/phosphor-ipmi-flash",
 };
 
 } // namespace ipmi_flash
