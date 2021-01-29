@@ -19,6 +19,7 @@
 #include <filesystem>
 #include <regex>
 #include <string>
+#include <system_error>
 #include <vector>
 
 namespace ipmi_flash
@@ -29,17 +30,28 @@ std::vector<std::string> GetJsonList(const std::string& directory)
 {
     std::vector<std::string> output;
 
-    for (const auto& p : fs::recursive_directory_iterator(directory))
+    try
     {
-        auto ps = p.path().string();
-
-        /** TODO: openbmc/phosphor-ipmi-blobs/blob/de8a16e2e8/fs.cpp#L27 is
-         * nicer, may be worth finding a way to make this into a util.
-         */
-        if (std::regex_match(ps, std::regex(".+.json$")))
+        for (const auto& p : fs::recursive_directory_iterator(directory))
         {
-            output.push_back(ps);
+            auto ps = p.path().string();
+
+            /** TODO: openbmc/phosphor-ipmi-blobs/blob/de8a16e2e8/fs.cpp#L27 is
+             * nicer, may be worth finding a way to make this into a util.
+             */
+            if (std::regex_match(ps, std::regex(".+.json$")))
+            {
+                output.push_back(ps);
+            }
         }
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        if (e.code() == std::error_code(ENOENT, std::generic_category()))
+        {
+            return output;
+        }
+        throw;
     }
 
     return output;
