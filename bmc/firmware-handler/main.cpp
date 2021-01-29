@@ -44,9 +44,6 @@ namespace ipmi_flash
 namespace
 {
 
-static constexpr const char* jsonConfigurationPath =
-    "/usr/share/phosphor-ipmi-flash/";
-
 /**
  * Given a name and path, create a HandlerPack.
  *
@@ -115,8 +112,7 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
     ActionMap actionPacks = {};
     FirmwareHandlersBuilder builder;
 
-    std::vector<HandlerConfig<ActionPack>> configsFromJson =
-        builder.buildHandlerConfigs(jsonConfigurationPath);
+    auto configsFromJson = builder.buildHandlerConfigsFromDefaultPaths();
 
     std::vector<HandlerPack> supportedFirmware;
 

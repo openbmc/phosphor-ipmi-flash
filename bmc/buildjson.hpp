@@ -24,6 +24,8 @@ std::unique_ptr<TriggerableActionInterface>
 std::unique_ptr<TriggerableActionInterface>
     buildSystemd(const nlohmann::json& data);
 
+extern const std::vector<const char*> defaultConfigPaths;
+
 /* HandlersBuilderIfc is a helper class that builds Handlers from the json files
  * found within a specified directory.
  * The child class that inherits from HandlersBuilderIfc should implement
@@ -36,13 +38,27 @@ struct HandlersBuilderIfc
     virtual ~HandlersBuilderIfc() = default;
 
     /**
+     * Builds configurations from the default set of paths used by the blob
+     * handler.
+     */
+    std::vector<HandlerConfig<T>> buildHandlerConfigsFromDefaultPaths()
+    {
+        std::vector<HandlerConfig<T>> ret;
+        for (auto path : defaultConfigPaths)
+        {
+            auto tmp = buildHandlerConfigs(path);
+            std::move(tmp.begin(), tmp.end(), std::back_inserter(ret));
+        }
+        return ret;
+    }
+
+    /**
      * Given a folder of json configs, build the configurations.
      *
      * @param[in] directory - the directory to search (recurisvely).
      * @return list of HandlerConfig objects.
      */
-    std::vector<HandlerConfig<T>>
-        buildHandlerConfigs(const std::string& directory)
+    std::vector<HandlerConfig<T>> buildHandlerConfigs(const char* directory)
     {
 
         std::vector<HandlerConfig<T>> output;
