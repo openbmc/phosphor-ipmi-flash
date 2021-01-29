@@ -22,6 +22,6 @@
 extern "C" std::unique_ptr<blobs::GenericBlobInterface> createHandler()
 {
     return std::make_unique<ipmi_flash::VersionBlobHandler>(
-        ipmi_flash::VersionHandlersBuilder().buildHandlerConfigs(
-            "/usr/share/phosphor-ipmi-flash/"));
+        ipmi_flash::VersionHandlersBuilder()
+            .buildHandlerConfigsFromDefaultPaths());
 }
