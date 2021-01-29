@@ -25,6 +25,11 @@ if ENABLE_HOST_BIOS
 dist_pkgdata_DATA += config-bios.json
 endif
 
+if HAVE_TMPFILESDIR
+tmpfiles_DATA = \
+	phosphor-ipmi-flash.conf
+endif
+
 if HAVE_SYSTEMUNITDIR
 systemdsystemunit_DATA = \
 	phosphor-ipmi-flash-bmc-prepare.target \
