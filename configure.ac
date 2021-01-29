@@ -101,20 +101,17 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
         [],
         [with_systemdsystemunitdir=auto]
     )
-    AS_IF([test "x$with_systemdsystemunitdir" = "xyes" -o "x$with_systemdsystemunitdir" = "xauto"],
-        [def_systemdsystemunitdir=$($PKG_CONFIG --variable=systemdsystemunitdir systemd)
-         AS_IF([test "x$def_systemdsystemunitdir" = "x"],
-               [AS_IF([test "x$with_systemdsystemunitdir" = "xyes"],
-                    [AC_MSG_ERROR([systemd support requested but pkg-config unable to query systemd package])]
-               )
-               with_systemdsystemunitdir=no],
-               [with_systemdsystemunitdir="$def_systemdsystemunitdir"]
-         )]
-    )
-    AS_IF([test "x$with_systemdsystemunitdir" != "xno"],
-        [AC_SUBST([systemdsystemunitdir], [$with_systemdsystemunitdir])]
-    )
-    AM_CONDITIONAL([HAVE_SYSTEMD], [test "x$with_systemdsystemunitdir" != "xno"])
+    AS_IF([test "x$with_systemdsystemunitdir" = "xyes" -o "x$with_systemdsystemunitdir" = "xauto"], [
+        PKG_CHECK_VAR([SYSTEMUNITDIR], [systemd], [systemdsystemunitdir], [with_systemdsystemunitdir="$SYSTEMUNITDIR"], [])
+    ])
+    AS_IF([test "x$with_systemdsystemunitdir" = "xyes"], [
+        AC_MSG_ERROR([systemdsystemunitdir requested but pkg-config unable to query systemd package])
+    ])
+    AS_IF([test "x$with_systemdsystemunitdir" = "xno" -o "x$with_systemdsystemunitdir" = "xauto"], [
+        with_systemdsystemunitdir=''
+    ])
+    AC_SUBST([systemdsystemunitdir], ["$with_systemdsystemunitdir"])
+    AM_CONDITIONAL([HAVE_SYSTEMUNITDIR], [test "x$with_systemdsystemunitdir" != "x"])
 
     # Only set if build-bmc-blob-handler wasn't unset.
     AM_CONDITIONAL([ENABLE_HOST_BIOS], [test "x$enable_host_bios" = "xyes"])
@@ -122,7 +119,6 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
         AX_APPEND_COMPILE_FLAGS([-DENABLE_HOST_BIOS], [CXXFLAGS])
     ])
 ], [
-    AM_CONDITIONAL([HAVE_SYSTEMD], [0])
     AM_CONDITIONAL([ENABLE_HOST_BIOS], [0])
 ])
 
