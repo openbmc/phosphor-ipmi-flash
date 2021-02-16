@@ -282,3 +282,4 @@ Read the [details](bmc_json_config.md) of the json configuration.  The json conf
 implemented and how different interactions with it will respond.  This also
 describes how a host-side tool is expected to talk to it (triggering different
 states and actions).
+
