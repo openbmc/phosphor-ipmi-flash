@@ -119,6 +119,19 @@ void NuvotonPciBridge::enableBridge()
     std::uint8_t value;
     int ret;
 
+    /* TODO: pci_device_disable support is missing in libpciaccess. Add it
+     * to the disableBridge() once it is available.
+     * https://gitlab.freedesktop.org/xorg/lib/libpciaccess/-/merge_requests/17
+     */
+
+    pci->pci_device_enable(dev);
+
+    /* We need to retain this direct write to config space eventhough
+     * pci_device_enable() should do it. Because currently disabling is done
+     * through write to config space and not done through the proper api.
+     * So libpciaccess ref count does not reset on disable. The
+     * pci_device_enable() above will not do anything the second time.
+     */
     ret = pci->pci_device_cfg_read_u8(dev, &value, bridge);
     if (ret)
     {
@@ -170,6 +183,21 @@ void AspeedPciBridge::enableBridge()
      * the bridge enabled on the BMC.
      */
     std::uint32_t value;
+
+    /* TODO: pci_device_disable support is missing in libpciaccess. Add it
+     * to the disableBridge() once it is available.
+     * https://gitlab.freedesktop.org/xorg/lib/libpciaccess/-/merge_requests/17
+     */
+
+    pci->pci_device_enable(dev);
+
+    /* We need to retain this direct write to config space eventhough
+     * pci_device_enable() should do it. Because currently disabling is done
+     * through write to config space and not done through the proper api.
+     * So libpciaccess ref count does not reset on disable. The
+     * pci_device_enable() above will not do anything the second time.
+     */
+
     std::memcpy(&value, addr + config, sizeof(value));
 
     if (0 == (value & bridgeEnabled))

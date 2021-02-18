@@ -317,6 +317,8 @@ void expectSetup(PciAccessMock& pciMock, struct pci_device& dev, Device* param,
                 pci_device_unmap_range(Eq(&dev), Eq(region), mockRegionSize))
         .WillOnce(Return(0));
 
+    EXPECT_CALL(pciMock, pci_device_enable(Eq(&dev))).Times(1);
+
     if (deviceExpectations)
         param->expectSetup(pciMock, dev);
 }
