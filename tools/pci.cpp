@@ -119,6 +119,8 @@ void NuvotonPciBridge::enableBridge()
     std::uint8_t value;
     int ret;
 
+    pci_device_enable(dev);
+
     ret = pci->pci_device_cfg_read_u8(dev, &value, bridge);
     if (ret)
     {
@@ -170,6 +172,9 @@ void AspeedPciBridge::enableBridge()
      * the bridge enabled on the BMC.
      */
     std::uint32_t value;
+
+    pci_device_enable(dev);
+
     std::memcpy(&value, addr + config, sizeof(value));
 
     if (0 == (value & bridgeEnabled))
