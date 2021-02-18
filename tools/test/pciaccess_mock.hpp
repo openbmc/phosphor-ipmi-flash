@@ -13,6 +13,7 @@ class PciAccessMock : public PciAccess
     MOCK_CONST_METHOD1(pci_id_match_iterator_create,
                        struct pci_device_iterator*(const struct pci_id_match*));
     MOCK_CONST_METHOD1(pci_iterator_destroy, void(struct pci_device_iterator*));
+    MOCK_CONST_METHOD1(pci_device_enable, void(struct pci_device*));
     MOCK_CONST_METHOD1(pci_device_next,
                        struct pci_device*(struct pci_device_iterator*));
     MOCK_CONST_METHOD1(pci_device_probe, int(struct pci_device*));
