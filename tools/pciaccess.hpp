@@ -37,6 +37,7 @@ class PciAccess
         const struct pci_id_match* match) const = 0;
     virtual void
         pci_iterator_destroy(struct pci_device_iterator* iter) const = 0;
+    virtual void pci_device_enable(struct pci_device *dev) const = 0;
     virtual struct pci_device*
         pci_device_next(struct pci_device_iterator* iter) const = 0;
     virtual int pci_device_probe(struct pci_device* dev) const = 0;
@@ -66,6 +67,7 @@ class PciAccessImpl : public PciAccess
     struct pci_device_iterator* pci_id_match_iterator_create(
         const struct pci_id_match* match) const override;
     void pci_iterator_destroy(struct pci_device_iterator* iter) const override;
+    void pci_device_enable(struct pci_device *dev) const override;
     struct pci_device*
         pci_device_next(struct pci_device_iterator* iter) const override;
     int pci_device_probe(struct pci_device* dev) const override;
