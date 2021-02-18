@@ -34,6 +34,11 @@ void PciAccessImpl::pci_iterator_destroy(struct pci_device_iterator* iter) const
     return ::pci_iterator_destroy(iter);
 }
 
+void PciAccessImpl::pci_device_enable(struct pci_device* dev) const
+{
+    return ::pci_device_enable(dev);
+}
+
 struct pci_device*
     PciAccessImpl::pci_device_next(struct pci_device_iterator* iter) const
 {
