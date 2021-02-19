@@ -111,7 +111,31 @@ void PciAccessBridge::write(const stdplus::span<const std::uint8_t> data)
                         dataLength));
     }
 
-    std::memcpy(addr + dataOffset, data.data(), data.size());
+    std::size_t size = data.size();
+
+    const std::uint64_t* dataMem64 =
+        reinterpret_cast<const std::uint64_t*>(data.data());
+    std::uint64_t* pciMem64 =
+        reinterpret_cast<std::uint64_t*>(addr + dataOffset);
+
+    if ((reinterpret_cast<std::uintptr_t>(data.data()) & 0x7) == 0 &&
+        (reinterpret_cast<std::uintptr_t>(addr + dataOffset) & 0x7) == 0)
+    {
+        while (size / 8)
+        {
+            *pciMem64++ = *dataMem64++;
+            size = size - 8;
+        }
+    }
+
+    const std::uint8_t* dataMem8 =
+        reinterpret_cast<const std::uint8_t*>(dataMem64);
+    std::uint8_t* pciMem8 = reinterpret_cast<std::uint8_t*>(pciMem64);
+
+    while (size--)
+    {
+        *pciMem8++ = *dataMem8++;
+    }
 }
 
 void NuvotonPciBridge::enableBridge()
