@@ -110,4 +110,33 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
     return (result == ipmi_flash::ActionStatus::success);
 }
 
+void* memcpyAligned(void* destination, const void* source, std::size_t size)
+{
+    std::size_t i = 0;
+
+    if ((reinterpret_cast<std::uintptr_t>(destination) & 0x7) == 0 &&
+        (reinterpret_cast<std::uintptr_t>(source) & 0x7) == 0)
+    {
+        auto src64 = reinterpret_cast<const volatile std::uint64_t*>(source);
+        auto dest64 = reinterpret_cast<volatile std::uint64_t*>(destination);
+
+        for (i = 0; i < size/8; i++)
+        {
+            *dest64++ = *src64++;
+        }
+    }
+
+    auto srcMem8 =
+              reinterpret_cast<const volatile std::uint8_t*>(source) + (i * 8);
+    auto destMem8 =
+              reinterpret_cast<volatile std::uint8_t*>(destination) + (i * 8);
+
+    for (i = (i * 8); i < size; i++)
+    {
+        *destMem8++ = *srcMem8++;
+    }
+
+    return destination;
+}
+
 } // namespace host_tool
