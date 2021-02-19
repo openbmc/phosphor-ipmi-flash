@@ -23,6 +23,8 @@ extern "C"
 #include <pciaccess.h>
 } // extern "C"
 
+#include "helper.hpp"
+
 #include <fmt/format.h>
 
 #include <stdplus/handle/managed.hpp>
@@ -111,7 +113,7 @@ void PciAccessBridge::write(const stdplus::span<const std::uint8_t> data)
                         dataLength));
     }
 
-    std::memcpy(addr + dataOffset, data.data(), data.size());
+    memcpyAligned(addr + dataOffset, data.data(), data.size());
 }
 
 void NuvotonPciBridge::enableBridge()
