@@ -16,4 +16,13 @@ namespace host_tool
  */
 bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob);
 
+/**
+ * Aligned memcpy
+ * @param[out] destination - destination memory pointer
+ * @param[in] source - source memory pointer
+ * @param[in] size - bytes to copy
+ * @return destination pointer
+ */
+void* memcpyAligned(void* destination, const void* source, size_t size);
+
 } // namespace host_tool
