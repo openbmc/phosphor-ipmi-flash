@@ -38,6 +38,7 @@ std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
 {
     std::vector<HandlerConfig<VersionBlobHandler::ActionPack>> handlers;
 
+    std::string curBlob;
     for (const auto& item : data)
     {
         try
@@ -46,9 +47,9 @@ std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
 
             /* at() throws an exception when the key is not present. */
             item.at("blob").get_to(output.blobId);
-
+            curBlob = output.blobId;
             /* name must be: /flash/... or /version/...*/
-            std::regex regexpr("^\\/(?:flash|version)\\/(.+)");
+            std::regex regexpr("^\\/(flash|version)\\/(.+)");
             std::smatch matches;
             if (!std::regex_search(output.blobId, matches, regexpr))
             {
@@ -56,7 +57,13 @@ std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
                     "Invalid blob name: '" + output.blobId +
                     "' must start with /flash/ or /version/");
             }
-            output.blobId = "/version/" + matches[1].str();
+            std::string prefix = matches[1].str();
+            output.blobId = "/version/" + matches[2].str();
+            /* /flash blobs are not required to have version */
+            if (prefix == "flash" && item.find("version") == item.end())
+            {
+                continue;
+            }
             /* version is required. */
             const auto& v = item.at("version");
             /* version must have handler */
@@ -104,8 +111,9 @@ std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
              * this to log.
              */
             std::fprintf(stderr,
-                         "Excepted building HandlerConfig from json: %s\n",
-                         e.what());
+                         "While building HandlerConfig for blob %s encountered "
+                         "an exception:%s\n",
+                         curBlob.c_str(), e.what());
         }
     }
 

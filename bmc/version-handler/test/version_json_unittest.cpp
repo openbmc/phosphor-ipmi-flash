@@ -12,11 +12,96 @@ namespace ipmi_flash
 namespace
 {
 using ::testing::IsEmpty;
+using testing::Not;
+using testing::SizeIs;
+using testing::internal::CaptureStderr;
+using testing::internal::GetCapturedStderr;
 
 using json = nlohmann::json;
 
+TEST(VersionJsonTest, FlashBlobNoVersionOK)
+{
+    CaptureStderr();
+    auto j2 = R"(
+        [{
+            "blob" : "/flash/sink_seq0"
+         },
+         {
+            "blob" : "/version/sink_seq1",
+            "version":{
+                "handler": {
+                   "type" : "file",
+                   "path" : "/tmp/version_info"
+                 },
+                "actions": {
+                    "open" : {
+                    "type" : "systemd",
+                    "unit" : "phosphor-ipmi-flash-version-sink-sequencer.target"
+                    }
+                 }
+            }
+         },
+         {
+            "blob" : "/flash/sink_seq2"
+         },
+         {
+            "blob" : "/version/sink_seq3",
+            "version":{
+                "handler": {
+                   "type" : "file",
+                   "path" : "/tmp/version_info"
+                 },
+                "actions": {
+                    "open" : {
+                    "type" : "systemd",
+                    "unit" : "phosphor-ipmi-flash-version-sink-sequencer.target"
+                    }
+                 }
+            }
+         }
+
+         ]
+    )"_json;
+    auto h = VersionHandlersBuilder().buildHandlerFromJson(j2);
+    ASSERT_THAT(h, SizeIs(2));
+    EXPECT_THAT(h[0].blobId, "/version/sink_seq1");
+    EXPECT_THAT(h[1].blobId, "/version/sink_seq3");
+    EXPECT_THAT(GetCapturedStderr(), IsEmpty());
+}
+
+TEST(VersionJsonTest, VersionBlobNoVersionPrintsWarning)
+{
+    CaptureStderr();
+    auto j2 = R"(
+        [{
+            "blob" : "/version/sink_seq"
+         },
+         {
+            "blob" : "/version/sink_seq3",
+            "version":{
+                "handler": {
+                   "type" : "file",
+                   "path" : "/tmp/version_info"
+                 },
+                "actions": {
+                    "open" : {
+                    "type" : "systemd",
+                    "unit" : "phosphor-ipmi-flash-version-sink-sequencer.target"
+                    }
+                 }
+            }
+         }
+         ]
+    )"_json;
+    auto h = VersionHandlersBuilder().buildHandlerFromJson(j2);
+    EXPECT_THAT(h, SizeIs(1));
+    EXPECT_THAT(h[0].blobId, "/version/sink_seq3");
+    EXPECT_THAT(GetCapturedStderr(), Not(IsEmpty()));
+}
+
 TEST(VersionJsonTest, ValidConfigurationNoVersionHandler)
 {
+    CaptureStderr();
     auto j2 = R"(
         [{
             "blob" : "/flash/sink_seq",
@@ -35,14 +120,16 @@ TEST(VersionJsonTest, ValidConfigurationNoVersionHandler)
          }]
     )"_json;
     auto h = VersionHandlersBuilder().buildHandlerFromJson(j2);
-    ASSERT_THAT(h, ::testing::SizeIs(1));
+    ASSERT_THAT(h, SizeIs(1));
     EXPECT_THAT(h[0].blobId, "/version/sink_seq");
     EXPECT_FALSE(h[0].actions == nullptr);
     EXPECT_FALSE(h[0].handler == nullptr);
+    EXPECT_THAT(GetCapturedStderr(), IsEmpty());
 }
 
 TEST(VersionJsonTest, ValidConfigurationVersionBlobName)
 {
+    CaptureStderr();
     auto j2 = R"(
         [{
             "blob" : "/version/sink_seq",
@@ -61,14 +148,16 @@ TEST(VersionJsonTest, ValidConfigurationVersionBlobName)
          }]
     )"_json;
     auto h = VersionHandlersBuilder().buildHandlerFromJson(j2);
-    ASSERT_THAT(h, ::testing::SizeIs(1));
+    ASSERT_THAT(h, SizeIs(1));
     EXPECT_THAT(h[0].blobId, "/version/sink_seq");
     EXPECT_FALSE(h[0].actions == nullptr);
     EXPECT_FALSE(h[0].handler == nullptr);
+    EXPECT_THAT(GetCapturedStderr(), IsEmpty());
 }
 
 TEST(VersionJsonTest, MissingHandlerType)
 {
+    CaptureStderr();
     auto j2 = R"(
         [{
             "blob" : "/flash/image",
@@ -85,10 +174,12 @@ TEST(VersionJsonTest, MissingHandlerType)
          }]
     )"_json;
     EXPECT_THAT(VersionHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(GetCapturedStderr(), Not(IsEmpty()));
 }
 
 TEST(VersionJsonTest, BadBlobName)
 {
+    CaptureStderr();
     auto j2 = R"(
         [{
             "blob" : "/bad/image",
@@ -106,10 +197,12 @@ TEST(VersionJsonTest, BadBlobName)
          }]
     )"_json;
     EXPECT_THAT(VersionHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(GetCapturedStderr(), Not(IsEmpty()));
 }
 
 TEST(VersionJsonTest, MissingActions)
 {
+    CaptureStderr();
     auto j2 = R"(
         [{
             "blob" : "/flash/image",
@@ -122,10 +215,12 @@ TEST(VersionJsonTest, MissingActions)
          }]
     )"_json;
     EXPECT_THAT(VersionHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(GetCapturedStderr(), Not(IsEmpty()));
 }
 
 TEST(VersionJsonTest, MissingOpenAction)
 {
+    CaptureStderr();
     auto j2 = R"(
         [{
             "blob" : "/flash/image",
@@ -139,10 +234,12 @@ TEST(VersionJsonTest, MissingOpenAction)
          }]
     )"_json;
     EXPECT_THAT(VersionHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(GetCapturedStderr(), Not(IsEmpty()));
 }
 
 TEST(VersionJsonTest, OneInvalidTwoValidSucceeds)
 {
+    CaptureStderr();
     auto j2 = R"(
         [{
             "blob" : "/flash/sink_seq0",
@@ -192,13 +289,15 @@ TEST(VersionJsonTest, OneInvalidTwoValidSucceeds)
          ]
     )"_json;
     auto h = VersionHandlersBuilder().buildHandlerFromJson(j2);
-    ASSERT_THAT(h, ::testing::SizeIs(2));
+    ASSERT_THAT(h, SizeIs(2));
     EXPECT_THAT(h[0].blobId, "/version/sink_seq0");
     EXPECT_THAT(h[1].blobId, "/version/sink_seq1");
+    EXPECT_THAT(GetCapturedStderr(), Not(IsEmpty()));
 }
 
 TEST(VersionJsonTest, BlobNameIsTooShort)
 {
+    CaptureStderr();
     auto j2 = R"(
         [{
             "blob" : "/flash/",
@@ -217,10 +316,12 @@ TEST(VersionJsonTest, BlobNameIsTooShort)
          }]
     )"_json;
     EXPECT_THAT(VersionHandlersBuilder().buildHandlerFromJson(j2), IsEmpty());
+    EXPECT_THAT(GetCapturedStderr(), Not(IsEmpty()));
 }
 
 TEST(VersionJsonTest, OpenSkipAction)
 {
+    CaptureStderr();
     auto j2 = R"(
         [{
             "blob" : "/flash/sink_seqs",
@@ -238,14 +339,16 @@ TEST(VersionJsonTest, OpenSkipAction)
          }]
     )"_json;
     auto h = VersionHandlersBuilder().buildHandlerFromJson(j2);
-    EXPECT_THAT(h, ::testing::SizeIs(1));
+    EXPECT_THAT(h, SizeIs(1));
     EXPECT_TRUE(h[0].blobId == "/version/sink_seqs");
     ASSERT_FALSE(h[0].actions == nullptr);
     EXPECT_FALSE(h[0].actions->onOpen == nullptr);
+    EXPECT_THAT(GetCapturedStderr(), IsEmpty());
 }
 
 TEST(VersionJsonTest, OpenActionsWithDifferentModes)
 {
+    CaptureStderr();
     auto j2 = R"(
         [{
             "blob" : "/flash/blob1",
@@ -282,7 +385,7 @@ TEST(VersionJsonTest, OpenActionsWithDifferentModes)
          ]
     )"_json;
     auto h = VersionHandlersBuilder().buildHandlerFromJson(j2);
-    ASSERT_THAT(h, ::testing::SizeIs(2));
+    ASSERT_THAT(h, SizeIs(2));
 
     EXPECT_FALSE(h[0].handler == nullptr);
     EXPECT_FALSE(h[0].actions == nullptr);
@@ -295,6 +398,7 @@ TEST(VersionJsonTest, OpenActionsWithDifferentModes)
     EXPECT_THAT(h[1].blobId, "/version/blob2");
     auto onOpen1 = reinterpret_cast<SystemdNoFile*>(h[1].actions->onOpen.get());
     EXPECT_THAT(onOpen1->getMode(), "replace-fake");
+    EXPECT_THAT(GetCapturedStderr(), IsEmpty());
 }
 } // namespace
 } // namespace ipmi_flash
