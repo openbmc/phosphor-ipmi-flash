@@ -93,6 +93,30 @@
       "revId": "38068f143eb1f174b7ddc27cf6fd7be51741fac1",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "113ed795_272668a7",
+        "filename": "tools/pci.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1000233
+      },
+      "writtenOn": "2021-02-26T18:41:10Z",
+      "side": 1,
+      "message": "It\u0027s just setting the MMIO bit here.\n\nThe Aspeed one enables the bridge through a reserved section of the BAR rather than the config space, so that code will need to stay",
+      "parentUuid": "9dccc5bb_7257076e",
+      "range": {
+        "startLine": 139,
+        "startChar": 15,
+        "endLine": 139,
+        "endChar": 38
+      },
+      "revId": "38068f143eb1f174b7ddc27cf6fd7be51741fac1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
