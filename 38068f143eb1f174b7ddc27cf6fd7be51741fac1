@@ -141,6 +141,30 @@
       "revId": "38068f143eb1f174b7ddc27cf6fd7be51741fac1",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db59e9d7_871dae63",
+        "filename": "tools/pci.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1000233
+      },
+      "writtenOn": "2021-02-26T21:24:48Z",
+      "side": 1,
+      "message": "We should only need it in the disableBridge function, right?\n\nAlso you may want to add a comment there about how pci_disable_device doesn\u0027t exist yet, and that\u0027s why there\u0027s a manual config write",
+      "parentUuid": "d0b9931c_8364ea57",
+      "range": {
+        "startLine": 139,
+        "startChar": 15,
+        "endLine": 139,
+        "endChar": 38
+      },
+      "revId": "38068f143eb1f174b7ddc27cf6fd7be51741fac1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
