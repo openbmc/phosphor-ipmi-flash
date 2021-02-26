@@ -45,6 +45,30 @@
       "revId": "38068f143eb1f174b7ddc27cf6fd7be51741fac1",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9dccc5bb_7257076e",
+        "filename": "tools/pci.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1001030
+      },
+      "writtenOn": "2021-02-26T18:34:48Z",
+      "side": 1,
+      "message": "If all this is doing is setting MMIO enable bit, this should go away.\n\nI was under the impression there was some device specific thing happening, if not, then yeah by all means get rid of that (and corresponding code in the header).",
+      "parentUuid": "556bc2a1_f00dec3f",
+      "range": {
+        "startLine": 139,
+        "startChar": 15,
+        "endLine": 139,
+        "endChar": 38
+      },
+      "revId": "38068f143eb1f174b7ddc27cf6fd7be51741fac1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
