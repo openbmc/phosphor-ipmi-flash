@@ -69,6 +69,30 @@
       "revId": "38068f143eb1f174b7ddc27cf6fd7be51741fac1",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b725e09_b07e711f",
+        "filename": "tools/pci.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1001030
+      },
+      "writtenOn": "2021-02-26T18:38:59Z",
+      "side": 1,
+      "message": "Yeah, this entire function should essentially be pci-\u003epci_device_enable(dev).",
+      "parentUuid": "9dccc5bb_7257076e",
+      "range": {
+        "startLine": 139,
+        "startChar": 15,
+        "endLine": 139,
+        "endChar": 38
+      },
+      "revId": "38068f143eb1f174b7ddc27cf6fd7be51741fac1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
