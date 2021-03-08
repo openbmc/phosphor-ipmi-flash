@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5f7c3253_390c6fd0",
+        "filename": "tools/pci.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1000590
+      },
+      "writtenOn": "2021-03-08T19:26:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "852aade1_079ba23c",
+      "range": {
+        "startLine": 122,
+        "startChar": 4,
+        "endLine": 122,
+        "endChar": 21
+      },
+      "revId": "38068f143eb1f174b7ddc27cf6fd7be51741fac1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "556bc2a1_f00dec3f",
         "filename": "tools/pci.cpp",
         "patchSetId": 1
@@ -228,6 +252,30 @@
       "side": 1,
       "message": "You might just add a pci_device_is_enabled() at least the sysfs code in linux lets you query that. You can hide it in the implementation of your class unti you added the code to libpciaccess. At least things can move forward that way.\n\n1. Add function pci_device_disable (essentially open, write, close / echo 0 \u003e /sys/..../enable)\n2. Add function pci_device_is_enabled(essentially open, read, close / cat /sys/.../enable)\n3. Now you can do:\n\nif (!pci_device_is_enabled(...)) {\n  pci_device_enable(...);\n}\n\n...\n\npci_device_disable(...);\n\nIf you insist on disabling it on close.\n\nI don\u0027t think bypassing the refcounting is a good idea.",
       "parentUuid": "2825b89b_9dc989eb",
+      "range": {
+        "startLine": 139,
+        "startChar": 15,
+        "endLine": 139,
+        "endChar": 38
+      },
+      "revId": "38068f143eb1f174b7ddc27cf6fd7be51741fac1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c00a860_f14ae78a",
+        "filename": "tools/pci.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1000590
+      },
+      "writtenOn": "2021-03-08T19:26:39Z",
+      "side": 1,
+      "message": "I think we cannot have a linux sysfs code in here since this is generic. \nI will update the comments.",
+      "parentUuid": "36f379fe_f5d09194",
       "range": {
         "startLine": 139,
         "startChar": 15,
