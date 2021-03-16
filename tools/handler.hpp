@@ -44,6 +44,15 @@ class UpdateHandlerInterface
     virtual bool verifyFile(const std::string& target, bool ignoreStatus) = 0;
 
     /**
+     * Read the active firmware version.
+     *
+     * @param[in] versionBlob - the version blob id within the version handler.
+     * @return firmware version
+     */
+    virtual std::vector<uint8_t>
+        readVersion(const std::string& versionBlob) = 0;
+
+    /**
      * Cleanup the artifacts by triggering this action.
      */
     virtual void cleanArtifacts() = 0;
@@ -70,6 +79,8 @@ class UpdateHandler : public UpdateHandlerInterface
      * @throw ToolException on failure (TODO: throw on timeout.)
      */
     bool verifyFile(const std::string& target, bool ignoreStatus) override;
+
+    std::vector<uint8_t> readVersion(const std::string& versionBlob) override;
 
     void cleanArtifacts() override;
 
