@@ -19,6 +19,7 @@
 #include "status.hpp"
 #include "tool_errors.hpp"
 
+#include <blobs-ipmid/blobs.hpp>
 #include <ipmiblob/blob_errors.hpp>
 
 #include <chrono>
@@ -108,6 +109,61 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
      * blobs to rollback the state and progress.
      */
     return (result == ipmi_flash::ActionStatus::success);
+}
+
+bool pollVersionStat(std::uint16_t session, ipmiblob::BlobInterface* blob)
+{
+    using namespace std::chrono_literals;
+    static constexpr auto pollingSleep = 5s;
+    uint16_t blobState = 0;
+    uint16_t mask = blobs::StateFlags::committed |
+                    blobs::StateFlags::committing |
+                    blobs::StateFlags::commit_error;
+
+    try
+    {
+        /* Polling lasts 5 minutes. When opening a version blob, the system
+         * unit defined in the version handler will extract the running version
+         * from the image on the flash.
+         */
+        static constexpr int commandAttempts = 60;
+        int attempts = 0;
+        bool exitLoop = false;
+
+        while (attempts++ < commandAttempts)
+        {
+            blobState = blob->getStat(session).blob_state & mask;
+
+            switch (blobState)
+            {
+                case blobs::StateFlags::commit_error:
+                    std::fprintf(stderr, "failed\n");
+                    exitLoop = true;
+                    break;
+                case blobs::StateFlags::committing:
+                    std::fprintf(stderr, "running\n");
+                    break;
+                case blobs::StateFlags::committed:
+                    exitLoop = true;
+                    std::fprintf(stderr, "success\n");
+                    break;
+                default:
+                    std::fprintf(stderr, "wait\n");
+            }
+            if (exitLoop)
+            {
+                break;
+            }
+            std::this_thread::sleep_for(pollingSleep);
+        }
+    }
+    catch (const ipmiblob::BlobException& b)
+    {
+        throw ToolException("blob exception received: " +
+                            std::string(b.what()));
+    }
+
+    return (blobState == blobs::StateFlags::committed);
 }
 
 void* memcpyAligned(void* destination, const void* source, std::size_t size)
