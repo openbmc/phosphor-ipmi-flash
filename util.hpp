@@ -13,6 +13,7 @@ inline constexpr char activeHashBlobId[] = "/flash/active/hash";
 inline constexpr char staticLayoutBlobId[] = "/flash/image";
 inline constexpr char ubiTarballBlobId[] = "/flash/tarball";
 inline constexpr char cleanupBlobId[] = "/flash/cleanup";
+inline constexpr char biosVersionBlobId[] = "/version/bios";
 
 /** @brief Lightweight class wrapper that removes move operations from a class
  *         in order to guarantee the contents stay pinned to a specific location

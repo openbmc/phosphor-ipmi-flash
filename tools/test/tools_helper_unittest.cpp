@@ -1,6 +1,7 @@
 #include "helper.hpp"
 #include "status.hpp"
 
+#include <blobs-ipmid/blobs.hpp>
 #include <ipmiblob/test/blob_interface_mock.hpp>
 
 #include <cstdint>
@@ -43,6 +44,30 @@ TEST_F(HelperTest, PollStatusReturnsAfterFailure)
         .WillOnce(Return(verificationResponse));
 
     EXPECT_FALSE(pollStatus(session, &blobMock));
+}
+
+TEST_F(HelperTest, PollReadReadyReturnsAfterSuccess)
+{
+    ipmiblob::StatResponse versionResponse = {};
+    /* the other details of the response are ignored, and should be. */
+    versionResponse.blob_state = blobs::StateFlags::open_read;
+
+    EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
+        .WillOnce(Return(versionResponse));
+
+    EXPECT_TRUE(pollReadReady(session, &blobMock).first);
+}
+
+TEST_F(HelperTest, PollReadReadyReturnsAfterFailure)
+{
+    ipmiblob::StatResponse versionResponse = {};
+    /* the other details of the response are ignored, and should be. */
+    versionResponse.blob_state = blobs::StateFlags::committed;
+
+    EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
+        .WillOnce(Return(versionResponse));
+
+    EXPECT_FALSE(pollReadReady(session, &blobMock).first);
 }
 
 TEST_F(HelperTest, MemcpyAlignedOneByte)
