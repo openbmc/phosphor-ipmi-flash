@@ -6,6 +6,7 @@
 #include "updater_mock.hpp"
 #include "util.hpp"
 
+#include <blobs-ipmid/blobs.hpp>
 #include <ipmiblob/blob_errors.hpp>
 #include <ipmiblob/test/blob_interface_mock.hpp>
 
@@ -20,6 +21,7 @@ namespace host_tool
 
 using ::testing::_;
 using ::testing::Eq;
+using ::testing::IsEmpty;
 using ::testing::Return;
 using ::testing::Throw;
 using ::testing::TypedEq;
@@ -169,6 +171,63 @@ TEST_F(UpdateHandlerTest, VerifyFileCommitExceptionForwards)
     EXPECT_CALL(blobMock, commit(session, _))
         .WillOnce(Throw(ipmiblob::BlobException("asdf")));
     EXPECT_THROW(updater.verifyFile(ipmi_flash::verifyBlobId, false),
+                 ToolException);
+}
+
+TEST_F(UpdateHandlerTest, ReadVerisonReturnExpected)
+{
+    /* It can return as expected, when polling and readBytes succeeds. */
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::biosVersionBlobId, _))
+        .WillOnce(Return(session));
+    ipmiblob::StatResponse readVersionResponse = {};
+    readVersionResponse.blob_state =
+        blobs::StateFlags::open_read | blobs::StateFlags::committed;
+    readVersionResponse.size = 10;
+    EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
+        .WillOnce(Return(readVersionResponse));
+    std::vector<uint8_t> resp = {0x2d, 0xfe};
+    EXPECT_CALL(blobMock, readBytes(session, 0, _)).WillOnce(Return(resp));
+
+    EXPECT_CALL(blobMock, closeBlob(session)).WillOnce(Return());
+    EXPECT_EQ(resp, updater.readVersion(ipmi_flash::biosVersionBlobId));
+}
+
+TEST_F(UpdateHandlerTest, ReadVersionExceptionWhenPollingSucceedsReadBytesFails)
+{
+    /* On readBytes, it can except. */
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::biosVersionBlobId, _))
+        .WillOnce(Return(session));
+    ipmiblob::StatResponse readVersionResponse = {};
+    readVersionResponse.blob_state =
+        blobs::StateFlags::open_read | blobs::StateFlags::committed;
+    readVersionResponse.size = 10;
+    EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
+        .WillOnce(Return(readVersionResponse));
+    EXPECT_CALL(blobMock, readBytes(session, 0, _))
+        .WillOnce(Throw(ipmiblob::BlobException("asdf")));
+    EXPECT_THROW(updater.readVersion(ipmi_flash::biosVersionBlobId),
+                 ToolException);
+}
+
+TEST_F(UpdateHandlerTest, ReadVersionReturnsEmptyIfPollingFails)
+{
+    /* It can return an empty result, when polling fails. */
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::biosVersionBlobId, _))
+        .WillOnce(Return(session));
+    ipmiblob::StatResponse readVersionResponse = {};
+    readVersionResponse.blob_state = blobs::StateFlags::commit_error;
+    EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
+        .WillOnce(Return(readVersionResponse));
+    EXPECT_CALL(blobMock, closeBlob(session)).WillOnce(Return());
+    EXPECT_THAT(updater.readVersion(ipmi_flash::biosVersionBlobId), IsEmpty());
+}
+
+TEST_F(UpdateHandlerTest, ReadVersionCovertsOpenBlobExceptionToToolException)
+{
+    /* On open, it can except and this is converted to a ToolException. */
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::biosVersionBlobId, _))
+        .WillOnce(Throw(ipmiblob::BlobException("asdf")));
+    EXPECT_THROW(updater.readVersion(ipmi_flash::biosVersionBlobId),
                  ToolException);
 }
 
