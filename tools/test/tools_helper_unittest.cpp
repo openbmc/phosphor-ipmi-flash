@@ -1,6 +1,7 @@
 #include "helper.hpp"
 #include "status.hpp"
 
+#include <blobs-ipmid/blobs.hpp>
 #include <ipmiblob/test/blob_interface_mock.hpp>
 
 #include <cstdint>
@@ -43,6 +44,65 @@ TEST_F(HelperTest, PollStatusReturnsAfterFailure)
         .WillOnce(Return(verificationResponse));
 
     EXPECT_FALSE(pollStatus(session, &blobMock));
+}
+
+TEST_F(HelperTest, PollReadReadyReturnsAfterSuccess)
+{
+    ipmiblob::StatResponse blobResponse = {};
+    /* the other details of the response are ignored, and should be. */
+    blobResponse.blob_state =
+        blobs::StateFlags::open_read | blobs::StateFlags::committed;
+
+    EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
+        .WillOnce(Return(blobResponse));
+
+    EXPECT_TRUE(pollReadReady(session, &blobMock).first);
+}
+
+TEST_F(HelperTest, PollReadReadyReturnsAfterFailure)
+{
+    ipmiblob::StatResponse blobResponse = {};
+    /* the other details of the response are ignored, and should be. */
+    blobResponse.blob_state = blobs::StateFlags::commit_error;
+
+    EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
+        .WillOnce(Return(blobResponse));
+
+    EXPECT_FALSE(pollReadReady(session, &blobMock).first);
+}
+
+TEST_F(HelperTest, PollReadReadyReturnsAfterRetrySuccess)
+{
+    ipmiblob::StatResponse blobResponseRunning = {};
+    /* the other details of the response are ignored, and should be. */
+    blobResponseRunning.blob_state = blobs::StateFlags::committing;
+
+    ipmiblob::StatResponse blobResponseReadReady = {};
+    /* the other details of the response are ignored, and should be. */
+    blobResponseReadReady.blob_state = blobs::StateFlags::open_read;
+
+    EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
+        .WillOnce(Return(blobResponseRunning))
+        .WillOnce(Return(blobResponseReadReady));
+
+    EXPECT_TRUE(pollReadReady(session, &blobMock).first);
+}
+
+TEST_F(HelperTest, PollReadReadyReturnsAfterRetryFailure)
+{
+    ipmiblob::StatResponse blobResponseRunning = {};
+    /* the other details of the response are ignored, and should be. */
+    blobResponseRunning.blob_state = blobs::StateFlags::committing;
+
+    ipmiblob::StatResponse blobResponseError = {};
+    /* the other details of the response are ignored, and should be. */
+    blobResponseError.blob_state = blobs::StateFlags::commit_error;
+
+    EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
+        .WillOnce(Return(blobResponseRunning))
+        .WillOnce(Return(blobResponseError));
+
+    EXPECT_FALSE(pollReadReady(session, &blobMock).first);
 }
 
 TEST_F(HelperTest, MemcpyAlignedOneByte)

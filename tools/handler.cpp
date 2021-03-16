@@ -141,6 +141,57 @@ bool UpdateHandler::verifyFile(const std::string& target, bool ignoreStatus)
     return (success == true);
 }
 
+std::vector<uint8_t> UpdateHandler::readVersion(const std::string& versionBlob)
+{
+    std::uint16_t session;
+
+    try
+    {
+        session = blob->openBlob(
+            versionBlob, static_cast<std::uint16_t>(
+                             ipmi_flash::FirmwareFlags::UpdateFlags::openRead));
+    }
+    catch (const ipmiblob::BlobException& b)
+    {
+        throw ToolException("blob exception received: " +
+                            std::string(b.what()));
+    }
+
+    std::fprintf(stderr, "Calling stat on %s session to check status\n",
+                 versionBlob.c_str());
+    std::vector<uint8_t> data;
+
+    /* TODO: call readBytes multiple times in case IPMI message length exceeds
+     * IPMI_MAX_MSG_LENGTH.
+     */
+    auto pollResp = pollReadReady(session, blob);
+    if (pollResp.first)
+    {
+        std::fprintf(stderr, "Returned success\n");
+        if (pollResp.second > 0)
+        {
+            try
+            {
+                data = blob->readBytes(session, 0, pollResp.second);
+            }
+            catch (const ipmiblob::BlobException& b)
+            {
+                blob->closeBlob(session);
+                throw ToolException("blob exception received: " +
+                                    std::string(b.what()));
+            }
+        }
+    }
+    else
+    {
+        std::fprintf(stderr, "Returned non-success (could still "
+                             "be running (unlikely))\n");
+    }
+
+    blob->closeBlob(session);
+    return data;
+}
+
 void UpdateHandler::cleanArtifacts()
 {
     /* open(), commit(), close() */

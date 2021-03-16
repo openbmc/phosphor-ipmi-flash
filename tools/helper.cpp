@@ -19,10 +19,13 @@
 #include "status.hpp"
 #include "tool_errors.hpp"
 
+#include <blobs-ipmid/blobs.hpp>
 #include <ipmiblob/blob_errors.hpp>
+#include <ipmiblob/blob_interface.hpp>
 
 #include <chrono>
 #include <thread>
+#include <utility>
 
 namespace host_tool
 {
@@ -108,6 +111,67 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
      * blobs to rollback the state and progress.
      */
     return (result == ipmi_flash::ActionStatus::success);
+}
+
+/* Poll an open blob session for reading.
+ *
+ * The committing bit indicates that the blob is not available for reading now
+ * and the reader might come back and check the state later.
+ *
+ * Polling finishes under the following conditions:
+ * - The open_read bit set -> stat successful
+ * - The open_read and committing bits unset -> stat failed;
+ * - Blob exception was received;
+ * - Time ran out.
+ * Polling continues when the open_read bit unset and committing bit set.
+ * If the blob is not open_read and not committing, then it is an error to the
+ * reader.
+ */
+std::pair<bool, uint32_t> pollReadReady(std::uint16_t session,
+                                        ipmiblob::BlobInterface* blob)
+{
+    using namespace std::chrono_literals;
+    static constexpr auto pollingSleep = 5s;
+    ipmiblob::StatResponse blobStatResp;
+
+    try
+    {
+        /* Polling lasts 5 minutes. When opening a version blob, the system
+         * unit defined in the version handler will extract the running version
+         * from the image on the flash.
+         */
+        static constexpr int commandAttempts = 60;
+        int attempts = 0;
+
+        while (attempts++ < commandAttempts)
+        {
+            blobStatResp = blob->getStat(session);
+
+            if (blobStatResp.blob_state & blobs::StateFlags::open_read)
+            {
+                std::fprintf(stderr, "success\n");
+                return std::make_pair(true, blobStatResp.size);
+            }
+            else if (blobStatResp.blob_state & blobs::StateFlags::committing)
+            {
+                std::fprintf(stderr, "running\n");
+            }
+            else
+            {
+                std::fprintf(stderr, "failed\n");
+                return std::make_pair(false, 0);
+            }
+
+            std::this_thread::sleep_for(pollingSleep);
+        }
+    }
+    catch (const ipmiblob::BlobException& b)
+    {
+        throw ToolException("blob exception received: " +
+                            std::string(b.what()));
+    }
+
+    return std::make_pair(false, 0);
 }
 
 void* memcpyAligned(void* destination, const void* source, std::size_t size)
