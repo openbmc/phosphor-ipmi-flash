@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c64cdb5d_1bb93b4a",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-03-19T20:54:22Z",
+      "side": 1,
+      "message": "should be fine to return a pair of \u003cbool, uint32_t\u003e?",
+      "parentUuid": "b1e0de86_0c0f89ab",
+      "revId": "86c45c00d4b8ffcdf1ec395e86eaea9628091d44",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "40b61e98_bca7ed10",
         "filename": "tools/helper.cpp",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2021-03-19T10:04:18Z",
       "side": 1,
       "message": "You should just check open_read / and if not set, then committing. Blobs don\u0027t generally guarantee setting the committing bits on open. We\u0027ve overloaded the term, purely for cases when the file isn\u0027t available for reading yet to use the committing bit to tell the reader to come back. Older readers would error out for these new blobs (they dont have any retry code anyway).\n\nHowever, older blobs and blobs which don\u0027t need time to get read won\u0027t necessarily set the commit bits. If the blob isn\u0027t open_read and isn\u0027t committing, then it is an error to the reader.",
+      "revId": "86c45c00d4b8ffcdf1ec395e86eaea9628091d44",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08dc4f88_e022d0a4",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-03-19T20:54:22Z",
+      "side": 1,
+      "message": "When the committing bits are not set, the loop will go on. If we just check open_read and committing, how can we know the data is ready to read? When I wrote this function, it is suppose to be only used by version blob, where the stat() will always have committing bits set up.",
+      "parentUuid": "40b61e98_bca7ed10",
       "revId": "86c45c00d4b8ffcdf1ec395e86eaea9628091d44",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
