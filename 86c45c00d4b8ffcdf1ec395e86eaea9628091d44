@@ -69,6 +69,24 @@
       "revId": "86c45c00d4b8ffcdf1ec395e86eaea9628091d44",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b20fc08_6a0ccdbf",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-03-23T01:14:32Z",
+      "side": 1,
+      "message": "Is the following pseudocode your logics?\n\nif ! blob_state \u0026 open_read\n    then exit_loop return false\nelse if blob_state \u0026 committing\n    then continue_polling\nelse \n    then exit_loop return true\n\nThis will cause read errors, as it returns true when a commit_error occurs especially for version blobs. But we can catch the error when reading.\n\nhttps://github.com/openbmc/phosphor-ipmi-flash/blob/c8b456e08bf6fedebc15c399e4a3a79b744b1624/bmc/version-handler/version_handler.cpp#L163\n\nlooks like we need add open_read flag for version blob stat()?",
+      "parentUuid": "08dc4f88_e022d0a4",
+      "revId": "86c45c00d4b8ffcdf1ec395e86eaea9628091d44",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
