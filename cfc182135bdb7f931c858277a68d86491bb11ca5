@@ -16,6 +16,23 @@
       "revId": "cfc182135bdb7f931c858277a68d86491bb11ca5",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8fe43185_e72817d8",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-04-05T19:20:38Z",
+      "side": 1,
+      "message": "Just return inside the loop for these termination conditions so you don\u0027t have to check twice.",
+      "revId": "cfc182135bdb7f931c858277a68d86491bb11ca5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
