@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fae9d3d1_5c5fcff6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-04-05T19:19:47Z",
+      "side": 1,
+      "message": "`tolls` -\u003e `tools`",
+      "revId": "cfc182135bdb7f931c858277a68d86491bb11ca5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
