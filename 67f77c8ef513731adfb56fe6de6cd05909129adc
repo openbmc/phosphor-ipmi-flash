@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "7cc73329_880abb59",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-04-06T04:39:31Z",
+      "side": 1,
+      "message": "I wonder if Jason Ling wanted to create a Tools side implementation for Version Handler as well, I would check with him as he factored out a lot of the code for version handling.",
+      "range": {
+        "startLine": 144,
+        "startChar": 21,
+        "endLine": 144,
+        "endChar": 34
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "54db0fde_559f7f3d",
         "filename": "tools/handler.cpp",
         "patchSetId": 4
@@ -18,6 +41,132 @@
         "startChar": 30,
         "endLine": 168,
         "endChar": 46
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83c12359_e4faaa3e",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-04-06T04:39:31Z",
+      "side": 1,
+      "message": "nit:\n```\n * - The open read and committed bits set -\u003e stat successful;\n * - The open read and committing bits unset -\u003e stat failed;\n * - Blob exception was received\n * - Time ran out.\n```",
+      "range": {
+        "startLine": 118,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 15
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "581cdd27_571acc6a",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-04-06T04:39:31Z",
+      "side": 1,
+      "message": "Looking at https://github.com/openbmc/phosphor-ipmi-flash/blob/master/bmc/version-handler/version_handler.cpp\n\nIt looks like we should be checking for committed AND open_read",
+      "range": {
+        "startLine": 142,
+        "startChar": 61,
+        "endLine": 142,
+        "endChar": 70
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e90592ed_ae54e8a5",
+        "filename": "tools/test/tools_helper_unittest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-04-06T04:39:31Z",
+      "side": 1,
+      "message": "For completeness, I would check for `commit_error` since that is what is used https://github.com/openbmc/phosphor-ipmi-flash/blob/master/bmc/version-handler/version_handler.cpp",
+      "range": {
+        "startLine": 65,
+        "startChar": 52,
+        "endLine": 65,
+        "endChar": 61
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5c7ef94_60b0ebe9",
+        "filename": "tools/test/tools_helper_unittest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-04-06T04:39:31Z",
+      "side": 1,
+      "message": "Please create another test case where the first poll returns committing to ensure it tries again",
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9fe7e10_26160fd2",
+        "filename": "tools/test/tools_updater_unittest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-04-06T04:39:31Z",
+      "side": 1,
+      "message": "Please write a 1~2 liner brief description of the test (and for the tests below0.",
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2efa2d03_b16acf29",
+        "filename": "tools/test/tools_updater_unittest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-04-06T04:39:31Z",
+      "side": 1,
+      "message": "I don\u0027t think we\u0027re failing because the response is empty right (since we don\u0027t have an \"empty\" check - should we be checking for that?) it\u0027s because blob_state is commit_error it seems like.",
+      "range": {
+        "startLine": 210,
+        "startChar": 26,
+        "endLine": 210,
+        "endChar": 60
       },
       "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
