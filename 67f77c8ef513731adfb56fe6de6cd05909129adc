@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "54db0fde_559f7f3d",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-04-06T04:21:14Z",
+      "side": 1,
+      "message": "I feel like this would feel out of place - do you mind putting a different fprintf statement above before you try to read that tells the user the context of what you\u0027re trying to do?\n\nSimilar to above with VerifyFile:\n```\n  std::fprintf(stderr, \"Calling stat on %s session to check status\\n\",\n                 target.c_str());\n```\n\nUnless, you were planning on calling readVersion from a different function and that was going to provide context.",
+      "range": {
+        "startLine": 168,
+        "startChar": 30,
+        "endLine": 168,
+        "endChar": 46
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
