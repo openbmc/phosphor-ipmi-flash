@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "09ea9384_482c589b",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T06:22:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "54db0fde_559f7f3d",
+      "range": {
+        "startLine": 168,
+        "startChar": 30,
+        "endLine": 168,
+        "endChar": 46
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "83c12359_e4faaa3e",
         "filename": "tools/helper.cpp",
         "patchSetId": 4
@@ -68,6 +92,30 @@
       "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9402201_c9cd4959",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T06:22:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "83c12359_e4faaa3e",
+      "range": {
+        "startLine": 118,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 15
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -94,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "eb9433fc_87ed8f70",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T06:22:48Z",
+      "side": 1,
+      "message": "William would like this function to be generic and not just for specific version blobs.https://github.com/openbmc/phosphor-ipmi-flash/blob/c8b456e08bf6fedebc15c399e4a3a79b744b1624/bmc/version-handler/version_handler.cpp#L158\n\nversion blobs will only have three states: committing, commit_error and committed | open_read. It would be safe to only check the open_read bit here . \n\nFor generic blobs, it is not required to have committed bit set. \n\nQuote of William\u0027s comment\n\nYou should just check open_read / and if not set, then committing. Blobs don\u0027t generally guarantee setting the committing bits on open. We\u0027ve overloaded the term, purely for cases when the file isn\u0027t available for reading yet to use the committing bit to tell the reader to come back. Older readers would error out for these new blobs (they dont have any retry code anyway).\n\nHowever, older blobs and blobs which don\u0027t need time to get read won\u0027t necessarily set the commit bits. If the blob isn\u0027t open_read and isn\u0027t committing, then it is an error to the reader.",
+      "parentUuid": "581cdd27_571acc6a",
+      "range": {
+        "startLine": 142,
+        "startChar": 61,
+        "endLine": 142,
+        "endChar": 70
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e90592ed_ae54e8a5",
         "filename": "tools/test/tools_helper_unittest.cpp",
         "patchSetId": 4
@@ -117,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "5250e2a6_37bcd623",
+        "filename": "tools/test/tools_helper_unittest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T06:22:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e90592ed_ae54e8a5",
+      "range": {
+        "startLine": 65,
+        "startChar": 52,
+        "endLine": 65,
+        "endChar": 61
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a5c7ef94_60b0ebe9",
         "filename": "tools/test/tools_helper_unittest.cpp",
         "patchSetId": 4
@@ -134,6 +230,24 @@
     },
     {
       "key": {
+        "uuid": "675fad38_0fc7b564",
+        "filename": "tools/test/tools_helper_unittest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T06:22:48Z",
+      "side": 1,
+      "message": "Created two test cases. The first poll returns committing, the second returns open_read / commit_error.\n\nIt will take additional 5 seconds. Hope it will not block the CI tests.",
+      "parentUuid": "a5c7ef94_60b0ebe9",
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b9fe7e10_26160fd2",
         "filename": "tools/test/tools_updater_unittest.cpp",
         "patchSetId": 4
@@ -148,6 +262,24 @@
       "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25caaae8_c77d591a",
+        "filename": "tools/test/tools_updater_unittest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T06:22:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b9fe7e10_26160fd2",
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -171,6 +303,30 @@
       "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bec51ea8_578a0422",
+        "filename": "tools/test/tools_updater_unittest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T06:22:48Z",
+      "side": 1,
+      "message": "readVersion function will return a uint8_t vector. This is just a trivial test that checks the return vector is empty if polling fails. I should change the test name to ReadVersionReturnEmptyIfPollingFail.",
+      "parentUuid": "2efa2d03_b16acf29",
+      "range": {
+        "startLine": 210,
+        "startChar": 26,
+        "endLine": 210,
+        "endChar": 60
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
