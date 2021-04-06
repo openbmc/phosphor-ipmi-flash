@@ -190,6 +190,30 @@
     },
     {
       "key": {
+        "uuid": "bd1c6632_390c272b",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T18:18:32Z",
+      "side": 1,
+      "message": "Add an additional comment in the function description.",
+      "parentUuid": "b1178391_be0febaa",
+      "range": {
+        "startLine": 142,
+        "startChar": 61,
+        "endLine": 142,
+        "endChar": 70
+      },
+      "revId": "67f77c8ef513731adfb56fe6de6cd05909129adc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e90592ed_ae54e8a5",
         "filename": "tools/test/tools_helper_unittest.cpp",
         "patchSetId": 4

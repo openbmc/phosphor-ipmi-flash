@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6888c52a_a993957e",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T18:18:32Z",
+      "side": 1,
+      "message": "yes, in tools_updater_unittest.cpp",
+      "parentUuid": "7fc21ec4_726ee817",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 79
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e0dd8d2a_41ee4275",
         "filename": "tools/handler.cpp",
         "patchSetId": 5
@@ -45,6 +69,30 @@
       "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "62e2cc56_ca046559",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T18:18:32Z",
+      "side": 1,
+      "message": "clean up will be done by cleanArtifacts() function, when the readVersion() function is called.",
+      "parentUuid": "e0dd8d2a_41ee4275",
+      "range": {
+        "startLine": 167,
+        "startChar": 1,
+        "endLine": 167,
+        "endChar": 49
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "04a9df09_61aa8db8",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T18:18:32Z",
+      "side": 1,
+      "message": "This is not an error condition. If the buffer size is 0, no need to issue an readBytes() call, as it will return an empty result.",
+      "parentUuid": "4ed1017c_d5df978b",
+      "range": {
+        "startLine": 171,
+        "startChar": 8,
+        "endLine": 171,
+        "endChar": 32
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4fc0b683_13b0591f",
         "filename": "tools/handler.cpp",
         "patchSetId": 5
@@ -91,6 +163,30 @@
       "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d69b36c_7986884a",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T18:18:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4fc0b683_13b0591f",
+      "range": {
+        "startLine": 177,
+        "startChar": 1,
+        "endLine": 181,
+        "endChar": 13
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "da69d0dc_1d38a8d9",
+        "filename": "tools/test/tools_helper_unittest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T18:18:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c85f228_ac12cb7a",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 59
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa558bc2_6da6b184",
         "filename": "tools/test/tools_helper_unittest.cpp",
         "patchSetId": 5
@@ -140,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "a3b78c21_23b3d8e7",
+        "filename": "tools/test/tools_helper_unittest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T18:18:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa558bc2_6da6b184",
+      "range": {
+        "startLine": 73,
+        "startChar": 19,
+        "endLine": 73,
+        "endChar": 55
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "14f577e8_018fae23",
         "filename": "tools/test/tools_helper_unittest.cpp",
         "patchSetId": 5
@@ -160,6 +304,30 @@
       "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03753f5b_f919c428",
+        "filename": "tools/test/tools_helper_unittest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-04-06T18:18:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "14f577e8_018fae23",
+      "range": {
+        "startLine": 90,
+        "startChar": 19,
+        "endLine": 90,
+        "endChar": 55
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
