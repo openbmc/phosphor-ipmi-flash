@@ -2,6 +2,98 @@
   "comments": [
     {
       "key": {
+        "uuid": "7fc21ec4_726ee817",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-04-06T16:58:06Z",
+      "side": 1,
+      "message": "Is this function unit tested?",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 79
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0dd8d2a_41ee4275",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-04-06T16:58:06Z",
+      "side": 1,
+      "message": "This looks like it can throw, should we clean up (close the blob) if it throws?",
+      "range": {
+        "startLine": 167,
+        "startChar": 1,
+        "endLine": 167,
+        "endChar": 49
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ed1017c_d5df978b",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-04-06T16:58:06Z",
+      "side": 1,
+      "message": "and if the size is 0? Should we not report that as an error condition?",
+      "range": {
+        "startLine": 171,
+        "startChar": 8,
+        "endLine": 171,
+        "endChar": 32
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4fc0b683_13b0591f",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-04-06T16:58:06Z",
+      "side": 1,
+      "message": "Do we need to try to close the blob before throwing?",
+      "range": {
+        "startLine": 177,
+        "startChar": 1,
+        "endLine": 181,
+        "endChar": 13
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0c85f228_ac12cb7a",
         "filename": "tools/test/tools_helper_unittest.cpp",
         "patchSetId": 5
@@ -18,6 +110,52 @@
         "startChar": 0,
         "endLine": 53,
         "endChar": 59
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa558bc2_6da6b184",
+        "filename": "tools/test/tools_helper_unittest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-04-06T16:58:06Z",
+      "side": 1,
+      "message": "nit: spelling mistake, Reruns not Reurns.",
+      "range": {
+        "startLine": 73,
+        "startChar": 19,
+        "endLine": 73,
+        "endChar": 55
+      },
+      "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "14f577e8_018fae23",
+        "filename": "tools/test/tools_helper_unittest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-04-06T16:58:06Z",
+      "side": 1,
+      "message": "nit: spelling mistake, reruns not reurns",
+      "range": {
+        "startLine": 90,
+        "startChar": 19,
+        "endLine": 90,
+        "endChar": 55
       },
       "revId": "d205844f49d18df2613011c8fbdfd469829bdc14",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
