@@ -1,0 +1,8 @@
+Ok-To-Test+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: William A. Kennington III <wak@google.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: Patrick Venture <venture@google.com>
+Submitted-at: Fri, 16 Apr 2021 22:11:55 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-ipmi-flash/+/42389
+Project: openbmc/phosphor-ipmi-flash
+Branch: refs/heads/master
