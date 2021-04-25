@@ -18,6 +18,6 @@ class CrcMock : public CrcInterface
 {
   public:
     virtual ~CrcMock() = default;
-    MOCK_CONST_METHOD1(generateCrc,
-                       std::uint16_t(const std::vector<std::uint8_t>&));
+    MOCK_METHOD(std::uint16_t, generateCrc, (const std::vector<std::uint8_t>&),
+                (const, override));
 };

@@ -13,8 +13,10 @@ class DataInterfaceMock : public DataInterface
   public:
     virtual ~DataInterfaceMock() = default;
 
-    MOCK_METHOD2(sendContents, bool(const std::string&, std::uint16_t));
-    MOCK_CONST_METHOD0(supportedType, ipmi_flash::FirmwareFlags::UpdateFlags());
+    MOCK_METHOD(bool, sendContents, (const std::string&, std::uint16_t),
+                (override));
+    MOCK_METHOD(ipmi_flash::FirmwareFlags::UpdateFlags, supportedType, (),
+                (const, override));
 };
 
 } // namespace host_tool
