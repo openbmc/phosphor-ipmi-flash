@@ -14,11 +14,13 @@ namespace host_tool
 class UpdateHandlerMock : public UpdateHandlerInterface
 {
   public:
-    MOCK_METHOD1(checkAvailable, bool(const std::string&));
-    MOCK_METHOD1(readVersion, std::vector<uint8_t>(const std::string&));
-    MOCK_METHOD2(sendFile, void(const std::string&, const std::string&));
-    MOCK_METHOD2(verifyFile, bool(const std::string&, bool));
-    MOCK_METHOD0(cleanArtifacts, void());
+    MOCK_METHOD(bool, checkAvailable, (const std::string&), (override));
+    MOCK_METHOD(std::vector<uint8_t>, readVersion, (const std::string&),
+                (override));
+    MOCK_METHOD(void, sendFile, (const std::string&, const std::string&),
+                (override));
+    MOCK_METHOD(bool, verifyFile, (const std::string&, bool), (override));
+    MOCK_METHOD(void, cleanArtifacts, (), (override));
 };
 
 } // namespace host_tool

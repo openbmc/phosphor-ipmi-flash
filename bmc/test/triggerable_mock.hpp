@@ -15,9 +15,10 @@ namespace ipmi_flash
 class TriggerMock : public TriggerableActionInterface
 {
   public:
-    MOCK_METHOD0(trigger, bool());
-    MOCK_METHOD0(abort, void());
-    MOCK_METHOD0(status, ActionStatus());
+    MOCK_METHOD(bool, trigger, (), (override));
+    MOCK_METHOD(void, abort, (), (override));
+    MOCK_METHOD(ActionStatus, status, (), (override));
+
     using TriggerableActionInterface::cb;
 };
 

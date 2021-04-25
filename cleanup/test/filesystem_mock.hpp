@@ -12,6 +12,6 @@ namespace ipmi_flash
 class FileSystemMock : public FileSystemInterface
 {
   public:
-    MOCK_CONST_METHOD1(remove, void(const std::string&));
+    MOCK_METHOD(void, remove, (const std::string&), (const, override));
 };
 } // namespace ipmi_flash

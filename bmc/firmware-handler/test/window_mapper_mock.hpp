@@ -16,9 +16,10 @@ class HardwareInterfaceMock : public HardwareMapperInterface
   public:
     virtual ~HardwareInterfaceMock() = default;
 
-    MOCK_METHOD0(open, MemorySet());
-    MOCK_METHOD0(close, ());
-    MOCK_METHOD2(mapWindow, WindowMapResult(std::uint32_t, std::uint32_t));
+    MOCK_METHOD(MemorySet, open, (), (override));
+    MOCK_METHOD(void, close, (), (override));
+    MOCK_METHOD(WindowMapResult, mapWindow, (std::uint32_t, std::uint32_t),
+                (override));
 };
 
 } // namespace ipmi_flash
