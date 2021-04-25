@@ -13,12 +13,14 @@ class ImageHandlerMock : public ImageHandlerInterface
 {
   public:
     virtual ~ImageHandlerMock() = default;
-    MOCK_METHOD2(open, bool(const std::string&, std::ios_base::openmode));
-    MOCK_METHOD0(close, void());
-    MOCK_METHOD2(write, bool(std::uint32_t, const std::vector<std::uint8_t>&));
-    MOCK_METHOD2(read, std::optional<std::vector<std::uint8_t>>(std::uint32_t,
-                                                                std::uint32_t));
-    MOCK_METHOD0(getSize, int());
+    MOCK_METHOD(bool, open, (const std::string&, std::ios_base::openmode),
+                (override));
+    MOCK_METHOD(void, close, (), (override));
+    MOCK_METHOD(bool, write, (std::uint32_t, const std::vector<std::uint8_t>&),
+                (override));
+    MOCK_METHOD(std::optional<std::vector<std::uint8_t>>, read,
+                (std::uint32_t, std::uint32_t), (override));
+    MOCK_METHOD(int, getSize, (), (override));
 };
 
 std::unique_ptr<ImageHandlerMock> CreateImageMock()

@@ -12,11 +12,13 @@ class DataHandlerMock : public DataInterface
   public:
     virtual ~DataHandlerMock() = default;
 
-    MOCK_METHOD0(open, bool());
-    MOCK_METHOD0(close, bool());
-    MOCK_METHOD1(copyFrom, std::vector<std::uint8_t>(std::uint32_t));
-    MOCK_METHOD1(writeMeta, bool(const std::vector<std::uint8_t>&));
-    MOCK_METHOD0(readMeta, std::vector<std::uint8_t>());
+    MOCK_METHOD(bool, open, (), (override));
+    MOCK_METHOD(bool, close, (), (override));
+    MOCK_METHOD(std::vector<std::uint8_t>, copyFrom, (std::uint32_t),
+                (override));
+    MOCK_METHOD(bool, writeMeta, (const std::vector<std::uint8_t>&),
+                (override));
+    MOCK_METHOD(std::vector<std::uint8_t>, readMeta, (), (override));
 };
 
 } // namespace ipmi_flash
