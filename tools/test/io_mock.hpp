@@ -12,10 +12,11 @@ class HostIoInterfaceMock : public HostIoInterface
   public:
     ~HostIoInterfaceMock() = default;
 
-    MOCK_METHOD3(read, bool(const std::size_t, const std::size_t, void* const));
-
-    MOCK_METHOD3(write,
-                 bool(const std::size_t, const std::size_t, const void* const));
+    MOCK_METHOD(bool, read, (const std::size_t, const std::size_t, void* const),
+                (override));
+    MOCK_METHOD(bool, write,
+                (const std::size_t, const std::size_t, const void* const),
+                (override));
 };
 
 } // namespace host_tool
