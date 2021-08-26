@@ -138,6 +138,8 @@ AS_IF([test "x$enable_build_bmc_blob_handler" != "xno"], [
     ])
 ], [
     AM_CONDITIONAL([ENABLE_HOST_BIOS], [0])
+    AM_CONDITIONAL([HAVE_SYSTEMUNITDIR], [0])
+    AM_CONDITIONAL([HAVE_TMPFILESDIR], [0])
 ])
 
 # If not building the host-tool, we're building the BMC.
