@@ -19,7 +19,6 @@
 #include "status.hpp"
 #include "tool_errors.hpp"
 
-#include <blobs-ipmid/blobs.hpp>
 #include <ipmiblob/blob_errors.hpp>
 #include <ipmiblob/blob_interface.hpp>
 
@@ -147,12 +146,12 @@ std::pair<bool, uint32_t> pollReadReady(std::uint16_t session,
         {
             blobStatResp = blob->getStat(session);
 
-            if (blobStatResp.blob_state & blobs::StateFlags::open_read)
+            if (blobStatResp.blob_state & ipmiblob::StateFlags::open_read)
             {
                 std::fprintf(stderr, "success\n");
                 return std::make_pair(true, blobStatResp.size);
             }
-            else if (blobStatResp.blob_state & blobs::StateFlags::committing)
+            else if (blobStatResp.blob_state & ipmiblob::StateFlags::committing)
             {
                 std::fprintf(stderr, "running\n");
             }
