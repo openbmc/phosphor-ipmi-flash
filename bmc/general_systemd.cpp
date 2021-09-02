@@ -93,7 +93,7 @@ void SystemdNoFile::abort()
         std::fprintf(stderr, "Canceled %s: %s\n", triggerService.c_str(),
                      job->c_str());
     }
-    catch (const sdbusplus::exception::SdBusError& ex)
+    catch (const sdbusplus::exception::exception& ex)
     {
         std::fprintf(stderr, "Failed to cancel job %s %s: %s\n",
                      triggerService.c_str(), job->c_str(), ex.what());
@@ -126,7 +126,7 @@ void SystemdNoFile::match(sdbusplus::message::message& m)
     {
         m.read(job_id, job_path, unit, result);
     }
-    catch (const sdbusplus::exception::SdBusError& e)
+    catch (const sdbusplus::exception::exception& e)
     {
         std::fprintf(stderr, "Bad JobRemoved signal %s: %s\n",
                      triggerService.c_str(), e.what());
