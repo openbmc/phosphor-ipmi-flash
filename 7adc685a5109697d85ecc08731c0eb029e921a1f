@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4dca5525_37367b4f",
+        "filename": "tools/updater.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-09-10T04:10:58Z",
+      "side": 1,
+      "message": "nit: blobs",
+      "range": {
+        "startLine": 53,
+        "startChar": 24,
+        "endLine": 53,
+        "endChar": 28
+      },
+      "revId": "7adc685a5109697d85ecc08731c0eb029e921a1f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3004a75_d20e5a93",
+        "filename": "tools/updater.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-09-10T04:10:58Z",
+      "side": 1,
+      "message": "support multiple stages?",
+      "range": {
+        "startLine": 53,
+        "startChar": 32,
+        "endLine": 53,
+        "endChar": 39
+      },
+      "revId": "7adc685a5109697d85ecc08731c0eb029e921a1f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
