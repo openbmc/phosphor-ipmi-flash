@@ -274,8 +274,8 @@ int main(int argc, char* argv[])
         try
         {
             host_tool::UpdateHandler updater(&blob, handler.get());
-            host_tool::updaterMain(&updater, imagePath, signaturePath, type,
-                                   ignoreUpdate);
+            host_tool::updaterMain(&updater, &blob, imagePath, signaturePath,
+                                   type, ignoreUpdate);
         }
         catch (const host_tool::ToolException& e)
         {
