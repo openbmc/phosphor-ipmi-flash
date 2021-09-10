@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a17b3f4_9017bcf2",
+        "filename": "tools/updater.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-09-10T05:29:27Z",
+      "side": 1,
+      "message": "nit: This should just be find() or more ideally some form of starts_with() since that wouldn\u0027t need to scan the whole string.",
+      "revId": "bfb661a18e55983f604f88bd198a76ff52596c36",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
