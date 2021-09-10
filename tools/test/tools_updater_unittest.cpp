@@ -294,8 +294,32 @@ TEST_F(UpdaterTest, UpdateMainReturnsSuccessIfAllSuccess)
         .WillOnce(Return(true));
     EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, defaultIgnore))
         .WillOnce(Return(true));
+    EXPECT_CALL(blobMock, getBlobList())
+        .WillOnce(Return(std::vector<std::string>({})));
 
-    updaterMain(&handler, image, signature, layout, defaultIgnore);
+    updaterMain(&handler, &blobMock, image, signature, layout, defaultIgnore);
+}
+
+TEST_F(UpdaterTest, UpdateMainReturnsSuccessIfAllSuccessWithDeleteActiveBlob)
+{
+    UpdateHandlerMock handler;
+
+    EXPECT_CALL(handler, checkAvailable(path)).WillOnce(Return(true));
+    EXPECT_CALL(handler, sendFile(path, image)).WillOnce(Return());
+    EXPECT_CALL(handler, sendFile(ipmi_flash::hashBlobId, signature))
+        .WillOnce(Return());
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore))
+        .WillOnce(Return(true));
+    EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, defaultIgnore))
+        .WillOnce(Return(true));
+    EXPECT_CALL(handler, cleanArtifacts()).WillOnce(Return());
+    EXPECT_CALL(blobMock, deleteBlob(ipmi_flash::activeImageBlobId))
+        .WillOnce(Return(true));
+    EXPECT_CALL(blobMock, getBlobList())
+        .WillOnce(Return(std::vector<std::string>(
+            {ipmi_flash::staticLayoutBlobId, ipmi_flash::activeImageBlobId})));
+
+    updaterMain(&handler, &blobMock, image, signature, layout, defaultIgnore);
 }
 
 TEST_F(UpdaterTest, UpdateMainReturnsSuccessWithIgnoreUpdate)
@@ -311,8 +335,10 @@ TEST_F(UpdaterTest, UpdateMainReturnsSuccessWithIgnoreUpdate)
         .WillOnce(Return(true));
     EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, updateIgnore))
         .WillOnce(Return(true));
+    EXPECT_CALL(blobMock, getBlobList())
+        .WillOnce(Return(std::vector<std::string>({})));
 
-    updaterMain(&handler, image, signature, layout, updateIgnore);
+    updaterMain(&handler, &blobMock, image, signature, layout, updateIgnore);
 }
 
 TEST_F(UpdaterTest, UpdateMainCleansUpOnFailure)
@@ -326,8 +352,11 @@ TEST_F(UpdaterTest, UpdateMainCleansUpOnFailure)
     EXPECT_CALL(handler, verifyFile(ipmi_flash::verifyBlobId, defaultIgnore))
         .WillOnce(Return(false));
     EXPECT_CALL(handler, cleanArtifacts()).WillOnce(Return());
+    EXPECT_CALL(blobMock, getBlobList())
+        .WillOnce(Return(std::vector<std::string>({})));
 
-    EXPECT_THROW(updaterMain(&handler, image, signature, layout, defaultIgnore),
+    EXPECT_THROW(updaterMain(&handler, &blobMock, image, signature, layout,
+                             defaultIgnore),
                  ToolException);
 }
 
@@ -344,8 +373,11 @@ TEST_F(UpdaterTest, UpdateMainExceptsOnUpdateBlobFailure)
     EXPECT_CALL(handler, verifyFile(ipmi_flash::updateBlobId, defaultIgnore))
         .WillOnce(Return(false));
     EXPECT_CALL(handler, cleanArtifacts()).WillOnce(Return());
+    EXPECT_CALL(blobMock, getBlobList())
+        .WillOnce(Return(std::vector<std::string>({})));
 
-    EXPECT_THROW(updaterMain(&handler, image, signature, layout, defaultIgnore),
+    EXPECT_THROW(updaterMain(&handler, &blobMock, image, signature, layout,
+                             defaultIgnore),
                  ToolException);
 }
 
@@ -354,8 +386,11 @@ TEST_F(UpdaterTest, UpdateMainExceptsIfAvailableNotFound)
     UpdateHandlerMock handler;
 
     EXPECT_CALL(handler, checkAvailable(path)).WillOnce(Return(false));
+    EXPECT_CALL(blobMock, getBlobList())
+        .WillOnce(Return(std::vector<std::string>({})));
 
-    EXPECT_THROW(updaterMain(&handler, image, signature, layout, defaultIgnore),
+    EXPECT_THROW(updaterMain(&handler, &blobMock, image, signature, layout,
+                             defaultIgnore),
                  ToolException);
 }
 
