@@ -16,6 +16,24 @@
       "revId": "bfb661a18e55983f604f88bd198a76ff52596c36",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d2bae496_920a1a51",
+        "filename": "tools/updater.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-10T06:27:28Z",
+      "side": 1,
+      "message": "Done.\n\nLet me just use find() for now. \n\nI didn\u0027t want to use boost::start_with and wanted to use string_view\u0027s start_with(), but it seems like I need to update to c++ 20 first.\n\nThis will do for now. I will try to move this project to C++ 20. Seems like autoconf doesn\u0027t support c++20 yet. Maybe time to convert to meson.",
+      "parentUuid": "7a17b3f4_9017bcf2",
+      "revId": "bfb661a18e55983f604f88bd198a76ff52596c36",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
