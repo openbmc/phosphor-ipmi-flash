@@ -35,8 +35,8 @@
 namespace host_tool
 {
 
-void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
-                 const std::string& signaturePath,
+void updaterMain(UpdateHandlerInterface* updater, ipmiblob::BlobInterface* blob,
+                 const std::string& imagePath, const std::string& signaturePath,
                  const std::string& layoutType, bool ignoreUpdate)
 {
     /* TODO: validate the layoutType isn't a special value such as: 'update',
@@ -48,6 +48,23 @@ void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
     if (!goalSupported)
     {
         throw ToolException("Goal firmware not supported");
+    }
+
+    // Clean all active blobs to support multiple stages
+    // Check for any active blobs and delete the first one found to reset the
+    // BMC's phosphor-ipmi-flash state machine then clean any leftover artifacts
+    const auto blobList = blob->getBlobList();
+    for (const auto& activeBlob : blobList)
+    {
+        // Prefix is /flash/active/
+        if (activeBlob.find("/flash/active/", 0) == 0)
+        {
+            std::fprintf(stderr, "Found an active blob, deleting %s\n",
+                         activeBlob.c_str());
+            blob->deleteBlob(activeBlob);
+            updater->cleanArtifacts();
+            break;
+        }
     }
 
     /* Yay, our layout type is supported. */
