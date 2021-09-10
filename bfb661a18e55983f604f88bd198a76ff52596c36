@@ -34,6 +34,24 @@
       "revId": "bfb661a18e55983f604f88bd198a76ff52596c36",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b396e00e_7c19d7da",
+        "filename": "tools/updater.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-09-10T06:32:02Z",
+      "side": 1,
+      "message": "Yeah, I usually work around it using\n```\nconstexpr std::string_view expected \u003d \"/flash/active\";\nif (std::string_view(activeBlob).substr(0, expected.size()) \u003d\u003d expected) ...\n```",
+      "parentUuid": "d2bae496_920a1a51",
+      "revId": "bfb661a18e55983f604f88bd198a76ff52596c36",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
