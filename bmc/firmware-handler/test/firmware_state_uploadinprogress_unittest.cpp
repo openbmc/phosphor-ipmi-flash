@@ -122,7 +122,8 @@ TEST_F(FirmwareHandlerUploadInProgressTest,
     blobs::BlobMeta meta, expectedMeta = {};
     expectedMeta.size = 32;
     expectedMeta.blobState =
-        blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi;
+        static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+        FirmwareFlags::UpdateFlags::ipmi;
     EXPECT_TRUE(handler->stat(session, &meta));
     EXPECT_EQ(expectedMeta, meta);
 }

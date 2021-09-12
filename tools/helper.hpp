@@ -33,6 +33,7 @@ std::pair<bool, uint32_t> pollReadReady(std::uint16_t session,
  * @param[in] size - bytes to copy
  * @return destination pointer
  */
-void* memcpyAligned(void* destination, const void* source, std::size_t size);
+void* memcpyAligned(std::byte* destination, const std::byte* source,
+                    std::size_t size);
 
 } // namespace host_tool
