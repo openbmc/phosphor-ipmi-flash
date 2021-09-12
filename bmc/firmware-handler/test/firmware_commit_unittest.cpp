@@ -51,8 +51,11 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnFlashImage)
     EXPECT_CALL(*imageMock2, open("asdf", std::ios::out))
         .WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi, "asdf"));
+    EXPECT_TRUE(
+        handler->open(0,
+                      static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                          FirmwareFlags::UpdateFlags::ipmi,
+                      "asdf"));
 
     EXPECT_FALSE(handler->commit(0, {}));
 }
@@ -68,9 +71,11 @@ TEST_F(FirmwareHandlerCommitTest, VerifyCannotCommitOnHashFile)
     EXPECT_CALL(*imageMock1, open(StrEq(hashBlobId), std::ios::out))
         .WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi,
-        hashBlobId));
+    EXPECT_TRUE(
+        handler->open(0,
+                      static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                          FirmwareFlags::UpdateFlags::ipmi,
+                      hashBlobId));
 
     EXPECT_FALSE(handler->commit(0, {}));
 }

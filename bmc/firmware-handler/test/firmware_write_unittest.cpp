@@ -31,8 +31,11 @@ TEST_F(FirmwareHandlerWriteTestIpmiOnly, DataTypeIpmiWriteSuccess)
     /* Verify if data type ipmi, it calls write with the bytes. */
     EXPECT_CALL(*imageMock, open("asdf", std::ios::out)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi, "asdf"));
+    EXPECT_TRUE(
+        handler->open(0,
+                      static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                          FirmwareFlags::UpdateFlags::ipmi,
+                      "asdf"));
 
     std::vector<std::uint8_t> bytes = {0xaa, 0x55};
 
@@ -46,8 +49,11 @@ TEST_F(FirmwareHandlerWriteTestLpc, DataTypeNonIpmiWriteSuccess)
     EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(*imageMock, open("asdf", std::ios::out)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc, "asdf"));
+    EXPECT_TRUE(
+        handler->open(0,
+                      static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                          FirmwareFlags::UpdateFlags::lpc,
+                      "asdf"));
 
     struct ExtChunkHdr request;
     request.length = 4; /* number of bytes to read. */
@@ -69,8 +75,11 @@ TEST_F(FirmwareHandlerWriteTestLpc, DataTypeNonIpmiWriteFailsBadRequest)
     EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(*imageMock, open("asdf", std::ios::out)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc, "asdf"));
+    EXPECT_TRUE(
+        handler->open(0,
+                      static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                          FirmwareFlags::UpdateFlags::lpc,
+                      "asdf"));
 
     struct ExtChunkHdr request;
     request.length = 4; /* number of bytes to read. */

@@ -62,7 +62,7 @@ TEST(LpcHandleTest, verifySendsFileContents)
         .WillOnce(Return(0));
 
     EXPECT_CALL(ioMock, write(_, data.size(), _))
-        .WillOnce(Invoke([&data](const std::size_t, const std::size_t length,
+        .WillOnce(Invoke([&data](const std::size_t, const std::size_t,
                                  const void* const source) {
             EXPECT_THAT(std::memcmp(source, data.data(), data.size()), 0);
             return true;

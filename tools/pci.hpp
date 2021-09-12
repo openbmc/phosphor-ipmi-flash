@@ -49,8 +49,7 @@ class PciAccessBridge : public PciBridgeIntf
     virtual ~PciAccessBridge();
 
     virtual void write(const stdplus::span<const std::uint8_t> data) override;
-    virtual void
-        configure(const ipmi_flash::PciConfigResponse& configResp) override{};
+    virtual void configure(const ipmi_flash::PciConfigResponse&) override{};
 
     std::size_t getDataLength() override
     {
@@ -102,7 +101,7 @@ class NuvotonPciBridge : public PciAccessBridge
     static constexpr int bar = 0;
     static constexpr struct pci_id_match match
     {
-        vid, did, PCI_MATCH_ANY, PCI_MATCH_ANY
+        vid, did, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0
     };
 
     static constexpr pciaddr_t bridge = 0x04;
@@ -142,7 +141,7 @@ class AspeedPciBridge : public PciAccessBridge
     static constexpr int bar = 1;
     static constexpr struct pci_id_match match
     {
-        vid, did, PCI_MATCH_ANY, PCI_MATCH_ANY
+        vid, did, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0
     };
 
     static constexpr std::size_t config = 0x0f000;
