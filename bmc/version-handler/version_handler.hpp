@@ -49,17 +49,15 @@ class VersionBlobHandler : public blobs::GenericBlobInterface
               const std::string& path) override;
     std::vector<uint8_t> read(uint16_t session, uint32_t offset,
                               uint32_t requestedSize) override;
-    bool write(uint16_t session, uint32_t offset,
-               const std::vector<uint8_t>& data) override
+    bool write(uint16_t, uint32_t, const std::vector<uint8_t>&) override
     {
         return false; /* not supported */
     };
-    bool writeMeta(uint16_t session, uint32_t offset,
-                   const std::vector<uint8_t>& data) override
+    bool writeMeta(uint16_t, uint32_t, const std::vector<uint8_t>&) override
     {
         return false; /* not supported */
     }
-    bool commit(uint16_t session, const std::vector<uint8_t>& data) override
+    bool commit(uint16_t, const std::vector<uint8_t>&) override
     {
         return false; // not supported
     }

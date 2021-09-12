@@ -1,0 +1,22 @@
+bmc_inc = include_directories('.')
+
+common_pre = declare_dependency(
+  include_directories: [root_inc, bmc_inc])
+
+common_lib = static_library(
+  'common',
+  'buildjson.cpp',
+  'file_handler.cpp',
+  'fs.cpp',
+  'general_systemd.cpp',
+  'skip_action.cpp',
+  implicit_include_directories: false,
+  dependencies: common_pre)
+
+common_dep = declare_dependency(
+  link_with: common_lib,
+  dependencies: common_pre)
+
+if not get_option('tests').disabled()
+  subdir('test')
+endif
