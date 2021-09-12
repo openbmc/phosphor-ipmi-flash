@@ -37,45 +37,41 @@ class FileCleanupHandler : public blobs::GenericBlobInterface
     bool commit(uint16_t session, const std::vector<uint8_t>& data) override;
 
     /* These methods return true without doing anything. */
-    bool open(uint16_t session, uint16_t flags,
-              const std::string& path) override
+    bool open(uint16_t, uint16_t, const std::string&) override
     {
         return true;
     }
-    bool close(uint16_t session) override
+    bool close(uint16_t) override
     {
         return true;
     }
-    bool expire(uint16_t session) override
+    bool expire(uint16_t) override
     {
         return true;
     }
 
     /* These methods are unsupported. */
-    bool deleteBlob(const std::string& path) override
+    bool deleteBlob(const std::string&) override
     {
         return false;
     }
-    bool stat(const std::string& path, blobs::BlobMeta* meta) override
+    bool stat(const std::string&, blobs::BlobMeta*) override
     {
         return false;
     }
-    std::vector<uint8_t> read(uint16_t session, uint32_t offset,
-                              uint32_t requestedSize) override
+    std::vector<uint8_t> read(uint16_t, uint32_t, uint32_t) override
     {
         return {};
     }
-    bool write(uint16_t session, uint32_t offset,
-               const std::vector<uint8_t>& data) override
+    bool write(uint16_t, uint32_t, const std::vector<uint8_t>&) override
     {
         return false;
     }
-    bool writeMeta(uint16_t session, uint32_t offset,
-                   const std::vector<uint8_t>& data) override
+    bool writeMeta(uint16_t, uint32_t, const std::vector<uint8_t>&) override
     {
         return false;
     }
-    bool stat(uint16_t session, blobs::BlobMeta* meta) override
+    bool stat(uint16_t, blobs::BlobMeta*) override
     {
         return false;
     }
