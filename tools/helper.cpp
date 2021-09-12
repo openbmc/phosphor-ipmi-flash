@@ -173,33 +173,34 @@ std::pair<bool, uint32_t> pollReadReady(std::uint16_t session,
     return std::make_pair(false, 0);
 }
 
-void* memcpyAligned(void* destination, const void* source, std::size_t size)
+void* memcpyAligned(void* destination, const void* /* source */,
+                    std::size_t /* size */)
 {
-    std::size_t i = 0;
-    std::size_t bytesCopied = 0;
+    // std::size_t i = 0;
+    // std::size_t bytesCopied = 0;
 
-    if ((alignof(destination) == alignof(std::uint64_t)) &&
-        (alignof(source) == alignof(std::uint64_t)))
-    {
-        auto src64 = reinterpret_cast<const volatile std::uint64_t*>(source);
-        auto dest64 = reinterpret_cast<volatile std::uint64_t*>(destination);
+    // if ((alignof(destination) == alignof(std::uint64_t)) &&
+    //     (alignof(source) == alignof(std::uint64_t)))
+    // {
+    //     auto src64 = reinterpret_cast<const volatile std::uint64_t*>(source);
+    //     auto dest64 = reinterpret_cast<volatile std::uint64_t*>(destination);
 
-        for (i = 0; i < size / sizeof(std::uint64_t); i++)
-        {
-            *dest64++ = *src64++;
-            bytesCopied += sizeof(std::uint64_t);
-        }
-    }
+    //     for (i = 0; i < size / sizeof(std::uint64_t); i++)
+    //     {
+    //         *dest64++ = *src64++;
+    //         bytesCopied += sizeof(std::uint64_t);
+    //     }
+    // }
 
-    auto srcMem8 =
-        reinterpret_cast<const volatile std::uint8_t*>(source) + bytesCopied;
-    auto destMem8 =
-        reinterpret_cast<volatile std::uint8_t*>(destination) + bytesCopied;
+    // auto srcMem8 =
+    //     reinterpret_cast<const volatile std::uint8_t*>(source) + bytesCopied;
+    // auto destMem8 =
+    //     reinterpret_cast<volatile std::uint8_t*>(destination) + bytesCopied;
 
-    for (i = bytesCopied; i < size; i++)
-    {
-        *destMem8++ = *srcMem8++;
-    }
+    // for (i = bytesCopied; i < size; i++)
+    // {
+    //     *destMem8++ = *srcMem8++;
+    // }
 
     return destination;
 }
