@@ -57,7 +57,7 @@ TEST_F(BtHandlerTest, verifySendsFileContents)
     EXPECT_CALL(progMock, start(fakeFileSize));
 
     EXPECT_CALL(sysMock, read(fd, NotNull(), _))
-        .WillOnce(Invoke([&](int fd, void* buf, std::size_t count) {
+        .WillOnce(Invoke([&](int, void* buf, std::size_t count) {
             EXPECT_TRUE(count > bytes.size());
             std::memcpy(buf, bytes.data(), bytes.size());
             return bytes.size();
@@ -110,7 +110,7 @@ TEST_F(BtHandlerTest, sendContentsFailsWhenBlobHandlerThrows)
     EXPECT_CALL(progMock, start(fakeFileSize));
 
     EXPECT_CALL(sysMock, read(fd, NotNull(), _))
-        .WillOnce(Invoke([&](int fd, void* buf, std::size_t count) {
+        .WillOnce(Invoke([&](int, void* buf, std::size_t count) {
             EXPECT_TRUE(count > bytes.size());
             std::memcpy(buf, bytes.data(), bytes.size());
             return bytes.size();
