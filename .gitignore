@@ -53,3 +53,7 @@ test-suite.log
 
 # Output binaries
 burn_my_bmc
+
+# Meson Outputs
+/build*/
+/subprojects/*/
