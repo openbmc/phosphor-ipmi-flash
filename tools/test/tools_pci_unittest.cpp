@@ -69,8 +69,7 @@ class Device
     virtual ~Device() = default;
     virtual const struct pci_id_match* getMatch() const = 0;
     virtual struct pci_device getDevice() const = 0;
-    virtual void expectSetup(PciAccessMock& pciMock,
-                             const struct pci_device& dev) const {};
+    virtual void expectSetup(PciAccessMock&, const struct pci_device&) const {};
     virtual std::unique_ptr<PciBridgeIntf>
         getBridge(PciAccess* pci, bool skipBridgeDisable = false) const = 0;
     virtual std::string getName() const = 0;
@@ -140,7 +139,7 @@ class NuvotonDevice : public Device
   private:
     static constexpr struct pci_id_match match
     {
-        0x1050, 0x0750, PCI_MATCH_ANY, PCI_MATCH_ANY
+        0x1050, 0x0750, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0
     };
 };
 
@@ -187,7 +186,7 @@ class AspeedDevice : public Device
   private:
     static constexpr struct pci_id_match match
     {
-        0x1a03, 0x2000, PCI_MATCH_ANY, PCI_MATCH_ANY
+        0x1a03, 0x2000, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0
     };
 };
 

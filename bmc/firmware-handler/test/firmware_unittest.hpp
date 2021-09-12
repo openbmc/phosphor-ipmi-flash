@@ -188,8 +188,8 @@ class IpmiOnlyFirmwareStaticTest : public ::testing::Test
     TriggerMock* updateMockPtr;
 
     std::uint16_t session = 1;
-    std::uint16_t flags =
-        blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi;
+    std::uint16_t flags = static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                          FirmwareFlags::UpdateFlags::ipmi;
 
     blobs::BlobMeta expectedIdleMeta = {0xff00, 0, {}};
 

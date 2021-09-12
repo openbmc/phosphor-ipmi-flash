@@ -80,7 +80,7 @@ std::vector<std::uint8_t> PciDataHandler::copyFrom(std::uint32_t length)
     return results;
 }
 
-bool PciDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)
+bool PciDataHandler::writeMeta(const std::vector<std::uint8_t>&)
 {
     /* PCI handler doesn't require configuration write, only read. */
     return false;
