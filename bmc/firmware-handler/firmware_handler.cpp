@@ -94,7 +94,7 @@ std::vector<std::string> FirmwareBlobHandler::getBlobIds()
  * Per the design, this mean abort, and this will trigger whatever
  * appropriate actions are required to abort the process.
  */
-bool FirmwareBlobHandler::deleteBlob(const std::string& path)
+bool FirmwareBlobHandler::deleteBlob(const std::string& /* path */)
 {
     switch (state)
     {
@@ -554,7 +554,7 @@ bool FirmwareBlobHandler::write(uint16_t session, uint32_t offset,
  * false at any other part. -- the lpc handler portion will know to return
  * false.
  */
-bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
+bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t,
                                     const std::vector<uint8_t>& data)
 {
     auto item = lookup.find(session);
@@ -586,8 +586,7 @@ bool FirmwareBlobHandler::writeMeta(uint16_t session, uint32_t offset,
  * For this file to have opened, the other two must be closed, which means any
  * out-of-band transport mechanism involved is closed.
  */
-bool FirmwareBlobHandler::commit(uint16_t session,
-                                 const std::vector<uint8_t>& data)
+bool FirmwareBlobHandler::commit(uint16_t session, const std::vector<uint8_t>&)
 {
     auto item = lookup.find(session);
     if (item == lookup.end())
@@ -753,7 +752,7 @@ void FirmwareBlobHandler::changeState(UpdateState next)
     }
 }
 
-bool FirmwareBlobHandler::expire(uint16_t session)
+bool FirmwareBlobHandler::expire(uint16_t /* session */)
 {
     abortProcess();
     return true;
@@ -763,9 +762,7 @@ bool FirmwareBlobHandler::expire(uint16_t session)
  * Currently, the design does not provide this with a function, however,
  * it will likely change to support reading data back.
  */
-std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t session,
-                                               uint32_t offset,
-                                               uint32_t requestedSize)
+std::vector<uint8_t> FirmwareBlobHandler::read(uint16_t, uint32_t, uint32_t)
 {
     return {};
 }

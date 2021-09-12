@@ -113,7 +113,9 @@ void PciAccessBridge::write(const stdplus::span<const std::uint8_t> data)
                         dataLength));
     }
 
-    memcpyAligned(addr + dataOffset, data.data(), data.size());
+    std::memcpy(addr + dataOffset, data.data(), data.size());
+    // TODO(wltu): fix aligned memory copy to meet ISO C++.
+    // memcpyAligned(addr + dataOffset, data.data(), data.size());
 }
 
 void NuvotonPciBridge::enableBridge()

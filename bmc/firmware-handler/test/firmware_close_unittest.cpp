@@ -31,9 +31,11 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithDataHandler)
     EXPECT_CALL(*hashImageMock, open(StrEq(hashBlobId), std::ios::out))
         .WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc,
-        hashBlobId));
+    EXPECT_TRUE(
+        handler->open(0,
+                      static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                          FirmwareFlags::UpdateFlags::lpc,
+                      hashBlobId));
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
@@ -59,9 +61,11 @@ TEST_F(FirmwareHandlerCloseTest, CloseSucceedsWithoutDataHandler)
     EXPECT_CALL(*hashImageMock, open(StrEq(hashBlobId), std::ios::out))
         .WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi,
-        hashBlobId));
+    EXPECT_TRUE(
+        handler->open(0,
+                      static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                          FirmwareFlags::UpdateFlags::ipmi,
+                      hashBlobId));
 
     /* The active hash blob_id was added. */
     auto currentBlobs = handler->getBlobIds();
