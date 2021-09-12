@@ -42,14 +42,14 @@ const std::vector<std::uint16_t> OpenFailParams{
     0b101 << 8,
     0b011 << 8,
     /* Next 1 doesn't specify any transport */
-    blobs::OpenFlags::write | 0b000 << 8,
+    static_cast<std::uint16_t>(blobs::OpenFlags::write) | 0b000 << 8,
     /* Next 3 specify 2 reserved transport bits at the same time. This isn't
      * allowed because older code expects these first 3 bits to be mutually
      * exclusive.
      */
-    blobs::OpenFlags::write | 0b110 << 8,
-    blobs::OpenFlags::write | 0b101 << 8,
-    blobs::OpenFlags::write | 0b011 << 8,
+    static_cast<std::uint16_t>(blobs::OpenFlags::write) | 0b110 << 8,
+    static_cast<std::uint16_t>(blobs::OpenFlags::write) | 0b101 << 8,
+    static_cast<std::uint16_t>(blobs::OpenFlags::write) | 0b011 << 8,
 };
 
 INSTANTIATE_TEST_CASE_P(WithFlags, FirmwareOpenFailTest,

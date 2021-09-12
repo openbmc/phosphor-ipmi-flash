@@ -82,12 +82,12 @@ std::vector<std::string> VersionBlobHandler::getBlobIds()
 /**
  * deleteBlob - does nothing, always fails
  */
-bool VersionBlobHandler::deleteBlob(const std::string& path)
+bool VersionBlobHandler::deleteBlob(const std::string&)
 {
     return false;
 }
 
-bool VersionBlobHandler::stat(const std::string& path, blobs::BlobMeta* meta)
+bool VersionBlobHandler::stat(const std::string&, blobs::BlobMeta*)
 {
     return false;
 }
