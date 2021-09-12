@@ -27,8 +27,11 @@ TEST_F(FirmwareSessionStateTestIpmiOnly, DataTypeIpmiNoMetadata)
      */
     EXPECT_CALL(*imageMock, open("asdf", std::ios::out)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi, "asdf"));
+    EXPECT_TRUE(
+        handler->open(0,
+                      static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                          FirmwareFlags::UpdateFlags::ipmi,
+                      "asdf"));
 
     int size = 512;
     EXPECT_CALL(*imageMock, getSize()).WillOnce(Return(size));
@@ -36,7 +39,8 @@ TEST_F(FirmwareSessionStateTestIpmiOnly, DataTypeIpmiNoMetadata)
     blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat(0, &meta));
     EXPECT_EQ(meta.blobState,
-              blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::ipmi);
+              static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                  FirmwareFlags::UpdateFlags::ipmi);
     EXPECT_EQ(meta.size, size);
     EXPECT_EQ(meta.metadata.size(), 0);
 }
@@ -50,8 +54,11 @@ TEST_F(FirmwareSessionStateTestLpc, DataTypeP2AReturnsMetadata)
     EXPECT_CALL(*dataMock, open()).WillOnce(Return(true));
     EXPECT_CALL(*imageMock, open("asdf", std::ios::out)).WillOnce(Return(true));
 
-    EXPECT_TRUE(handler->open(
-        0, blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc, "asdf"));
+    EXPECT_TRUE(
+        handler->open(0,
+                      static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                          FirmwareFlags::UpdateFlags::lpc,
+                      "asdf"));
 
     int size = 512;
     EXPECT_CALL(*imageMock, getSize()).WillOnce(Return(size));
@@ -61,7 +68,8 @@ TEST_F(FirmwareSessionStateTestLpc, DataTypeP2AReturnsMetadata)
     blobs::BlobMeta meta;
     EXPECT_TRUE(handler->stat(0, &meta));
     EXPECT_EQ(meta.blobState,
-              blobs::OpenFlags::write | FirmwareFlags::UpdateFlags::lpc);
+              static_cast<std::uint16_t>(blobs::OpenFlags::write) |
+                  FirmwareFlags::UpdateFlags::lpc);
     EXPECT_EQ(meta.size, size);
     EXPECT_EQ(meta.metadata.size(), mBytes.size());
     EXPECT_EQ(meta.metadata[0], mBytes[0]);
