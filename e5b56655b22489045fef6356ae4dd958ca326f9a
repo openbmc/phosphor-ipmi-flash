@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cbf37e66_ad9656d7",
+        "filename": "meson.build",
+        "patchSetId": 9
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-13T14:39:51Z",
+      "side": 1,
+      "message": "```\nExecuting subproject phosphor-ipmi-blobs \n\nphosphor-ipmi-blobs| Project name: phosphor-ipmi-blobs\nphosphor-ipmi-blobs| Project version: 0.1\nphosphor-ipmi-blobs| C++ compiler for the host machine: c++ (gcc 11.1.0 \"c++ (Ubuntu 11.1.0-1ubuntu1~21.04) 11.1.0\")\nphosphor-ipmi-blobs| C++ linker for the host machine: c++ ld.bfd 2.36.1\nphosphor-ipmi-blobs| Dependency phosphor-logging found: YES 1.0.0 (cached)\nphosphor-ipmi-blobs| WARNING: Project targeting \u0027\u003e\u003d0.51.0\u0027 but tried to use feature introduced in \u00270.53.0\u0027: Fallback without variable name.\nphosphor-ipmi-blobs| Run-time dependency ipmiblob found: NO (tried pkgconfig and cmake)\n\nsubprojects/phosphor-ipmi-blobs/meson.build:26:0: ERROR: Dependency \"ipmiblob\" not found, tried pkgconfig and cmake\n```\n\nIs there something that I have to to fix this?\n\nI am able to run the Docker CI locally with no issue.\n\nThis happens only when it depends on the subproject.\n\n------\n\nthere is also another issue if de meet the `phosphor-ipmi-blob` dependency. \n\n```\nfirmware_close_unittest.cpp.o -c ../bmc/firmware-handler/test/firmware_close_unittest.cpp\nIn file included from ../bmc/firmware-handler/test/firmware_close_unittest.cpp:2:\n../bmc/firmware-handler/firmware_handler.hpp:3:10: fatal error: config.h: No such file or directory\n    3 | #include \"config.h\"\n      |          ^~~~~~~~~~\n```\n\nIt will not find `config.h` if it does not build the subproject. Is this expected? \n\nThis will project break once we move the recipe build to meson.",
+      "range": {
+        "startLine": 159,
+        "startChar": 0,
+        "endLine": 163,
+        "endChar": 24
+      },
+      "revId": "e5b56655b22489045fef6356ae4dd958ca326f9a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "021e2658_62f56af3",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-13T14:39:51Z",
+      "side": 1,
+      "message": "This run into warning error with alignof.\n\n```\n../tools/helper.cpp: In function \u0027void* host_tool::memcpyAligned(void*, const void*, std::size_t)\u0027:\n../tools/helper.cpp:181:5: error: ISO C++ does not allow \u0027alignof\u0027 with a non-type [-Werror\u003dpedantic]\n  181 |     alignof(destination);\n      |     ^~~~~~~\n../tools/helper.cpp:181:5: error: statement has no effect [-Werror\u003dunused-value]\n  181 |     alignof(destination);\n      |     ^~~~~~~~~~~~~~~~~~~~\n```\n\nI am not sure how we can fix this.",
+      "range": {
+        "startLine": 176,
+        "startChar": 0,
+        "endLine": 177,
+        "endChar": 43
+      },
+      "revId": "e5b56655b22489045fef6356ae4dd958ca326f9a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
