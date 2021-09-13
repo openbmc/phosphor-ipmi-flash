@@ -28,6 +28,7 @@
 #include <cstring>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <unordered_map>
 #include <vector>
@@ -48,6 +49,23 @@ void updaterMain(UpdateHandlerInterface* updater, const std::string& imagePath,
     if (!goalSupported)
     {
         throw ToolException("Goal firmware not supported");
+    }
+
+    // Clean all active blobs to support multiple stages
+    // Check for any active blobs and delete the first one found to reset the
+    // BMC's phosphor-ipmi-flash state machine then clean any leftover artifacts
+    const auto blobList = blob->getBlobList();
+    for (std::string_view activeBlob : blobList)
+    {
+        // Prefix is /flash/active/
+        if (activeBlob.starts_with("/flash/active/"))
+        {
+            std::fprintf(stderr, "Found an active blob, deleting %s\n",
+                         activeBlob.data());
+            blob->deleteBlob(activeBlob.data());
+            updater->cleanArtifacts();
+            break;
+        }
     }
 
     /* Yay, our layout type is supported. */
