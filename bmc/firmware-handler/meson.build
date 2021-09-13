@@ -78,7 +78,7 @@ if (not get_option('aspeed-p2a').disabled() or
 endif
 
 if not get_option('nuvoton-p2a-vga').disabled()
-firmware_source += 'pci_nuvoton_handler.cpp'
+  firmware_source += 'pci_nuvoton_handler.cpp'
 endif
 
 if not get_option('nuvoton-p2a-mbox').disabled()

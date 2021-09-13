@@ -28,6 +28,7 @@
 #include <cstring>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <unordered_map>
 #include <vector>
@@ -54,14 +55,14 @@ void updaterMain(UpdateHandlerInterface* updater, ipmiblob::BlobInterface* blob,
     // Check for any active blobs and delete the first one found to reset the
     // BMC's phosphor-ipmi-flash state machine then clean any leftover artifacts
     const auto blobList = blob->getBlobList();
-    for (const auto& activeBlob : blobList)
+    for (std::string_view activeBlob : blobList)
     {
         // Prefix is /flash/active/
-        if (activeBlob.find("/flash/active/", 0) == 0)
+        if (activeBlob.starts_with("/flash/active/"))
         {
             std::fprintf(stderr, "Found an active blob, deleting %s\n",
-                         activeBlob.c_str());
-            blob->deleteBlob(activeBlob);
+                         activeBlob.data());
+            blob->deleteBlob(activeBlob.data());
             updater->cleanArtifacts();
             break;
         }
