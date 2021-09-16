@@ -22,6 +22,30 @@
       "revId": "3a052098b2f89e3402b95d1a0d970d1b227a7384",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "deb34a74_2ed60899",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1000590
+      },
+      "writtenOn": "2021-09-16T05:29:21Z",
+      "side": 1,
+      "message": "I misunderstood the alignof().  My intention was to check if the destination and source address es are 8 byte aligned.",
+      "parentUuid": "dcc22344_894a412e",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 183,
+        "endChar": 55
+      },
+      "revId": "3a052098b2f89e3402b95d1a0d970d1b227a7384",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
