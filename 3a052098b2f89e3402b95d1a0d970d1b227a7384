@@ -46,6 +46,30 @@
       "revId": "3a052098b2f89e3402b95d1a0d970d1b227a7384",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4e5eeb2_304a7d79",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1000590
+      },
+      "writtenOn": "2021-09-16T05:52:18Z",
+      "side": 1,
+      "message": "Initially I had a basic alignment check  \"(destination \u0026 (sizeof(uint64_t) - 1) \u003d\u003d 0)\" but saw this function used in some other place and thought it might be better to use that.",
+      "parentUuid": "deb34a74_2ed60899",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 183,
+        "endChar": 55
+      },
+      "revId": "3a052098b2f89e3402b95d1a0d970d1b227a7384",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
