@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dcc22344_894a412e",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-16T05:02:45Z",
+      "side": 1,
+      "message": "I am looking at this and is confused on when this will ever fail.\n\nIsn\u0027t getting `alignof(destination)` the same as alignof(viod*). That will be the same as any pointer.\n\nhttps://en.cppreference.com/w/cpp/language/alignof\n\nDoes the pointer get different valid of alignof depending on the system?\n\nVivek? do you have the reasoning behind it? https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-ipmi-flash/+/40727\n\nSome basic test,\n\n```\nstruct alignas(alignof(std::uint16_t)) test\n{\n} __attribute__((packed));\n\n\nstd::cout \u003c\u003c \"uint16_t : \" \u003c\u003c alignof(std::uint16_t) \u003c\u003c std::endl;\nstd::cout \u003c\u003c \"test : \" \u003c\u003c alignof(test) \u003c\u003c std::endl;\nstd::cout \u003c\u003c \"test* : \" \u003c\u003c sizeof(test *) \u003c\u003c std::endl;\nstd::cout \u003c\u003c \"void* : \" \u003c\u003c alignof(void *) \u003c\u003c std::endl;\n```\n\nOutput\n```\nuint16_t : 2\ntest : 2\ntest* : 8\nvoid* : 8\n```\n\n----\n\nSo I am wondering if we even need the check at all.",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 183,
+        "endChar": 55
+      },
+      "revId": "3a052098b2f89e3402b95d1a0d970d1b227a7384",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
