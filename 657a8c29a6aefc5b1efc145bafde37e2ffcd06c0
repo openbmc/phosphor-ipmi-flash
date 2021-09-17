@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ee53ebf_d8b01e15",
+        "filename": "meson.build",
+        "patchSetId": 17
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-17T16:49:52Z",
+      "side": 1,
+      "message": "Trying to test this on a real system with https://gerrit.openbmc-project.xyz/c/openbmc/openbmc/+/46981\n\nRan into issue installing the shared library.\n\n\n```\nNOTE: Executing Tasks\nERROR: phosphor-ipmi-flash-1.0+gitAUTOINC+bfbbb75ea9-r1 do_package: QA Issue: phosphor-ipmi-flash: Files/directories were installed but not shipped in any package:\n  /usr/lib/ipmid-providers/libversionblob.so\n  /usr/lib/ipmid-providers/libfirmwarecleanupblob.so\n  /usr/lib/ipmid-providers/libfirmwareblob.so\nPlease set FILES such that these items are packaged. Alternatively if they are unneeded, avoid installing them or delete them within do_install.\nphosphor-ipmi-flash: 3 installed and not shipped files. [installed-vs-shipped]\nERROR: phosphor-ipmi-flash-1.0+gitAUTOINC+bfbbb75ea9-r1 do_package: Fatal QA errors found, failing task.\n\n```\n\nI am not sure what I am missing here.\n\nI also tried to add do_install() to install it with no luck.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 8
+      },
+      "revId": "657a8c29a6aefc5b1efc145bafde37e2ffcd06c0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
