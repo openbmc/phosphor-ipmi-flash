@@ -178,8 +178,8 @@ void* memcpyAligned(void* destination, const void* source, std::size_t size)
     std::size_t i = 0;
     std::size_t bytesCopied = 0;
 
-    if ((alignof(destination) == alignof(std::uint64_t)) &&
-        (alignof(source) == alignof(std::uint64_t)))
+    if (!(reinterpret_cast<std::uintptr_t>(destination) % sizeof(uint64_t)) &&
+        !(reinterpret_cast<std::uintptr_t>(source) % sizeof(uint64_t)))
     {
         auto src64 = reinterpret_cast<const volatile std::uint64_t*>(source);
         auto dest64 = reinterpret_cast<volatile std::uint64_t*>(destination);
