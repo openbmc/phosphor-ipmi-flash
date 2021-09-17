@@ -138,7 +138,7 @@ std::vector<std::uint8_t> NetDataHandler::copyFrom(std::uint32_t length)
     return data;
 }
 
-bool NetDataHandler::writeMeta(const std::vector<std::uint8_t>& configuration)
+bool NetDataHandler::writeMeta(const std::vector<std::uint8_t>&)
 {
     // TODO: have the host tool send the expected IP address that it will
     // connect from
