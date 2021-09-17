@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "65826643_7a461084",
+        "filename": "meson.build",
+        "patchSetId": 14
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-17T16:48:39Z",
+      "side": 1,
+      "message": "yeah, enabling everything will have duplicate definition of the handlers.\n\nLike `nuvoton-p2a-vga` and `nuvoton-p2a-mbox` create the definition of the same functions.\n\nMaybe we can just have a new flag, maybe like `obmc-test`? then with that just enable the tests, but not includes all the default test files.",
+      "parentUuid": "fc6317f4_dd8bd013",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "eb91dadf_173d09a8",
         "filename": "meson_options.txt",
         "patchSetId": 14
@@ -33,6 +51,24 @@
       "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3aa7fbd3_e603db59",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-17T16:48:39Z",
+      "side": 1,
+      "message": "Done.\n\nI have move all the enabled features as auto",
+      "parentUuid": "eb91dadf_173d09a8",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "60e45671_ff73375b",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-17T16:48:39Z",
+      "side": 1,
+      "message": "Done. I have move all the options except the build options as boolean.",
+      "parentUuid": "b101d197_7100e2cb",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "23752a91_e5df2ccb",
         "filename": "meson_options.txt",
         "patchSetId": 14
@@ -64,6 +118,24 @@
       "writtenOn": "2021-09-17T09:13:23Z",
       "side": 1,
       "message": "If static and ubi are exclusive options, you should make it a single option of type `combo`. I didn\u0027t notice any others yet but it would generally be good to use in these type of cases.",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d6132f4_09ce0889",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-17T16:48:39Z",
+      "side": 1,
+      "message": "I think all the lpc and pci stuff can also be combo?",
+      "parentUuid": "23752a91_e5df2ccb",
       "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "e17c91ee_f1d5c782",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-17T16:48:39Z",
+      "side": 1,
+      "message": "The tests enabled the enabled the following\n\n- lpc_aspeed\n- lpc_nuvoton\n- pci_handler (aspeed)\n\nEnabling the Nuvoton p2a will fail to build.",
+      "parentUuid": "7d6b1ddc_24cd6947",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "38ce5a21_f2f29893",
         "filename": "meson_options.txt",
         "patchSetId": 14
@@ -98,6 +188,24 @@
       "writtenOn": "2021-09-17T09:13:23Z",
       "side": 1,
       "message": "Do any of these really need to be options? If no one is using them I would be inclined to remove them.",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "085c1a00_9d4e9cf7",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-17T16:48:39Z",
+      "side": 1,
+      "message": "yeah, I am not sure exactly. It was in the README.md, so I added back in just in case.\n\nI doubt anyone is using it.",
+      "parentUuid": "38ce5a21_f2f29893",
       "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
