@@ -91,6 +91,30 @@
       "revId": "657a8c29a6aefc5b1efc145bafde37e2ffcd06c0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "464549d8_e0b26523",
+        "filename": "meson.build",
+        "patchSetId": 17
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-09-17T22:45:03Z",
+      "side": 1,
+      "message": "FILES_${PN}:append \u003d \" /usr/lib/ipmid-providers\" looks like you need add all *so files there",
+      "parentUuid": "0ee53ebf_d8b01e15",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 8
+      },
+      "revId": "657a8c29a6aefc5b1efc145bafde37e2ffcd06c0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
