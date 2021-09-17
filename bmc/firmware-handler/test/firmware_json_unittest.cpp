@@ -4,6 +4,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include <filesystem>
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -13,7 +15,7 @@ namespace
 {
 using ::testing::IsEmpty;
 
-static constexpr auto TESTFNAME = "test.json";
+static constexpr auto TESTFNAME = "./test/test.json";
 using json = nlohmann::json;
 TEST(FirmwareJsonTest, InvalidHandlerType)
 {
@@ -617,6 +619,7 @@ TEST(FirmwareJsonTest, VerifySkipFields)
 
 TEST(FirmwareJsonTest, BuildFromFile)
 {
+    std::filesystem::create_directories("./test/");
     std::ofstream testfile;
     testfile.open(TESTFNAME, std::ios::out);
     auto good = R"(
@@ -642,7 +645,7 @@ TEST(FirmwareJsonTest, BuildFromFile)
     testfile << good.dump(4);
     testfile.flush();
     FirmwareHandlersBuilder b;
-    auto h = b.buildHandlerConfigs("./");
+    auto h = b.buildHandlerConfigs("./test/");
     EXPECT_EQ(h.size(), 1);
     EXPECT_EQ(h[0].blobId, "/flash/image");
     EXPECT_FALSE(h[0].handler == nullptr);
@@ -658,12 +661,13 @@ TEST(FirmwareJsonTest, BuildFromFile)
 
 TEST(FirmwareJsonTest, BuildFromBadFile)
 {
+    std::filesystem::create_directories("./test/");
     std::ofstream testfile;
     testfile.open(TESTFNAME, std::ios::out);
     testfile << "{] a malformed json {{";
     testfile.flush();
     FirmwareHandlersBuilder b;
-    auto h = b.buildHandlerConfigs("./");
+    auto h = b.buildHandlerConfigs("./test/");
     EXPECT_THAT(h, IsEmpty());
     if (std::remove(TESTFNAME) != 0)
     {

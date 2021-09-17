@@ -44,8 +44,7 @@ std::vector<std::string> FileCleanupHandler::getBlobIds()
     return {supported};
 }
 
-bool FileCleanupHandler::commit(uint16_t session,
-                                const std::vector<uint8_t>& data)
+bool FileCleanupHandler::commit(uint16_t, const std::vector<uint8_t>&)
 {
     for (const auto& file : files)
     {
