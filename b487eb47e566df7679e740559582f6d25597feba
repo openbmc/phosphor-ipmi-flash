@@ -22,6 +22,30 @@
       "revId": "b487eb47e566df7679e740559582f6d25597feba",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "29dfc2f2_d396ab9e",
+        "filename": "tools/pci.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-17T21:10:49Z",
+      "side": 1,
+      "message": "I can\u0027t leave the struct variable uninitialized",
+      "parentUuid": "1fe20dd3_b2ec7537",
+      "range": {
+        "startLine": 104,
+        "startChar": 46,
+        "endLine": 104,
+        "endChar": 55
+      },
+      "revId": "b487eb47e566df7679e740559582f6d25597feba",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
