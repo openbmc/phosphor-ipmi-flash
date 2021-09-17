@@ -46,6 +46,30 @@
       "revId": "18f7e2bf2b3e495847b87751a0863111aa455334",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3e9c595_d7ce4970",
+        "filename": "meson.build",
+        "patchSetId": 11
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-09-17T04:50:49Z",
+      "side": 1,
+      "message": "cmake \u003d import(\u0027cmake\u0027)\n opt_var \u003d import(\u0027cmake).cmake.subproject_options()\n opt_var.append_compile_args(\u0027c++\u0027, [\u0027-DCMAKE_POSITION_INDEPENDENT_CODE\u003dON\u0027, \u0027-DMASTER_PROJECT\u003dOFF\u0027]\nfmt_proj \u003d cmake.subproject(\u0027fmt\u0027, options: opt_var)\nfmt_dep \u003d fmt_proj.dependency(\u0027fmt\u0027)\n\nI was suggesting something like this.\n\nGood news CI passed!",
+      "parentUuid": "e2d70c30_a94d36fc",
+      "range": {
+        "startLine": 154,
+        "startChar": 4,
+        "endLine": 154,
+        "endChar": 17
+      },
+      "revId": "18f7e2bf2b3e495847b87751a0863111aa455334",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
