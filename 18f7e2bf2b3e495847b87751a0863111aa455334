@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7cac8367_efe76be9",
+        "filename": "meson.build",
+        "patchSetId": 11
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-09-17T04:14:55Z",
+      "side": 1,
+      "message": "nit.\nThe cmake_options kwarg for the subproject function is now deprecated since it is replaced by the new options system since meson 0.55",
+      "range": {
+        "startLine": 154,
+        "startChar": 4,
+        "endLine": 154,
+        "endChar": 17
+      },
+      "revId": "18f7e2bf2b3e495847b87751a0863111aa455334",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
