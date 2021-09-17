@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fc6317f4_dd8bd013",
+        "filename": "meson.build",
+        "patchSetId": 14
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-09-17T09:13:23Z",
+      "side": 1,
+      "message": "Does the build actually end up broken if you enable everything? Some day we might enable test building during image building so I don\u0027t think this has much value if it allows these when tests are built.",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb91dadf_173d09a8",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-09-17T09:13:23Z",
+      "side": 1,
+      "message": "Features should generally be auto by default, which is the implicit default value.",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b101d197_7100e2cb",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-09-17T09:13:23Z",
+      "side": 1,
+      "message": "Generally if auto detection doesn\u0027t apply it should be a boolean not feature, the same is true in many other places.",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23752a91_e5df2ccb",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-09-17T09:13:23Z",
+      "side": 1,
+      "message": "If static and ubi are exclusive options, you should make it a single option of type `combo`. I didn\u0027t notice any others yet but it would generally be good to use in these type of cases.",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d6b1ddc_24cd6947",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-09-17T09:13:23Z",
+      "side": 1,
+      "message": "Can all of these be built by default just to make sure they do compile?",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38ce5a21_f2f29893",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-09-17T09:13:23Z",
+      "side": 1,
+      "message": "Do any of these really need to be options? If no one is using them I would be inclined to remove them.",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
