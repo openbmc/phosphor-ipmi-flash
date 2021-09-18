@@ -139,6 +139,53 @@
       "revId": "657a8c29a6aefc5b1efc145bafde37e2ffcd06c0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58914308_45ca74da",
+        "filename": "meson.build",
+        "patchSetId": 17
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-09-18T06:47:14Z",
+      "side": 1,
+      "message": "It will build libfirmwareblob.so  libfirmwarecleanupblob.so  libversionblob.so if you fix the typo I pointed out below.\n\nplease Add tested in the commit message. Testing should cover building with bitbake and in-band image flash functionality using any host tools.",
+      "parentUuid": "fd89fe4b_431a172b",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 8
+      },
+      "revId": "657a8c29a6aefc5b1efc145bafde37e2ffcd06c0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "558b3b0b_9be07d41",
+        "filename": "meson.build",
+        "patchSetId": 17
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-09-18T06:47:14Z",
+      "side": 1,
+      "message": "typo?",
+      "range": {
+        "startLine": 63,
+        "startChar": 32,
+        "endLine": 63,
+        "endChar": 35
+      },
+      "revId": "657a8c29a6aefc5b1efc145bafde37e2ffcd06c0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
