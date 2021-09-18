@@ -115,6 +115,30 @@
       "revId": "657a8c29a6aefc5b1efc145bafde37e2ffcd06c0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd89fe4b_431a172b",
+        "filename": "meson.build",
+        "patchSetId": 17
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-18T04:06:43Z",
+      "side": 1,
+      "message": "Doing,\n\n```\nFILES:${PN}:append \u003d \" ${libdir}/ipmid-providers\"\nFILES:${PN}:append \u003d \" ${libdir}/tmpfiles.d\"\n```\n\nseems to work again. Maybe I missed something when that was failing.\n\nThanks for the pointer.\n\n----\n\nIt seems like it is broken. I\u0027ll test to test it out work. It builds but fail to run. No blob shows up.",
+      "parentUuid": "464549d8_e0b26523",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 8
+      },
+      "revId": "657a8c29a6aefc5b1efc145bafde37e2ffcd06c0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
