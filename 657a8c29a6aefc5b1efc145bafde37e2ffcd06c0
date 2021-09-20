@@ -190,6 +190,30 @@
     },
     {
       "key": {
+        "uuid": "4ee3078f_c47400c2",
+        "filename": "meson.build",
+        "patchSetId": 17
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-09-20T04:52:46Z",
+      "side": 1,
+      "message": "I see. Probably libfirmwareblob.so\nlibfirmwarecleanupblob.so\nlibversionblob.so should be installed under /usr/lib/blob-ipmid\n\nYou can double check with William or Brandon.",
+      "parentUuid": "08f2ce87_cdf197bb",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 8
+      },
+      "revId": "657a8c29a6aefc5b1efc145bafde37e2ffcd06c0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "558b3b0b_9be07d41",
         "filename": "meson.build",
         "patchSetId": 17
