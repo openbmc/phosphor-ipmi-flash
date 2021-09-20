@@ -214,6 +214,30 @@
     },
     {
       "key": {
+        "uuid": "24c3856f_ec269801",
+        "filename": "meson.build",
+        "patchSetId": 17
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-20T06:18:57Z",
+      "side": 1,
+      "message": "Ah, yes. You are right.\n\nI read https://github.com/openbmc/openbmc/blob/master/meta-phosphor/classes/obmc-phosphor-ipmiprovider-symlink.bbclass wrong.\n\nI thought it we install all to `ipmid-providers` and it install to each separate folder. Seems like it is the other way.\n\nThanks. It is working now. I\u0027ll test it out some more and should be good for now. + some other more clean ups.",
+      "parentUuid": "4ee3078f_c47400c2",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 8
+      },
+      "revId": "657a8c29a6aefc5b1efc145bafde37e2ffcd06c0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "558b3b0b_9be07d41",
         "filename": "meson.build",
         "patchSetId": 17
