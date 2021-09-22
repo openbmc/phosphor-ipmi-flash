@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3eef093d_e030660b",
+        "filename": "configure.ac",
+        "patchSetId": 20
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000632
+      },
+      "writtenOn": "2021-09-22T22:04:34Z",
+      "side": 0,
+      "message": "remove this in change 46817",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 2
+      },
+      "revId": "b487eb47e566df7679e740559582f6d25597feba",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
