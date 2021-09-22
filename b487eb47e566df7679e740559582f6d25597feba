@@ -22,6 +22,30 @@
       "revId": "b487eb47e566df7679e740559582f6d25597feba",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88d8a74c_ad0645cd",
+        "filename": "configure.ac",
+        "patchSetId": 20
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-09-22T22:11:51Z",
+      "side": 0,
+      "message": "oh, oops. This should still be in as part of this change.\n\nI accidentally deleted it while I was testing it.\n\nI have reverted it now.",
+      "parentUuid": "3eef093d_e030660b",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 2
+      },
+      "revId": "b487eb47e566df7679e740559582f6d25597feba",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
