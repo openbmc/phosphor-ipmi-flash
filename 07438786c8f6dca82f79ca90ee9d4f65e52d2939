@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59574da9_d3acf5eb",
+        "filename": "bmc/version-handler/meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-04T18:05:19Z",
+      "side": 1,
+      "message": "unused? AFAIK none of these files include `config.h`",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad53e380_2296f83e",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-04T18:05:19Z",
+      "side": 1,
+      "message": "Tests shouldn\u0027t configure the option itself, so we shouldn\u0027t need to check this as part of the assert.",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b705e38_9ad3ba31",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-04T18:05:19Z",
+      "side": 1,
+      "message": "Is this actually broken? I guess we don\u0027t use it and could fix it if we ever cared.",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d42315df_25af6012",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-04T18:05:19Z",
+      "side": 1,
+      "message": "This assert can go away now?",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23eecf88_e71015e4",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-04T18:05:19Z",
+      "side": 1,
+      "message": "Did the old autotools code allow us to build without the BMC bits being enabled?",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fbb77c14_c3f14920",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-04T18:05:19Z",
+      "side": 1,
+      "message": "It should always be enabled in our test environment, so we shouldn\u0027t need this extra check. In general I\u0027d like unrelated build options to not change because tests are enabled. Obviously the way the mailbox handlers are done right now that isn\u0027t 100% possible.",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38b79285_20ec9cc8",
+        "filename": "meson_options.txt",
+        "patchSetId": 24
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-04T18:05:19Z",
+      "side": 1,
+      "message": "We should open an issue against anyone using the provided json files and have them provide their own. There is way more build infrastructure to populate a single / 2 json files than there would be to just have users drop in their own configs as needed.",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d908c44d_4c73f57e",
+        "filename": "tools/test/meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-04T18:05:19Z",
+      "side": 1,
+      "message": "Why is this one separate?",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
