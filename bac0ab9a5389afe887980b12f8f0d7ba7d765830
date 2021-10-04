@@ -142,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "c6fc6f79_a8d5d4ac",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-04T03:53:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0d6132f4_09ce0889",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7d6b1ddc_24cd6947",
         "filename": "meson_options.txt",
         "patchSetId": 14
@@ -177,6 +195,24 @@
     },
     {
       "key": {
+        "uuid": "40a9dce9_57c654c2",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-04T03:53:48Z",
+      "side": 1,
+      "message": "this is fine, right?",
+      "parentUuid": "e17c91ee_f1d5c782",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "38ce5a21_f2f29893",
         "filename": "meson_options.txt",
         "patchSetId": 14
@@ -206,6 +242,24 @@
       "side": 1,
       "message": "yeah, I am not sure exactly. It was in the README.md, so I added back in just in case.\n\nI doubt anyone is using it.",
       "parentUuid": "38ce5a21_f2f29893",
+      "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1906d7d9_2eb5ca72",
+        "filename": "meson_options.txt",
+        "patchSetId": 14
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-04T03:53:48Z",
+      "side": 1,
+      "message": "Do we want to remove all of the these options?\n\nI checked OpenBMC and I don\u0027t think people are overriding it. Doesn\u0027t look like there are bbpand for ipmi-flash.\n\nOnly MAPPED_ADDRESS is actually used right now.",
+      "parentUuid": "085c1a00_9d4e9cf7",
       "revId": "bac0ab9a5389afe887980b12f8f0d7ba7d765830",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
