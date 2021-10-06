@@ -57,14 +57,14 @@ bool P2aDataHandler::sendContents(const std::string& input,
     {
         bridge = std::make_unique<NuvotonPciBridge>(pci, skipBridgeDisable);
     }
-    catch (NotFoundException& e)
+    catch (const NotFoundException& e)
     {}
 
     try
     {
         bridge = std::make_unique<AspeedPciBridge>(pci, skipBridgeDisable);
     }
-    catch (NotFoundException& e)
+    catch (const NotFoundException& e)
     {}
 
     if (!bridge)
