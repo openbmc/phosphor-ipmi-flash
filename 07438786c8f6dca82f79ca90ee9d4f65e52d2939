@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f2caef82_3b7ac8ff",
+        "filename": "bmc/version-handler/meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-08T18:17:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "59574da9_d3acf5eb",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ad53e380_2296f83e",
         "filename": "meson.build",
         "patchSetId": 24
@@ -30,6 +48,24 @@
       "writtenOn": "2021-10-04T18:05:19Z",
       "side": 1,
       "message": "Tests shouldn\u0027t configure the option itself, so we shouldn\u0027t need to check this as part of the assert.",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cebd9aa1_c70aa796",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-08T18:17:01Z",
+      "side": 1,
+      "message": "this is checking when we are not using tests.\n\nSo we want one of the `lpc-type` or `p2a-type` to be none when we are not testing.",
+      "parentUuid": "ad53e380_2296f83e",
       "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "c2ad6dbd_504cb9e5",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-08T18:17:01Z",
+      "side": 1,
+      "message": "It is not broken. you could enable both lpc and p2a, but I don\u0027t know if we want to allow that for non test builds.",
+      "parentUuid": "2b705e38_9ad3ba31",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d42315df_25af6012",
         "filename": "meson.build",
         "patchSetId": 24
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "ef219040_9f303c1e",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-08T18:17:01Z",
+      "side": 1,
+      "message": "yeah, this shouldn\u0027t be possible with combo now.",
+      "parentUuid": "d42315df_25af6012",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "23eecf88_e71015e4",
         "filename": "meson.build",
         "patchSetId": 24
@@ -81,6 +153,24 @@
       "writtenOn": "2021-10-04T18:05:19Z",
       "side": 1,
       "message": "Did the old autotools code allow us to build without the BMC bits being enabled?",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de838478_9c4bd1a9",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-08T18:17:01Z",
+      "side": 1,
+      "message": "I don\u0027t think so. `phosphor-ipmi-blob` was also required in the autotools\n\nHow do you check if the BMC bits is not enabled.?",
+      "parentUuid": "23eecf88_e71015e4",
       "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "4efead12_8f909394",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-08T18:17:01Z",
+      "side": 1,
+      "message": "right, since it should be auto.",
+      "parentUuid": "fbb77c14_c3f14920",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "38b79285_20ec9cc8",
         "filename": "meson_options.txt",
         "patchSetId": 24
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "85c3ae71_1ef06842",
+        "filename": "meson_options.txt",
+        "patchSetId": 24
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-08T18:17:01Z",
+      "side": 1,
+      "message": "wait, what do we need to do here? This is for like the `config-bmc.json` and such, right?\n\nDo we want to remove those to force the people to use their own?",
+      "parentUuid": "38b79285_20ec9cc8",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d908c44d_4c73f57e",
         "filename": "tools/test/meson.build",
         "patchSetId": 24
@@ -135,6 +261,24 @@
       "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e337153a_c522c032",
+        "filename": "tools/test/meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-08T18:17:01Z",
+      "side": 1,
+      "message": "I guess it was because it guess have the `tools_` prefix. I\u0027ll change it.",
+      "parentUuid": "d908c44d_4c73f57e",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
