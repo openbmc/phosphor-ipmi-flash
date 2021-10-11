@@ -117,7 +117,7 @@ TEST_F(NetHandleTest, getSizeFail)
     EXPECT_CALL(sysMock, close(inFd)).WillOnce(Return(0));
     EXPECT_CALL(sysMock, getSize(StrEq(filePath.c_str()))).WillOnce(Return(0));
 
-    EXPECT_FALSE(handler.sendContents(filePath, session));
+    EXPECT_TRUE(handler.sendContents(filePath, session));
 }
 
 TEST_F(NetHandleTest, getaddrinfoFail)
