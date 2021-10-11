@@ -16,6 +16,24 @@
       "revId": "634101f5175b1ea4594cbcb75c56f2c0e9dad6fe",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c0d7828_7bc3fcc3",
+        "filename": "tools/bt.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-11T21:57:40Z",
+      "side": 1,
+      "message": "ah, yeah. I will remove it if that\u0027s the case. I also just noticed that there was a typo that I need to fix anyway.",
+      "parentUuid": "cacbd8fe_dae5e14f",
+      "revId": "634101f5175b1ea4594cbcb75c56f2c0e9dad6fe",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
