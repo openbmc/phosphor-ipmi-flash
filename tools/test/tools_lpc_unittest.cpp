@@ -16,26 +16,48 @@ namespace
 
 using ::testing::_;
 using ::testing::ContainerEq;
+using ::testing::Eq;
 using ::testing::Gt;
 using ::testing::Invoke;
 using ::testing::NotNull;
 using ::testing::Return;
 using ::testing::StrEq;
+using ::testing::Throw;
 
-TEST(LpcHandleTest, verifySendsFileContents)
+class LpcHandleTest : public ::testing::Test
 {
-    internal::InternalSysMock sysMock;
-    ipmiblob::BlobInterfaceMock blobMock;
-    HostIoInterfaceMock ioMock;
-    ProgressMock progMock;
+  protected:
+    static constexpr std::uint16_t session = 0xbeef;
+
+    LpcHandleTest() :
+        handler(std::make_unique<LpcDataHandler>(&blobMock, &ioMock, address,
+                                                 length, &progMock, &sysMock))
+    {}
 
     const std::uint32_t address = 0xfedc1000;
     const std::uint32_t length = 0x1000;
 
-    LpcDataHandler handler(&blobMock, &ioMock, address, length, &progMock,
-                           &sysMock);
-    std::uint16_t session = 0xbeef;
+    internal::InternalSysMock sysMock;
+    ipmiblob::BlobInterfaceMock blobMock;
+    HostIoInterfaceMock ioMock;
+    ProgressMock progMock;
+    std::unique_ptr<LpcDataHandler> handler;
     std::string filePath = "/asdf";
+};
+
+TEST_F(LpcHandleTest, sendContentsWithEmptyFile)
+{
+    int fd = 1;
+
+    EXPECT_CALL(sysMock, open(Eq(filePath), _)).WillOnce(Return(fd));
+    EXPECT_CALL(sysMock, getSize(Eq(filePath))).WillOnce(Return(0));
+
+    EXPECT_TRUE(handler->sendContents(filePath, session));
+}
+
+TEST_F(LpcHandleTest, verifySendsFileContents)
+{
+    std::uint16_t session = 0xbeef;
     int fileDescriptor = 5;
     const int fakeFileSize = 100;
 
@@ -72,7 +94,7 @@ TEST(LpcHandleTest, verifySendsFileContents)
 
     EXPECT_CALL(sysMock, close(fileDescriptor)).WillOnce(Return(0));
 
-    EXPECT_TRUE(handler.sendContents(filePath, session));
+    EXPECT_TRUE(handler->sendContents(filePath, session));
 }
 
 } // namespace

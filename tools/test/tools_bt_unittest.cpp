@@ -85,13 +85,12 @@ TEST_F(BtHandlerTest, sendContentsFailsToOpenFile)
 
 TEST_F(BtHandlerTest, sendContentsWithEmptyFile)
 {
-    /* An empty file should return failure from the sendContents. */
     int fd = 1;
 
     EXPECT_CALL(sysMock, open(Eq(filePath), _)).WillOnce(Return(fd));
     EXPECT_CALL(sysMock, getSize(Eq(filePath))).WillOnce(Return(0));
 
-    EXPECT_FALSE(handler->sendContents(filePath, session));
+    EXPECT_TRUE(handler->sendContents(filePath, session));
 }
 
 TEST_F(BtHandlerTest, sendContentsFailsWhenBlobHandlerThrows)
