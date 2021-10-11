@@ -67,8 +67,10 @@ bool NetDataHandler::sendContents(const std::string& input,
     std::int64_t fileSize = sys->getSize(input.c_str());
     if (fileSize == 0)
     {
-        std::fprintf(stderr, "Zero-length file, or other file access error\n");
-        return false;
+        std::fprintf(stderr,
+                     "Skipping sending contect for Zero-length file: %s\n",
+                     input.c_str());
+        return true;
     }
 
     Fd connFd(std::nullopt, sys);

@@ -107,9 +107,11 @@ bool LpcDataHandler::sendContents(const std::string& input,
     std::int64_t fileSize = sys->getSize(input.c_str());
     if (fileSize == 0)
     {
-        std::fprintf(stderr, "Zero-length file, or other file access error\n");
+        std::fprintf(stderr,
+                     "Skipping sending contect for Zero-length file: %s\n",
+                     input.c_str());
         sys->close(inputFd);
-        return false;
+        return true;
     }
 
     /* For Nuvoton the maximum is 4K */
