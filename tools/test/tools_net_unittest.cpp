@@ -110,16 +110,6 @@ TEST_F(NetHandleTest, openFileFail)
     EXPECT_FALSE(handler.sendContents(filePath, session));
 }
 
-TEST_F(NetHandleTest, getSizeFail)
-{
-    EXPECT_CALL(sysMock, open(StrEq(filePath.c_str()), _))
-        .WillOnce(Return(inFd));
-    EXPECT_CALL(sysMock, close(inFd)).WillOnce(Return(0));
-    EXPECT_CALL(sysMock, getSize(StrEq(filePath.c_str()))).WillOnce(Return(0));
-
-    EXPECT_FALSE(handler.sendContents(filePath, session));
-}
-
 TEST_F(NetHandleTest, getaddrinfoFail)
 {
     expectOpenFile();
