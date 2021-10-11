@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -71,6 +72,17 @@ void UpdateHandler::sendFile(const std::string& target, const std::string& path)
     {
         throw ToolException("blob exception received: " +
                             std::string(b.what()));
+    }
+
+    if (path == "/dev/null" || std::filesystem::file_size(path) == 0)
+    {
+        std::fprintf(stderr,
+                     "Skipping sending contect for Zero-length file: %s\n",
+                     path.c_str());
+
+        blob->closeBlob(session);
+
+        return;
     }
 
     if (!handler->sendContents(path, session))
