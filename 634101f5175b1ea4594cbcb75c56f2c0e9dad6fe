@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cacbd8fe_dae5e14f",
+        "filename": "tools/bt.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-11T21:31:43Z",
+      "side": 1,
+      "message": "Not a strong opinion about this, but should we even print out a special message? We could just ignore the fileSize check entirely and the code will still work.",
+      "revId": "634101f5175b1ea4594cbcb75c56f2c0e9dad6fe",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
