@@ -93,11 +93,6 @@ bool P2aDataHandler::sendContents(const std::string& input,
     }
 
     fileSize = sys->getSize(input.c_str());
-    if (fileSize == 0)
-    {
-        throw ToolException("Zero-length file, or other file access error");
-    }
-
     progress->start(fileSize);
 
     std::vector<std::uint8_t> readBuffer(bridge->getDataLength());

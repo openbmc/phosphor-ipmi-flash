@@ -105,13 +105,6 @@ bool LpcDataHandler::sendContents(const std::string& input,
     }
 
     std::int64_t fileSize = sys->getSize(input.c_str());
-    if (fileSize == 0)
-    {
-        std::fprintf(stderr, "Zero-length file, or other file access error\n");
-        sys->close(inputFd);
-        return false;
-    }
-
     /* For Nuvoton the maximum is 4K */
     auto readBuffer = std::make_unique<std::uint8_t[]>(host_lpc_buf.length);
     if (nullptr == readBuffer)
