@@ -22,6 +22,7 @@
 #include <ipmiblob/blob_errors.hpp>
 #include <ipmiblob/blob_interface.hpp>
 
+#include <algorithm>
 #include <chrono>
 #include <thread>
 #include <utility>
@@ -36,23 +37,23 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
 {
     using namespace std::chrono_literals;
 
-    static constexpr auto verificationSleep = 5s;
+    constexpr auto maxSleep = 1s;
+    constexpr auto printInterval = 30s;
+    constexpr auto timeout = 30min;
+
     ipmi_flash::ActionStatus result = ipmi_flash::ActionStatus::unknown;
 
     try
     {
-        /* sleep for 5 seconds and check 360 times, for a timeout of: 1800
-         * seconds (30 minutes).
-         * TODO: make this command line configurable and provide smaller
-         * default value.
-         */
-        static constexpr int commandAttempts = 360;
-        int attempts = 0;
+        auto start = std::chrono::steady_clock::now();
+        auto last_print = start;
+        auto last_check = start;
+        auto check_interval = 50ms;
         bool exitLoop = false;
 
         /* Reach back the current status from the verification service output.
          */
-        while (attempts++ < commandAttempts)
+        while (true)
         {
             ipmiblob::StatResponse resp = blob->getStat(session);
 
@@ -67,31 +68,42 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
 
             result = static_cast<ipmi_flash::ActionStatus>(resp.metadata[0]);
 
+            const char* output;
             switch (result)
             {
                 case ipmi_flash::ActionStatus::failed:
-                    std::fprintf(stderr, "failed\n");
+                    output = "failed";
                     exitLoop = true;
                     break;
                 case ipmi_flash::ActionStatus::unknown:
-                    std::fprintf(stderr, "other\n");
+                    output = "other";
                     break;
                 case ipmi_flash::ActionStatus::running:
-                    std::fprintf(stderr, "running\n");
+                    output = "running";
                     break;
                 case ipmi_flash::ActionStatus::success:
-                    std::fprintf(stderr, "success\n");
+                    output = "success";
                     exitLoop = true;
                     break;
                 default:
-                    std::fprintf(stderr, "wat\n");
+                    output = "wat";
+            }
+            auto cur = std::chrono::steady_clock::now();
+            if (cur - last_print >= printInterval)
+            {
+                std::fprintf(stderr, "%s\n", output);
+                last_print = cur;
             }
 
-            if (exitLoop)
+            auto sleep = check_interval - (cur - last_check);
+            last_check = cur;
+            if (exitLoop || cur - start > timeout - sleep)
             {
                 break;
             }
-            std::this_thread::sleep_for(verificationSleep);
+            check_interval = std::min<decltype(check_interval)>(
+                check_interval * 2, maxSleep);
+            std::this_thread::sleep_for(sleep);
         }
     }
     catch (const ipmiblob::BlobException& b)
