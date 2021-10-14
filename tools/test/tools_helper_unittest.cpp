@@ -43,7 +43,7 @@ TEST_F(HelperTest, PollStatusReturnsAfterFailure)
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(verificationResponse));
 
-    EXPECT_FALSE(pollStatus(session, &blobMock));
+    EXPECT_THROW(pollStatus(session, &blobMock), ToolException);
 }
 
 TEST_F(HelperTest, PollReadReadyReturnsAfterSuccess)
@@ -68,7 +68,7 @@ TEST_F(HelperTest, PollReadReadyReturnsAfterFailure)
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(blobResponse));
 
-    EXPECT_FALSE(pollReadReady(session, &blobMock).first);
+    EXPECT_THROW(pollReadReady(session, &blobMock).first, ToolException);
 }
 
 TEST_F(HelperTest, PollReadReadyReturnsAfterRetrySuccess)
@@ -102,7 +102,7 @@ TEST_F(HelperTest, PollReadReadyReturnsAfterRetryFailure)
         .WillOnce(Return(blobResponseRunning))
         .WillOnce(Return(blobResponseError));
 
-    EXPECT_FALSE(pollReadReady(session, &blobMock).first);
+    EXPECT_THROW(pollReadReady(session, &blobMock).first, ToolException);
 }
 
 TEST_F(HelperTest, MemcpyAlignedOneByte)

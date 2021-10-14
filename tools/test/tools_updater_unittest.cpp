@@ -210,9 +210,9 @@ TEST_F(UpdateHandlerTest, ReadVersionExceptionWhenPollingSucceedsReadBytesFails)
                  ToolException);
 }
 
-TEST_F(UpdateHandlerTest, ReadVersionReturnsEmptyIfPollingFails)
+TEST_F(UpdateHandlerTest, ReadVersionReturnsErrorIfPollingFails)
 {
-    /* It can return an empty result, when polling fails. */
+    /* It can throw an error, when polling fails. */
     EXPECT_CALL(blobMock, openBlob(ipmi_flash::biosVersionBlobId, _))
         .WillOnce(Return(session));
     ipmiblob::StatResponse readVersionResponse = {};
@@ -220,7 +220,8 @@ TEST_F(UpdateHandlerTest, ReadVersionReturnsEmptyIfPollingFails)
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(readVersionResponse));
     EXPECT_CALL(blobMock, closeBlob(session)).WillOnce(Return());
-    EXPECT_THAT(updater.readVersion(ipmi_flash::biosVersionBlobId), IsEmpty());
+    EXPECT_THROW(updater.readVersion(ipmi_flash::biosVersionBlobId),
+                 ToolException);
 }
 
 TEST_F(UpdateHandlerTest, ReadVersionCovertsOpenBlobExceptionToToolException)
