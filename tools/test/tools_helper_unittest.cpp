@@ -1,5 +1,6 @@
 #include "helper.hpp"
 #include "status.hpp"
+#include "tool_errors.hpp"
 
 #include <blobs-ipmid/blobs.hpp>
 #include <ipmiblob/test/blob_interface_mock.hpp>
@@ -30,7 +31,7 @@ TEST_F(HelperTest, PollStatusReturnsAfterSuccess)
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(verificationResponse));
 
-    EXPECT_TRUE(pollStatus(session, &blobMock));
+    pollStatus(session, &blobMock);
 }
 
 TEST_F(HelperTest, PollStatusReturnsAfterFailure)
@@ -43,7 +44,7 @@ TEST_F(HelperTest, PollStatusReturnsAfterFailure)
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(verificationResponse));
 
-    EXPECT_FALSE(pollStatus(session, &blobMock));
+    EXPECT_THROW(pollStatus(session, &blobMock), ToolException);
 }
 
 TEST_F(HelperTest, PollReadReadyReturnsAfterSuccess)
@@ -56,7 +57,7 @@ TEST_F(HelperTest, PollReadReadyReturnsAfterSuccess)
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(blobResponse));
 
-    EXPECT_TRUE(pollReadReady(session, &blobMock).first);
+    pollReadReady(session, &blobMock);
 }
 
 TEST_F(HelperTest, PollReadReadyReturnsAfterFailure)
@@ -68,7 +69,7 @@ TEST_F(HelperTest, PollReadReadyReturnsAfterFailure)
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(blobResponse));
 
-    EXPECT_FALSE(pollReadReady(session, &blobMock).first);
+    EXPECT_THROW(pollReadReady(session, &blobMock), ToolException);
 }
 
 TEST_F(HelperTest, PollReadReadyReturnsAfterRetrySuccess)
@@ -85,7 +86,7 @@ TEST_F(HelperTest, PollReadReadyReturnsAfterRetrySuccess)
         .WillOnce(Return(blobResponseRunning))
         .WillOnce(Return(blobResponseReadReady));
 
-    EXPECT_TRUE(pollReadReady(session, &blobMock).first);
+    pollReadReady(session, &blobMock);
 }
 
 TEST_F(HelperTest, PollReadReadyReturnsAfterRetryFailure)
@@ -102,7 +103,7 @@ TEST_F(HelperTest, PollReadReadyReturnsAfterRetryFailure)
         .WillOnce(Return(blobResponseRunning))
         .WillOnce(Return(blobResponseError));
 
-    EXPECT_FALSE(pollReadReady(session, &blobMock).first);
+    EXPECT_THROW(pollReadReady(session, &blobMock), ToolException);
 }
 
 TEST_F(HelperTest, MemcpyAlignedOneByte)
