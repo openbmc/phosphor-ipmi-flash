@@ -158,18 +158,17 @@ void UpdateHandler::cleanArtifacts()
     /* Errors aren't important for this call. */
     try
     {
-        std::fprintf(stderr, "Opening the cleanup blob\n");
+        std::fprintf(stderr, "Executing cleanup blob\n");
         auto session =
             openBlob(blob, ipmi_flash::cleanupBlobId,
                      static_cast<std::uint16_t>(
                          ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
-
-        std::fprintf(stderr, "Committing to the cleanup blob\n");
         blob->commit(*session, {});
-        std::fprintf(stderr, "Closing cleanup blob\n");
     }
-    catch (...)
-    {}
+    catch (const std::exception& e)
+    {
+        std::fprintf(stderr, "Cleanup failed: %s\n", e.what());
+    }
 }
 
 } // namespace host_tool
