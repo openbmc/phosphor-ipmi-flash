@@ -23,6 +23,7 @@
 #include "util.hpp"
 
 #include <ipmiblob/blob_errors.hpp>
+#include <stdplus/handle/managed.hpp>
 
 #include <algorithm>
 #include <cstdint>
@@ -32,6 +33,20 @@
 
 namespace host_tool
 {
+
+static void closeBlob(uint16_t&& session, ipmiblob::BlobInterface*& blob)
+{
+    blob->closeBlob(session);
+}
+
+using BlobHandle =
+    stdplus::Managed<uint16_t, ipmiblob::BlobInterface*>::Handle<closeBlob>;
+
+template <typename... Args>
+inline BlobHandle openBlob(ipmiblob::BlobInterface* blob, Args&&... args)
+{
+    return BlobHandle(blob->openBlob(std::forward<Args>(args)...), blob);
+}
 
 bool UpdateHandler::checkAvailable(const std::string& goalFirmware)
 {
@@ -57,170 +72,104 @@ bool UpdateHandler::checkAvailable(const std::string& goalFirmware)
 
 void UpdateHandler::sendFile(const std::string& target, const std::string& path)
 {
-    std::uint16_t session;
     auto supported = handler->supportedType();
 
     try
     {
-        session = blob->openBlob(
-            target, static_cast<std::uint16_t>(supported) |
-                        static_cast<std::uint16_t>(
-                            ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
+        auto session = openBlob(
+            blob, target,
+            static_cast<std::uint16_t>(supported) |
+                static_cast<std::uint16_t>(
+                    ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
+
+        if (!handler->sendContents(path, *session))
+        {
+            throw ToolException("Failed to send contents of " + path);
+        }
     }
     catch (const ipmiblob::BlobException& b)
     {
         throw ToolException("blob exception received: " +
                             std::string(b.what()));
     }
-
-    if (!handler->sendContents(path, session))
-    {
-        /* Need to close the session on failure, or it's stuck open (until the
-         * blob handler timeout is implemented, and even then, why make it wait.
-         */
-        blob->closeBlob(session);
-        throw ToolException("Failed to send contents of " + path);
-    }
-
-    blob->closeBlob(session);
 }
 
 bool UpdateHandler::verifyFile(const std::string& target, bool ignoreStatus)
 {
-    std::uint16_t session;
-    bool success = false;
-
     try
     {
-        session = blob->openBlob(
-            target, static_cast<std::uint16_t>(
-                        ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
+        auto session =
+            openBlob(blob, target,
+                     static_cast<std::uint16_t>(
+                         ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
+
+        std::fprintf(stderr, "Committing to %s to trigger service\n",
+                     target.c_str());
+        blob->commit(*session, {});
+
+        if (ignoreStatus)
+        {
+            // Skip checking the blob for status if ignoreStatus is enabled
+            return true;
+        }
+
+        std::fprintf(stderr, "Calling stat on %s session to check status\n",
+                     target.c_str());
+        return pollStatus(*session, blob);
     }
     catch (const ipmiblob::BlobException& b)
     {
         throw ToolException("blob exception received: " +
                             std::string(b.what()));
     }
-
-    std::fprintf(stderr, "Committing to %s to trigger service\n",
-                 target.c_str());
-
-    try
-    {
-        blob->commit(session, {});
-    }
-    catch (const ipmiblob::BlobException& b)
-    {
-        blob->closeBlob(session);
-        throw ToolException("blob exception received: " +
-                            std::string(b.what()));
-    }
-
-    if (ignoreStatus)
-    {
-        // Skip checking the blob for status if ignoreStatus is enabled
-        blob->closeBlob(session);
-        return true;
-    }
-
-    std::fprintf(stderr, "Calling stat on %s session to check status\n",
-                 target.c_str());
-
-    if (pollStatus(session, blob))
-    {
-        std::fprintf(stderr, "Returned success\n");
-        success = true;
-    }
-    else
-    {
-        std::fprintf(stderr, "Returned non-success (could still "
-                             "be running (unlikely))\n");
-    }
-
-    blob->closeBlob(session);
-    return (success == true);
 }
 
 std::vector<uint8_t> UpdateHandler::readVersion(const std::string& versionBlob)
 {
-    std::uint16_t session;
-
     try
     {
-        session = blob->openBlob(
-            versionBlob, static_cast<std::uint16_t>(
-                             ipmi_flash::FirmwareFlags::UpdateFlags::openRead));
+        auto session =
+            openBlob(blob, versionBlob,
+                     static_cast<std::uint16_t>(
+                         ipmi_flash::FirmwareFlags::UpdateFlags::openRead));
+
+        std::fprintf(stderr, "Calling stat on %s session to check status\n",
+                     versionBlob.c_str());
+
+        /* TODO: call readBytes multiple times in case IPMI message length
+         * exceeds IPMI_MAX_MSG_LENGTH.
+         */
+        auto pollResp = pollReadReady(*session, blob);
+        if (pollResp.first && pollResp.second > 0)
+        {
+            return blob->readBytes(*session, 0, pollResp.second);
+        }
+        return {};
     }
     catch (const ipmiblob::BlobException& b)
     {
         throw ToolException("blob exception received: " +
                             std::string(b.what()));
     }
-
-    std::fprintf(stderr, "Calling stat on %s session to check status\n",
-                 versionBlob.c_str());
-    std::vector<uint8_t> data;
-
-    /* TODO: call readBytes multiple times in case IPMI message length exceeds
-     * IPMI_MAX_MSG_LENGTH.
-     */
-    auto pollResp = pollReadReady(session, blob);
-    if (pollResp.first)
-    {
-        std::fprintf(stderr, "Returned success\n");
-        if (pollResp.second > 0)
-        {
-            try
-            {
-                data = blob->readBytes(session, 0, pollResp.second);
-            }
-            catch (const ipmiblob::BlobException& b)
-            {
-                blob->closeBlob(session);
-                throw ToolException("blob exception received: " +
-                                    std::string(b.what()));
-            }
-        }
-    }
-    else
-    {
-        std::fprintf(stderr, "Returned non-success (could still "
-                             "be running (unlikely))\n");
-    }
-
-    blob->closeBlob(session);
-    return data;
 }
 
 void UpdateHandler::cleanArtifacts()
 {
-    /* open(), commit(), close() */
-    std::uint16_t session;
-
     /* Errors aren't important for this call. */
     try
     {
         std::fprintf(stderr, "Opening the cleanup blob\n");
-        session = blob->openBlob(
-            ipmi_flash::cleanupBlobId,
-            static_cast<std::uint16_t>(
-                ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
-    }
-    catch (...)
-    {
-        return;
-    }
+        auto session =
+            openBlob(blob, ipmi_flash::cleanupBlobId,
+                     static_cast<std::uint16_t>(
+                         ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
 
-    try
-    {
         std::fprintf(stderr, "Committing to the cleanup blob\n");
-        blob->commit(session, {});
+        blob->commit(*session, {});
         std::fprintf(stderr, "Closing cleanup blob\n");
     }
     catch (...)
     {}
-
-    blob->closeBlob(session);
 }
 
 } // namespace host_tool
