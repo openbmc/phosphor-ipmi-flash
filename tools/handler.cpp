@@ -115,7 +115,8 @@ bool UpdateHandler::verifyFile(const std::string& target, bool ignoreStatus)
 
         std::fprintf(stderr, "Calling stat on %s session to check status\n",
                      target.c_str());
-        return pollStatus(*session, blob);
+        pollStatus(*session, blob);
+        return true;
     }
     catch (const ipmiblob::BlobException& b)
     {
@@ -139,10 +140,10 @@ std::vector<uint8_t> UpdateHandler::readVersion(const std::string& versionBlob)
         /* TODO: call readBytes multiple times in case IPMI message length
          * exceeds IPMI_MAX_MSG_LENGTH.
          */
-        auto pollResp = pollReadReady(*session, blob);
-        if (pollResp.first && pollResp.second > 0)
+        auto size = pollReadReady(*session, blob);
+        if (size > 0)
         {
-            return blob->readBytes(*session, 0, pollResp.second);
+            return blob->readBytes(*session, 0, size);
         }
         return {};
     }
