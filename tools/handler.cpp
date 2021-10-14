@@ -164,10 +164,9 @@ std::vector<uint8_t> UpdateHandler::readVersion(const std::string& versionBlob)
     /* TODO: call readBytes multiple times in case IPMI message length exceeds
      * IPMI_MAX_MSG_LENGTH.
      */
-    auto pollResp = pollReadReady(session, blob);
-    if (pollResp.first)
+    try
     {
-        std::fprintf(stderr, "Returned success\n");
+        auto pollResp = pollReadReady(session, blob);
         if (pollResp.second > 0)
         {
             try
@@ -176,16 +175,15 @@ std::vector<uint8_t> UpdateHandler::readVersion(const std::string& versionBlob)
             }
             catch (const ipmiblob::BlobException& b)
             {
-                blob->closeBlob(session);
                 throw ToolException("blob exception received: " +
                                     std::string(b.what()));
             }
         }
     }
-    else
+    catch (const ToolException&)
     {
-        std::fprintf(stderr, "Returned non-success (could still "
-                             "be running (unlikely))\n");
+        blob->closeBlob(session);
+        throw;
     }
 
     blob->closeBlob(session);
