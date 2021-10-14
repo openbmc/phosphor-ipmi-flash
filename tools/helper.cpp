@@ -22,76 +22,60 @@
 #include <ipmiblob/blob_errors.hpp>
 #include <ipmiblob/blob_interface.hpp>
 
+#include <algorithm>
 #include <chrono>
+#include <optional>
 #include <thread>
 #include <utility>
 
 namespace host_tool
 {
 
-/* Poll an open verification session.  Handling closing the session is not yet
- * owned by this method.
- */
-void pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
+template <typename Check>
+static auto pollStat(std::uint16_t session, ipmiblob::BlobInterface* blob,
+                     Check&& check)
 {
     using namespace std::chrono_literals;
 
-    static constexpr auto verificationSleep = 5s;
-    ipmi_flash::ActionStatus result = ipmi_flash::ActionStatus::unknown;
+    constexpr auto maxSleep = 1s;
+    constexpr auto printInterval = 30s;
+    constexpr auto timeout = 30min;
 
     try
     {
-        /* sleep for 5 seconds and check 360 times, for a timeout of: 1800
-         * seconds (30 minutes).
-         * TODO: make this command line configurable and provide smaller
-         * default value.
-         */
-        static constexpr int commandAttempts = 360;
-        int attempts = 0;
-        bool exitLoop = false;
+        auto start = std::chrono::steady_clock::now();
+        auto last_print = start;
+        auto last_check = start;
+        auto check_interval = 50ms;
 
-        /* Reach back the current status from the verification service output.
-         */
-        while (attempts++ < commandAttempts)
+        while (true)
         {
             ipmiblob::StatResponse resp = blob->getStat(session);
-
-            if (resp.metadata.size() != sizeof(std::uint8_t))
+            auto ret = check(resp);
+            if (ret.has_value())
             {
-                /* TODO: How do we want to handle the verification failures,
-                 * because closing the session to the verify blob has a special
-                 * as-of-yet not fully defined behavior.
-                 */
-                std::fprintf(stderr, "Received invalid metadata response!!!\n");
+                std::fprintf(stderr, "success\n");
+                return std::move(*ret);
             }
 
-            result = static_cast<ipmi_flash::ActionStatus>(resp.metadata[0]);
-
-            switch (result)
+            auto cur = std::chrono::steady_clock::now();
+            if (cur - last_print >= printInterval)
             {
-                case ipmi_flash::ActionStatus::failed:
-                    std::fprintf(stderr, "failed\n");
-                    exitLoop = true;
-                    break;
-                case ipmi_flash::ActionStatus::unknown:
-                    std::fprintf(stderr, "other\n");
-                    break;
-                case ipmi_flash::ActionStatus::running:
-                    std::fprintf(stderr, "running\n");
-                    break;
-                case ipmi_flash::ActionStatus::success:
-                    std::fprintf(stderr, "success\n");
-                    exitLoop = true;
-                    break;
-                default:
-                    std::fprintf(stderr, "wat\n");
+                std::fprintf(stderr, "running\n");
+                last_print = cur;
             }
 
-            if (exitLoop)
+            auto sleep = check_interval - (cur - last_check);
+            last_check = cur;
+            // Check that we don't timeout immediately after sleeping
+            // to avoid an extra sleep without checking
+            if (cur - start > timeout - sleep)
             {
-                break;
+                throw ToolException("Stat check timed out");
             }
-            std::this_thread::sleep_for(verificationSleep);
+            check_interval = std::min<decltype(check_interval)>(
+                check_interval * 2, maxSleep);
+            std::this_thread::sleep_for(sleep);
         }
     }
     catch (const ipmiblob::BlobException& b)
@@ -99,20 +83,34 @@ void pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
         throw ToolException("blob exception received: " +
                             std::string(b.what()));
     }
+}
 
-    /* TODO: If this is reached and it's not success, it may be worth just
-     * throwing a ToolException with a timeout message specifying the final
-     * read's value.
-     *
-     * TODO: Given that excepting from certain points leaves the BMC update
-     * state machine in an inconsistent state, we need to carefully evaluate
-     * which exceptions from the lower layers allow one to try and delete the
-     * blobs to rollback the state and progress.
-     */
-    if (result != ipmi_flash::ActionStatus::success)
-    {
-        throw ToolException("BMC reported failure");
-    }
+/* Poll an open verification session.  Handling closing the session is not yet
+ * owned by this method.
+ */
+void pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
+{
+    pollStat(session, blob,
+             [](const ipmiblob::StatResponse& resp) -> std::optional<bool> {
+                 if (resp.metadata.size() != 1)
+                 {
+                     throw ToolException("Invalid stat metadata");
+                 }
+                 auto result =
+                     static_cast<ipmi_flash::ActionStatus>(resp.metadata[0]);
+                 switch (result)
+                 {
+                     case ipmi_flash::ActionStatus::failed:
+                         throw ToolException("BMC reported failure");
+                     case ipmi_flash::ActionStatus::unknown:
+                     case ipmi_flash::ActionStatus::running:
+                         return std::nullopt;
+                     case ipmi_flash::ActionStatus::success:
+                         return true;
+                     default:
+                         throw ToolException("Unrecognized action status");
+                 }
+             });
 }
 
 /* Poll an open blob session for reading.
@@ -131,48 +129,19 @@ void pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
  */
 uint32_t pollReadReady(std::uint16_t session, ipmiblob::BlobInterface* blob)
 {
-    using namespace std::chrono_literals;
-    static constexpr auto pollingSleep = 5s;
-    ipmiblob::StatResponse blobStatResp;
-
-    try
-    {
-        /* Polling lasts 5 minutes. When opening a version blob, the system
-         * unit defined in the version handler will extract the running version
-         * from the image on the flash.
-         */
-        static constexpr int commandAttempts = 60;
-        int attempts = 0;
-
-        while (attempts++ < commandAttempts)
-        {
-            blobStatResp = blob->getStat(session);
-
-            if (blobStatResp.blob_state & ipmiblob::StateFlags::open_read)
+    return pollStat(
+        session, blob,
+        [](const ipmiblob::StatResponse& resp) -> std::optional<uint32_t> {
+            if (resp.blob_state & ipmiblob::StateFlags::open_read)
             {
-                std::fprintf(stderr, "success\n");
-                return blobStatResp.size;
+                return resp.size;
             }
-            else if (blobStatResp.blob_state & ipmiblob::StateFlags::committing)
+            if (resp.blob_state & ipmiblob::StateFlags::committing)
             {
-                std::fprintf(stderr, "running\n");
+                return std::nullopt;
             }
-            else
-            {
-                std::fprintf(stderr, "failed\n");
-                throw ToolException("BMC reported failure");
-            }
-
-            std::this_thread::sleep_for(pollingSleep);
-        }
-    }
-    catch (const ipmiblob::BlobException& b)
-    {
-        throw ToolException("blob exception received: " +
-                            std::string(b.what()));
-    }
-
-    throw ToolException("Timed out waiting for BMC read ready");
+            throw ToolException("BMC blob failed to become ready");
+        });
 }
 
 void* memcpyAligned(void* destination, const void* source, std::size_t size)
