@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c3d9a8e8_2baf1208",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-14T08:26:31Z",
+      "side": 1,
+      "message": "Is this just used to make sure that when the sleep is over the total time is over the timeout?\n\ndo we need this tho? it is at most 1 sec right now. but I guess it is fine eitherway.",
+      "range": {
+        "startLine": 70,
+        "startChar": 30,
+        "endLine": 70,
+        "endChar": 45
+      },
+      "revId": "8c39ac13f094a9f08babfbe96d892e7f6fc903ac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b293925e_68e3e547",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-14T08:26:31Z",
+      "side": 1,
+      "message": "do we know why this the required size of metadata is 1? is this just in here or across the whole program?\n\nCan/should we change the type?",
+      "range": {
+        "startLine": 94,
+        "startChar": 12,
+        "endLine": 97,
+        "endChar": 13
+      },
+      "revId": "8c39ac13f094a9f08babfbe96d892e7f6fc903ac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56257ff6_bb391637",
+        "filename": "tools/helper.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-14T08:26:31Z",
+      "side": 1,
+      "message": "don\u0027t need the else?",
+      "range": {
+        "startLine": 139,
+        "startChar": 24,
+        "endLine": 139,
+        "endChar": 29
+      },
+      "revId": "8c39ac13f094a9f08babfbe96d892e7f6fc903ac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
