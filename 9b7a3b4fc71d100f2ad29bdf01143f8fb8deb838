@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e0a2874a_b4097217",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-10-14T17:45:42Z",
+      "side": 0,
+      "message": "nit: I guess we took this warning message out - might be worth keeping before the return {};?",
+      "range": {
+        "startLine": 187,
+        "startChar": 7,
+        "endLine": 188,
+        "endChar": 57
+      },
+      "revId": "9b7a3b4fc71d100f2ad29bdf01143f8fb8deb838",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
