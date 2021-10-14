@@ -14,7 +14,7 @@ namespace host_tool
  * @param[in] blob - pointer to blob interface implementation object.
  * @return true if the verification was successful.
  */
-bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob);
+void pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob);
 
 /**
  * Poll an open firmware version blob session and check if it ready to read.
@@ -23,8 +23,7 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob);
  * @param[in] blob - pointer to blob interface implementation object
  * @return the polling status and blob buffer size
  */
-std::pair<bool, uint32_t> pollReadReady(std::uint16_t session,
-                                        ipmiblob::BlobInterface* blob);
+uint32_t pollReadReady(std::uint16_t session, ipmiblob::BlobInterface* blob);
 
 /**
  * Aligned memcpy

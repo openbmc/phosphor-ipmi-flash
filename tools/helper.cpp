@@ -32,7 +32,7 @@ namespace host_tool
 /* Poll an open verification session.  Handling closing the session is not yet
  * owned by this method.
  */
-bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
+void pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
 {
     using namespace std::chrono_literals;
 
@@ -109,7 +109,10 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
      * which exceptions from the lower layers allow one to try and delete the
      * blobs to rollback the state and progress.
      */
-    return (result == ipmi_flash::ActionStatus::success);
+    if (result != ipmi_flash::ActionStatus::success)
+    {
+        throw ToolException("BMC reported failure");
+    }
 }
 
 /* Poll an open blob session for reading.
@@ -126,8 +129,7 @@ bool pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
  * If the blob is not open_read and not committing, then it is an error to the
  * reader.
  */
-std::pair<bool, uint32_t> pollReadReady(std::uint16_t session,
-                                        ipmiblob::BlobInterface* blob)
+uint32_t pollReadReady(std::uint16_t session, ipmiblob::BlobInterface* blob)
 {
     using namespace std::chrono_literals;
     static constexpr auto pollingSleep = 5s;
@@ -149,7 +151,7 @@ std::pair<bool, uint32_t> pollReadReady(std::uint16_t session,
             if (blobStatResp.blob_state & ipmiblob::StateFlags::open_read)
             {
                 std::fprintf(stderr, "success\n");
-                return std::make_pair(true, blobStatResp.size);
+                return blobStatResp.size;
             }
             else if (blobStatResp.blob_state & ipmiblob::StateFlags::committing)
             {
@@ -158,7 +160,7 @@ std::pair<bool, uint32_t> pollReadReady(std::uint16_t session,
             else
             {
                 std::fprintf(stderr, "failed\n");
-                return std::make_pair(false, 0);
+                throw ToolException("BMC reported failure");
             }
 
             std::this_thread::sleep_for(pollingSleep);
@@ -170,7 +172,7 @@ std::pair<bool, uint32_t> pollReadReady(std::uint16_t session,
                             std::string(b.what()));
     }
 
-    return std::make_pair(false, 0);
+    throw ToolException("Timed out waiting for BMC read ready");
 }
 
 void* memcpyAligned(void* destination, const void* source, std::size_t size)
