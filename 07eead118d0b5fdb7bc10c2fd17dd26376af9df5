@@ -45,6 +45,30 @@
       "revId": "07eead118d0b5fdb7bc10c2fd17dd26376af9df5",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "026c67ba_5b0222a0",
+        "filename": "tools/test/tools_helper_unittest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-14T18:45:24Z",
+      "side": 1,
+      "message": "Sure, I don\u0027t strongly care either way since the test fixture reports uncaught exceptions but it is consistent.",
+      "parentUuid": "3f82ca63_2f65bfa1",
+      "range": {
+        "startLine": 34,
+        "startChar": 4,
+        "endLine": 34,
+        "endChar": 35
+      },
+      "revId": "07eead118d0b5fdb7bc10c2fd17dd26376af9df5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
