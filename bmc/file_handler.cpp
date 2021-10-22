@@ -16,16 +16,14 @@
 
 #include "file_handler.hpp"
 
-#include <cstdint>
 #include <filesystem>
 #include <ios>
-#include <memory>
-#include <string>
+#include <optional>
+#include <utility>
 #include <vector>
 
 namespace ipmi_flash
 {
-namespace fs = std::filesystem;
 
 bool FileHandler::open(const std::string& path, std::ios_base::openmode mode)
 {
@@ -35,113 +33,43 @@ bool FileHandler::open(const std::string& path, std::ios_base::openmode mode)
 
     if (file.is_open())
     {
-        /* This wasn't properly closed somehow.
-         * TODO: Throw an error or just reset the state?
-         */
-        return false;
+        return true;
     }
-
     file.open(filename, mode);
-    if (!file.good()) /* on success goodbit is set */
-    {
-        /* TODO: Oh no! Care about this. */
-        return false;
-    }
-
-    /* We were able to open the file for staging.
-     * TODO: We'll need to do other stuff to eventually.
-     */
-    return true;
+    return file.good();
 }
 
 void FileHandler::close()
 {
-    if (file.is_open())
-    {
-        file.close();
-    }
-    return;
+    file.close();
 }
 
 bool FileHandler::write(std::uint32_t offset,
                         const std::vector<std::uint8_t>& data)
 {
-    if (!file.is_open())
-    {
-        return false;
-    }
-
-    /* We could track this, but if they write in a scattered method, this is
-     * easier.
-     */
-    file.seekp(offset, std::ios_base::beg);
-    if (!file.good())
-    {
-        /* the documentation wasn't super clear on fail vs bad in these cases,
-         * so let's only be happy with goodness.
-         */
-        return false;
-    }
-
+    file.seekp(offset);
     file.write(reinterpret_cast<const char*>(data.data()), data.size());
-    if (!file.good())
-    {
-        return false;
-    }
-
-    return true;
+    return file.good();
 }
 
 std::optional<std::vector<uint8_t>> FileHandler::read(std::uint32_t offset,
                                                       std::uint32_t size)
 {
-    if (!file.is_open())
-    {
-        return std::nullopt;
-    }
-
-    /* determine size of file */
-    file.seekg(0, std::ios_base::end);
-    uint32_t filesize = file.tellg();
-    uint32_t bytesToRead = size;
-
-    /* make sure to not read past the end of file */
-    if (offset + size > filesize)
-    {
-        bytesToRead = filesize - offset;
-    }
-
-    /* if no bytes can be read, fail */
-    if (0 == bytesToRead)
-    {
-        return std::nullopt;
-    }
-
-    /* seek to offset then read */
+    std::vector<uint8_t> ret(std::min(getSize() - offset, size));
     file.seekg(offset);
-    std::vector<uint8_t> fileData(bytesToRead);
-    file.read(reinterpret_cast<char*>(fileData.data()), bytesToRead);
-
-    /* if any sort of failure happened during all the seeks
-     * and reads then fail the entire operation
-     */
+    file.read(reinterpret_cast<char*>(ret.data()), ret.size());
     if (!file.good())
     {
         return std::nullopt;
     }
-    return fileData;
+    return std::move(ret);
 }
 
 int FileHandler::getSize()
 {
-    try
-    {
-        return static_cast<int>(fs::file_size(filename));
-    }
-    catch (const fs::filesystem_error& e)
-    {}
-
-    return 0;
+    std::error_code ec;
+    auto ret = std::filesystem::file_size(filename, ec);
+    return ec ? 0 : ret;
 }
 
 } // namespace ipmi_flash
