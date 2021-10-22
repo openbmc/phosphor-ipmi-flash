@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "643d9c5b_6251d435",
+        "filename": "bmc/file_handler.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-22T09:48:41Z",
+      "side": 1,
+      "message": "this could underflow if getSize() returns 0.",
+      "range": {
+        "startLine": 58,
+        "startChar": 29,
+        "endLine": 58,
+        "endChar": 63
+      },
+      "revId": "28247da0ebba7488ea7e5af28d2b2ebd70712faf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f52db4c3_678f62ed",
+        "filename": "bmc/file_handler.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-22T09:48:41Z",
+      "side": 1,
+      "message": "log the error?",
+      "range": {
+        "startLine": 70,
+        "startChar": 4,
+        "endLine": 72,
+        "endChar": 24
+      },
+      "revId": "28247da0ebba7488ea7e5af28d2b2ebd70712faf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
