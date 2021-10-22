@@ -27,9 +27,7 @@ TEST_F(FileHandlerOpenTest, VerifyDefaultOpenIsHappy)
 
     FileHandler handler(TESTPATH);
     EXPECT_TRUE(handler.open(""));
-
-    /* Calling open twice fails the second time. */
-    EXPECT_FALSE(handler.open(""));
+    EXPECT_TRUE(handler.open(""));
 }
 
 TEST_F(FileHandlerOpenTest, VerifyOpenForReadFailsWithNoFile)
@@ -80,8 +78,10 @@ TEST_F(FileHandlerOpenTest, VerifySimpleRead)
                    testPattern.size());
     testfile.close();
     FileHandler handler(TESTPATH);
+    EXPECT_EQ(handler.getSize(), testPattern.size());
     EXPECT_TRUE(handler.open("", std::ios::in));
     auto result = handler.read(0, 10);
+    EXPECT_EQ(handler.getSize(), testPattern.size());
     ASSERT_TRUE(result);
     EXPECT_EQ(result->size(), 10);
     EXPECT_EQ(*result, testPattern);
