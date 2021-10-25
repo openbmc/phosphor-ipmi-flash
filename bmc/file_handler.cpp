@@ -67,7 +67,7 @@ std::optional<std::vector<uint8_t>> FileHandler::read(std::uint32_t offset,
     {
         return std::nullopt;
     }
-    return std::move(ret);
+    return ret;
 }
 
 int FileHandler::getSize()
