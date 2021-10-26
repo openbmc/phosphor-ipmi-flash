@@ -23,3 +23,4 @@ endif
 
 subdir('firmware-handler')
 subdir('version-handler')
+subdir('log-handler')
