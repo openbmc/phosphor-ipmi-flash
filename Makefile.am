@@ -57,6 +57,7 @@ if BUILD_BMC_HANDLER
 SUBDIRS += bmc
 SUBDIRS += bmc/firmware-handler
 SUBDIRS += bmc/version-handler
+SUBDIRS += bmc/log-handler
 endif
 
 if BUILD_HOST_TOOL
