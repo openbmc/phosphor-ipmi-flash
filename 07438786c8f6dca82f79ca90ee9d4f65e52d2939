@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "41974e91_d75c00d2",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-27T07:49:11Z",
+      "side": 1,
+      "message": "Right, but a server could technically enable both even though we don\u0027t in practice.",
+      "parentUuid": "c2ad6dbd_504cb9e5",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d42315df_25af6012",
         "filename": "meson.build",
         "patchSetId": 24
