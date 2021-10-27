@@ -265,6 +265,24 @@
     },
     {
       "key": {
+        "uuid": "24671839_b65717bd",
+        "filename": "meson_options.txt",
+        "patchSetId": 24
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-27T07:50:18Z",
+      "side": 1,
+      "message": "Yeah, almost all of the users of these files end up providing their own replacements for services like verification anyway. So we don\u0027t really need to provide these via meson.",
+      "parentUuid": "85c3ae71_1ef06842",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d908c44d_4c73f57e",
         "filename": "tools/test/meson.build",
         "patchSetId": 24
