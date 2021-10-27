@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bee2f586_a9905d4f",
+        "filename": "bmc/firmware-handler/meson.build",
+        "patchSetId": 29
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-27T07:48:18Z",
+      "side": 1,
+      "message": "I don\u0027t think you need the extra JSON files with tests?",
+      "revId": "526e69e6dc8754b8cb2542c7d86ec6d486848155",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
