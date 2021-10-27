@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "d4d5964f_68e9ac5d",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-27T07:56:28Z",
+      "side": 1,
+      "message": "I think this goes with the question about allowing both to be configure, I don\u0027t see a problem with that as it\u0027s technically possible to support both on a single machine while migrating between them.",
+      "parentUuid": "cebd9aa1_c70aa796",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2b705e38_9ad3ba31",
         "filename": "meson.build",
         "patchSetId": 24
@@ -122,6 +140,24 @@
       "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13fd7187_4dd480cd",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-27T07:56:28Z",
+      "side": 1,
+      "message": "We could do this in a follow up, like the follow up removing a bunch of the config options.",
+      "parentUuid": "41974e91_d75c00d2",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -189,6 +225,41 @@
       "side": 1,
       "message": "I don\u0027t think so. `phosphor-ipmi-blob` was also required in the autotools\n\nHow do you check if the BMC bits is not enabled.?",
       "parentUuid": "23eecf88_e71015e4",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76c2ca95_3bb61047",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-27T07:56:28Z",
+      "side": 1,
+      "message": "I think you can move some of these dependencies down into the BMC subdir so that someone disabling the BMC build would not depend on them.",
+      "parentUuid": "de838478_9c4bd1a9",
+      "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d108e01_1c3ad3e0",
+        "filename": "meson.build",
+        "patchSetId": 24
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-10-27T07:56:28Z",
+      "side": 1,
+      "message": "You should recurse into these subdirs from bmc/meson.build",
       "revId": "07438786c8f6dca82f79ca90ee9d4f65e52d2939",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
