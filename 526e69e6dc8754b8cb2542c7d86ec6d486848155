@@ -16,6 +16,24 @@
       "revId": "526e69e6dc8754b8cb2542c7d86ec6d486848155",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee5e7d09_0b825783",
+        "filename": "bmc/firmware-handler/meson.build",
+        "patchSetId": 29
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-10-28T02:47:52Z",
+      "side": 1,
+      "message": "yep, seems like it.\n\nIt was included before, and I guess that was wrong. I have removed it now.",
+      "parentUuid": "bee2f586_a9905d4f",
+      "revId": "526e69e6dc8754b8cb2542c7d86ec6d486848155",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
