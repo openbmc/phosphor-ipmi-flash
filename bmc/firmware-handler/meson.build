@@ -92,12 +92,12 @@ endif
 
 firmware_pre = declare_dependency(
   include_directories: [root_inc, bmc_inc, firmware_inc],
-  dependencies : [
+  dependencies: [
     dependency('sdbusplus', fallback: ['sdbusplus', 'sdbusplus_dep']),
     common_dep,
     blobs_dep,
     sys_dep,
-    phosphor_logging_dep])
+  ])
 
 firmware_lib = static_library(
   'firmwareblob',

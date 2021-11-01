@@ -126,12 +126,6 @@ sys_lib = static_library(
 sys_dep = declare_dependency(
   link_with: sys_lib)
 
-phosphor_logging_dep = dependency(
-  'phosphor-logging',
-  fallback : [
-    'phosphor-logging',
-    'phosphor_logging_dep'])
-
 blobs_dep = dependency('phosphor-ipmi-blobs')
 
 if not get_option('tests').disabled()

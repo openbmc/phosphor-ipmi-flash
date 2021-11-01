@@ -1,8 +1,6 @@
 cleanup_pre = declare_dependency(
   include_directories: [root_inc, include_directories('.')],
-  dependencies : [
-    blobs_dep,
-    phosphor_logging_dep])
+  dependencies: blobs_dep)
 
 cleanup_lib = static_library(
   'firmwarecleanupblob',
