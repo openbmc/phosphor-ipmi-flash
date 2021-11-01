@@ -94,7 +94,7 @@ endforeach
 
 lpc_type_combo_map = {
   'aspeed-lpc'       : '-DASPEED_LPC',
-  'nuvoton-lpc'      : '-DASPEED_LPC',
+  'nuvoton-lpc'      : '-DNUVOTON_LPC',
 }
 
 foreach option_key, option_value : lpc_type_combo_map
