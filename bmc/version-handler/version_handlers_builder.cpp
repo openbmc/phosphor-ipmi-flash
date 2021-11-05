@@ -98,6 +98,12 @@ std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
             output.actions = std::move(pack);
             handlers.push_back(std::move(output));
         }
+        catch (const nlohmann::json::out_of_range& e)
+        {
+            // output exception information
+            std::fprintf(stderr, "Skipping current config from json: %s\n",
+                         e.what());
+        }
         catch (const std::exception& e)
         {
             /* TODO: Once phosphor-logging supports unit-test injection, fix
