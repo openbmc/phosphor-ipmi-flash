@@ -58,6 +58,11 @@ std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
             }
             output.blobId = "/version/" + matches[1].str();
             /* version is required. */
+            if (!item.contains("version"))
+            {
+                continue;
+            }
+
             const auto& v = item.at("version");
             /* version must have handler */
             const auto& h = v.at("handler");
