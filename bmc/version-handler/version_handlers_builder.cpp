@@ -40,73 +40,82 @@ std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
 
     for (const auto& item : data)
     {
-        try
+        HandlerConfig<VersionBlobHandler::ActionPack> output;
+
+        if (!item.contains("blob"))
         {
-            HandlerConfig<VersionBlobHandler::ActionPack> output;
-
-            /* at() throws an exception when the key is not present. */
-            item.at("blob").get_to(output.blobId);
-
-            /* name must be: /flash/... or /version/...*/
-            std::regex regexpr("^\\/(?:flash|version)\\/(.+)");
-            std::smatch matches;
-            if (!std::regex_search(output.blobId, matches, regexpr))
-            {
-                throw std::runtime_error(
-                    "Invalid blob name: '" + output.blobId +
-                    "' must start with /flash/ or /version/");
-            }
-            output.blobId = "/version/" + matches[1].str();
-            /* version is required. */
-            const auto& v = item.at("version");
-            /* version must have handler */
-            const auto& h = v.at("handler");
-
-            const std::string& handlerType = h.at("type");
-            if (handlerType == "file")
-            {
-                const auto& path = h.at("path");
-                output.handler = std::make_unique<FileHandler>(path);
-            }
-            else
-            {
-                throw std::runtime_error("Invalid handler type: " +
-                                         handlerType);
-            }
-
-            /* actions are required (presently). */
-            const auto& a = v.at("actions");
-            auto pack = std::make_unique<VersionBlobHandler::ActionPack>();
-
-            /* to make an action optional, assign type "skip" */
-            const auto& onOpen = a.at("open");
-            const std::string& onOpenType = onOpen.at("type");
-            if (onOpenType == "systemd")
-            {
-                pack->onOpen = std::move(buildSystemd(onOpen));
-            }
-            else if (onOpenType == "skip")
-            {
-                pack->onOpen = SkipAction::CreateSkipAction();
-            }
-            else
-            {
-                throw std::runtime_error("Invalid preparation type: " +
-                                         onOpenType);
-            }
-
-            output.actions = std::move(pack);
-            handlers.push_back(std::move(output));
+            continue;
         }
-        catch (const std::exception& e)
+        item.at("blob").get_to(output.blobId);
+
+        /* name must be: /flash/... or /version/...*/
+        std::regex regexpr("^\\/(?:flash|version)\\/(.+)");
+        std::smatch matches;
+        if (!std::regex_search(output.blobId, matches, regexpr))
         {
-            /* TODO: Once phosphor-logging supports unit-test injection, fix
-             * this to log.
-             */
             std::fprintf(stderr,
-                         "Excepted building HandlerConfig from json: %s\n",
-                         e.what());
+                         "Excepted building HandlerConfig from json: Invalid "
+                         "blob name: '%s' must start with /flash/ or /version/",
+                         output.blobId.c_str());
         }
+        output.blobId = "/version/" + matches[1].str();
+
+        if (!item.contains("version"))
+        {
+            continue;
+        }
+        /* version is required. */
+        const auto& v = item.at("version");
+        /* version must have handler */
+        if (!v.contains("handler"))
+        {
+            continue;
+        }
+        const auto& h = v.at("handler");
+
+        const std::string& handlerType = h.at("type");
+        if (handlerType == "file")
+        {
+            const auto& path = h.at("path");
+            output.handler = std::make_unique<FileHandler>(path);
+        }
+        else
+        {
+            std::fprintf(stderr,
+                         "Excepted building HandlerConfig from json: Invalid "
+                         "handler type: %s",
+                         handlerType.c_str());
+        }
+
+        /* actions are required (presently). */
+        if (!v.contains("actions"))
+        {
+            continue;
+        }
+        const auto& a = v.at("actions");
+        auto pack = std::make_unique<VersionBlobHandler::ActionPack>();
+
+        /* to make an action optional, assign type "skip" */
+        const auto& onOpen = a.at("open");
+        const std::string& onOpenType = onOpen.at("type");
+        if (onOpenType == "systemd")
+        {
+            pack->onOpen = std::move(buildSystemd(onOpen));
+        }
+        else if (onOpenType == "skip")
+        {
+            pack->onOpen = SkipAction::CreateSkipAction();
+        }
+        else
+        {
+            std::fprintf(stderr,
+                         "Excepted building HandlerConfig from json: Invalid "
+                         "preparation type: %s\n",
+                         onOpenType.c_str());
+        }
+
+        output.actions = std::move(pack);
+        handlers.push_back(std::move(output));
     }
 
     return handlers;
