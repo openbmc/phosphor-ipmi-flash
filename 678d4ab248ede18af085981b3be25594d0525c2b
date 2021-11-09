@@ -94,6 +94,30 @@
       "revId": "678d4ab248ede18af085981b3be25594d0525c2b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7cccb5d8_095ef8d3",
+        "filename": "bmc/version-handler/version_handlers_builder.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2021-11-09T23:06:28Z",
+      "side": 1,
+      "message": "yeah, I did that at first. but then I am thinking if we need do that with everything under version.\n\nI guess at that point, it is actually an error.",
+      "parentUuid": "738118dd_4b481fe0",
+      "range": {
+        "startLine": 104,
+        "startChar": 33,
+        "endLine": 104,
+        "endChar": 74
+      },
+      "revId": "678d4ab248ede18af085981b3be25594d0525c2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
