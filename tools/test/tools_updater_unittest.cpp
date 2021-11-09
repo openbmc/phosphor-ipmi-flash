@@ -315,7 +315,7 @@ TEST_F(UpdaterTest, UpdateMainReturnsSuccessIfAllSuccessWithDeleteActiveBlob)
         .WillOnce(Return(true));
     EXPECT_CALL(handler, cleanArtifacts()).WillOnce(Return());
     EXPECT_CALL(blobMock, deleteBlob(ipmi_flash::activeImageBlobId))
-        .WillOnce(Return());
+        .WillOnce(Return(true));
     EXPECT_CALL(blobMock, getBlobList())
         .WillOnce(Return(std::vector<std::string>(
             {ipmi_flash::staticLayoutBlobId, ipmi_flash::activeImageBlobId})));
