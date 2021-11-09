@@ -70,6 +70,30 @@
       "revId": "678d4ab248ede18af085981b3be25594d0525c2b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "738118dd_4b481fe0",
+        "filename": "bmc/version-handler/version_handlers_builder.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2021-11-09T10:14:20Z",
+      "side": 1,
+      "message": "If the goal is to skip anything that is missing a version, it might make more sense to just change \n`const auto\u0026 v \u003d item.at(\"version\");`\nto something that skips to the next iteration\n```\nauto itv \u003d item.find(\"version\")\nif (itv \u003d\u003d item.end())\n{\n    continue;\n}\nconst auto \u0026v \u003d *itv;\n```\n\nThat way we don\u0027t need to print any messages.",
+      "parentUuid": "e09ec026_3e5500c5",
+      "range": {
+        "startLine": 104,
+        "startChar": 33,
+        "endLine": 104,
+        "endChar": 74
+      },
+      "revId": "678d4ab248ede18af085981b3be25594d0525c2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
