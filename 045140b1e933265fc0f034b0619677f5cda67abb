@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c5aa400d_d63b86e8",
+        "filename": "bmc/log-handler/log_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-11-12T22:37:17Z",
+      "side": 1,
+      "message": "const TriggerableActionInterface\u0026",
+      "range": {
+        "startLine": 24,
+        "startChar": 33,
+        "endLine": 24,
+        "endChar": 59
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56c5421a_620da269",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-11-12T22:37:17Z",
+      "side": 1,
+      "message": "why do we need capture groups at all?",
+      "range": {
+        "startLine": 51,
+        "startChar": 30,
+        "endLine": 51,
+        "endChar": 53
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb04fa69_109794d4",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-11-12T22:37:17Z",
+      "side": 1,
+      "message": "This seems like it\u0027d throw everytime the blob name does not begin with /log/\n\nShouldn\u0027t we just be continuing instead of throwing?",
+      "range": {
+        "startLine": 51,
+        "startChar": 11,
+        "endLine": 58,
+        "endChar": 13
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8b1652ff_e4270501",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-11-12T22:37:17Z",
+      "side": 1,
+      "message": "isn\u0027t this already done on line 48?",
+      "range": {
+        "startLine": 59,
+        "startChar": 11,
+        "endLine": 59,
+        "endChar": 55
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c598f0db_14a42b40",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-11-12T22:37:17Z",
+      "side": 1,
+      "message": "We probably want to add some documentation to the repository for this.\nIt\u0027s a pretty painful ask to make people read through the code to figure out what the config format is.",
+      "range": {
+        "startLine": 61,
+        "startChar": 12,
+        "endLine": 61,
+        "endChar": 46
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
