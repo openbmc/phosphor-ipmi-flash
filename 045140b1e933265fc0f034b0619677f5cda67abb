@@ -114,6 +114,52 @@
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba481f99_28543d0e",
+        "filename": "bmc/log-handler/test/log_canhandle_enumerate_unittest.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-11-12T22:51:54Z",
+      "side": 1,
+      "message": "what about testing for something the handler isn\u0027t supposed to handle?",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 5
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b11afbe_cef12097",
+        "filename": "bmc/log-handler/test/log_mock.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-11-12T22:51:54Z",
+      "side": 1,
+      "message": "this seems to allow you to deeply test a lot more scenarios.\ne.g\n\n- what happens when the systemd service fails? Does the open/stat/whatever work correctly?\n- what happens when open can\u0027t actually open the file or if it\u0027s an empty file\n- what happens when the file is HUGE? Should we refuse to read files that are bigger than XXMB?\n- if we open a file with a given session number and read the data but open the file again with a different session number and the data refreshes is the first session properly kept up to date?",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 22
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
