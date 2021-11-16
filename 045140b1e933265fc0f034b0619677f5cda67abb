@@ -119,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "8fe7b8ad_d66d57d1",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2021-11-16T22:42:04Z",
+      "side": 1,
+      "message": "My memory of phosphor-ipmi-flash are a bit fuzzy..but aren\u0027t things besides log blobs being passed into this?\n\nThat is your main calls LogHandlersBuilder().buildHandlerConfigFromDefaultPaths() .. see here\nhttps://gerrit.openbmc-project.xyz/c/openbmc/phosphor-ipmi-flash/+/48302/11/bmc/log-handler/main.cpp#24\n\nwhich seems to iterate over the defaultPaths and lift all the jsons from that path here\n\nhttps://github.com/openbmc/phosphor-ipmi-flash/blob/a3f65698000d366b57d2916eae67518f89c1298b/bmc/buildjson.hpp#L49\n\nand\nhttps://github.com/openbmc/phosphor-ipmi-flash/blob/a3f65698000d366b57d2916eae67518f89c1298b/bmc/buildjson.hpp#L61\n\n\ndefault paths defined here\n\nhttps://github.com/openbmc/phosphor-ipmi-flash/blob/a3f65698000d366b57d2916eae67518f89c1298b/bmc/buildjson.cpp#L71\n\nultimately the json object gets passed to this handler\nhttps://github.com/openbmc/phosphor-ipmi-flash/blob/a3f65698000d366b57d2916eae67518f89c1298b/bmc/buildjson.hpp#L84\n\n\nSo it seems like all the jsons in the system would get parsed and it\u0027s not an error condition for a json to omit a log blob.\n\nSo throwing an error, catching it and then printing something out would spam the journal.",
+      "parentUuid": "8f3c1e7d_99e05b65",
+      "range": {
+        "startLine": 51,
+        "startChar": 11,
+        "endLine": 58,
+        "endChar": 13
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8b1652ff_e4270501",
         "filename": "bmc/log-handler/log_handlers_builder.cpp",
         "patchSetId": 11
