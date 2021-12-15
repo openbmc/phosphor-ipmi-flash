@@ -1,0 +1,176 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e4ab8282_f7d0645d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 14
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-12-15T23:36:59Z",
+      "side": 1,
+      "message": "It seems like you may have copied from the existing handler (which is good!). Might be good to mention that you based it off of the exiting (version_handler?) code in the commit message as comparing it 1:1 makes the review process much easier. Just a suggestion - not needed.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 27
+      },
+      "revId": "a9a05ce9ed794745b95497f332572a5cbbc0c662",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6807e718_ce381f13",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 14
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-12-15T23:36:59Z",
+      "side": 1,
+      "message": "Could you provide a Tested footer by any chance?",
+      "revId": "a9a05ce9ed794745b95497f332572a5cbbc0c662",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0aa69afe_db3f7c98",
+        "filename": "bmc/log-handler/log_handler.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-12-15T23:36:59Z",
+      "side": 1,
+      "message": "super minor nit: Prefer new line between include and namespace",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 17
+      },
+      "revId": "a9a05ce9ed794745b95497f332572a5cbbc0c662",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0d40e96_3ffdebb4",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-12-15T23:36:59Z",
+      "side": 1,
+      "message": "Let\u0027s update the date. I wonder if we should have this on all our code. Do you mind using this tool to add the Google header everywhere? https://github.com/google/addlicense\n\nYou can run the following from the root:\n```\ngo get -u github.com/google/addlicense\n$HOME/go/bin/addlicense -c \"Google LLC\" -l apache .\n```\n\nThis can be done as a separate CL.",
+      "range": {
+        "startLine": 2,
+        "startChar": 13,
+        "endLine": 2,
+        "endChar": 17
+      },
+      "revId": "a9a05ce9ed794745b95497f332572a5cbbc0c662",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c323b64_b4b23eb0",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-12-15T23:36:59Z",
+      "side": 1,
+      "message": "No need to check whether we have this and error out if we don\u0027t? Something like\n```\n            if (!item.contains(\"handler\"))\n            {\n                continue;\n            }\n```",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 47
+      },
+      "revId": "a9a05ce9ed794745b95497f332572a5cbbc0c662",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "57be6574_69f04b8e",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-12-15T23:36:59Z",
+      "side": 1,
+      "message": "Similarly, do we need to check if actions exist?",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 47
+      },
+      "revId": "a9a05ce9ed794745b95497f332572a5cbbc0c662",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b1229a68_9ee136f2",
+        "filename": "bmc/log-handler/main.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-12-15T23:36:59Z",
+      "side": 1,
+      "message": "Same here, we should at least update the date",
+      "range": {
+        "startLine": 2,
+        "startChar": 13,
+        "endLine": 2,
+        "endChar": 17
+      },
+      "revId": "a9a05ce9ed794745b95497f332572a5cbbc0c662",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c237c51d_3dfa22fa",
+        "filename": "bmc/log-handler/test/meson.build",
+        "patchSetId": 14
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-12-15T23:36:59Z",
+      "side": 1,
+      "message": "Looks like compared to version-handler, we\u0027re missing a quite a few unit tests including parsing json. Could we add / copy them over as well?",
+      "revId": "a9a05ce9ed794745b95497f332572a5cbbc0c662",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
