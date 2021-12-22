@@ -351,6 +351,24 @@
       "revId": "a9a05ce9ed794745b95497f332572a5cbbc0c662",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7bb535b4_cb05c10e",
+        "filename": "bmc/log-handler/test/meson.build",
+        "patchSetId": 14
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2021-12-22T17:35:19Z",
+      "side": 1,
+      "message": "Unless you have the unit test CL ready to go, I do prefer all code going in covered with respective unit tests (otherwise, how do we know the code is working?). Since these are going to be copy of the existing tests, it shouldn\u0027t take too long right?",
+      "parentUuid": "fb23c872_34ef16bd",
+      "revId": "a9a05ce9ed794745b95497f332572a5cbbc0c662",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
