@@ -1,6 +1,7 @@
 {
   "comments": [
     {
+      "unresolved": true,
       "key": {
         "uuid": "c5aa400d_d63b86e8",
         "filename": "bmc/log-handler/log_handler.cpp",
@@ -20,10 +21,10 @@
         "endChar": 59
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
       "key": {
         "uuid": "517da2b2_7d706968",
         "filename": "bmc/log-handler/log_handler.cpp",
@@ -44,10 +45,10 @@
         "endChar": 59
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": false
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "56c5421a_620da269",
         "filename": "bmc/log-handler/log_handlers_builder.cpp",
@@ -67,10 +68,10 @@
         "endChar": 53
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "bb04fa69_109794d4",
         "filename": "bmc/log-handler/log_handlers_builder.cpp",
@@ -90,10 +91,10 @@
         "endChar": 13
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
       "key": {
         "uuid": "8f3c1e7d_99e05b65",
         "filename": "bmc/log-handler/log_handlers_builder.cpp",
@@ -114,10 +115,10 @@
         "endChar": 13
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": false
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "8fe7b8ad_d66d57d1",
         "filename": "bmc/log-handler/log_handlers_builder.cpp",
@@ -138,10 +139,34 @@
         "endChar": 13
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "defc3390_3b93904f",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000985
+      },
+      "writtenOn": "2021-12-30T16:48:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8fe7b8ad_d66d57d1",
+      "range": {
+        "startLine": 51,
+        "startChar": 11,
+        "endLine": 58,
+        "endChar": 13
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
       "key": {
         "uuid": "8b1652ff_e4270501",
         "filename": "bmc/log-handler/log_handlers_builder.cpp",
@@ -161,10 +186,34 @@
         "endChar": 55
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4acb5fe6_dd2be349",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1000985
+      },
+      "writtenOn": "2021-12-30T16:48:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8b1652ff_e4270501",
+      "range": {
+        "startLine": 59,
+        "startChar": 11,
+        "endLine": 59,
+        "endChar": 55
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
       "key": {
         "uuid": "c598f0db_14a42b40",
         "filename": "bmc/log-handler/log_handlers_builder.cpp",
@@ -184,10 +233,10 @@
         "endChar": 46
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "cb491d06_984530f6",
         "filename": "bmc/log-handler/log_handlers_builder.cpp",
@@ -208,10 +257,10 @@
         "endChar": 46
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "ba481f99_28543d0e",
         "filename": "bmc/log-handler/test/log_canhandle_enumerate_unittest.cpp",
@@ -231,10 +280,10 @@
         "endChar": 5
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
       "key": {
         "uuid": "b94bb3c8_4839d7f4",
         "filename": "bmc/log-handler/test/log_canhandle_enumerate_unittest.cpp",
@@ -255,10 +304,10 @@
         "endChar": 5
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": false
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "1b11afbe_cef12097",
         "filename": "bmc/log-handler/test/log_mock.hpp",
@@ -278,10 +327,10 @@
         "endChar": 22
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
       "key": {
         "uuid": "259b14bb_893fac02",
         "filename": "bmc/log-handler/test/log_mock.hpp",
@@ -302,8 +351,7 @@
         "endChar": 22
       },
       "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": false
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
