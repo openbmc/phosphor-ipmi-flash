@@ -310,6 +310,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "89691742_d1c887d5",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1000985
+      },
+      "writtenOn": "2022-01-04T23:29:38Z",
+      "side": 1,
+      "message": "Added a brief description in the readme file. PTAL",
+      "parentUuid": "15468aae_4b58e97c",
+      "range": {
+        "startLine": 61,
+        "startChar": 12,
+        "endLine": 61,
+        "endChar": 46
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ba481f99_28543d0e",
         "filename": "bmc/log-handler/test/log_canhandle_enumerate_unittest.cpp",
         "patchSetId": 11
