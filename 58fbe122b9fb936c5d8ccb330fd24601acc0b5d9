@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a46120a_9799a023",
+        "filename": "bmc/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-01-06T21:42:37Z",
+      "side": 1,
+      "message": "space after ,",
+      "range": {
+        "startLine": 3,
+        "startChar": 76,
+        "endLine": 3,
+        "endChar": 77
+      },
+      "revId": "58fbe122b9fb936c5d8ccb330fd24601acc0b5d9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3d64758_ce958b50",
+        "filename": "bmc/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-01-06T21:42:37Z",
+      "side": 1,
+      "message": "Parameters",
+      "range": {
+        "startLine": 5,
+        "startChar": 4,
+        "endLine": 5,
+        "endChar": 15
+      },
+      "revId": "58fbe122b9fb936c5d8ccb330fd24601acc0b5d9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71fcab23_d165e8c5",
+        "filename": "bmc/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-01-06T21:42:37Z",
+      "side": 1,
+      "message": "nit: new line after this, otherwise it gets appended to the previous line.",
+      "revId": "58fbe122b9fb936c5d8ccb330fd24601acc0b5d9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1cb0bf4d_db3ee55b",
+        "filename": "bmc/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-01-06T21:42:37Z",
+      "side": 1,
+      "message": "nit: let\u0027s add a comma\n\nWith file type,",
+      "range": {
+        "startLine": 40,
+        "startChar": 95,
+        "endLine": 40,
+        "endChar": 96
+      },
+      "revId": "58fbe122b9fb936c5d8ccb330fd24601acc0b5d9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b9baca3_9fca0635",
+        "filename": "bmc/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-01-06T21:42:37Z",
+      "side": 1,
+      "message": "I think this sentence is incomplete.\n\nI guess you  can say:\n\nCurrently there are 2 types of actions supported: `systemd` to invoke a systemd service, or `skip` to not perform any action.",
+      "range": {
+        "startLine": 43,
+        "startChar": 132,
+        "endLine": 43,
+        "endChar": 247
+      },
+      "revId": "58fbe122b9fb936c5d8ccb330fd24601acc0b5d9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16ba82ec_8db57982",
+        "filename": "bmc/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-01-06T21:42:37Z",
+      "side": 1,
+      "message": "nit: be",
+      "range": {
+        "startLine": 43,
+        "startChar": 96,
+        "endLine": 43,
+        "endChar": 97
+      },
+      "revId": "58fbe122b9fb936c5d8ccb330fd24601acc0b5d9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
