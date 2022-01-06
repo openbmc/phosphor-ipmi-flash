@@ -334,6 +334,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e8fa9ad6_184a2801",
+        "filename": "bmc/log-handler/log_handlers_builder.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1000985
+      },
+      "writtenOn": "2022-01-06T12:50:40Z",
+      "side": 1,
+      "message": "Marking it resolved",
+      "parentUuid": "89691742_d1c887d5",
+      "range": {
+        "startLine": 61,
+        "startChar": 12,
+        "endLine": 61,
+        "endChar": 46
+      },
+      "revId": "045140b1e933265fc0f034b0619677f5cda67abb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ba481f99_28543d0e",
         "filename": "bmc/log-handler/test/log_canhandle_enumerate_unittest.cpp",
         "patchSetId": 11
