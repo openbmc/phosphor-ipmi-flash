@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb7ad9d2_7c961fe1",
+        "filename": "bmc/README.md",
+        "patchSetId": 20
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2022-01-06T22:21:26Z",
+      "side": 1,
+      "message": "This is the syntax for a firmware upgrade blob..\n\nlog blobs are different right? And the type of handler is dependent on the blob \"parent directory\" correct?\n\nShould we go into more detail here about the special features of log vs flash vs version?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 0
+      },
+      "revId": "f0f12f599edf18db29a2f22536489ff8f95b3ce3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
