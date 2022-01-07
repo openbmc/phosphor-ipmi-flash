@@ -46,6 +46,30 @@
       },
       "revId": "f0f12f599edf18db29a2f22536489ff8f95b3ce3",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5964ff9c_81f99d24",
+        "filename": "bmc/README.md",
+        "patchSetId": 20
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000521
+      },
+      "writtenOn": "2022-01-07T18:05:19Z",
+      "side": 1,
+      "message": "ack,\n\nso log would say something like that the json[\"handler\"][\"path\"] is the log file that will be returned on a BLOB READ?\n\nIIRC, a service gets launched when the BLOB is opened and that service should result in the log file getting placed at path. When that is done then STAT should indicate its safe to do a READ.\n\nAnd then optionally a CLOSE can launch a service too right?\n\nThose details would help users of this feature understand how to use it (and definitely how to write a client to use this feature)",
+      "parentUuid": "bdbee8f3_55ab975c",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 0
+      },
+      "revId": "f0f12f599edf18db29a2f22536489ff8f95b3ce3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
