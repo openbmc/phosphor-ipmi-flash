@@ -22,6 +22,30 @@
       },
       "revId": "f0f12f599edf18db29a2f22536489ff8f95b3ce3",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bdbee8f3_55ab975c",
+        "filename": "bmc/README.md",
+        "patchSetId": 20
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000985
+      },
+      "writtenOn": "2022-01-07T17:18:14Z",
+      "side": 1,
+      "message": "I dont think log blobs are that differernt compared to version.\n\nAlso I am not fully aware about the design details of the flash. Probably we can add only generic details in this CL and add specific details later.\nOr I can add only log specific details here and later other owners can add details about version and flash",
+      "parentUuid": "eb7ad9d2_7c961fe1",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 0
+      },
+      "revId": "f0f12f599edf18db29a2f22536489ff8f95b3ce3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
