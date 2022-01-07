@@ -1,0 +1,8 @@
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+1: Jason Ling <jasonling@google.com>
+Code-Review+2: Brandon Kim <brandonkim@google.com>
+Submitted-by: Gaurav Gandhi <gauravgandhi@google.com>
+Submitted-at: Fri, 07 Jan 2022 20:33:04 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-ipmi-flash/+/48302
+Project: openbmc/phosphor-ipmi-flash
+Branch: refs/heads/master
