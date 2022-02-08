@@ -37,7 +37,6 @@ owners:
 
 reviewers:
 - anoo@us.ibm.com
-- venture@google.com
 
 matches:
 
@@ -48,9 +47,6 @@ openbmc:
 - name: Brandon Kim
   email: brandonkim@google.com
   discord: brandonk
-- name: Patrick Venture
-  email: venture@google.com
-  discord: Venture
 - name: William Kennington
   email: wak@google.com
   discord: wak
