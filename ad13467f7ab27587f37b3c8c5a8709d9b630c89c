@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7a72326_80a950a4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2022-02-09T19:46:57Z",
+      "side": 1,
+      "message": "\u003e Patch Set 3:\n\u003e \n\u003e \u003e Patch Set 3:\n\u003e \u003e \n\u003e \u003e PTAL - I could have called reserve and left the push_backs or just start with the right size.  I went with the latter.\n\u003e \n\u003e Arguably for a more expensive type than std::string, you would want to reserve + emplace_back to avoid  the extra constructor calls.\n\nI have updated this change as part of https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-ipmi-flash/+/51054. I think we can close this one.",
+      "revId": "ad13467f7ab27587f37b3c8c5a8709d9b630c89c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
