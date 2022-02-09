@@ -20,8 +20,6 @@ namespace host_tool
 {
 
 using ::testing::_;
-using ::testing::Eq;
-using ::testing::IsEmpty;
 using ::testing::Return;
 using ::testing::Throw;
 using ::testing::TypedEq;

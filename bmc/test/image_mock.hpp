@@ -23,9 +23,6 @@ class ImageHandlerMock : public ImageHandlerInterface
     MOCK_METHOD(int, getSize, (), (override));
 };
 
-std::unique_ptr<ImageHandlerMock> CreateImageMock()
-{
-    return std::make_unique<ImageHandlerMock>();
-}
+std::unique_ptr<ImageHandlerMock> CreateImageMock();
 
 } // namespace ipmi_flash

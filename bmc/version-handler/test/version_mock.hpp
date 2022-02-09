@@ -1,18 +1,18 @@
+#pragma once
 #include "handler_config.hpp"
 #include "image_mock.hpp"
 #include "triggerable_mock.hpp"
 #include "version_handler.hpp"
 
-#include <memory>
 #include <string>
-#include <utility>
 
 namespace ipmi_flash
 {
 
-auto createMockVersionConfig(const std::string& id,
-                             ImageHandlerMock** im = nullptr,
-                             TriggerMock** tm = nullptr)
+static HandlerConfig<VersionBlobHandler::ActionPack>
+    createMockVersionConfig(const std::string& id,
+                            ImageHandlerMock** im = nullptr,
+                            TriggerMock** tm = nullptr)
 {
     HandlerConfig<VersionBlobHandler::ActionPack> ret;
     ret.blobId = id;
@@ -34,15 +34,17 @@ auto createMockVersionConfig(const std::string& id,
 
 template <typename C, typename Im = std::map<std::string, ImageHandlerMock*>,
           typename Tm = std::map<std::string, TriggerMock*>>
-auto createMockVersionConfigs(const C& ids, Im* im = nullptr, Tm* tm = nullptr)
+static std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
+    createMockVersionConfigs(const C& ids, Im* im = nullptr, Tm* tm = nullptr)
 {
     std::vector<HandlerConfig<VersionBlobHandler::ActionPack>> ret;
-    for (const auto& id : ids)
-    {
-        ret.push_back(
-            createMockVersionConfig(id, im == nullptr ? nullptr : &(*im)[id],
-                                    tm == nullptr ? nullptr : &(*tm)[id]));
-    }
+    std::transform(ids.begin(), ids.end(), std::back_inserter(ret),
+                   [im, tm](const auto& id)
+                       -> HandlerConfig<VersionBlobHandler::ActionPack> {
+                       return createMockVersionConfig(
+                           id, im == nullptr ? nullptr : &(*im)[id],
+                           tm == nullptr ? nullptr : &(*tm)[id]);
+                   });
     return ret;
 }
 
