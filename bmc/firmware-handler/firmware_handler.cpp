@@ -56,10 +56,10 @@ std::unique_ptr<blobs::GenericBlobInterface>
     }
 
     std::vector<std::string> blobs;
-    for (const auto& item : firmwares)
-    {
-        blobs.push_back(item.blobName);
-    }
+    blobs.reserve(firmwares.size());
+    std::for_each(
+        firmwares.begin(), firmwares.end(),
+        [&blobs](const auto& blob) { blobs.emplace_back(blob.blobName); });
 
     if (0 == std::count(blobs.begin(), blobs.end(), hashBlobId))
     {

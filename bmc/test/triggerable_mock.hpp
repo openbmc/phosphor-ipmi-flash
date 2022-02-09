@@ -22,9 +22,6 @@ class TriggerMock : public TriggerableActionInterface
     using TriggerableActionInterface::cb;
 };
 
-std::unique_ptr<TriggerableActionInterface> CreateTriggerMock()
-{
-    return std::make_unique<TriggerMock>();
-}
+std::unique_ptr<TriggerableActionInterface> CreateTriggerMock();
 
 } // namespace ipmi_flash

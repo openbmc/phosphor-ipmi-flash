@@ -11,7 +11,7 @@
 
 namespace ipmi_flash
 {
-ActionMap CreateActionMap(const std::string& blobPath)
+static ActionMap CreateActionMap(const std::string& blobPath)
 {
     std::unique_ptr<ActionPack> actionPack = std::make_unique<ActionPack>();
     actionPack->preparation = CreateTriggerMock();
@@ -22,5 +22,4 @@ ActionMap CreateActionMap(const std::string& blobPath)
     map[blobPath] = std::move(actionPack);
     return map;
 }
-
 } // namespace ipmi_flash
