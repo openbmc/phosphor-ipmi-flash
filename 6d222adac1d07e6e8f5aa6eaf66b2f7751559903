@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b753693_67113c31",
+        "filename": "bmc/test/image_mock.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2022-02-10T18:18:32Z",
+      "side": 0,
+      "message": "Probably would have been better to just make this `inline` in this case to avoid all the extra meson stuff.\n\nSame below.",
+      "revId": "6d222adac1d07e6e8f5aa6eaf66b2f7751559903",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
