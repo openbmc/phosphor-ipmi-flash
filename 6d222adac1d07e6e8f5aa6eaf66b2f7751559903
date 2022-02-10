@@ -16,6 +16,24 @@
       "message": "Probably would have been better to just make this `inline` in this case to avoid all the extra meson stuff.\n\nSame below.",
       "revId": "6d222adac1d07e6e8f5aa6eaf66b2f7751559903",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e20ea2d3_bad865d9",
+        "filename": "bmc/test/image_mock.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2022-02-10T18:25:52Z",
+      "side": 0,
+      "message": "yeah, should we just revert it? This is for test only, so I thought its fine eitherway.\n\nMaybe we don\u0027t care about this.\n\n```\nfunction \u0027*\u0027 defined in a header file; function definitions in header files can lead to ODR violations\n```",
+      "parentUuid": "5b753693_67113c31",
+      "revId": "6d222adac1d07e6e8f5aa6eaf66b2f7751559903",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
