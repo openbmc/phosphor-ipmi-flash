@@ -104,6 +104,11 @@ int SysImpl::connect(int sockfd, const struct sockaddr* addr,
     return ::connect(sockfd, addr, addrlen);
 }
 
+ssize_t SysImpl::send(int sockfd, const void* buf, size_t len, int flags) const
+{
+    return ::send(sockfd, buf, len, flags);
+}
+
 ssize_t SysImpl::sendfile(int out_fd, int in_fd, off_t* offset,
                           size_t count) const
 {
