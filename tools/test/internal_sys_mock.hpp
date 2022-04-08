@@ -31,6 +31,8 @@ class InternalSysMock : public Sys
     MOCK_METHOD(int, socket, (int, int, int), (const override));
     MOCK_METHOD(int, connect, (int, const struct sockaddr*, socklen_t),
                 (const override));
+    MOCK_METHOD(ssize_t, send, (int, const void*, size_t, int),
+                (const override));
     MOCK_METHOD(ssize_t, sendfile, (int, int, off_t*, size_t),
                 (const override));
     MOCK_METHOD(int, getaddrinfo,
