@@ -21,6 +21,7 @@ using ::testing::AllOf;
 using ::testing::ContainerEq;
 using ::testing::DoAll;
 using ::testing::Field;
+using ::testing::Ge;
 using ::testing::Gt;
 using ::testing::InSequence;
 using ::testing::NotNull;
@@ -211,6 +212,55 @@ TEST_F(NetHandleTest, successMultiChunk)
         EXPECT_CALL(sysMock, sendfile(connFd, inFd, Pointee(fakeFileSize),
                                       Gt(chunkSize)))
             .WillOnce(Return(0));
+    }
+
+    EXPECT_TRUE(handler.sendContents(filePath, session));
+}
+
+TEST_F(NetHandleTest, successFallback)
+{
+    expectOpenFile();
+    expectAddrInfo();
+    expectConnection();
+
+    struct ipmi_flash::ExtChunkHdr chunk;
+    chunk.length = chunkSize;
+    std::vector<std::uint8_t> chunkBytes(sizeof(chunk));
+    std::memcpy(chunkBytes.data(), &chunk, sizeof(chunk));
+
+    {
+        InSequence seq;
+        EXPECT_CALL(sysMock, sendfile(connFd, inFd, _, _))
+            .WillOnce([](int, int, off_t*, size_t) {
+                errno = EINVAL;
+                return -1;
+            });
+
+        std::vector<uint8_t> chunk(chunkSize);
+        for (std::uint32_t offset = 0; offset < fakeFileSize;
+             offset += chunkSize)
+        {
+            for (size_t i = 0; i < chunkSize; ++i)
+            {
+                chunk[i] = i + offset;
+            }
+            EXPECT_CALL(sysMock, read(inFd, _, Ge(chunkSize)))
+                .WillOnce([&](int, void* buf, size_t) {
+                    memcpy(buf, chunk.data(), chunkSize);
+                    return chunkSize;
+                });
+            EXPECT_CALL(sysMock, send(connFd, _, chunkSize, 0))
+                .WillOnce([&](int, const void* data, size_t len, int) {
+                    std::vector<uint8_t> dcopy(len);
+                    memcpy(dcopy.data(), data, len);
+                    EXPECT_THAT(dcopy, ContainerEq(chunk));
+                    return chunkSize;
+                });
+            EXPECT_CALL(blobMock,
+                        writeBytes(session, offset, ContainerEq(chunkBytes)));
+            EXPECT_CALL(progMock, updateProgress(chunkSize));
+        }
+        EXPECT_CALL(sysMock, read(inFd, _, Ge(chunkSize))).WillOnce(Return(0));
     }
 
     EXPECT_TRUE(handler.sendContents(filePath, session));

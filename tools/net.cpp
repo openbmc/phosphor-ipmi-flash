@@ -28,12 +28,11 @@
 
 #include <ipmiblob/blob_errors.hpp>
 #include <stdplus/handle/managed.hpp>
+#include <stdplus/util/cexec.hpp>
 
 #include <cstdint>
 #include <cstring>
-#include <memory>
 #include <optional>
-#include <string>
 #include <vector>
 
 namespace
@@ -110,32 +109,62 @@ bool NetDataHandler::sendContents(const std::string& input,
         off_t offset = 0;
 
         progress->start(fileSize);
+        auto confirmSend = [&]() {
+            if (bytesSent == 0)
+            {
+                return;
+            }
+            struct ipmi_flash::ExtChunkHdr chunk;
+            chunk.length = bytesSent;
+            std::vector<uint8_t> chunkBytes(sizeof(chunk));
+            std::memcpy(chunkBytes.data(), &chunk, sizeof(chunk));
+            /* This doesn't return anything on success. */
+            blob->writeBytes(session, offset - bytesSent, chunkBytes);
+            progress->updateProgress(bytesSent);
+        };
 
         do
         {
             bytesSent = sys->sendfile(*connFd, *inputFd, &offset, blockSize);
             if (bytesSent < 0)
             {
-                std::fprintf(stderr, "Failed to send data to BMC: %s\n",
-                             strerror(errno));
-                progress->abort();
-                return false;
+                // Not all input files support sendfile, fall back to a simple
+                // buffered mechanism if unsupported.
+                if (errno == EINVAL)
+                {
+                    std::array<uint8_t, 4096> buf;
+                    size_t left = 0;
+                    do
+                    {
+                        printf("Reading %zu\n", left);
+                        bytesSent =
+                            CHECK_ERRNO(sys->read(*inputFd, buf.data() + left,
+                                                  buf.size() - left),
+                                        "Reading data for BMC");
+                        printf("Read %d\n", bytesSent);
+                        left += bytesSent;
+                        bytesSent =
+                            CHECK_ERRNO(sys->send(*connFd, buf.data(), left, 0),
+                                        "Sending data to BMC");
+                        printf("Sent %d\n", bytesSent);
+                        std::memmove(buf.data(), buf.data() + bytesSent,
+                                     left - bytesSent);
+                        left -= bytesSent;
+                        offset += bytesSent;
+                        confirmSend();
+                    } while (bytesSent > 0);
+                    break;
+                }
+                CHECK_ERRNO(-1, "Sending data to BMC");
             }
-            else if (bytesSent > 0)
-            {
-                /* Ok, so the data is staged, now send the blob write with
-                 * the details.
-                 */
-                struct ipmi_flash::ExtChunkHdr chunk;
-                chunk.length = bytesSent;
-                std::vector<std::uint8_t> chunkBytes(sizeof(chunk));
-                std::memcpy(chunkBytes.data(), &chunk, sizeof(chunk));
-
-                /* This doesn't return anything on success. */
-                blob->writeBytes(session, offset - bytesSent, chunkBytes);
-                progress->updateProgress(bytesSent);
-            }
+            confirmSend();
         } while (bytesSent > 0);
+    }
+    catch (const std::system_error& e)
+    {
+        std::fprintf(stderr, "%s\n", e.what());
+        progress->abort();
+        return false;
     }
     catch (const ipmiblob::BlobException& b)
     {
