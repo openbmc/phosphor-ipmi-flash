@@ -46,6 +46,8 @@ class Sys
     virtual int socket(int domain, int type, int protocol) const = 0;
     virtual int connect(int sockfd, const struct sockaddr* addr,
                         socklen_t addrlen) const = 0;
+    virtual ssize_t send(int sockfd, const void* buf, size_t len,
+                         int flags) const = 0;
     virtual ssize_t sendfile(int out_fd, int in_fd, off_t* offset,
                              size_t count) const = 0;
     virtual int getaddrinfo(const char* node, const char* service,
@@ -79,6 +81,8 @@ class SysImpl : public Sys
     int socket(int domain, int type, int protocol) const override;
     int connect(int sockfd, const struct sockaddr* addr,
                 socklen_t addrlen) const override;
+    ssize_t send(int sockfd, const void* buf, size_t len,
+                 int flags) const override;
     ssize_t sendfile(int out_fd, int in_fd, off_t* offset,
                      size_t count) const override;
     int getaddrinfo(const char* node, const char* service,
