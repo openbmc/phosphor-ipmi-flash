@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ddcdfdd9_cb2ece36",
+        "filename": "tools/net.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2022-04-08T22:04:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "80161654_b5f23cd5",
+      "revId": "28688e8e4b46e4f193f2a182b12ffc008a1e1c27",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7f471ac0_cb068427",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-04-08T21:57:30Z",
       "side": 1,
       "message": "please add tests for the new functionality",
+      "revId": "28688e8e4b46e4f193f2a182b12ffc008a1e1c27",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bfe7189e_89bf25b9",
+        "filename": "tools/test/internal_sys_mock.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2022-04-08T22:04:13Z",
+      "side": 1,
+      "message": "Yeah, I just wanted something that could be tested first.",
+      "parentUuid": "7f471ac0_cb068427",
       "revId": "28688e8e4b46e4f193f2a182b12ffc008a1e1c27",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
