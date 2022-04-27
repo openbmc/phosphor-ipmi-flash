@@ -30,6 +30,7 @@ extern "C"
 #include <stdplus/handle/managed.hpp>
 
 #include <cstring>
+#include <span>
 #include <system_error>
 
 namespace host_tool
@@ -104,7 +105,7 @@ PciAccessBridge::~PciAccessBridge()
     }
 }
 
-void PciAccessBridge::write(const stdplus::span<const std::uint8_t> data)
+void PciAccessBridge::write(const std::span<const std::uint8_t> data)
 {
     if (data.size() > dataLength)
     {

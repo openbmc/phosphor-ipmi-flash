@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -350,8 +351,7 @@ TEST(NuvotonWriteTest, TooLarge)
     expectSetup(pciMock, dev, &nuvotonDevice, region.data());
 
     std::unique_ptr<PciBridgeIntf> bridge = nuvotonDevice.getBridge(&pciMock);
-    EXPECT_THROW(bridge->write(stdplus::span<std::uint8_t>(data)),
-                 ToolException);
+    EXPECT_THROW(bridge->write(std::span<std::uint8_t>(data)), ToolException);
 }
 
 TEST(NuvotonWriteTest, Success)
@@ -366,10 +366,10 @@ TEST(NuvotonWriteTest, Success)
     expectSetup(pciMock, dev, &nuvotonDevice, region.data());
 
     std::unique_ptr<PciBridgeIntf> bridge = nuvotonDevice.getBridge(&pciMock);
-    bridge->write(stdplus::span<std::uint8_t>(data));
+    bridge->write(std::span<std::uint8_t>(data));
 
-    EXPECT_THAT(stdplus::span<uint8_t>(&region[0], data.size()),
-                SpanEq(stdplus::span<uint8_t>(data)));
+    EXPECT_THAT(std::span<uint8_t>(&region[0], data.size()),
+                SpanEq(std::span<uint8_t>(data)));
 }
 
 TEST(NuvotonConfigureTest, Success)
@@ -592,8 +592,7 @@ TEST(AspeedWriteTest, TooLarge)
     expectSetup(pciMock, dev, &aspeedDevice, region.data());
 
     std::unique_ptr<PciBridgeIntf> bridge = aspeedDevice.getBridge(&pciMock);
-    EXPECT_THROW(bridge->write(stdplus::span<std::uint8_t>(data)),
-                 ToolException);
+    EXPECT_THROW(bridge->write(std::span<std::uint8_t>(data)), ToolException);
 }
 
 TEST(AspeedWriteTest, Success)
@@ -608,10 +607,10 @@ TEST(AspeedWriteTest, Success)
     expectSetup(pciMock, dev, &aspeedDevice, region.data());
 
     std::unique_ptr<PciBridgeIntf> bridge = aspeedDevice.getBridge(&pciMock);
-    bridge->write(stdplus::span<std::uint8_t>(data));
+    bridge->write(std::span<std::uint8_t>(data));
 
-    EXPECT_THAT(stdplus::span<uint8_t>(&region[0x10000], data.size()),
-                SpanEq(stdplus::span<uint8_t>(data)));
+    EXPECT_THAT(std::span<uint8_t>(&region[0x10000], data.size()),
+                SpanEq(std::span<uint8_t>(data)));
 }
 
 TEST(AspeedConfigureTest, Success)
@@ -628,7 +627,7 @@ TEST(AspeedConfigureTest, Success)
 
     auto configSpan = stdplus::raw::asSpan<uint8_t>(config);
     EXPECT_THAT(
-        stdplus::span<uint8_t>(&region[AspeedDevice::bridge], sizeof(config)),
+        std::span<uint8_t>(&region[AspeedDevice::bridge], sizeof(config)),
         SpanEq(configSpan));
 }
 
