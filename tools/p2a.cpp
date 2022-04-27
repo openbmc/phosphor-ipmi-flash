@@ -29,6 +29,7 @@
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <span>
 #include <string>
 
 namespace host_tool
@@ -105,8 +106,8 @@ bool P2aDataHandler::sendContents(const std::string& input,
         bytesRead = sys->read(*inputFd, readBuffer.data(), readBuffer.size());
         if (bytesRead > 0)
         {
-            bridge->write(stdplus::span<const std::uint8_t>(readBuffer.data(),
-                                                            bytesRead));
+            bridge->write(
+                std::span<const std::uint8_t>(readBuffer.data(), bytesRead));
 
             /* Ok, so the data is staged, now send the blob write with the
              * details.

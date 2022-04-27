@@ -22,7 +22,7 @@
 
 #include <linux/pci_regs.h>
 
-#include <stdplus/types.hpp>
+#include <span>
 
 // Some versions of the linux/pci_regs.h header don't define this
 #ifndef PCI_STD_NUM_BARS
@@ -37,7 +37,7 @@ class PciBridgeIntf
   public:
     virtual ~PciBridgeIntf() = default;
 
-    virtual void write(const stdplus::span<const std::uint8_t> data) = 0;
+    virtual void write(const std::span<const std::uint8_t> data) = 0;
     virtual void configure(const ipmi_flash::PciConfigResponse& config) = 0;
 
     virtual std::size_t getDataLength() = 0;
@@ -48,7 +48,7 @@ class PciAccessBridge : public PciBridgeIntf
   public:
     virtual ~PciAccessBridge();
 
-    virtual void write(const stdplus::span<const std::uint8_t> data) override;
+    virtual void write(const std::span<const std::uint8_t> data) override;
     virtual void configure(const ipmi_flash::PciConfigResponse&) override{};
 
     std::size_t getDataLength() override
