@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65d62e60_ea3fd47b",
+        "filename": "tools/test/tools_net_unittest.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2022-05-06T16:27:16Z",
+      "side": 1,
+      "message": "needed to make copies to avoid the some memory issue.",
+      "range": {
+        "startLine": 247,
+        "startChar": 0,
+        "endLine": 258,
+        "endChar": 19
+      },
+      "revId": "82ef53e6d1016fb6cb5fbdea5651740dc9c475ec",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}

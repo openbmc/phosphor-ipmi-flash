@@ -58,6 +58,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef20005d_712ca1c2",
+        "filename": "tools/test/tools_net_unittest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2022-05-06T16:27:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9022304_9f61cc4c",
+      "range": {
+        "startLine": 233,
+        "startChar": 52,
+        "endLine": 233,
+        "endChar": 67
+      },
+      "revId": "233425db7225c04509d43ffa678e8993e66fadc3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "10245856_3d799013",
@@ -81,6 +105,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "670f4228_92110616",
+        "filename": "tools/test/tools_net_unittest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2022-05-06T16:27:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "10245856_3d799013",
+      "range": {
+        "startLine": 248,
+        "startChar": 52,
+        "endLine": 248,
+        "endChar": 55
+      },
+      "revId": "233425db7225c04509d43ffa678e8993e66fadc3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3fe18aad_3308df93",
@@ -94,6 +142,30 @@
       "writtenOn": "2022-04-27T05:47:15Z",
       "side": 1,
       "message": "span not included and that this conversion doesn\u0027t work\n\nI had to convert to uint8_t* somehow, and even then `ContainerEq` does not work.\n```\nauto dataView \u003d stdplus::span\u003cuint8_t\u003e(\n  reinterpret_cast\u003cuint8_t*\u003e(const_cast\u003cvoid*\u003e(data)),\n  len);\nEXPECT_TRUE(std::equal(chunk.begin(), chunk.end(), dataView.begin(), \n  dataView.end()));\n```",
+      "range": {
+        "startLine": 255,
+        "startChar": 44,
+        "endLine": 255,
+        "endChar": 58
+      },
+      "revId": "233425db7225c04509d43ffa678e8993e66fadc3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2af11cae_ded00b4a",
+        "filename": "tools/test/tools_net_unittest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2022-05-06T16:27:16Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3fe18aad_3308df93",
       "range": {
         "startLine": 255,
         "startChar": 44,
