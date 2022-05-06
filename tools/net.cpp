@@ -30,6 +30,7 @@
 #include <stdplus/handle/managed.hpp>
 #include <stdplus/util/cexec.hpp>
 
+#include <array>
 #include <cstdint>
 #include <cstring>
 #include <optional>
