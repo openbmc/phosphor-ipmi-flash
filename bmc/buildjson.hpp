@@ -6,6 +6,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <array>
 #include <memory>
 #include <string>
 #include <vector>
@@ -24,7 +25,10 @@ std::unique_ptr<TriggerableActionInterface>
 std::unique_ptr<TriggerableActionInterface>
     buildSystemd(const nlohmann::json& data);
 
-extern const std::vector<const char*> defaultConfigPaths;
+constexpr std::array defaultConfigPaths = {
+    "/usr/share/phosphor-ipmi-flash",
+    "/run/phosphor-ipmi-flash",
+};
 
 /* HandlersBuilderIfc is a helper class that builds Handlers from the json files
  * found within a specified directory.
