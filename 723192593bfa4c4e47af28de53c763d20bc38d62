@@ -34,6 +34,29 @@
       "parentUuid": "134a2999_9ca63716",
       "revId": "723192593bfa4c4e47af28de53c763d20bc38d62",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47d8416c_ec0520c2",
+        "filename": "bmc/buildjson.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1001087
+      },
+      "writtenOn": "2022-06-03T21:56:47Z",
+      "side": 1,
+      "message": "Do we still need to include vector here after the removal of defaultConfigPaths?",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 17
+      },
+      "revId": "723192593bfa4c4e47af28de53c763d20bc38d62",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
