@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "134a2999_9ca63716",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-06-03T19:37:02Z",
+      "side": 1,
+      "message": "Wow good catch. We\u0027ve been burned by extern a few times (I think in this repo) so definitely something we should be cleaning up.",
+      "revId": "723192593bfa4c4e47af28de53c763d20bc38d62",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
