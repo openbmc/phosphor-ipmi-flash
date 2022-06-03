@@ -51,6 +51,24 @@
       "message": "nit: c++20 should allow partial template deduction (you can remove the number of elements)?",
       "revId": "c14f1111822350b73958f57f4cedb344459d323d",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a2a7f18_78c71f22",
+        "filename": "bmc/buildjson.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2022-06-03T22:37:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0e6e0b02_929d3be6",
+      "revId": "c14f1111822350b73958f57f4cedb344459d323d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
