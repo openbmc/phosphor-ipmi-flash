@@ -57,6 +57,30 @@
       },
       "revId": "723192593bfa4c4e47af28de53c763d20bc38d62",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37add982_2ff20027",
+        "filename": "bmc/buildjson.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2022-06-03T22:00:15Z",
+      "side": 1,
+      "message": "good catch. removed.",
+      "parentUuid": "47d8416c_ec0520c2",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 17
+      },
+      "revId": "723192593bfa4c4e47af28de53c763d20bc38d62",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
