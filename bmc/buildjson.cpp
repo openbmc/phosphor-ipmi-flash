@@ -26,7 +26,6 @@
 #include <exception>
 #include <fstream>
 #include <string>
-#include <vector>
 
 namespace ipmi_flash
 {
@@ -67,10 +66,5 @@ std::unique_ptr<TriggerableActionInterface>
     return SystemdNoFile::CreateSystemdNoFile(sdbusplus::bus::new_default(),
                                               unit, systemdMode);
 }
-
-const std::vector<const char*> defaultConfigPaths = {
-    "/usr/share/phosphor-ipmi-flash",
-    "/run/phosphor-ipmi-flash",
-};
 
 } // namespace ipmi_flash
