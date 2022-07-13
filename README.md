@@ -61,19 +61,6 @@ make
 make install
 ```
 
-#### Building span-lite
-
-Check out the [span-lite source](https://github.com/martinmoene/span-lite).
-
-Then run these commands in the source directory.
-
-```
-mkdir build && cd build
-cmake ..
-make
-make install
-```
-
 #### Building stdplus
 
 Check out the [stdplus source](https://github.com/openbmc/stdplus).
@@ -93,16 +80,9 @@ Check out the [phosphor-ipmi-flash source](https://github.com/openbmc/phosphor-i
 Then run these commands in the source directory.
 
 ```
-./bootstrap.sh
-./configure --disable-build-bmc-blob-handler
-make
-make install
-```
-
-*NOTE:* When building from the OpenBMC SDK your configuration call will be:
-
-```
-./configure --enable-oe-sdk --host "$(uname -m)" --disable-build-bmc-blob-handler AR=x86_64-openbmc-linux-gcc-ar RANLIB=x86_64-openbmc-linux-gcc-ranlib
+meson setup -Dbmc-blob-handler=disabled -Dtests=disabled builddir
+ninja -C builddir
+ninja -C builddir install
 ```
 
 ### Parameters
@@ -175,11 +155,11 @@ also supports receiving BIOS updates.
 The following are the two primary configuration options, which control how the
 update is treated.
 
-Option                   | Meaning
------------------------- | -------
-`--enable-static-layout` | Enable treating the update as a static layout update.
-`--enable-tarball-ubi`   | Enable treating the update as a tarball for UBI update.
-`--enable-host-bios`     | Enable receiving the update for a host bios update.
+Option                        | Meaning
+----------------------------- | -------
+`-Dupdate-type=static-layout` | Enable treating the update as a static layout update.
+`-Dupdate-type=tarball-ubi`   | Enable treating the update as a tarball for UBI update.
+`-Dhost-bios=true`            | Enable receiving the update for a host bios update.
 
 The following are configuration options for how the host and BMC are meant to
 transfer the data.  By default, the data-in-IPMI mechanism is enabled.
@@ -202,54 +182,54 @@ If a platform enables p2a as the transport mechanism, a specific vendor must be
 selected via the following configuration option.  Currently, only one is
 supported.
 
-Option                 | Meaning
------------------------| -------
-`--enable-aspeed-p2a`  | Use with ASPEED parts.
+Option                   | Meaning
+-------------------------| -------
+`-Dp2a-type=aspeed-p2a`  | Use with ASPEED parts.
 
 If a platform enables lpc as the transport mechanism, a specific vendor must be
 selected via the following configuration option.  Currently, only two are
 supported.
 
-Option                 | Meaning
----------------------- | -------
-`--enable-aspeed-lpc`  | Use with ASPEED parts.
-`--enable-nuvoton-lpc` | Use with Nuvoton parts.
+Option                   | Meaning
+------------------------ | -------
+`-Dlpc-type=aspeed-lpc`  | Use with ASPEED parts.
+`-Dlpc-type=nuvoton-lpc` | Use with Nuvoton parts.
 
 A platform may also enable the network transport mechanism.
 
 NOTE: This mechanism is only intended to be used in-band and not exposed
 externally, as it doesn't implement any encryption or integrity verification.
 
-Option                | Meaning
-----------------------| -------
-`--enable-net-bridge` | Enable net transport bridge
+Option              | Meaning
+--------------------| -------
+`-Dnet-bridge=true` | Enable net transport bridge
 
 There are also options to control an optional clean up mechanism.
 
-Option                    | Meaning
-------------------------- | -------
-`--enable-cleanup-delete` | Provide a simple blob id that deletes artifacts.
+Option                     | Meaning
+-------------------------- | -------
+`-Dcleanup-delete=enabled` | Provide a simple blob id that deletes artifacts.
 
 If the update mechanism desired is simply a BMC reboot, a platform can just
 enable that directly.
 
-Option                   | Meaning
------------------------- | -------
-`--enable-reboot-update` | Enable use of reboot update mechanism.
+Option                 | Meaning
+---------------------- | -------
+`-Dreboot-update=true` | Enable use of reboot update mechanism.
 
 If you would like the update status to be tracked with a status file, this
-option can be enabled. Note that `--enable-update-status` option and the above
-`--enable-reboot-update` option cannot be enabled at the same time.
+option can be enabled. Note that `-Dupdate-status=true` option and the above
+`-Dreboot-update=true` option cannot be enabled at the same time.
 
-Option                   | Meaning
------------------------- | -------
-`--enable-update-status` | Enable use of update status file.
+Option                 | Meaning
+---------------------- | -------
+`-Dupdate-status=true` | Enable use of update status file.
 
 If you would like to use host memory access to update on a PPC platform, this configuration option needs to be enabled.
 
-Option          | Meaning
---------------- | -------
-`--enable-ppc`  | Enable PPC host memory access.
+Option        | Meaning
+------------- | -------
+`-Dppc=true`  | Enable PPC host memory access.
 
 ### Internal Configuration Details
 
