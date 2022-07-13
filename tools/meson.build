@@ -5,7 +5,8 @@ updater_pre = [
   dependency('pciaccess', fallback: ['pciaccess', 'dep_pciaccess']),
   dependency('stdplus', fallback: ['stdplus', 'stdplus_dep']),
   blobs_dep,
-  sys_dep]
+  sys_dep,
+  function2_dep]
 
 updater_lib = static_library(
   'updater_lib',
