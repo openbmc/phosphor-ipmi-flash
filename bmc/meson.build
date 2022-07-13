@@ -1,6 +1,7 @@
 bmc_inc = include_directories('.')
 
 common_pre = declare_dependency(
+  dependencies: [function2_dep, json_dep],
   include_directories: [root_inc, bmc_inc])
 
 common_lib = static_library(
