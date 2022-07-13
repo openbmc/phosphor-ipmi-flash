@@ -16,6 +16,29 @@
       "message": "Thanks, much appreciated",
       "revId": "c1a98a04adc68f2b60b1f52d21d5a62e7da210f2",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47c2d3a8_f857d4c4",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-07-13T20:05:49Z",
+      "side": 1,
+      "message": "Here, we want to use the following command to build the dynamic library instead of static:\n\n`cmake -DCMAKE_POSITION_INDEPENDENT_CODE\u003dON ..`\n\nThis is described in https://github.com/fmtlib/fmt/issues/548",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 8
+      },
+      "revId": "c1a98a04adc68f2b60b1f52d21d5a62e7da210f2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
