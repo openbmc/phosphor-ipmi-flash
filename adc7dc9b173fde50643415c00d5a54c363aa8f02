@@ -16,6 +16,29 @@
       "message": "CI seems broken",
       "revId": "adc7dc9b173fde50643415c00d5a54c363aa8f02",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2261ef7d_0fd665e9",
+        "filename": "README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-07-14T17:40:03Z",
+      "side": 1,
+      "message": "This should also be changed to -Dmapped-address OR by setting IPMI_FLASH_BMC_ADDRESS in the bbappend file: https://github.com/openbmc/openbmc/blob/master/meta-phosphor/recipes-phosphor/ipmi/phosphor-ipmi-flash_git.bb#L45-L46",
+      "range": {
+        "startLine": 179,
+        "startChar": 1,
+        "endLine": 179,
+        "endChar": 15
+      },
+      "revId": "adc7dc9b173fde50643415c00d5a54c363aa8f02",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
