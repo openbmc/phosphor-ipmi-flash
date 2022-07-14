@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f684b27b_cadcb914",
+        "filename": ".gitignore",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2022-07-14T00:52:16Z",
+      "side": 1,
+      "message": "We don\u0027t want to ignore wrapfiles that change on us if we commit them to the repo.\n\nThis probably needs more comprehensive rules to allow the committed files.",
+      "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "805fd0b7_141168ae",
+        "filename": ".gitignore",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2022-07-14T00:52:16Z",
+      "side": 1,
+      "message": "It should still be rooted at the top level",
+      "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8cba8ceb_a45a5e19",
+        "filename": "meson.build",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2022-07-14T00:52:16Z",
+      "side": 1,
+      "message": "nit: Not needed",
+      "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2eef0a17_3266492b",
+        "filename": "subprojects/function2.wrap",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2022-07-14T00:52:16Z",
+      "side": 1,
+      "message": "Extra newlines?",
+      "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d37cf411_8e071412",
+        "filename": "subprojects/nlohmann_json.wrap",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2022-07-14T00:52:16Z",
+      "side": 1,
+      "message": "Extra newlines?",
+      "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
