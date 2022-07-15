@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "299093d8_cd22d9d9",
+        "filename": ".gitignore",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-07-15T01:26:40Z",
+      "side": 1,
+      "message": "Oh yeah good point, hopefully this addresses that now.",
+      "parentUuid": "f684b27b_cadcb914",
+      "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "805fd0b7_141168ae",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-07-14T00:52:16Z",
       "side": 1,
       "message": "It should still be rooted at the top level",
+      "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f961954f_bfede94c",
+        "filename": ".gitignore",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-07-15T01:26:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "805fd0b7_141168ae",
       "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -52,6 +88,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "61259255_6a97b2b4",
+        "filename": "meson.build",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-07-15T01:26:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8cba8ceb_a45a5e19",
+      "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2eef0a17_3266492b",
@@ -69,6 +123,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "36ff91d8_748c3702",
+        "filename": "subprojects/function2.wrap",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-07-15T01:26:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2eef0a17_3266492b",
+      "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d37cf411_8e071412",
@@ -82,6 +154,24 @@
       "writtenOn": "2022-07-14T00:52:16Z",
       "side": 1,
       "message": "Extra newlines?",
+      "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "76726354_16232b41",
+        "filename": "subprojects/nlohmann_json.wrap",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2022-07-15T01:26:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d37cf411_8e071412",
       "revId": "195ad5e4814fb625b72b0a6607d2e7ec8575ea46",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
