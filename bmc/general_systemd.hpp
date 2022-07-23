@@ -15,11 +15,10 @@ class SystemdNoFile : public TriggerableActionInterface
 {
   public:
     static std::unique_ptr<TriggerableActionInterface>
-        CreateSystemdNoFile(sdbusplus::bus::bus&& bus,
-                            const std::string& service,
+        CreateSystemdNoFile(sdbusplus::bus_t&& bus, const std::string& service,
                             const std::string& mode);
 
-    SystemdNoFile(sdbusplus::bus::bus&& bus, const std::string& service,
+    SystemdNoFile(sdbusplus::bus_t&& bus, const std::string& service,
                   const std::string& mode) :
         bus(std::move(bus)),
         triggerService(service), mode(mode)
@@ -38,15 +37,15 @@ class SystemdNoFile : public TriggerableActionInterface
     const std::string& getMode() const;
 
   private:
-    sdbusplus::bus::bus bus;
+    sdbusplus::bus_t bus;
     const std::string triggerService;
     const std::string mode;
 
-    std::optional<sdbusplus::bus::match::match> jobMonitor;
+    std::optional<sdbusplus::bus::match_t> jobMonitor;
     std::optional<std::string> job;
     ActionStatus currentStatus = ActionStatus::unknown;
 
-    void match(sdbusplus::message::message& m);
+    void match(sdbusplus::message_t& m);
 };
 
 /**
@@ -67,12 +66,12 @@ class SystemdWithStatusFile : public SystemdNoFile
      * @param[in] mode - the job-mode when starting the systemd Unit.
      */
     static std::unique_ptr<TriggerableActionInterface>
-        CreateSystemdWithStatusFile(sdbusplus::bus::bus&& bus,
+        CreateSystemdWithStatusFile(sdbusplus::bus_t&& bus,
                                     const std::string& path,
                                     const std::string& service,
                                     const std::string& mode);
 
-    SystemdWithStatusFile(sdbusplus::bus::bus&& bus, const std::string& path,
+    SystemdWithStatusFile(sdbusplus::bus_t&& bus, const std::string& path,
                           const std::string& service, const std::string& mode) :
         SystemdNoFile(std::move(bus), service, mode),
         checkPath(path)

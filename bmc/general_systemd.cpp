@@ -44,14 +44,13 @@ bool SystemdNoFile::trigger()
 
     try
     {
-        jobMonitor.emplace(
-            bus,
-            "type='signal',"
-            "sender='org.freedesktop.systemd1',"
-            "path='/org/freedesktop/systemd1',"
-            "interface='org.freedesktop.systemd1.Manager',"
-            "member='JobRemoved',",
-            [&](sdbusplus::message::message& m) { this->match(m); });
+        jobMonitor.emplace(bus,
+                           "type='signal',"
+                           "sender='org.freedesktop.systemd1',"
+                           "path='/org/freedesktop/systemd1',"
+                           "interface='org.freedesktop.systemd1.Manager',"
+                           "member='JobRemoved',",
+                           [&](sdbusplus::message_t& m) { this->match(m); });
 
         auto method = bus.new_method_call(systemdService, systemdRoot,
                                           systemdInterface, "StartUnit");
@@ -93,7 +92,7 @@ void SystemdNoFile::abort()
         std::fprintf(stderr, "Canceled %s: %s\n", triggerService.c_str(),
                      job->c_str());
     }
-    catch (const sdbusplus::exception::exception& ex)
+    catch (const sdbusplus::exception_t& ex)
     {
         std::fprintf(stderr, "Failed to cancel job %s %s: %s\n",
                      triggerService.c_str(), job->c_str(), ex.what());
@@ -110,7 +109,7 @@ const std::string& SystemdNoFile::getMode() const
     return mode;
 }
 
-void SystemdNoFile::match(sdbusplus::message::message& m)
+void SystemdNoFile::match(sdbusplus::message_t& m)
 {
     if (!job)
     {
@@ -126,7 +125,7 @@ void SystemdNoFile::match(sdbusplus::message::message& m)
     {
         m.read(job_id, job_path, unit, result);
     }
-    catch (const sdbusplus::exception::exception& e)
+    catch (const sdbusplus::exception_t& e)
     {
         std::fprintf(stderr, "Bad JobRemoved signal %s: %s\n",
                      triggerService.c_str(), e.what());
@@ -151,17 +150,15 @@ void SystemdNoFile::match(sdbusplus::message::message& m)
     }
 }
 
-std::unique_ptr<TriggerableActionInterface>
-    SystemdNoFile::CreateSystemdNoFile(sdbusplus::bus::bus&& bus,
-                                       const std::string& service,
-                                       const std::string& mode)
+std::unique_ptr<TriggerableActionInterface> SystemdNoFile::CreateSystemdNoFile(
+    sdbusplus::bus_t&& bus, const std::string& service, const std::string& mode)
 {
     return std::make_unique<SystemdNoFile>(std::move(bus), service, mode);
 }
 
 std::unique_ptr<TriggerableActionInterface>
     SystemdWithStatusFile::CreateSystemdWithStatusFile(
-        sdbusplus::bus::bus&& bus, const std::string& path,
+        sdbusplus::bus_t&& bus, const std::string& path,
         const std::string& service, const std::string& mode)
 {
     return std::make_unique<SystemdWithStatusFile>(std::move(bus), path,
