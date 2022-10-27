@@ -91,11 +91,11 @@ std::vector<HandlerConfig<LogBlobHandler::ActionPack>>
 
             const auto& onDelete = a.at("delete");
             const std::string& onDeleteType = onOpen.at("type");
-            if (onOpenType == "systemd")
+            if (onDeleteType == "systemd")
             {
                 pack->onDelete = std::move(buildSystemd(onDelete));
             }
-            else if (onOpenType == "skip")
+            else if (onDeleteType == "skip")
             {
                 pack->onDelete = SkipAction::CreateSkipAction();
             }
