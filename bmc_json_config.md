@@ -6,9 +6,9 @@ handler should behave for a given blob id.
 
 There are three json configurations available by default:
 
-*   config-bios.json
-*   config-static-bmc-reboot.json
-*   config-static-bmc.json
+- config-bios.json
+- config-static-bmc-reboot.json
+- config-static-bmc.json
 
 Let's break them down, what they contain and what it means, and then how to
 write your own. It's helpful to start here.
@@ -49,9 +49,9 @@ file. It will make no difference. The file though, must contain an array.
 Beyond this, the flash handler configuration is a dictionary or object with
 three fields.
 
-*   `blob`
-*   `handler`
-*   `actions`
+- `blob`
+- `handler`
+- `actions`
 
 ### `blob`
 
@@ -67,7 +67,7 @@ generally unlikely that there will be a name collision.
 The `handler` field expects to hold a dictionary or object with at least one
 field.
 
-*   `type`
+- `type`
 
 The `type` field expects a string and will control what other parameters are
 required. The type here refers to the handler for the incoming data associated
@@ -89,9 +89,9 @@ used to shut down unnecessary services, etc.
 
 The actions are split into three fields:
 
-*   `preparation`
-*   `verification`
-*   `update`
+- `preparation`
+- `verification`
+- `update`
 
 The `preparation`, `verification`, and `update` fields expect a `type` field,
 similarly to the `handler` field. This dictates what other parameters may be
@@ -196,7 +196,7 @@ A handler determines how the bytes from the host are stored.
 The `file` handler type writes the bytes to a file path specified by the
 required parameter `path`.
 
-*   `path` - full file system path to where to write bytes.
+- `path` - full file system path to where to write bytes.
 
 ### Action Types
 
@@ -214,9 +214,9 @@ The `systemd` type should be used when you wish to start a systemd service or
 target. For verification and update operations this will track the status of the
 systemd service to determine success or failure.
 
-*   `unit` - required - string - the systemd unit to start.
-*   `mode` - optional - string - default: replace - the mode for starting the
-    service.
+- `unit` - required - string - the systemd unit to start.
+- `mode` - optional - string - default: replace - the mode for starting the
+  service.
 
 #### `fileSystemdVerify` & `fileSystemdUpdate`
 
@@ -226,11 +226,11 @@ asked for a status, it'll read the contents of a file. Therefore, whatever is
 performing the action will want to update that file. NOTE: Now that the systemd
 type action tracks unit status, that action is now preferred.
 
-*   `path` - required - string - the full file system path to where one finds
-    the status.
-*   `unit` - required - string - the systemd unit to start
-*   `mode` - optional - string - default: replace - the mode for starting the
-    service.
+- `path` - required - string - the full file system path to where one finds the
+  status.
+- `unit` - required - string - the systemd unit to start
+- `mode` - optional - string - default: replace - the mode for starting the
+  service.
 
 #### `reboot`
 
@@ -251,10 +251,10 @@ contribution. A handler is just an implementation of the
 
 Your handler must implement:
 
-*   `bool open(const std::string& path)`
-*   `void close()`
-*   `bool write(std::uint32_t offset, const std::vector<std::uint8_t>& data)`
-*   `int getSize()`
+- `bool open(const std::string& path)`
+- `void close()`
+- `bool write(std::uint32_t offset, const std::vector<std::uint8_t>& data)`
+- `int getSize()`
 
 The handler is meant to receive the bytes, and write the bytes.
 
@@ -269,9 +269,9 @@ contribution. An action is just an implementation of the
 
 Your action must implement:
 
-*   `bool trigger()`
-*   `void abort()`
-*   `ActionStatus status()`
+- `bool trigger()`
+- `void abort()`
+- `ActionStatus status()`
 
 The abort method is not a guarantee.
 
