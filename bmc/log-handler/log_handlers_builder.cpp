@@ -90,7 +90,7 @@ std::vector<HandlerConfig<LogBlobHandler::ActionPack>>
             }
 
             const auto& onDelete = a.at("delete");
-            const std::string& onDeleteType = onOpen.at("type");
+            const std::string& onDeleteType = onDelete.at("type");
             if (onDeleteType == "systemd")
             {
                 pack->onDelete = std::move(buildSystemd(onDelete));
