@@ -108,19 +108,45 @@ TEST_F(UpdateHandlerTest, SendFileHandlerFailureCausesException)
             ipmi_flash::FirmwareFlags::UpdateFlags::openWrite);
 
     EXPECT_CALL(handlerMock, supportedType())
-        .WillOnce(Return(ipmi_flash::FirmwareFlags::UpdateFlags::lpc));
+        .WillRepeatedly(Return(ipmi_flash::FirmwareFlags::UpdateFlags::lpc));
 
     EXPECT_CALL(blobMock, openBlob(ipmi_flash::staticLayoutBlobId, supported))
-        .WillOnce(Return(session));
+        .WillRepeatedly(Return(session));
 
     EXPECT_CALL(handlerMock, sendContents(firmwareImage, session))
-        .WillOnce(Return(false));
+        .WillRepeatedly(Return(false));
 
-    EXPECT_CALL(blobMock, closeBlob(session)).Times(1);
+    EXPECT_CALL(blobMock, closeBlob(session)).Times(3);
 
     EXPECT_THROW(
         updater.sendFile(ipmi_flash::staticLayoutBlobId, firmwareImage),
         ToolException);
+}
+
+TEST_F(UpdateHandlerTest, SendFileHandlerPassWithRetries)
+{
+    std::string firmwareImage = "image.bin";
+
+    std::uint16_t supported =
+        static_cast<std::uint16_t>(
+            ipmi_flash::FirmwareFlags::UpdateFlags::lpc) |
+        static_cast<std::uint16_t>(
+            ipmi_flash::FirmwareFlags::UpdateFlags::openWrite);
+
+    EXPECT_CALL(handlerMock, supportedType())
+        .WillRepeatedly(Return(ipmi_flash::FirmwareFlags::UpdateFlags::lpc));
+
+    EXPECT_CALL(blobMock, openBlob(ipmi_flash::staticLayoutBlobId, supported))
+        .WillRepeatedly(Return(session));
+
+    EXPECT_CALL(handlerMock, sendContents(firmwareImage, session))
+        .WillOnce(Return(false))
+        .WillOnce(Return(false))
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(blobMock, closeBlob(session)).Times(3);
+
+    updater.sendFile(ipmi_flash::staticLayoutBlobId, firmwareImage);
 }
 
 TEST_F(UpdateHandlerTest, VerifyFileHandleReturnsTrueOnSuccess)
