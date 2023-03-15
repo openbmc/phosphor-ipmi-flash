@@ -22,6 +22,30 @@
       },
       "revId": "eeb7d7a76c8a42cd70d0b9e336cfe49203b8eb1f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1f14637_c79da199",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2023-03-15T19:52:44Z",
+      "side": 1,
+      "message": "I actually don\u0027t think we will hit that issue anymore.\n\n\n```\n    catch (const ipmiblob::BlobException\u0026 b)\n    {\n        progress-\u003eabort();\n        return false;\n    }\n```\n\nin net.cpp and others always catches it.\n\nSo maybe we can just remove that catch.",
+      "parentUuid": "1f7eb8b4_885f6b93",
+      "range": {
+        "startLine": 104,
+        "startChar": 0,
+        "endLine": 111,
+        "endChar": 24
+      },
+      "revId": "eeb7d7a76c8a42cd70d0b9e336cfe49203b8eb1f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
