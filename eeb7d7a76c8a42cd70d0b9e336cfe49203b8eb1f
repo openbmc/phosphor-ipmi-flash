@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "69c763a1_dcadb88a",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2023-03-15T20:21:23Z",
+      "side": 1,
+      "message": "The loop should not have a termination condition if it has to exit through the points within it. Returning success at `i \u003d\u003d retryCount` would be a bug.",
+      "revId": "eeb7d7a76c8a42cd70d0b9e336cfe49203b8eb1f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1f7eb8b4_885f6b93",
         "filename": "tools/handler.cpp",
         "patchSetId": 1
@@ -68,6 +85,23 @@
         "endLine": 111,
         "endChar": 24
       },
+      "revId": "eeb7d7a76c8a42cd70d0b9e336cfe49203b8eb1f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d25f5cf4_b3dad9c5",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1000188
+      },
+      "writtenOn": "2023-03-15T20:21:23Z",
+      "side": 1,
+      "message": "Prefer `throw;` over `throw t;` to avoid copies.",
       "revId": "eeb7d7a76c8a42cd70d0b9e336cfe49203b8eb1f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
