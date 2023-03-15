@@ -70,27 +70,48 @@ bool UpdateHandler::checkAvailable(const std::string& goalFirmware)
     return true;
 }
 
-void UpdateHandler::sendFile(const std::string& target, const std::string& path)
+void UpdateHandler::retrySendFile(const std::string& target,
+                                  const std::string& path)
 {
     auto supported = handler->supportedType();
+    auto session =
+        openBlob(blob, target,
+                 static_cast<std::uint16_t>(supported) |
+                     static_cast<std::uint16_t>(
+                         ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
 
-    try
+    if (!handler->sendContents(path, *session))
     {
-        auto session = openBlob(
-            blob, target,
-            static_cast<std::uint16_t>(supported) |
-                static_cast<std::uint16_t>(
-                    ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
-
-        if (!handler->sendContents(path, *session))
-        {
-            throw ToolException("Failed to send contents of " + path);
-        }
+        throw ToolException("Failed to send contents of " + path);
     }
-    catch (const ipmiblob::BlobException& b)
+}
+
+void UpdateHandler::sendFile(const std::string& target, const std::string& path)
+{
+    const uint8_t retryCount = 3;
+    uint8_t i = 1;
+    while (true)
     {
-        throw ToolException("blob exception received: " +
-                            std::string(b.what()));
+        try
+        {
+            retrySendFile(target, path);
+            return;
+        }
+        catch (const ipmiblob::BlobException& b)
+        {
+            throw ToolException("blob exception received: " +
+                                std::string(b.what()));
+        }
+        catch (const ToolException& t)
+        {
+            std::fprintf(
+                stderr,
+                "tool exception received: %s: Retrying it %u more times\n",
+                t.what(), retryCount - i);
+            if (retryCount - i == 0)
+                throw;
+        }
+        ++i;
     }
 }
 

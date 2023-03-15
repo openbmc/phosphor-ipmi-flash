@@ -76,6 +76,11 @@ class UpdateHandler : public UpdateHandlerInterface
     void sendFile(const std::string& target, const std::string& path) override;
 
     /**
+     * @throw ToolException on failure.
+     */
+    void retrySendFile(const std::string& target, const std::string& path);
+
+    /**
      * @throw ToolException on failure (TODO: throw on timeout.)
      */
     bool verifyFile(const std::string& target, bool ignoreStatus) override;
