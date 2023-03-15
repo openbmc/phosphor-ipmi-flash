@@ -158,6 +158,24 @@
       "parentUuid": "d25f5cf4_b3dad9c5",
       "revId": "eeb7d7a76c8a42cd70d0b9e336cfe49203b8eb1f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35bccf3b_1c93bdf7",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2023-03-15T20:46:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "15da1a71_cdac2a44",
+      "revId": "eeb7d7a76c8a42cd70d0b9e336cfe49203b8eb1f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
