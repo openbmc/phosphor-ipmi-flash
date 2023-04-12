@@ -2,7 +2,7 @@ project(
   'phosphor-ipmi-flash',
   'cpp',
   version: '0.1',
-  meson_version: '>=0.57.0',
+  meson_version: '>=0.58.0',
   default_options: [
     'cpp_std=c++20',
     'warning_level=3',

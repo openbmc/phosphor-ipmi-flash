@@ -54,7 +54,7 @@ if systemd.found()
       output: data,
       configuration: conf_data,
       install: true,
-      install_dir: systemd.get_variable(pkgconfig: 'systemdsystemunitdir'))
+      install_dir: systemd.get_variable('systemdsystemunitdir'))
   endforeach
 endif
 
