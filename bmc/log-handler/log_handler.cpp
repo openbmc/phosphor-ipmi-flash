@@ -36,44 +36,41 @@ LogBlobHandler::LogBlobHandler(std::vector<HandlerConfig<ActionPack>>&& configs)
         info->handler = std::move(config.handler);
         info->actions->onOpen->setCallback(
             [infoP = info.get()](TriggerableActionInterface& tai) {
-                auto data =
-                    std::make_shared<std::optional<std::vector<uint8_t>>>();
-                do
+            auto data = std::make_shared<std::optional<std::vector<uint8_t>>>();
+            do
+            {
+                if (tai.status() != ActionStatus::success)
                 {
-                    if (tai.status() != ActionStatus::success)
-                    {
-                        fprintf(stderr,
-                                "LogBlobHandler: Log file unit failed for %s\n",
-                                infoP->blobId.c_str());
-                        continue;
-                    }
-                    if (!infoP->handler->open("", std::ios::in))
-                    {
-                        fprintf(
-                            stderr,
+                    fprintf(stderr,
+                            "LogBlobHandler: Log file unit failed for %s\n",
+                            infoP->blobId.c_str());
+                    continue;
+                }
+                if (!infoP->handler->open("", std::ios::in))
+                {
+                    fprintf(stderr,
                             "LogBlobHandler: Opening log file failed for %s\n",
                             infoP->blobId.c_str());
-                        continue;
-                    }
-                    auto d = infoP->handler->read(
-                        0, std::numeric_limits<uint32_t>::max());
-                    infoP->handler->close();
-                    if (!d)
-                    {
-                        fprintf(
-                            stderr,
+                    continue;
+                }
+                auto d = infoP->handler->read(
+                    0, std::numeric_limits<uint32_t>::max());
+                infoP->handler->close();
+                if (!d)
+                {
+                    fprintf(stderr,
                             "LogBlobHandler: Reading log file failed for %s\n",
                             infoP->blobId.c_str());
-                        continue;
-                    }
-                    *data = std::move(d);
-                } while (false);
-                for (auto sessionP : infoP->sessionsToUpdate)
-                {
-                    sessionP->data = data;
+                    continue;
                 }
-                infoP->sessionsToUpdate.clear();
-            });
+                *data = std::move(d);
+            } while (false);
+            for (auto sessionP : infoP->sessionsToUpdate)
+            {
+                sessionP->data = data;
+            }
+            infoP->sessionsToUpdate.clear();
+        });
         if (!blobInfoMap.try_emplace(info->blobId, std::move(info)).second)
         {
             fprintf(stderr,
@@ -211,8 +208,8 @@ bool LogBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
     }
     else
     {
-        meta->blobState =
-            blobs::StateFlags::committed | blobs::StateFlags::open_read;
+        meta->blobState = blobs::StateFlags::committed |
+                          blobs::StateFlags::open_read;
         meta->size = (*data)->size();
     }
     return true;

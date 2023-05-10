@@ -35,8 +35,7 @@ bool SkipAction::trigger()
     return true;
 }
 
-void SkipAction::abort()
-{}
+void SkipAction::abort() {}
 
 ActionStatus SkipAction::status()
 {

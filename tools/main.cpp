@@ -80,8 +80,8 @@ bool checkCommand(const std::string& command)
 
 bool checkInterface(const std::string& interface)
 {
-    auto intf =
-        std::find(interfaceList.begin(), interfaceList.end(), interface);
+    auto intf = std::find(interfaceList.begin(), interfaceList.end(),
+                          interface);
     return (intf != interfaceList.end());
 }
 
@@ -226,8 +226,8 @@ int main(int argc, char* argv[])
         /* Input has already been validated in this case. */
         if (interface == IPMIBT)
         {
-            handler =
-                std::make_unique<host_tool::BtDataHandler>(&blob, &progress);
+            handler = std::make_unique<host_tool::BtDataHandler>(&blob,
+                                                                 &progress);
         }
         else if (interface == IPMINET)
         {

@@ -19,8 +19,7 @@ namespace ipmi_flash
 class NetDataHandler : public DataInterface
 {
   public:
-    NetDataHandler() : listenFd(std::nullopt), connFd(std::nullopt)
-    {}
+    NetDataHandler() : listenFd(std::nullopt), connFd(std::nullopt) {}
 
     bool open() override;
     bool close() override;

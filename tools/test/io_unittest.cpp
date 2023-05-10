@@ -21,8 +21,7 @@ using ::testing::StrEq;
 class DevMemTest : public ::testing::Test
 {
   protected:
-    DevMemTest() : devmem(std::make_unique<DevMemDevice>(&sys_mock))
-    {}
+    DevMemTest() : devmem(std::make_unique<DevMemDevice>(&sys_mock)) {}
 
     internal::InternalSysMock sys_mock;
     std::unique_ptr<DevMemDevice> devmem;
@@ -104,8 +103,7 @@ class PpcMemTest : public ::testing::Test
   protected:
     static constexpr char path[] = "/dev/fun";
 
-    PpcMemTest() : devmem(std::make_unique<PpcMemDevice>(path, &sys_mock))
-    {}
+    PpcMemTest() : devmem(std::make_unique<PpcMemDevice>(path, &sys_mock)) {}
 
     internal::InternalSysMock sys_mock;
     std::unique_ptr<PpcMemDevice> devmem;

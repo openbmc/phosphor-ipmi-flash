@@ -9,8 +9,7 @@ namespace ipmi_flash
 class MapperException : public std::exception
 {
   public:
-    explicit MapperException(const std::string& message) : message(message)
-    {}
+    explicit MapperException(const std::string& message) : message(message) {}
 
     virtual const char* what() const noexcept override
     {

@@ -163,10 +163,10 @@ void* memcpyAligned(void* destination, const void* source, std::size_t size)
         }
     }
 
-    auto srcMem8 =
-        reinterpret_cast<const volatile std::uint8_t*>(source) + bytesCopied;
-    auto destMem8 =
-        reinterpret_cast<volatile std::uint8_t*>(destination) + bytesCopied;
+    auto srcMem8 = reinterpret_cast<const volatile std::uint8_t*>(source) +
+                   bytesCopied;
+    auto destMem8 = reinterpret_cast<volatile std::uint8_t*>(destination) +
+                    bytesCopied;
 
     for (i = bytesCopied; i < size; i++)
     {

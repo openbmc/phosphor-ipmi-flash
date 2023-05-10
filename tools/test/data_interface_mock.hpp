@@ -9,7 +9,6 @@ namespace host_tool
 
 class DataInterfaceMock : public DataInterface
 {
-
   public:
     virtual ~DataInterfaceMock() = default;
 

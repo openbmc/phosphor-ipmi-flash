@@ -204,8 +204,8 @@ TEST_F(UpdateHandlerTest, ReadVerisonReturnExpected)
     EXPECT_CALL(blobMock, openBlob(ipmi_flash::biosVersionBlobId, _))
         .WillOnce(Return(session));
     ipmiblob::StatResponse readVersionResponse = {};
-    readVersionResponse.blob_state =
-        blobs::StateFlags::open_read | blobs::StateFlags::committed;
+    readVersionResponse.blob_state = blobs::StateFlags::open_read |
+                                     blobs::StateFlags::committed;
     readVersionResponse.size = 10;
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(readVersionResponse));
@@ -222,8 +222,8 @@ TEST_F(UpdateHandlerTest, ReadVersionExceptionWhenPollingSucceedsReadBytesFails)
     EXPECT_CALL(blobMock, openBlob(ipmi_flash::biosVersionBlobId, _))
         .WillOnce(Return(session));
     ipmiblob::StatResponse readVersionResponse = {};
-    readVersionResponse.blob_state =
-        blobs::StateFlags::open_read | blobs::StateFlags::committed;
+    readVersionResponse.blob_state = blobs::StateFlags::open_read |
+                                     blobs::StateFlags::committed;
     readVersionResponse.size = 10;
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(readVersionResponse));

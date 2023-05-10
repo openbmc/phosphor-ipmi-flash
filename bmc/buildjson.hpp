@@ -64,7 +64,6 @@ struct HandlersBuilderIfc
      */
     std::vector<HandlerConfig<T>> buildHandlerConfigs(const char* directory)
     {
-
         std::vector<HandlerConfig<T>> output;
 
         std::vector<std::string> jsonPaths = GetJsonList(directory);

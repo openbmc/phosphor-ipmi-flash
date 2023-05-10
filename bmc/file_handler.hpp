@@ -20,8 +20,7 @@ class FileHandler : public ImageHandlerInterface
      * @param[in] filename - file to use for the contents, fully
      * qualified file system path.
      */
-    explicit FileHandler(const std::string& filename) : filename(filename)
-    {}
+    explicit FileHandler(const std::string& filename) : filename(filename) {}
 
     bool open(const std::string& path,
               std::ios_base::openmode mode = std::ios::out) override;
