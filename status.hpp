@@ -1,8 +1,7 @@
 #pragma once
 
-#include <function2/function2.hpp>
-
 #include <cstdint>
+#include <functional>
 
 namespace ipmi_flash
 {
@@ -19,7 +18,7 @@ enum class ActionStatus : std::uint8_t
 class TriggerableActionInterface
 {
   public:
-    using Callback = fu2::unique_function<void(TriggerableActionInterface&)>;
+    using Callback = std::move_only_function<void(TriggerableActionInterface&)>;
 
     virtual ~TriggerableActionInterface() = default;
 
