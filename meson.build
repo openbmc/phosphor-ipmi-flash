@@ -129,26 +129,6 @@ sys_dep = declare_dependency(
 blobs_dep = dependency('phosphor-ipmi-blobs')
 
 cpp = meson.get_compiler('cpp')
-# Function2 might not have a pkg-config. It is header only so just make
-# sure we can access the needed symbols from the header.
-function2_dep = dependency('function2', required: false)
-has_function2 = cpp.has_header_symbol(
-  'function2/function2.hpp',
-  'fu2::unique_function',
-  dependencies: function2_dep,
-  required: false)
-if not has_function2
-  function2_opts = import('cmake').subproject_options()
-  function2_opts.add_cmake_defines({'BUILD_TESTING': 'OFF'})
-  function2_proj = import('cmake').subproject(
-    'function2',
-    options: function2_opts,
-    required: false)
-  assert(function2_proj.found(), 'function2 is required')
-  if function2_proj.found()
-    function2_dep = function2_proj.dependency('function2')
-  endif
-endif
 
 if cpp.has_header('nlohmann/json.hpp')
     json_dep = declare_dependency()
