@@ -25,11 +25,10 @@ extern "C"
 
 #include "helper.hpp"
 
-#include <fmt/format.h>
-
 #include <stdplus/handle/managed.hpp>
 
 #include <cstring>
+#include <format>
 #include <span>
 #include <system_error>
 
@@ -74,7 +73,7 @@ PciAccessBridge::PciAccessBridge(const struct pci_id_match* match, int bar,
 
     if (!dev)
     {
-        throw NotFoundException(fmt::format(
+        throw NotFoundException(std::format(
             "PCI device {:#04x}:{:#04x}", match->vendor_id, match->device_id));
     }
 
@@ -110,7 +109,7 @@ void PciAccessBridge::write(const std::span<const std::uint8_t> data)
     if (data.size() > dataLength)
     {
         throw ToolException(
-            fmt::format("Write of {} bytes exceeds maximum of {}", data.size(),
+            std::format("Write of {} bytes exceeds maximum of {}", data.size(),
                         dataLength));
     }
 

@@ -21,13 +21,12 @@
 #include "pci.hpp"
 #include "tool_errors.hpp"
 
-#include <fmt/format.h>
-
 #include <ipmiblob/blob_errors.hpp>
 #include <stdplus/handle/managed.hpp>
 
 #include <cstdint>
 #include <cstring>
+#include <format>
 #include <memory>
 #include <span>
 #include <string>
@@ -90,7 +89,7 @@ bool P2aDataHandler::sendContents(const std::string& input,
     {
         (void)inputFd.release();
         throw internal::errnoException(
-            fmt::format("Error opening file '{}'", input));
+            std::format("Error opening file '{}'", input));
     }
 
     fileSize = sys->getSize(input.c_str());
