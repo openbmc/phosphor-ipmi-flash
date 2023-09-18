@@ -46,6 +46,30 @@
       },
       "revId": "05599d40f97fe27bd90c80ac108b351157ad0e68",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df342dcc_a5bc345a",
+        "filename": "meson.options",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2023-09-18T05:33:54Z",
+      "side": 1,
+      "message": "not sure if hex is allowed (please check meson)",
+      "parentUuid": "883cab73_0a4aa5d0",
+      "range": {
+        "startLine": 21,
+        "startChar": 34,
+        "endLine": 21,
+        "endChar": 61
+      },
+      "revId": "05599d40f97fe27bd90c80ac108b351157ad0e68",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
