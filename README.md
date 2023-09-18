@@ -176,6 +176,15 @@ future.
 | ---------------- | ------- | -------------------------------------------------------------------- |
 | `MAPPED_ADDRESS` | 0       | The address used for mapping P2A or LPC into the BMC's memory-space. |
 
+There are two kinds of PCI device-id for NPCM7xx and NPCM8xx respectively. For
+NPCM7xx the device-id is using 0x0750 and NPCM8xx is using 0x0850. Use this
+variable that can help to build host tool burn_my_bmc compatible with different
+platforms and make in-band firmware update work well.
+
+| Variable          | Default | Meaning                               |
+| ----------------- | ------- | ------------------------------------- |
+| `NUVOTON_PCI_DID` | 0x0750  | The device-id for Nuvoton PCI bridge. |
+
 If a platform enables p2a as the transport mechanism, a specific vendor must be
 selected via the following configuration option. Currently, only one is
 supported.

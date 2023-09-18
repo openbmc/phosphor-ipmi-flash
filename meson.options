@@ -18,6 +18,7 @@ option('net-bridge', type: 'boolean', value: false, description: 'Enable externa
 
 # Host Tool Options
 option('ppc', type: 'boolean', value: false, description: 'Enable ppc host memory access')
+option('nuvoton-pci-did', type : 'integer', value : '0x0750', description : 'The device-id for Nuvoton PCI bridge')
 
 # Configuration Details
 
