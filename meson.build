@@ -28,6 +28,7 @@ conf_data.set_quoted('VERIFY_STATUS_FILENAME', get_option('verify-status-filenam
 conf_data.set_quoted('UPDATE_STATUS_FILENAME', get_option('update-status-filename'))
 conf_data.set_quoted('BIOS_VERIFY_STATUS_FILENAME', get_option('bios-verify-status-filename'))
 conf_data.set('MAPPED_ADDRESS', get_option('mapped-address'))
+conf_data.set('NUVOTON_PCI_DID', get_option('nuvoton-pci-did'))
 
 
 conf_h = configure_file(
