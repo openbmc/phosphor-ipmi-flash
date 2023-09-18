@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "config.h"
+
 #pragma once
 
 #include "data.hpp"
@@ -97,7 +99,7 @@ class NuvotonPciBridge : public PciAccessBridge
 
   private:
     static constexpr std::uint32_t vid = 0x1050;
-    static constexpr std::uint32_t did = 0x0750;
+    static constexpr std::uint32_t did = NUVOTON_PCI_DID;
     static constexpr int bar = 0;
     static constexpr struct pci_id_match match
     {
