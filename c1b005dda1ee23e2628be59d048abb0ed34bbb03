@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c4ed71e_eb0bf317",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2023-09-18T05:27:02Z",
+      "side": 1,
+      "message": "Thanks for your review and suggestion. Please help us to review it again and merge it if this is valuable. Thanks.",
+      "revId": "c1b005dda1ee23e2628be59d048abb0ed34bbb03",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
