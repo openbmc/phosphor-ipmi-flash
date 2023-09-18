@@ -20,6 +20,7 @@ updater_lib = static_library(
   'pciaccess.cpp',
   'p2a.cpp',
   'progress.cpp',
+  conf_h,
   dependencies: updater_pre,
   include_directories: root_inc)
 
