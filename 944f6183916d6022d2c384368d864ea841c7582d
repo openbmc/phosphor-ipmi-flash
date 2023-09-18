@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d04ce872_782d69cb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2023-09-18T07:01:03Z",
+      "side": 1,
+      "message": "Change to use integer value instead of using hex value, due to meson seems not support hex value currently.",
+      "revId": "944f6183916d6022d2c384368d864ea841c7582d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
