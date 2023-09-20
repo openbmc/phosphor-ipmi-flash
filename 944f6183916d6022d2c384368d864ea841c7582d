@@ -16,6 +16,23 @@
       "message": "Change to use integer value instead of using hex value, due to meson seems not support hex value currently.",
       "revId": "944f6183916d6022d2c384368d864ea841c7582d",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11dcf96d_c04225c5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000294
+      },
+      "writtenOn": "2023-09-20T07:59:31Z",
+      "side": 1,
+      "message": "Hi All,\n\nThere is build error seems relate to phosphor-host-ipmid, I don\u0027t why this commit change meet this kind of build failure. Could you help us to check this failure? Thanks for your help.\n\nSource dir: /data0/jenkins/workspace/ci-repository/openbmc/phosphor-host-ipmid\nBuild dir: /data0/jenkins/workspace/ci-repository/openbmc/phosphor-host-ipmid/build\nBuild type: native build\nDEPRECATION: Duplicated values in array option is deprecated. This will become a hard error in the future.\nProject name: phosphor-host-ipmid\n\n[79/83] Linking target ipmid\n[80/83] Compiling C++ object libdynamiccmds.so.0.1.p/dbus-sdr_sdrutils.cpp.o\n[81/83] Compiling C++ object libdynamiccmds.so.0.1.p/dbus-sdr_storagecommands.cpp.o\n[82/83] Compiling C++ object libdynamiccmds.so.0.1.p/dbus-sdr_sensorcommands.cpp.o\nFAILED: libdynamiccmds.so.0.1.p/dbus-sdr_sensorcommands.cpp.o",
+      "revId": "944f6183916d6022d2c384368d864ea841c7582d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
