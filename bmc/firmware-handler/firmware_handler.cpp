@@ -57,10 +57,9 @@ std::unique_ptr<blobs::GenericBlobInterface>
 
     std::vector<std::string> blobs;
     blobs.reserve(firmwares.size());
-    std::for_each(firmwares.begin(), firmwares.end(),
-                  [&blobs](const auto& blob) {
-        blobs.emplace_back(blob.blobName);
-    });
+    std::for_each(
+        firmwares.begin(), firmwares.end(),
+        [&blobs](const auto& blob) { blobs.emplace_back(blob.blobName); });
 
     if (0 == std::count(blobs.begin(), blobs.end(), hashBlobId))
     {
@@ -450,10 +449,9 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
      * firmware handers (and file handlers, like this'll know where to write the
      * tarball, etc).
      */
-    auto h = std::find_if(handlers.begin(), handlers.end(),
-                          [&path](const auto& iter) {
-        return (iter.blobName == path);
-    });
+    auto h = std::find_if(
+        handlers.begin(), handlers.end(),
+        [&path](const auto& iter) { return (iter.blobName == path); });
     if (h == handlers.end())
     {
         return false;

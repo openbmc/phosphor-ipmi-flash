@@ -71,7 +71,7 @@ static constexpr std::size_t memoryRegionSize = 64 * 1024UL;
 
 extern "C"
 {
-    std::unique_ptr<blobs::GenericBlobInterface> createHandler();
+std::unique_ptr<blobs::GenericBlobInterface> createHandler();
 }
 
 std::unique_ptr<blobs::GenericBlobInterface> createHandler()

@@ -192,10 +192,9 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
 
     void addBlobId(const std::string& blob)
     {
-        auto blobIdMatch = std::find_if(blobIDs.begin(), blobIDs.end(),
-                                        [&blob](const std::string& iter) {
-            return (iter == blob);
-        });
+        auto blobIdMatch = std::find_if(
+            blobIDs.begin(), blobIDs.end(),
+            [&blob](const std::string& iter) { return (iter == blob); });
         if (blobIdMatch == blobIDs.end())
         {
             blobIDs.push_back(blob);
