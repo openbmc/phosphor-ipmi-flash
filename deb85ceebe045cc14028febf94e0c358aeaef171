@@ -16,6 +16,24 @@
       "message": "nit: `include_type: system` shouldn\u0027t be needed.",
       "revId": "deb85ceebe045cc14028febf94e0c358aeaef171",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "080aaf7e_6c4e25ef",
+        "filename": "meson.build",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2023-12-07T21:27:24Z",
+      "side": 1,
+      "message": "You likely need this if you ever want to run `ninja clang-tidy`.  I\u0027m trying to get all the dependency expressions identical across the whole org and a few repositories need this due to enabling clang-tidy.",
+      "parentUuid": "d7323853_507407fd",
+      "revId": "deb85ceebe045cc14028febf94e0c358aeaef171",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
