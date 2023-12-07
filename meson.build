@@ -128,14 +128,7 @@ sys_dep = declare_dependency(
   link_with: sys_lib)
 
 blobs_dep = dependency('phosphor-ipmi-blobs')
-
-cpp = meson.get_compiler('cpp')
-
-if cpp.has_header('nlohmann/json.hpp')
-    json_dep = declare_dependency()
-else
-    json_dep = dependency('nlohmann_json')
-endif
+nlohmann_json_dep = dependency('nlohmann_json', include_type: 'system')
 
 if not get_option('tests').disabled()
   gtest = dependency('gtest', main: true, disabler: true, required: false)

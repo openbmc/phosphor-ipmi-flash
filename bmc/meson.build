@@ -1,7 +1,7 @@
 bmc_inc = include_directories('.')
 
 common_pre = declare_dependency(
-  dependencies: [json_dep],
+  dependencies: [nlohmann_json_dep],
   include_directories: [root_inc, bmc_inc])
 
 common_lib = static_library(
