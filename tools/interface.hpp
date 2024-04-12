@@ -3,8 +3,10 @@
 #include "flags.hpp"
 #include "progress.hpp"
 
+#include <chrono>
 #include <cstdint>
 #include <string>
+#include <thread>
 
 namespace host_tool
 {
@@ -25,6 +27,11 @@ class DataInterface
      */
     virtual bool sendContents(const std::string& input,
                               std::uint16_t session) = 0;
+
+    virtual void waitForRetry()
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 
     /**
      * Return the supported data interface for this.

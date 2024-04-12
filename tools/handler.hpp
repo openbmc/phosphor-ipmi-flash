@@ -3,6 +3,7 @@
 #include "interface.hpp"
 
 #include <ipmiblob/blob_interface.hpp>
+#include <stdplus/function_view.hpp>
 
 #include <string>
 
@@ -76,11 +77,6 @@ class UpdateHandler : public UpdateHandlerInterface
     void sendFile(const std::string& target, const std::string& path) override;
 
     /**
-     * @throw ToolException on failure.
-     */
-    void retrySendFile(const std::string& target, const std::string& path);
-
-    /**
      * @throw ToolException on failure (TODO: throw on timeout.)
      */
     bool verifyFile(const std::string& target, bool ignoreStatus) override;
@@ -92,6 +88,27 @@ class UpdateHandler : public UpdateHandlerInterface
   private:
     ipmiblob::BlobInterface* blob;
     DataInterface* handler;
+
+    /**
+     * @throw ToolException on failure.
+     */
+    void retrySendFile(const std::string& target, const std::string& path);
+
+    /**
+     * @throw ToolException on failure (TODO: throw on timeout.)
+     */
+    void retryVerifyFile(const std::string& target, bool ignoreStatus);
+
+    /**
+     * @throw ToolException on failure.
+     */
+    std::vector<uint8_t> retryReadVersion(const std::string& versionBlob);
+
+    /**
+     * @throw ToolException on failure.
+     */
+    std::vector<uint8_t>
+        retryIfFailed(stdplus::function_view<std::vector<uint8_t>()> callback);
 };
 
 } // namespace host_tool
