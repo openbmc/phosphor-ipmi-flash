@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -70,31 +71,15 @@ bool UpdateHandler::checkAvailable(const std::string& goalFirmware)
     return true;
 }
 
-void UpdateHandler::retrySendFile(const std::string& target,
-                                  const std::string& path)
+void UpdateHandler::retryIfFailed(std::function<void()> callback)
 {
-    auto supported = handler->supportedType();
-    auto session =
-        openBlob(blob, target,
-                 static_cast<std::uint16_t>(supported) |
-                     static_cast<std::uint16_t>(
-                         ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
-
-    if (!handler->sendContents(path, *session))
-    {
-        throw ToolException("Failed to send contents of " + path);
-    }
-}
-
-void UpdateHandler::sendFile(const std::string& target, const std::string& path)
-{
-    const uint8_t retryCount = 3;
+    constexpr uint8_t retryCount = 3;
     uint8_t i = 1;
     while (true)
     {
         try
         {
-            retrySendFile(target, path);
+            callback();
             return;
         }
         catch (const ipmiblob::BlobException& b)
@@ -113,66 +98,114 @@ void UpdateHandler::sendFile(const std::string& target, const std::string& path)
                 throw;
         }
         ++i;
+        handler->waitForRetry();
     }
+}
+
+void UpdateHandler::retrySendFile(const std::string& target,
+                                  const std::string& path)
+{
+    auto supported = handler->supportedType();
+    auto session =
+        openBlob(blob, target,
+                 static_cast<std::uint16_t>(supported) |
+                     static_cast<std::uint16_t>(
+                         ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
+
+    if (!handler->sendContents(path, *session))
+    {
+        throw ToolException("Failed to send contents of " + path);
+    }
+}
+
+void UpdateHandler::sendFile(const std::string& target, const std::string& path)
+{
+    retryIfFailed(
+        [this, target, path]() { this->retrySendFile(target, path); });
+}
+
+void UpdateHandler::retryVerifyFile(const std::string& target,
+                                    bool ignoreStatus)
+{
+    auto session =
+        openBlob(blob, target,
+                 static_cast<std::uint16_t>(
+                     ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
+
+    std::fprintf(stderr, "Committing to %s to trigger service\n",
+                 target.c_str());
+    blob->commit(*session, {});
+
+    if (ignoreStatus)
+    {
+        // Skip checking the blob for status if ignoreStatus is enabled
+        return;
+    }
+
+    std::fprintf(stderr, "Calling stat on %s session to check status\n",
+                 target.c_str());
+    pollStatus(*session, blob);
+    return;
 }
 
 bool UpdateHandler::verifyFile(const std::string& target, bool ignoreStatus)
 {
-    try
+    retryIfFailed([this, target, ignoreStatus]() {
+        this->retryVerifyFile(target, ignoreStatus);
+    });
+
+    return true;
+}
+
+std::vector<uint8_t>
+    UpdateHandler::retryReadVersion(const std::string& versionBlob)
+{
+    auto session =
+        openBlob(blob, versionBlob,
+                 static_cast<std::uint16_t>(
+                     ipmi_flash::FirmwareFlags::UpdateFlags::openRead));
+
+    std::fprintf(stderr, "Calling stat on %s session to check status\n",
+                 versionBlob.c_str());
+
+    /* TODO: call readBytes multiple times in case IPMI message length
+     * exceeds IPMI_MAX_MSG_LENGTH.
+     */
+    auto size = pollReadReady(*session, blob);
+    if (size > 0)
     {
-        auto session =
-            openBlob(blob, target,
-                     static_cast<std::uint16_t>(
-                         ipmi_flash::FirmwareFlags::UpdateFlags::openWrite));
-
-        std::fprintf(stderr, "Committing to %s to trigger service\n",
-                     target.c_str());
-        blob->commit(*session, {});
-
-        if (ignoreStatus)
-        {
-            // Skip checking the blob for status if ignoreStatus is enabled
-            return true;
-        }
-
-        std::fprintf(stderr, "Calling stat on %s session to check status\n",
-                     target.c_str());
-        pollStatus(*session, blob);
-        return true;
+        return blob->readBytes(*session, 0, size);
     }
-    catch (const ipmiblob::BlobException& b)
-    {
-        throw ToolException("blob exception received: " +
-                            std::string(b.what()));
-    }
+    return {};
 }
 
 std::vector<uint8_t> UpdateHandler::readVersion(const std::string& versionBlob)
 {
-    try
+    constexpr uint8_t retryCount = 3;
+    uint8_t i = 1;
+    while (true)
     {
-        auto session =
-            openBlob(blob, versionBlob,
-                     static_cast<std::uint16_t>(
-                         ipmi_flash::FirmwareFlags::UpdateFlags::openRead));
-
-        std::fprintf(stderr, "Calling stat on %s session to check status\n",
-                     versionBlob.c_str());
-
-        /* TODO: call readBytes multiple times in case IPMI message length
-         * exceeds IPMI_MAX_MSG_LENGTH.
-         */
-        auto size = pollReadReady(*session, blob);
-        if (size > 0)
+        try
         {
-            return blob->readBytes(*session, 0, size);
+            return retryReadVersion(versionBlob);
         }
-        return {};
-    }
-    catch (const ipmiblob::BlobException& b)
-    {
-        throw ToolException("blob exception received: " +
-                            std::string(b.what()));
+        catch (const ipmiblob::BlobException& b)
+        {
+            throw ToolException("blob exception received: " +
+                                std::string(b.what()));
+        }
+        catch (const ToolException& t)
+        {
+            uint8_t remains = retryCount - i;
+            std::fprintf(
+                stderr,
+                "tool exception received: %s: Retrying it %u more times\n",
+                t.what(), remains);
+            if (remains == 0)
+                throw;
+        }
+        ++i;
+        handler->waitForRetry();
     }
 }
 
