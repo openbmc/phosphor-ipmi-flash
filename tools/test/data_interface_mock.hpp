@@ -14,6 +14,7 @@ class DataInterfaceMock : public DataInterface
 
     MOCK_METHOD(bool, sendContents, (const std::string&, std::uint16_t),
                 (override));
+    MOCK_METHOD(void, waitForRetry, (), (override));
     MOCK_METHOD(ipmi_flash::FirmwareFlags::UpdateFlags, supportedType, (),
                 (const, override));
 };
