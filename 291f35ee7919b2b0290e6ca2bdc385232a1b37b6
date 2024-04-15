@@ -22,6 +22,30 @@
       },
       "revId": "291f35ee7919b2b0290e6ca2bdc385232a1b37b6",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8cbdd867_d1a77a0b",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2024-04-15T21:08:06Z",
+      "side": 1,
+      "message": "this one needs to return `std::vector\u003cuint8_t\u003e` and instead of just void. Or I can just refactor `retryIfFailed` to return `std::vector\u003cuint8_t\u003e` and return empty .",
+      "parentUuid": "db0ec8f5_80552251",
+      "range": {
+        "startLine": 184,
+        "startChar": 0,
+        "endLine": 209,
+        "endChar": 5
+      },
+      "revId": "291f35ee7919b2b0290e6ca2bdc385232a1b37b6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
