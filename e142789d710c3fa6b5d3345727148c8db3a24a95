@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "143d2d41_226a439d",
+        "filename": "tools/handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1001253
+      },
+      "writtenOn": "2024-04-15T22:51:52Z",
+      "side": 1,
+      "message": "Remove extra whitespaces.",
+      "range": {
+        "startLine": 211,
+        "startChar": 0,
+        "endLine": 211,
+        "endChar": 24
+      },
+      "revId": "e142789d710c3fa6b5d3345727148c8db3a24a95",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0fab3968_014b2387",
+        "filename": "tools/test/tools_updater_unittest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1001253
+      },
+      "writtenOn": "2024-04-15T22:51:52Z",
+      "side": 1,
+      "message": "Nit: typo `Version`",
+      "range": {
+        "startLine": 284,
+        "startChar": 30,
+        "endLine": 284,
+        "endChar": 37
+      },
+      "revId": "e142789d710c3fa6b5d3345727148c8db3a24a95",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
