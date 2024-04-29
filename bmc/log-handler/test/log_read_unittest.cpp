@@ -53,9 +53,9 @@ class LogReadBlobTest : public ::testing::Test
 TEST_F(LogReadBlobTest, VerifyValidRead)
 {
     testing::InSequence seq;
-    EXPECT_CALL(*tm.at("blob0"), trigger())
-        .WillOnce(DoAll([&]() { tm.at("blob0")->cb(*tm.at("blob0")); },
-                        Return(true)));
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(DoAll([&]() {
+        tm.at("blob0")->cb(*tm.at("blob0"));
+    }, Return(true)));
     EXPECT_CALL(*tm.at("blob0"), status())
         .WillOnce(Return(ActionStatus::success));
     EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(true));
@@ -113,9 +113,9 @@ TEST_F(LogReadBlobTest, VerifyReadEarlyFails)
 
 TEST_F(LogReadBlobTest, VerifyTriggerFailureReadFails)
 {
-    EXPECT_CALL(*tm.at("blob0"), trigger())
-        .WillOnce(DoAll([&]() { tm.at("blob0")->cb(*tm.at("blob0")); },
-                        Return(true)));
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(DoAll([&]() {
+        tm.at("blob0")->cb(*tm.at("blob0"));
+    }, Return(true)));
     EXPECT_CALL(*tm.at("blob0"), status())
         .WillOnce(Return(ActionStatus::failed));
     EXPECT_TRUE(h->open(defaultSessionNumber, blobs::read, "blob0"));
@@ -124,9 +124,9 @@ TEST_F(LogReadBlobTest, VerifyTriggerFailureReadFails)
 
 TEST_F(LogReadBlobTest, VerifyReadFailsOnFileOpenFailure)
 {
-    EXPECT_CALL(*tm.at("blob0"), trigger())
-        .WillOnce(DoAll([&]() { tm.at("blob0")->cb(*tm.at("blob0")); },
-                        Return(true)));
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(DoAll([&]() {
+        tm.at("blob0")->cb(*tm.at("blob0"));
+    }, Return(true)));
     EXPECT_CALL(*tm.at("blob0"), status())
         .WillOnce(Return(ActionStatus::success));
     EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(false));
@@ -137,9 +137,9 @@ TEST_F(LogReadBlobTest, VerifyReadFailsOnFileOpenFailure)
 
 TEST_F(LogReadBlobTest, VerifyReadFailsOnFileReadFailure)
 {
-    EXPECT_CALL(*tm.at("blob0"), trigger())
-        .WillOnce(DoAll([&]() { tm.at("blob0")->cb(*tm.at("blob0")); },
-                        Return(true)));
+    EXPECT_CALL(*tm.at("blob0"), trigger()).WillOnce(DoAll([&]() {
+        tm.at("blob0")->cb(*tm.at("blob0"));
+    }, Return(true)));
     EXPECT_CALL(*tm.at("blob0"), status())
         .WillOnce(Return(ActionStatus::success));
     EXPECT_CALL(*im.at("blob0"), open(_, std::ios::in)).WillOnce(Return(true));

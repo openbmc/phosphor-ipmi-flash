@@ -27,9 +27,8 @@ class LpcDataHandler : public DataInterface
                    std::uint32_t address, std::uint32_t length,
                    ProgressInterface* progress,
                    const internal::Sys* sys = &internal::sys_impl) :
-        blob(blob),
-        io(io), address(address), length(length), progress(progress),
-        sys(sys){};
+        blob(blob), io(io), address(address), length(length),
+        progress(progress), sys(sys){};
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
     ipmi_flash::FirmwareFlags::UpdateFlags supportedType() const override

@@ -28,8 +28,7 @@ class LpcMapperNuvoton : public HardwareMapperInterface
      */
     LpcMapperNuvoton(std::uint32_t regionAddress, std::uint32_t regionSize,
                      const internal::Sys* sys = &internal::sys_impl) :
-        regionAddress(regionAddress),
-        memoryRegionSize(regionSize), sys(sys){};
+        regionAddress(regionAddress), memoryRegionSize(regionSize), sys(sys){};
 
     /** Attempt to map the window for copying bytes, after mapWindow is called.
      * throws MapperException

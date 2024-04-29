@@ -51,7 +51,7 @@ class PciAccessBridge : public PciBridgeIntf
     virtual ~PciAccessBridge();
 
     virtual void write(const std::span<const std::uint8_t> data) override;
-    virtual void configure(const ipmi_flash::PciConfigResponse&) override{};
+    virtual void configure(const ipmi_flash::PciConfigResponse&) override {};
 
     std::size_t getDataLength() override
     {

@@ -20,8 +20,7 @@ class SystemdNoFile : public TriggerableActionInterface
 
     SystemdNoFile(sdbusplus::bus_t&& bus, const std::string& service,
                   const std::string& mode) :
-        bus(std::move(bus)),
-        triggerService(service), mode(mode)
+        bus(std::move(bus)), triggerService(service), mode(mode)
     {}
 
     SystemdNoFile(const SystemdNoFile&) = delete;
@@ -73,8 +72,7 @@ class SystemdWithStatusFile : public SystemdNoFile
 
     SystemdWithStatusFile(sdbusplus::bus_t&& bus, const std::string& path,
                           const std::string& service, const std::string& mode) :
-        SystemdNoFile(std::move(bus), service, mode),
-        checkPath(path)
+        SystemdNoFile(std::move(bus), service, mode), checkPath(path)
     {}
 
     bool trigger() override;

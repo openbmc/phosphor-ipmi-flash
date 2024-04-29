@@ -19,9 +19,8 @@ class P2aDataHandler : public DataInterface
     explicit P2aDataHandler(ipmiblob::BlobInterface* blob, const PciAccess* pci,
                             ProgressInterface* progress, bool skipBridgeDisable,
                             const internal::Sys* sys = &internal::sys_impl) :
-        blob(blob),
-        pci(pci), progress(progress), skipBridgeDisable(skipBridgeDisable),
-        sys(sys)
+        blob(blob), pci(pci), progress(progress),
+        skipBridgeDisable(skipBridgeDisable), sys(sys)
     {}
 
     P2aDataHandler(ipmiblob::BlobInterface* blob, const PciAccess* pci,

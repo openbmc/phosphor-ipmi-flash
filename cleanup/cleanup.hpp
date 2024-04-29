@@ -22,8 +22,7 @@ class FileCleanupHandler : public blobs::GenericBlobInterface
     FileCleanupHandler(const std::string& blobId,
                        const std::vector<std::string>& files,
                        std::unique_ptr<FileSystemInterface> helper) :
-        supported(blobId),
-        files(files), helper(std::move(helper))
+        supported(blobId), files(files), helper(std::move(helper))
     {}
 
     ~FileCleanupHandler() = default;

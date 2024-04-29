@@ -20,8 +20,7 @@ class PciDataHandler : public DataInterface
   public:
     PciDataHandler(std::uint32_t regionAddress, std::size_t regionSize,
                    const internal::Sys* sys = &internal::sys_impl) :
-        regionAddress(regionAddress),
-        memoryRegionSize(regionSize), sys(sys){};
+        regionAddress(regionAddress), memoryRegionSize(regionSize), sys(sys){};
 
     bool open() override;
     bool close() override;

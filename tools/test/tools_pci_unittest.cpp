@@ -338,8 +338,8 @@ TEST_P(PciSetupTest, Success)
 INSTANTIATE_TEST_SUITE_P(Default, PciSetupTest,
                          ::testing::Values(&nuvotonDevice, &aspeedDevice),
                          [](const testing::TestParamInfo<Device*>& info) {
-    return info.param->getName();
-});
+                             return info.param->getName();
+                         });
 
 TEST(NuvotonWriteTest, TooLarge)
 {
