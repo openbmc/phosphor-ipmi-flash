@@ -84,12 +84,12 @@ TEST_P(LogStatSizeBlobTest, StatWithSize)
     EXPECT_EQ(data.size(), meta.size);
 }
 
-const std::vector<std::vector<uint8_t>> datas = {
+const std::vector<std::vector<uint8_t>> data = {
     {},
     {0, 1, 2, 3, 4, 5, 6},
 };
 
 INSTANTIATE_TEST_SUITE_P(DifferentData, LogStatSizeBlobTest,
-                         testing::ValuesIn(datas));
+                         testing::ValuesIn(data));
 
 } // namespace ipmi_flash

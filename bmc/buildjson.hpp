@@ -59,7 +59,7 @@ struct HandlersBuilderIfc
     /**
      * Given a folder of json configs, build the configurations.
      *
-     * @param[in] directory - the directory to search (recurisvely).
+     * @param[in] directory - the directory to search (recursively).
      * @return list of HandlerConfig objects.
      */
     std::vector<HandlerConfig<T>> buildHandlerConfigs(const char* directory)

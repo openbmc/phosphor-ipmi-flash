@@ -128,7 +128,7 @@ void NuvotonPciBridge::enableBridge()
 
     pci->pci_device_enable(dev);
 
-    /* We need to retain this direct write to config space eventhough
+    /* We need to retain this direct write to config space even though
      * pci_device_enable() should do it. Because currently disabling is done
      * through write to config space and not done through the proper api.
      * So libpciaccess ref count does not reset on disable. The
@@ -193,7 +193,7 @@ void AspeedPciBridge::enableBridge()
 
     pci->pci_device_enable(dev);
 
-    /* We need to retain this direct write to config space eventhough
+    /* We need to retain this direct write to config space even though
      * pci_device_enable() should do it. Because currently disabling is done
      * through write to config space and not done through the proper api.
      * So libpciaccess ref count does not reset on disable. The

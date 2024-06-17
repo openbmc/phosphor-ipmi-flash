@@ -28,7 +28,7 @@ class HostIoInterface
      *
      * @param[in] offset - offset into the host memory device.
      * @param[in] length - the number of bytes to copy from source.
-     * @param[in] source - the souce of the bytes to copy to the memory device.
+     * @param[in] source - the source of the bytes to copy to the memory device.
      * @return true on success, false on failure (such as unable to initialize
      * device).
      */

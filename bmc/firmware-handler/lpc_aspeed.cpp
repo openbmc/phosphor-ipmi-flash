@@ -158,7 +158,7 @@ bool LpcMapperAspeed::mapRegion()
         return false;
     }
 
-    /* TOOD: There is no close() method here, to close mappedFd, or mappedRegion
+    /* TODO: There is no close() method here, to close mappedFd, or mappedRegion
      * -- therefore, a good next step will be to evaluate whether or not the
      * other pieces should go here...
      */
