@@ -1,6 +1,6 @@
 # Format of Config file
 
-This document gives details about the format of the config file useed by log,
+This document gives details about the format of the config file used by log,
 version and firmware handler. The config file is a .json file.
 
 ### Parameters

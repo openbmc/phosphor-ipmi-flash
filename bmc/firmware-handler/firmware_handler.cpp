@@ -83,7 +83,7 @@ bool FirmwareBlobHandler::canHandleBlob(const std::string& path)
  * If there's an open firmware session, it'll already be present in the
  * list as "/flash/active/image", and if the hash has started,
  * "/flash/active/hash" regardless of mechanism.  This is done in the open
- * comamnd, no extra work is required here.
+ * command, no extra work is required here.
  */
 std::vector<std::string> FirmwareBlobHandler::getBlobIds()
 {
@@ -203,7 +203,7 @@ bool FirmwareBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
         return false;
     }
 
-    /* The size here refers to the size of the file -- of something analagous.
+    /* The size here refers to the size of the file -- of something analogous.
      */
     meta->size = (item->second->imageHandler)
                      ? item->second->imageHandler->getSize()
@@ -246,7 +246,7 @@ bool FirmwareBlobHandler::stat(uint16_t session, blobs::BlobMeta* meta)
         }
     }
 
-    /* The blobState here relates to an active sesion, so we should return the
+    /* The blobState here relates to an active session, so we should return the
      * flags used to open this session.
      */
     meta->blobState = item->second->flags;
@@ -652,7 +652,7 @@ bool FirmwareBlobHandler::close(uint16_t session)
             /* They are closing a data pathway (image, tarball, hash). */
             changeState(UpdateState::verificationPending);
 
-            /* Add verify blob ID now that we can expect it, IIF they also wrote
+            /* Add verify blob ID now that we can expect it, IF they also wrote
              * some data.
              */
             if (std::count(blobIDs.begin(), blobIDs.end(), activeImageBlobId))
