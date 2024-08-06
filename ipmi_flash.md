@@ -17,7 +17,7 @@ Opening the active image or hash always fails:
 
 The two files are only present once their corresponding blob has been opened.
 
-# The state of fileOpen() per state
+## The state of fileOpen() per state
 
 You can only open one file at a time, and some of the states exist only when a
 file is open.
@@ -33,9 +33,9 @@ file is open.
 | `updateStarted`         | `true`     |
 | `updatedCompleted`      | `true`     |
 
-# The states in the Firmware Handler State Machine
+## The states in the Firmware Handler State Machine
 
-## `notYetStarted`
+### `notYetStarted`
 
 **The starting state.**
 
@@ -45,7 +45,7 @@ file is open.
 - `open(/flash/verify)`
 - `open(/flash/update)`
 
-## `uploadInProgress`
+### `uploadInProgress`
 
 **The BMC is expecting to receive bytes.**
 
@@ -55,7 +55,7 @@ file is open.
 
 - `commit(/flash/*)` returns false
 
-## `verificationPending`
+### `verificationPending`
 
 **The BMC is ready for verification or more bytes.**
 
@@ -69,7 +69,7 @@ file is open.
 
 - `commit(/flash/verify)` `state -> verificationStarted`
 
-## `verificationStarted`
+### `verificationStarted`
 
 **The verification process has started, no more writes allowed.**
 
@@ -77,7 +77,7 @@ file is open.
 
 - `close(/flash/verify)` `state -> verificationCompleted`
 
-## `verificationCompleted`
+### `verificationCompleted`
 
 **The verification process has completed.**
 
@@ -87,21 +87,21 @@ file is open.
 - `open(/flash/verify)`
 - `open(/flash/update)`
 
-## `updatePending`
+### `updatePending`
 
 **The update process is pending.**
 
-## `updateStarted`
+### `updateStarted`
 
 **The update process has started.**
 
 - `open(/flash/*)`r eturns false because `fileOpen() == true`
 
-## `updatedCompleted`
+### `updatedCompleted`
 
 **The update has completed (optional state to reach)**
 
-# Expected State Transition Sequence
+## Expected State Transition Sequence
 
 If verification fails, the state still transitions to `verificationCompleted`
 and similarly, if the update fails the state still transitions to
