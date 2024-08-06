@@ -13,26 +13,26 @@ There are 3 important parameters in this config file
 
 An example config file -
 
-```
+```json
 {
-    "blob": "/flash/adm1266_sink0",
-    "handler": {
-        "type": "file",
-        "path": "/var/run/adm1266/adm1266_sink0.hex"
+  "blob": "/flash/adm1266_sink0",
+  "handler": {
+    "type": "file",
+    "path": "/var/run/adm1266/adm1266_sink0.hex"
+  },
+  "actions": {
+    "preparation": {
+      "type": "skip"
     },
-    "actions": {
-        "preparation": {
-            "type": "skip"
-        },
-        "verification": {
-            "type": "systemd",
-            "unit": "adm1266-verify@sink0.service"
-        },
-        "update": {
-            "type": "systemd",
-            "unit": "adm1266-update@sink0.service"
-        }
+    "verification": {
+      "type": "systemd",
+      "unit": "adm1266-verify@sink0.service"
+    },
+    "update": {
+      "type": "systemd",
+      "unit": "adm1266-update@sink0.service"
     }
+  }
 }
 ```
 
@@ -55,23 +55,23 @@ not perform any action.
 
 ### Workflow of log handler
 
-```
+```json
 {
-    "blob": "/log/blackbox_adm1266_sink0",
-    "handler": {
-        "type": "file",
-        "path": "/var/run/adm1266/adm1266_sink0.log"
+  "blob": "/log/blackbox_adm1266_sink0",
+  "handler": {
+    "type": "file",
+    "path": "/var/run/adm1266/adm1266_sink0.log"
+  },
+  "actions": {
+    "open": {
+      "type": "systemd",
+      "unit": "adm1266-read-blackbox-log@sink0.service"
     },
-    "actions":{
-        "open": {
-            "type": "systemd",
-            "unit": "adm1266-read-blackbox-log@sink0.service"
-        },
-        "delete": {
-            "type": "systemd",
-            "unit": "adm1266-clear-blackbox-data@sink0.service"
-        }
+    "delete": {
+      "type": "systemd",
+      "unit": "adm1266-clear-blackbox-data@sink0.service"
     }
+  }
 }
 ```
 

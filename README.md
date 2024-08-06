@@ -22,7 +22,7 @@ Check out the
 
 Then run these commands in the source directory.
 
-```
+```sh
 ./autogen.sh --prefix=/usr
 make install
 ```
@@ -32,7 +32,7 @@ Check out the
 
 Then run these commands in the source directory.
 
-```
+```sh
 ./autogen.sh
 make
 make install
@@ -45,7 +45,7 @@ Check out the
 
 Then run these commands in the source directory.
 
-```
+```sh
 ./bootstrap.sh
 ./configure
 make
@@ -58,7 +58,7 @@ Check out the [stdplus source](https://github.com/openbmc/stdplus).
 
 Then run these commands in the source directory.
 
-```
+```sh
 meson setup -Dexamples=false -Dtests=disabled builddir
 ninja -C builddir
 ninja -C builddir install
@@ -71,7 +71,7 @@ Check out the
 
 Then run these commands in the source directory.
 
-```
+```sh
 ./bootstrap.sh
 ./configure --disable-build-bmc-blob-handler
 make
@@ -80,7 +80,7 @@ make install
 
 _NOTE:_ When building from the OpenBMC SDK your configuration call will be:
 
-```
+```sh
 ./configure --enable-oe-sdk --host "$(uname -m)" --disable-build-bmc-blob-handler AR=x86_64-openbmc-linux-gcc-ar RANLIB=x86_64-openbmc-linux-gcc-ranlib
 ```
 

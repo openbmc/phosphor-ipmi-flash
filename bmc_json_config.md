@@ -18,28 +18,30 @@ write your own. It's helpful to start here.
 This file is generated from configuration and therefore some values can be
 replaced, here we're using the defaults.
 
-```
-[{
+```json
+[
+  {
     "blob": "/flash/bios",
     "handler": {
-        "type": "file",
-        "path": "/tmp/bios-image"
+      "type": "file",
+      "path": "/tmp/bios-image"
     },
     "actions": {
-        "preparation": {
-            "type": "systemd",
-            "unit": "phosphor-ipmi-flash-bios-prepare.target"
-        },
-        "verification": {
-            "type": "systemd",
-            "unit": "phosphor-ipmi-flash-bios-verify.target"
-        },
-        "update": {
-            "type": "systemd",
-            "unit": "phosphor-ipmi-flash-bios-update.target"
-        }
+      "preparation": {
+        "type": "systemd",
+        "unit": "phosphor-ipmi-flash-bios-prepare.target"
+      },
+      "verification": {
+        "type": "systemd",
+        "unit": "phosphor-ipmi-flash-bios-verify.target"
+      },
+      "update": {
+        "type": "systemd",
+        "unit": "phosphor-ipmi-flash-bios-update.target"
+      }
     }
-}]
+  }
+]
 ```
 
 Each json file is expected to be an array of flash handler configurations. You
@@ -115,27 +117,29 @@ with the `preparation` action.
 This file is generated from configuration and therefore some values can be
 replaced, here we're using the defaults.
 
-```
-[{
+```json
+[
+  {
     "blob": "/flash/image",
     "handler": {
-        "type": "file",
-        "path": "/run/initramfs/bmc-image"
+      "type": "file",
+      "path": "/run/initramfs/bmc-image"
     },
     "actions": {
-        "preparation": {
-            "type": "systemd",
-            "unit": "phosphor-ipmi-flash-bmc-prepare.target"
-        },
-        "verification": {
-            "type": "systemd",
-            "unit": "phosphor-ipmi-flash-bmc-verify.target"
-        },
-        "update": {
-            "type": "reboot"
-        }
+      "preparation": {
+        "type": "systemd",
+        "unit": "phosphor-ipmi-flash-bmc-prepare.target"
+      },
+      "verification": {
+        "type": "systemd",
+        "unit": "phosphor-ipmi-flash-bmc-verify.target"
+      },
+      "update": {
+        "type": "reboot"
+      }
     }
-}]
+  }
+]
 ```
 
 Given the bios configuration, we can skip the parts of this configuration that
@@ -147,28 +151,30 @@ type that has no parameters. It will simply trigger a reboot via systemd.
 This file is generated from configuration and therefore some values can be
 replaced, here we're using the defaults.
 
-```
-[{
+```json
+[
+  {
     "blob": "/flash/image",
     "handler": {
-        "type": "file",
-        "path": "/run/initramfs/bmc-image"
+      "type": "file",
+      "path": "/run/initramfs/bmc-image"
     },
     "actions": {
-        "preparation": {
-            "type": "systemd",
-            "unit": "phosphor-ipmi-flash-bmc-prepare.target"
-        },
-        "verification": {
-            "type": "systemd",
-            "unit": "phosphor-ipmi-flash-bmc-verify.target"
-        },
-        "update": {
-            "type": "systemd",
-            "unit": "phosphor-ipmi-flash-bmc-update.target"
-        }
+      "preparation": {
+        "type": "systemd",
+        "unit": "phosphor-ipmi-flash-bmc-prepare.target"
+      },
+      "verification": {
+        "type": "systemd",
+        "unit": "phosphor-ipmi-flash-bmc-verify.target"
+      },
+      "update": {
+        "type": "systemd",
+        "unit": "phosphor-ipmi-flash-bmc-update.target"
+      }
     }
-}]
+  }
+]
 ```
 
 This configuration is of no significance in its difference.
