@@ -3,7 +3,7 @@
 This document gives details about the format of the config file used by log,
 version and firmware handler. The config file is a .json file.
 
-### Parameters
+## Parameters
 
 There are 3 important parameters in this config file
 
@@ -36,24 +36,24 @@ An example config file -
 }
 ```
 
-#### blob
+### blob
 
 This parameter defines the unique name of the blob. This parameter must be
 defined for each blob.
 
-#### handler
+### handler
 
 A blob must have a handler with a type. Currently only "file" type is supported.
 With file type, a path of the handler file must be provided.
 
-#### actions
+### actions
 
 "actions" define various steps to be performed and are required for each blob.
 These actions can be triggered from ipmi-blob commands. Currently there are 2
 types of actions supported: `systemd` to invoke a systemd service, or `skip` to
 not perform any action.
 
-### Workflow of log handler
+## Workflow of log handler
 
 ```json
 {
