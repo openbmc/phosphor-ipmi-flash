@@ -99,7 +99,7 @@ file is open.
 
 ### `updatedCompleted`
 
-**The update has completed (optional state to reach)**
+**The update has completed (optional state to reach).**
 
 ## Expected State Transition Sequence
 
