@@ -81,11 +81,11 @@ data from adm1266 and will be returned on BmcBlobRead.
 Here log_blob supports 2 actions. These actions are performed on the handler
 file.
 
-1. `open` : adm1266-read-blackbox-log@sink0.service gets launched on BmcBlobOpen
-   command. This service should read the blackbox data from adm1266 and place
-   the into blob handler file. This also enables BmcBlobSessionStat command to
-   indicate that the blob is ready to read.
+1. `open` : `adm1266-read-blackbox-log@sink0.service` gets launched on
+   BmcBlobOpen command. This service should read the blackbox data from adm1266
+   and place the into blob handler file. This also enables BmcBlobSessionStat
+   command to indicate that the blob is ready to read.
 
-2. `delete` : adm1266-clear-blackbox-data@sink0.service gets launched on
+2. `delete` : `adm1266-clear-blackbox-data@sink0.service` gets launched on
    BmcBlobDelete command. This service should delete the cached blackbox data in
    the handler file and erase the blackbox data from adm1266.
