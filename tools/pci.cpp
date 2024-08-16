@@ -52,8 +52,7 @@ using It = stdplus::Managed<struct pci_device_iterator*,
 PciAccessBridge::PciAccessBridge(const struct pci_id_match* match, int bar,
                                  std::size_t dataOffset, std::size_t dataLength,
                                  const PciAccess* pci) :
-    dataOffset(dataOffset),
-    dataLength(dataLength), pci(pci)
+    dataOffset(dataOffset), dataLength(dataLength), pci(pci)
 {
     It it(pci->pci_id_match_iterator_create(match), pci);
 

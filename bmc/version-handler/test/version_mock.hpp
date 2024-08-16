@@ -9,10 +9,9 @@
 namespace ipmi_flash
 {
 
-static HandlerConfig<VersionBlobHandler::ActionPack>
-    createMockVersionConfig(const std::string& id,
-                            ImageHandlerMock** im = nullptr,
-                            TriggerMock** tm = nullptr)
+static HandlerConfig<VersionBlobHandler::ActionPack> createMockVersionConfig(
+    const std::string& id, ImageHandlerMock** im = nullptr,
+    TriggerMock** tm = nullptr)
 {
     HandlerConfig<VersionBlobHandler::ActionPack> ret;
     ret.blobId = id;

@@ -75,8 +75,8 @@ std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
             }
             else
             {
-                throw std::runtime_error("Invalid handler type: " +
-                                         handlerType);
+                throw std::runtime_error(
+                    "Invalid handler type: " + handlerType);
             }
 
             /* actions are required (presently). */
@@ -96,8 +96,8 @@ std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
             }
             else
             {
-                throw std::runtime_error("Invalid preparation type: " +
-                                         onOpenType);
+                throw std::runtime_error(
+                    "Invalid preparation type: " + onOpenType);
             }
 
             output.actions = std::move(pack);

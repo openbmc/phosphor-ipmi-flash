@@ -134,9 +134,9 @@ TEST_F(NetHandleTest, connectFail)
     EXPECT_CALL(sysMock, socket(AF_INET6, SOCK_STREAM, 0))
         .WillOnce(Return(connFd));
     EXPECT_CALL(sysMock, close(connFd)).WillOnce(Return(0));
-    EXPECT_CALL(
-        sysMock,
-        connect(connFd, reinterpret_cast<struct sockaddr*>(&sa), sizeof(sa)))
+    EXPECT_CALL(sysMock,
+                connect(connFd, reinterpret_cast<struct sockaddr*>(&sa),
+                        sizeof(sa)))
         .WillOnce(SetErrnoAndReturn(ECONNREFUSED, -1));
 
     EXPECT_FALSE(handler.sendContents(filePath, session));
@@ -232,9 +232,9 @@ TEST_F(NetHandleTest, successFallback)
         InSequence seq;
         EXPECT_CALL(sysMock, sendfile(connFd, inFd, _, _))
             .WillOnce([](int, int, off_t*, size_t) {
-            errno = EINVAL;
-            return -1;
-        });
+                errno = EINVAL;
+                return -1;
+            });
 
         std::vector<uint8_t> chunk(chunkSize);
         for (std::uint32_t offset = 0; offset < fakeFileSize;
@@ -246,16 +246,16 @@ TEST_F(NetHandleTest, successFallback)
             }
             EXPECT_CALL(sysMock, read(inFd, _, Ge(chunkSize)))
                 .WillOnce([chunk](int, void* buf, size_t) {
-                memcpy(buf, chunk.data(), chunkSize);
-                return chunkSize;
-            });
+                    memcpy(buf, chunk.data(), chunkSize);
+                    return chunkSize;
+                });
             EXPECT_CALL(sysMock, send(connFd, _, chunkSize, 0))
                 .WillOnce([chunk](int, const void* data, size_t len, int) {
-                std::vector<uint8_t> dcopy(len);
-                memcpy(dcopy.data(), data, len);
-                EXPECT_THAT(dcopy, ContainerEq(chunk));
-                return chunkSize;
-            });
+                    std::vector<uint8_t> dcopy(len);
+                    memcpy(dcopy.data(), data, len);
+                    EXPECT_THAT(dcopy, ContainerEq(chunk));
+                    return chunkSize;
+                });
             EXPECT_CALL(blobMock,
                         writeBytes(session, offset, ContainerEq(chunkBytes)));
             EXPECT_CALL(progMock, updateProgress(chunkSize));

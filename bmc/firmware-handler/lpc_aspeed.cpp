@@ -35,9 +35,8 @@ namespace ipmi_flash
 
 const std::string LpcMapperAspeed::lpcControlPath = "/dev/aspeed-lpc-ctrl";
 
-std::unique_ptr<HardwareMapperInterface>
-    LpcMapperAspeed::createAspeedMapper(std::uint32_t regionAddress,
-                                        std::size_t regionSize)
+std::unique_ptr<HardwareMapperInterface> LpcMapperAspeed::createAspeedMapper(
+    std::uint32_t regionAddress, std::size_t regionSize)
 {
     /* NOTE: considered using a joint factory to create one or the other, for
      * now, separate factories.

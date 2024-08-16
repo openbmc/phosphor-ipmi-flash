@@ -21,8 +21,7 @@ class NetDataHandler : public DataInterface
     NetDataHandler(ipmiblob::BlobInterface* blob, ProgressInterface* progress,
                    const std::string& host, const std::string& port,
                    const internal::Sys* sys = &internal::sys_impl) :
-        blob(blob),
-        progress(progress), host(host), port(port), sys(sys){};
+        blob(blob), progress(progress), host(host), port(port), sys(sys) {};
 
     bool sendContents(const std::string& input, std::uint16_t session) override;
     ipmi_flash::FirmwareFlags::UpdateFlags supportedType() const override

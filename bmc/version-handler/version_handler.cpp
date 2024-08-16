@@ -23,38 +23,39 @@ VersionBlobHandler::VersionBlobHandler(
         info->handler = std::move(config.handler);
         info->actions->onOpen->setCallback(
             [infoP = info.get()](TriggerableActionInterface& tai) {
-            auto data = std::make_shared<std::optional<std::vector<uint8_t>>>();
-            do
-            {
-                if (tai.status() != ActionStatus::success)
+                auto data =
+                    std::make_shared<std::optional<std::vector<uint8_t>>>();
+                do
                 {
-                    fprintf(stderr, "Version file unit failed for %s\n",
-                            infoP->blobId.c_str());
-                    continue;
-                }
-                if (!infoP->handler->open("", std::ios::in))
+                    if (tai.status() != ActionStatus::success)
+                    {
+                        fprintf(stderr, "Version file unit failed for %s\n",
+                                infoP->blobId.c_str());
+                        continue;
+                    }
+                    if (!infoP->handler->open("", std::ios::in))
+                    {
+                        fprintf(stderr, "Opening version file failed for %s\n",
+                                infoP->blobId.c_str());
+                        continue;
+                    }
+                    auto d = infoP->handler->read(
+                        0, std::numeric_limits<uint32_t>::max());
+                    infoP->handler->close();
+                    if (!d)
+                    {
+                        fprintf(stderr, "Reading version file failed for %s\n",
+                                infoP->blobId.c_str());
+                        continue;
+                    }
+                    *data = std::move(d);
+                } while (false);
+                for (auto sessionP : infoP->sessionsToUpdate)
                 {
-                    fprintf(stderr, "Opening version file failed for %s\n",
-                            infoP->blobId.c_str());
-                    continue;
+                    sessionP->data = data;
                 }
-                auto d = infoP->handler->read(
-                    0, std::numeric_limits<uint32_t>::max());
-                infoP->handler->close();
-                if (!d)
-                {
-                    fprintf(stderr, "Reading version file failed for %s\n",
-                            infoP->blobId.c_str());
-                    continue;
-                }
-                *data = std::move(d);
-            } while (false);
-            for (auto sessionP : infoP->sessionsToUpdate)
-            {
-                sessionP->data = data;
-            }
-            infoP->sessionsToUpdate.clear();
-        });
+                infoP->sessionsToUpdate.clear();
+            });
         if (!blobInfoMap.try_emplace(info->blobId, std::move(info)).second)
         {
             fprintf(stderr, "Ignoring duplicate config for %s\n",

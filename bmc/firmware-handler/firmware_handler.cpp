@@ -57,18 +57,19 @@ std::unique_ptr<blobs::GenericBlobInterface>
 
     std::vector<std::string> blobs;
     blobs.reserve(firmwares.size());
-    std::for_each(
-        firmwares.begin(), firmwares.end(),
-        [&blobs](const auto& blob) { blobs.emplace_back(blob.blobName); });
+    std::for_each(firmwares.begin(), firmwares.end(),
+                  [&blobs](const auto& blob) {
+                      blobs.emplace_back(blob.blobName);
+                  });
 
     if (0 == std::count(blobs.begin(), blobs.end(), hashBlobId))
     {
         return nullptr;
     }
 
-    return std::make_unique<FirmwareBlobHandler>(std::move(firmwares), blobs,
-                                                 std::move(transports),
-                                                 std::move(actionPacks));
+    return std::make_unique<FirmwareBlobHandler>(
+        std::move(firmwares), blobs, std::move(transports),
+        std::move(actionPacks));
 }
 
 /* Check if the path is in our supported list (or active list). */
@@ -421,8 +422,8 @@ bool FirmwareBlobHandler::open(uint16_t session, uint16_t flags,
     /* How are they expecting to copy this data? */
     auto d = std::find_if(transports.begin(), transports.end(),
                           [&transportFlag](const auto& iter) {
-        return (iter.bitmask == transportFlag);
-    });
+                              return (iter.bitmask == transportFlag);
+                          });
     if (d == transports.end())
     {
         return false;

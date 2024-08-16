@@ -52,9 +52,9 @@ TEST_F(FirmwareHandlerVerificationStartedTest, GetBlobIdsReturnsExpectedList)
     getToVerificationStarted(staticLayoutBlobId);
 
     auto blobs = handler->getBlobIds();
-    EXPECT_THAT(
-        blobs, UnorderedElementsAreArray({activeImageBlobId, staticLayoutBlobId,
-                                          hashBlobId, verifyBlobId}));
+    EXPECT_THAT(blobs, UnorderedElementsAreArray(
+                           {activeImageBlobId, staticLayoutBlobId, hashBlobId,
+                            verifyBlobId}));
 
     for (const auto& blob : blobs)
     {

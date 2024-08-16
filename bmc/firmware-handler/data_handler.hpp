@@ -62,8 +62,7 @@ struct DataHandlerPack
 
     DataHandlerPack(std::uint16_t bitmask,
                     std::unique_ptr<DataInterface> handler) :
-        bitmask(bitmask),
-        handler(std::move(handler))
+        bitmask(bitmask), handler(std::move(handler))
     {}
 
     /* Don't allow copying, assignment or move assignment, only moving. */

@@ -123,11 +123,11 @@ class FirmwareBlobHandler : public blobs::GenericBlobInterface
                         const std::vector<std::string>& blobs,
                         std::vector<DataHandlerPack>&& transports,
                         ActionMap&& actionPacks) :
-        handlers(std::move(firmwares)),
-        blobIDs(blobs), transports(std::move(transports)),
-        activeImage(activeImageBlobId), activeHash(activeHashBlobId),
-        verifyImage(verifyBlobId), updateImage(updateBlobId), lookup(),
-        state(UpdateState::notYetStarted), actionPacks(std::move(actionPacks))
+        handlers(std::move(firmwares)), blobIDs(blobs),
+        transports(std::move(transports)), activeImage(activeImageBlobId),
+        activeHash(activeHashBlobId), verifyImage(verifyBlobId),
+        updateImage(updateBlobId), lookup(), state(UpdateState::notYetStarted),
+        actionPacks(std::move(actionPacks))
     {}
     ~FirmwareBlobHandler() = default;
     FirmwareBlobHandler(const FirmwareBlobHandler&) = delete;

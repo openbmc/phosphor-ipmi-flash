@@ -64,8 +64,8 @@ std::vector<HandlerConfig<LogBlobHandler::ActionPack>>
             }
             else
             {
-                throw std::runtime_error("Invalid handler type: " +
-                                         handlerType);
+                throw std::runtime_error(
+                    "Invalid handler type: " + handlerType);
             }
 
             /* actions are required (presently). */
@@ -85,8 +85,8 @@ std::vector<HandlerConfig<LogBlobHandler::ActionPack>>
             }
             else
             {
-                throw std::runtime_error("Invalid preparation type: " +
-                                         onOpenType);
+                throw std::runtime_error(
+                    "Invalid preparation type: " + onOpenType);
             }
 
             const auto& onDelete = a.at("delete");
@@ -101,8 +101,8 @@ std::vector<HandlerConfig<LogBlobHandler::ActionPack>>
             }
             else
             {
-                throw std::runtime_error("Invalid preparation type: " +
-                                         onDeleteType);
+                throw std::runtime_error(
+                    "Invalid preparation type: " + onDeleteType);
             }
 
             output.actions = std::move(pack);

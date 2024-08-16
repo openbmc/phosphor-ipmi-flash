@@ -56,16 +56,17 @@ TEST(LpcHandleTest, verifySendsFileContents)
         .WillOnce(Return(fakeFileSize));
     EXPECT_CALL(sysMock, read(_, NotNull(), Gt(data.size())))
         .WillOnce(Invoke([&data](int, void* buf, std::size_t) {
-        std::memcpy(buf, data.data(), data.size());
-        return data.size();
-    })).WillOnce(Return(0));
+            std::memcpy(buf, data.data(), data.size());
+            return data.size();
+        }))
+        .WillOnce(Return(0));
 
     EXPECT_CALL(ioMock, write(_, data.size(), _))
         .WillOnce(Invoke([&data](const std::size_t, const std::size_t,
                                  const void* const source) {
-        EXPECT_THAT(std::memcmp(source, data.data(), data.size()), 0);
-        return true;
-    }));
+            EXPECT_THAT(std::memcmp(source, data.data(), data.size()), 0);
+            return true;
+        }));
 
     EXPECT_CALL(blobMock, writeBytes(session, 0, _));
 

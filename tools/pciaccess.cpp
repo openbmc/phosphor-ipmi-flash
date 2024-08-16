@@ -50,16 +50,14 @@ int PciAccessImpl::pci_device_probe(struct pci_device* dev) const
     return ::pci_device_probe(dev);
 }
 
-int PciAccessImpl::pci_device_cfg_read_u8(struct pci_device* dev,
-                                          std::uint8_t* data,
-                                          pciaddr_t offset) const
+int PciAccessImpl::pci_device_cfg_read_u8(
+    struct pci_device* dev, std::uint8_t* data, pciaddr_t offset) const
 {
     return ::pci_device_cfg_read_u8(dev, data, offset);
 }
 
-int PciAccessImpl::pci_device_cfg_write_u8(struct pci_device* dev,
-                                           std::uint8_t data,
-                                           pciaddr_t offset) const
+int PciAccessImpl::pci_device_cfg_write_u8(
+    struct pci_device* dev, std::uint8_t data, pciaddr_t offset) const
 {
     return ::pci_device_cfg_write_u8(dev, data, offset);
 }

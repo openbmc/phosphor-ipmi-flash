@@ -80,8 +80,8 @@ static auto pollStat(std::uint16_t session, ipmiblob::BlobInterface* blob,
     }
     catch (const ipmiblob::BlobException& b)
     {
-        throw ToolException("blob exception received: " +
-                            std::string(b.what()));
+        throw ToolException(
+            "blob exception received: " + std::string(b.what()));
     }
 }
 
@@ -92,24 +92,25 @@ void pollStatus(std::uint16_t session, ipmiblob::BlobInterface* blob)
 {
     pollStat(session, blob,
              [](const ipmiblob::StatResponse& resp) -> std::optional<bool> {
-        if (resp.metadata.size() != 1)
-        {
-            throw ToolException("Invalid stat metadata");
-        }
-        auto result = static_cast<ipmi_flash::ActionStatus>(resp.metadata[0]);
-        switch (result)
-        {
-            case ipmi_flash::ActionStatus::failed:
-                throw ToolException("BMC reported failure");
-            case ipmi_flash::ActionStatus::unknown:
-            case ipmi_flash::ActionStatus::running:
-                return std::nullopt;
-            case ipmi_flash::ActionStatus::success:
-                return true;
-            default:
-                throw ToolException("Unrecognized action status");
-        }
-    });
+                 if (resp.metadata.size() != 1)
+                 {
+                     throw ToolException("Invalid stat metadata");
+                 }
+                 auto result =
+                     static_cast<ipmi_flash::ActionStatus>(resp.metadata[0]);
+                 switch (result)
+                 {
+                     case ipmi_flash::ActionStatus::failed:
+                         throw ToolException("BMC reported failure");
+                     case ipmi_flash::ActionStatus::unknown:
+                     case ipmi_flash::ActionStatus::running:
+                         return std::nullopt;
+                     case ipmi_flash::ActionStatus::success:
+                         return true;
+                     default:
+                         throw ToolException("Unrecognized action status");
+                 }
+             });
 }
 
 /* Poll an open blob session for reading.
@@ -131,16 +132,16 @@ uint32_t pollReadReady(std::uint16_t session, ipmiblob::BlobInterface* blob)
     return pollStat(
         session, blob,
         [](const ipmiblob::StatResponse& resp) -> std::optional<uint32_t> {
-        if (resp.blob_state & ipmiblob::StateFlags::open_read)
-        {
-            return resp.size;
-        }
-        if (resp.blob_state & ipmiblob::StateFlags::committing)
-        {
-            return std::nullopt;
-        }
-        throw ToolException("BMC blob failed to become ready");
-    });
+            if (resp.blob_state & ipmiblob::StateFlags::open_read)
+            {
+                return resp.size;
+            }
+            if (resp.blob_state & ipmiblob::StateFlags::committing)
+            {
+                return std::nullopt;
+            }
+            throw ToolException("BMC blob failed to become ready");
+        });
 }
 
 void* memcpyAligned(void* destination, const void* source, std::size_t size)

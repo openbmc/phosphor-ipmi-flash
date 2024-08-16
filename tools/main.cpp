@@ -80,8 +80,8 @@ bool checkCommand(const std::string& command)
 
 bool checkInterface(const std::string& interface)
 {
-    auto intf = std::find(interfaceList.begin(), interfaceList.end(),
-                          interface);
+    auto intf =
+        std::find(interfaceList.begin(), interfaceList.end(), interface);
     return (intf != interfaceList.end());
 }
 
@@ -226,8 +226,8 @@ int main(int argc, char* argv[])
         /* Input has already been validated in this case. */
         if (interface == IPMIBT)
         {
-            handler = std::make_unique<host_tool::BtDataHandler>(&blob,
-                                                                 &progress);
+            handler =
+                std::make_unique<host_tool::BtDataHandler>(&blob, &progress);
         }
         else if (interface == IPMINET)
         {
@@ -252,8 +252,8 @@ int main(int argc, char* argv[])
         else if (interface == IPMIPCI)
         {
             auto& pci = host_tool::PciAccessImpl::getInstance();
-            handler = std::make_unique<host_tool::P2aDataHandler>(&blob, &pci,
-                                                                  &progress);
+            handler = std::make_unique<host_tool::P2aDataHandler>(
+                &blob, &pci, &progress);
         }
         else if (interface == IPMIPCI_SKIP_BRIDGE_DISABLE)
         {

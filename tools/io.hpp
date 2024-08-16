@@ -42,8 +42,7 @@ class PpcMemDevice : public HostIoInterface
   public:
     explicit PpcMemDevice(const std::string& ppcMemPath,
                           const internal::Sys* sys = &internal::sys_impl) :
-        ppcMemPath(ppcMemPath),
-        sys(sys)
+        ppcMemPath(ppcMemPath), sys(sys)
     {}
 
     ~PpcMemDevice() override;

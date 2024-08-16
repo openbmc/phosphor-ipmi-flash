@@ -38,8 +38,8 @@ bool DevMemDevice::read(const std::size_t offset, const std::size_t length,
         return false;
     }
 
-    void* alignedSource = static_cast<std::uint8_t*>(devMemMapped) +
-                          alignedDiff;
+    void* alignedSource =
+        static_cast<std::uint8_t*>(devMemMapped) + alignedDiff;
 
     /* Copy the bytes. */
     std::memcpy(destination, alignedSource, length);
@@ -78,8 +78,8 @@ bool DevMemDevice::write(const std::size_t offset, const std::size_t length,
         return false;
     }
 
-    void* alignedDestination = static_cast<std::uint8_t*>(devMemMapped) +
-                               alignedDiff;
+    void* alignedDestination =
+        static_cast<std::uint8_t*>(devMemMapped) + alignedDiff;
 
     /* Copy the bytes. */
     std::memcpy(alignedDestination, source, length);

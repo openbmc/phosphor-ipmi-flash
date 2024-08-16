@@ -36,9 +36,8 @@ using std::uint16_t;
 using std::uint32_t;
 using std::uint8_t;
 
-std::unique_ptr<HardwareMapperInterface>
-    LpcMapperNuvoton::createNuvotonMapper(std::uint32_t regionAddress,
-                                          std::uint32_t regionSize)
+std::unique_ptr<HardwareMapperInterface> LpcMapperNuvoton::createNuvotonMapper(
+    std::uint32_t regionAddress, std::uint32_t regionSize)
 {
     /* NOTE: Considered making one factory for both types. */
     return std::make_unique<LpcMapperNuvoton>(regionAddress, regionSize);
@@ -98,8 +97,8 @@ void LpcMapperNuvoton::close()
  *   - WindowOffset = 4 and WindowSize = len - 4 if (addr & 0x7) == 0
  *   - WindowSize = 0 means that the region cannot be mapped otherwise
  */
-WindowMapResult LpcMapperNuvoton::mapWindow(std::uint32_t address,
-                                            std::uint32_t length)
+WindowMapResult
+    LpcMapperNuvoton::mapWindow(std::uint32_t address, std::uint32_t length)
 {
     WindowMapResult result = {};
 

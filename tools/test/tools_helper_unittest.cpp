@@ -51,8 +51,8 @@ TEST_F(HelperTest, PollReadReadyReturnsAfterSuccess)
 {
     ipmiblob::StatResponse blobResponse = {};
     /* the other details of the response are ignored, and should be. */
-    blobResponse.blob_state = blobs::StateFlags::open_read |
-                              blobs::StateFlags::committed;
+    blobResponse.blob_state =
+        blobs::StateFlags::open_read | blobs::StateFlags::committed;
 
     EXPECT_CALL(blobMock, getStat(TypedEq<std::uint16_t>(session)))
         .WillOnce(Return(blobResponse));

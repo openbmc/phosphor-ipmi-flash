@@ -58,10 +58,11 @@ TEST_F(BtHandlerTest, verifySendsFileContents)
 
     EXPECT_CALL(sysMock, read(fd, NotNull(), _))
         .WillOnce(Invoke([&](int, void* buf, std::size_t count) {
-        EXPECT_TRUE(count > bytes.size());
-        std::memcpy(buf, bytes.data(), bytes.size());
-        return bytes.size();
-    })).WillOnce(Return(0));
+            EXPECT_TRUE(count > bytes.size());
+            std::memcpy(buf, bytes.data(), bytes.size());
+            return bytes.size();
+        }))
+        .WillOnce(Return(0));
 
     EXPECT_CALL(progMock, updateProgress(bytes.size()));
 
@@ -99,10 +100,10 @@ TEST_F(BtHandlerTest, sendContentsFailsWhenBlobHandlerThrows)
 
     EXPECT_CALL(sysMock, read(fd, NotNull(), _))
         .WillOnce(Invoke([&](int, void* buf, std::size_t count) {
-        EXPECT_TRUE(count > bytes.size());
-        std::memcpy(buf, bytes.data(), bytes.size());
-        return bytes.size();
-    }));
+            EXPECT_TRUE(count > bytes.size());
+            std::memcpy(buf, bytes.data(), bytes.size());
+            return bytes.size();
+        }));
 
     EXPECT_CALL(blobMock, writeBytes(session, 0, ContainerEq(bytes)))
         .WillOnce(Throw(ipmiblob::BlobException("failure")));

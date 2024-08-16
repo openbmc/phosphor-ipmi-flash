@@ -141,8 +141,8 @@ void SystemdNoFile::match(sdbusplus::message_t& m)
                  job->c_str(), result.c_str());
     jobMonitor = std::nullopt;
     job = std::nullopt;
-    currentStatus = result == "done" ? ActionStatus::success
-                                     : ActionStatus::failed;
+    currentStatus =
+        result == "done" ? ActionStatus::success : ActionStatus::failed;
 
     if (cb)
     {

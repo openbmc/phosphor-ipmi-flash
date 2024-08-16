@@ -53,15 +53,15 @@ bool UpdateHandler::checkAvailable(const std::string& goalFirmware)
 {
     std::vector<std::string> blobs = blob->getBlobList();
 
-    auto blobInst = std::find_if(blobs.begin(), blobs.end(),
-                                 [&goalFirmware](const std::string& iter) {
-        /* Running into weird scenarios where the string comparison doesn't
-         * work.  TODO: revisit.
-         */
-        return (0 == std::memcmp(goalFirmware.c_str(), iter.c_str(),
-                                 goalFirmware.length()));
-        // return (goalFirmware.compare(iter));
-    });
+    auto blobInst = std::find_if(
+        blobs.begin(), blobs.end(), [&goalFirmware](const std::string& iter) {
+            /* Running into weird scenarios where the string comparison doesn't
+             * work.  TODO: revisit.
+             */
+            return (0 == std::memcmp(goalFirmware.c_str(), iter.c_str(),
+                                     goalFirmware.length()));
+            // return (goalFirmware.compare(iter));
+        });
     if (blobInst == blobs.end())
     {
         std::fprintf(stderr, "%s not found\n", goalFirmware.c_str());
@@ -84,8 +84,8 @@ std::vector<uint8_t> UpdateHandler::retryIfFailed(
         }
         catch (const ipmiblob::BlobException& b)
         {
-            throw ToolException("blob exception received: " +
-                                std::string(b.what()));
+            throw ToolException(
+                "blob exception received: " + std::string(b.what()));
         }
         catch (const ToolException& t)
         {
@@ -185,8 +185,9 @@ std::vector<uint8_t>
 
 std::vector<uint8_t> UpdateHandler::readVersion(const std::string& versionBlob)
 {
-    return retryIfFailed(
-        [this, versionBlob]() { return retryReadVersion(versionBlob); });
+    return retryIfFailed([this, versionBlob]() {
+        return retryReadVersion(versionBlob);
+    });
 }
 
 void UpdateHandler::cleanArtifacts()

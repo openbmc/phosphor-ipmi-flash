@@ -338,8 +338,8 @@ TEST_P(PciSetupTest, Success)
 INSTANTIATE_TEST_SUITE_P(Default, PciSetupTest,
                          ::testing::Values(&nuvotonDevice, &aspeedDevice),
                          [](const testing::TestParamInfo<Device*>& info) {
-    return info.param->getName();
-});
+                             return info.param->getName();
+                         });
 
 TEST(NuvotonWriteTest, TooLarge)
 {
@@ -660,8 +660,8 @@ TEST(AspeedBridgeTest, AlreadyEnabledSuccess)
 
     {
         std::vector<std::uint8_t> enabledRegion(mockRegionSize);
-        enabledRegion[AspeedDevice::config] = defaultVal |
-                                              AspeedDevice::bridgeEnabled;
+        enabledRegion[AspeedDevice::config] =
+            defaultVal | AspeedDevice::bridgeEnabled;
         EXPECT_THAT(region, ContainerEq(enabledRegion));
     }
 
@@ -689,13 +689,13 @@ TEST(AspeedBridgeTest, SkipDisable)
     expectSetup(pciMock, dev, &aspeedDevice, region.data());
 
     /* Setting skipBridgeDisable to true */
-    std::unique_ptr<PciBridgeIntf> bridge = aspeedDevice.getBridge(&pciMock,
-                                                                   true);
+    std::unique_ptr<PciBridgeIntf> bridge =
+        aspeedDevice.getBridge(&pciMock, true);
 
     {
         std::vector<std::uint8_t> enabledRegion(mockRegionSize);
-        enabledRegion[AspeedDevice::config] = defaultVal |
-                                              AspeedDevice::bridgeEnabled;
+        enabledRegion[AspeedDevice::config] =
+            defaultVal | AspeedDevice::bridgeEnabled;
         EXPECT_THAT(region, ContainerEq(enabledRegion));
     }
 
@@ -703,8 +703,8 @@ TEST(AspeedBridgeTest, SkipDisable)
 
     {
         std::vector<std::uint8_t> disabledRegion(mockRegionSize);
-        disabledRegion[AspeedDevice::config] = defaultVal |
-                                               AspeedDevice::bridgeEnabled;
+        disabledRegion[AspeedDevice::config] =
+            defaultVal | AspeedDevice::bridgeEnabled;
         EXPECT_THAT(region, ContainerEq(disabledRegion));
     }
 }
@@ -726,8 +726,8 @@ TEST(AspeedBridgeTest, NotEnabledSuccess)
 
     {
         std::vector<std::uint8_t> enabledRegion(mockRegionSize);
-        enabledRegion[AspeedDevice::config] = defaultVal |
-                                              AspeedDevice::bridgeEnabled;
+        enabledRegion[AspeedDevice::config] =
+            defaultVal | AspeedDevice::bridgeEnabled;
         EXPECT_THAT(region, ContainerEq(enabledRegion));
     }
 

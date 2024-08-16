@@ -41,12 +41,10 @@ class PciAccess
     virtual struct pci_device*
         pci_device_next(struct pci_device_iterator* iter) const = 0;
     virtual int pci_device_probe(struct pci_device* dev) const = 0;
-    virtual int pci_device_cfg_read_u8(struct pci_device* dev,
-                                       std::uint8_t* data,
-                                       pciaddr_t offset) const = 0;
-    virtual int pci_device_cfg_write_u8(struct pci_device* dev,
-                                        std::uint8_t data,
-                                        pciaddr_t offset) const = 0;
+    virtual int pci_device_cfg_read_u8(
+        struct pci_device* dev, std::uint8_t* data, pciaddr_t offset) const = 0;
+    virtual int pci_device_cfg_write_u8(
+        struct pci_device* dev, std::uint8_t data, pciaddr_t offset) const = 0;
     virtual int pci_device_map_range(struct pci_device* dev, pciaddr_t base,
                                      pciaddr_t size, unsigned map_flags,
                                      void** addr) const = 0;

@@ -9,7 +9,7 @@ namespace host_tool
 class ToolException : public std::exception
 {
   public:
-    explicit ToolException(const std::string& message) : message(message){};
+    explicit ToolException(const std::string& message) : message(message) {};
 
     virtual const char* what() const noexcept override
     {
@@ -24,7 +24,7 @@ class NotFoundException : public ToolException
 {
   public:
     explicit NotFoundException(const std::string& device) :
-        ToolException(std::string("Couldn't find " + device)){};
+        ToolException(std::string("Couldn't find " + device)) {};
 };
 
 } // namespace host_tool

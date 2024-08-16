@@ -49,9 +49,9 @@ std::vector<HandlerConfig<ActionPack>>
             /* name must be: /flash/... */
             if (!std::regex_match(output.blobId, std::regex("^\\/flash\\/.+")))
             {
-                throw std::runtime_error("Invalid blob name: '" +
-                                         output.blobId +
-                                         "' must start with /flash/");
+                throw std::runtime_error(
+                    "Invalid blob name: '" + output.blobId +
+                    "' must start with /flash/");
             }
 
             /* handler is required. */
@@ -64,8 +64,8 @@ std::vector<HandlerConfig<ActionPack>>
             }
             else
             {
-                throw std::runtime_error("Invalid handler type: " +
-                                         handlerType);
+                throw std::runtime_error(
+                    "Invalid handler type: " + handlerType);
             }
 
             /* actions are required (presently). */
@@ -85,8 +85,8 @@ std::vector<HandlerConfig<ActionPack>>
             }
             else
             {
-                throw std::runtime_error("Invalid preparation type: " +
-                                         prepareType);
+                throw std::runtime_error(
+                    "Invalid preparation type: " + prepareType);
             }
 
             const auto& verify = a.at("verification");
@@ -105,8 +105,8 @@ std::vector<HandlerConfig<ActionPack>>
             }
             else
             {
-                throw std::runtime_error("Invalid verification type:" +
-                                         verifyType);
+                throw std::runtime_error(
+                    "Invalid verification type:" + verifyType);
             }
 
             const auto& update = a.at("update");

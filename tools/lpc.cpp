@@ -125,8 +125,8 @@ bool LpcDataHandler::sendContents(const std::string& input,
 
         do
         {
-            bytesRead = sys->read(inputFd, readBuffer.get(),
-                                  host_lpc_buf.length);
+            bytesRead =
+                sys->read(inputFd, readBuffer.get(), host_lpc_buf.length);
             if (bytesRead > 0)
             {
                 if (!io->write(host_lpc_buf.address, bytesRead,

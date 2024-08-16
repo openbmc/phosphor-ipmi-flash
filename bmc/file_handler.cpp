@@ -52,8 +52,8 @@ bool FileHandler::write(std::uint32_t offset,
     return file.good();
 }
 
-std::optional<std::vector<uint8_t>> FileHandler::read(std::uint32_t offset,
-                                                      std::uint32_t size)
+std::optional<std::vector<uint8_t>>
+    FileHandler::read(std::uint32_t offset, std::uint32_t size)
 {
     uint32_t file_size = getSize();
     if (offset > file_size)
