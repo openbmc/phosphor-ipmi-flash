@@ -101,10 +101,8 @@ class NuvotonPciBridge : public PciAccessBridge
     static constexpr std::uint32_t vid = 0x1050;
     static constexpr std::uint32_t did = NUVOTON_PCI_DID;
     static constexpr int bar = 0;
-    static constexpr struct pci_id_match match
-    {
-        vid, did, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0
-    };
+    static constexpr struct pci_id_match match{
+        vid, did, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0};
 
     static constexpr pciaddr_t bridge = 0x04;
     static constexpr std::uint8_t bridgeEnabled = 0x02;
@@ -141,10 +139,8 @@ class AspeedPciBridge : public PciAccessBridge
     static constexpr std::uint32_t vid = 0x1a03;
     static constexpr std::uint32_t did = 0x2000;
     static constexpr int bar = 1;
-    static constexpr struct pci_id_match match
-    {
-        vid, did, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0
-    };
+    static constexpr struct pci_id_match match{
+        vid, did, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0};
 
     static constexpr std::size_t config = 0x0f000;
     static constexpr std::size_t bridge = 0x0f004;
