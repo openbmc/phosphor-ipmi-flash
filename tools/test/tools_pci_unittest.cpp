@@ -138,10 +138,8 @@ class NuvotonDevice : public Device
     static constexpr std::uint8_t bridgeEnabled = 0x02;
 
   private:
-    static constexpr struct pci_id_match match
-    {
-        0x1050, 0x0750, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0
-    };
+    static constexpr struct pci_id_match match{
+        0x1050, 0x0750, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0};
 };
 
 class AspeedDevice : public Device
@@ -185,10 +183,8 @@ class AspeedDevice : public Device
     static constexpr int bridge = 0x0f004;
 
   private:
-    static constexpr struct pci_id_match match
-    {
-        0x1a03, 0x2000, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0
-    };
+    static constexpr struct pci_id_match match{
+        0x1a03, 0x2000, PCI_MATCH_ANY, PCI_MATCH_ANY, 0, 0, 0};
 };
 
 NuvotonDevice nuvotonDevice;
