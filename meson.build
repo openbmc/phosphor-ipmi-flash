@@ -36,7 +36,7 @@ conf_h = configure_file(
   configuration: conf_data)
 
 # Setup for the test config
-if not get_option('tests').disabled()
+if get_option('tests').allowed()
   add_project_arguments('-DENABLE_STATIC_LAYOUT', language: 'cpp')
   add_project_arguments('-DENABLE_TARBALL_UBI', language: 'cpp')
   add_project_arguments('-DASPEED_P2A', language: 'cpp')
@@ -53,7 +53,7 @@ endif
 
 # Enable LPC and PCI for tests only.
 assert(
-  not get_option('tests').disabled() \
+  get_option('tests').allowed() \
     or get_option('lpc-type') == 'none' \
     or get_option('p2a-type') == 'none',
   'Invalid configuration enabling both PCI and LPC.')
@@ -130,7 +130,7 @@ sys_dep = declare_dependency(
 blobs_dep = dependency('phosphor-ipmi-blobs')
 nlohmann_json_dep = dependency('nlohmann_json', include_type: 'system')
 
-if not get_option('tests').disabled()
+if get_option('tests').allowed()
   gtest = dependency('gtest', main: true, disabler: true, required: false)
   gmock = dependency('gmock', disabler: true, required: false)
   if not gtest.found() or not gmock.found()
@@ -151,14 +151,14 @@ if not get_option('tests').disabled()
 endif
 
 
-if not get_option('bmc-blob-handler').disabled()
+if get_option('bmc-blob-handler').allowed()
   subdir('bmc')
 endif
 
-if not get_option('host-tool').disabled()
+if get_option('host-tool').allowed()
   subdir('tools')
 endif
 
-if not get_option('cleanup-delete').disabled()
+if get_option('cleanup-delete').allowed()
   subdir('cleanup')
 endif
