@@ -18,7 +18,7 @@ common_dep = declare_dependency(
   link_with: common_lib,
   dependencies: common_pre)
 
-if not get_option('tests').disabled()
+if get_option('tests').allowed()
   subdir('test')
 endif
 

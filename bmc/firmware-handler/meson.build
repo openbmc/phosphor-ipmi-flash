@@ -64,17 +64,17 @@ firmware_source = [
   'lpc_handler.cpp']
 
 if (get_option('lpc-type') == 'aspeed-lpc' or
-    not get_option('tests').disabled())
+    get_option('tests').allowed())
   firmware_source += 'lpc_aspeed.cpp'
 endif
 
 if (get_option('lpc-type') == 'nuvoton-lpc' or
-    not get_option('tests').disabled())
+    get_option('tests').allowed())
   firmware_source += 'lpc_nuvoton.cpp'
 endif
 
 if (get_option('p2a-type') == 'aspeed-p2a' or
-    not get_option('tests').disabled())
+    get_option('tests').allowed())
   firmware_source += 'pci_handler.cpp'
 endif
 
@@ -121,6 +121,6 @@ shared_module(
   install: true,
   install_dir: get_option('libdir') / 'blob-ipmid')
 
-if not get_option('tests').disabled()
+if get_option('tests').allowed()
   subdir('test')
 endif
