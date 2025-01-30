@@ -38,6 +38,6 @@ executable(
   install: true,
   install_dir: get_option('bindir'))
 
-if not get_option('tests').disabled()
+if get_option('tests').allowed()
   subdir('test')
 endif

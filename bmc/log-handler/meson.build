@@ -30,6 +30,6 @@ shared_module(
   install: true,
   install_dir: get_option('libdir') / 'blob-ipmid')
 
-if not get_option('tests').disabled()
+if get_option('tests').allowed()
   subdir('test')
 endif
