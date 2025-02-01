@@ -161,8 +161,8 @@ bool UpdateHandler::verifyFile(const std::string& target, bool ignoreStatus)
     return true;
 }
 
-std::vector<uint8_t>
-    UpdateHandler::retryReadVersion(const std::string& versionBlob)
+std::vector<uint8_t> UpdateHandler::retryReadVersion(
+    const std::string& versionBlob)
 {
     auto session =
         openBlob(blob, versionBlob,

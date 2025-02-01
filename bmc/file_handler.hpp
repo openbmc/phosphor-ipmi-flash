@@ -27,8 +27,8 @@ class FileHandler : public ImageHandlerInterface
     void close() override;
     bool write(std::uint32_t offset,
                const std::vector<std::uint8_t>& data) override;
-    virtual std::optional<std::vector<uint8_t>>
-        read(std::uint32_t offset, std::uint32_t size) override;
+    virtual std::optional<std::vector<uint8_t>> read(
+        std::uint32_t offset, std::uint32_t size) override;
     int getSize() override;
 
   private:

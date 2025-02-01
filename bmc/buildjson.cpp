@@ -30,8 +30,8 @@
 namespace ipmi_flash
 {
 
-std::unique_ptr<TriggerableActionInterface>
-    buildFileSystemd(const nlohmann::json& data)
+std::unique_ptr<TriggerableActionInterface> buildFileSystemd(
+    const nlohmann::json& data)
 {
     /* This type of action requires a path and unit, and optionally a mode. */
     const auto& path = data.at("path");
@@ -49,8 +49,8 @@ std::unique_ptr<TriggerableActionInterface>
         sdbusplus::bus::new_default(), path, unit, systemdMode);
 }
 
-std::unique_ptr<TriggerableActionInterface>
-    buildSystemd(const nlohmann::json& data)
+std::unique_ptr<TriggerableActionInterface> buildSystemd(
+    const nlohmann::json& data)
 {
     /* This type of action requires a unit, and optionally a mode. */
     const auto& unit = data.at("unit");

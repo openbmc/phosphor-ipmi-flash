@@ -11,7 +11,7 @@ namespace ipmi_flash
 class FirmwareHandlersBuilder : public HandlersBuilderIfc<ActionPack>
 {
   public:
-    std::vector<HandlerConfig<ActionPack>>
-        buildHandlerFromJson(const nlohmann::json& data) override;
+    std::vector<HandlerConfig<ActionPack>> buildHandlerFromJson(
+        const nlohmann::json& data) override;
 };
 } // namespace ipmi_flash

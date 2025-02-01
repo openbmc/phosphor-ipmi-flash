@@ -15,8 +15,8 @@ namespace ipmi_flash
 class LpcMapperAspeed : public HardwareMapperInterface
 {
   public:
-    static std::unique_ptr<HardwareMapperInterface>
-        createAspeedMapper(std::uint32_t regionAddress, std::size_t regionSize);
+    static std::unique_ptr<HardwareMapperInterface> createAspeedMapper(
+        std::uint32_t regionAddress, std::size_t regionSize);
 
     /* NOTE: This object is created and then never destroyed (unless ipmid
      * stops/crashes, etc)

@@ -50,8 +50,8 @@ class ImageHandlerInterface
      * on failure otherwise returns a vector filled with the bytes read.
      *
      */
-    virtual std::optional<std::vector<std::uint8_t>>
-        read(std::uint32_t offset, std::uint32_t size) = 0;
+    virtual std::optional<std::vector<std::uint8_t>> read(
+        std::uint32_t offset, std::uint32_t size) = 0;
 
     /**
      * return the size of the file (if that notion makes sense).

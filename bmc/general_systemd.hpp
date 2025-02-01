@@ -14,9 +14,9 @@ namespace ipmi_flash
 class SystemdNoFile : public TriggerableActionInterface
 {
   public:
-    static std::unique_ptr<TriggerableActionInterface>
-        CreateSystemdNoFile(sdbusplus::bus_t&& bus, const std::string& service,
-                            const std::string& mode);
+    static std::unique_ptr<TriggerableActionInterface> CreateSystemdNoFile(
+        sdbusplus::bus_t&& bus, const std::string& service,
+        const std::string& mode);
 
     SystemdNoFile(sdbusplus::bus_t&& bus, const std::string& service,
                   const std::string& mode) :

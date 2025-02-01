@@ -39,8 +39,8 @@ void PciAccessImpl::pci_device_enable(struct pci_device* dev) const
     return ::pci_device_enable(dev);
 }
 
-struct pci_device*
-    PciAccessImpl::pci_device_next(struct pci_device_iterator* iter) const
+struct pci_device* PciAccessImpl::pci_device_next(
+    struct pci_device_iterator* iter) const
 {
     return ::pci_device_next(iter);
 }

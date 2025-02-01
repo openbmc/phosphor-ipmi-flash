@@ -50,8 +50,8 @@ class UpdateHandlerInterface
      * @param[in] versionBlob - the version blob id within the version handler.
      * @return firmware version
      */
-    virtual std::vector<uint8_t>
-        readVersion(const std::string& versionBlob) = 0;
+    virtual std::vector<uint8_t> readVersion(
+        const std::string& versionBlob) = 0;
 
     /**
      * Cleanup the artifacts by triggering this action.
@@ -107,8 +107,8 @@ class UpdateHandler : public UpdateHandlerInterface
     /**
      * @throw ToolException on failure.
      */
-    std::vector<uint8_t>
-        retryIfFailed(stdplus::function_view<std::vector<uint8_t>()> callback);
+    std::vector<uint8_t> retryIfFailed(
+        stdplus::function_view<std::vector<uint8_t>()> callback);
 };
 
 } // namespace host_tool

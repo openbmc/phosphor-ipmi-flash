@@ -10,8 +10,8 @@ class CrcInterface
   public:
     virtual ~CrcInterface() = default;
 
-    virtual std::uint16_t
-        generateCrc(const std::vector<std::uint8_t>& data) const = 0;
+    virtual std::uint16_t generateCrc(
+        const std::vector<std::uint8_t>& data) const = 0;
 };
 
 class CrcMock : public CrcInterface

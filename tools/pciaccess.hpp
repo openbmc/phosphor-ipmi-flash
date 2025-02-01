@@ -35,11 +35,11 @@ class PciAccess
   public:
     virtual struct pci_device_iterator* pci_id_match_iterator_create(
         const struct pci_id_match* match) const = 0;
-    virtual void
-        pci_iterator_destroy(struct pci_device_iterator* iter) const = 0;
+    virtual void pci_iterator_destroy(
+        struct pci_device_iterator* iter) const = 0;
     virtual void pci_device_enable(struct pci_device* dev) const = 0;
-    virtual struct pci_device*
-        pci_device_next(struct pci_device_iterator* iter) const = 0;
+    virtual struct pci_device* pci_device_next(
+        struct pci_device_iterator* iter) const = 0;
     virtual int pci_device_probe(struct pci_device* dev) const = 0;
     virtual int pci_device_cfg_read_u8(
         struct pci_device* dev, std::uint8_t* data, pciaddr_t offset) const = 0;
@@ -66,8 +66,8 @@ class PciAccessImpl : public PciAccess
         const struct pci_id_match* match) const override;
     void pci_iterator_destroy(struct pci_device_iterator* iter) const override;
     void pci_device_enable(struct pci_device* dev) const override;
-    struct pci_device*
-        pci_device_next(struct pci_device_iterator* iter) const override;
+    struct pci_device* pci_device_next(
+        struct pci_device_iterator* iter) const override;
     int pci_device_probe(struct pci_device* dev) const override;
     int pci_device_cfg_read_u8(struct pci_device* dev, std::uint8_t* data,
                                pciaddr_t offset) const override;

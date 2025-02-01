@@ -16,14 +16,14 @@ namespace ipmi_flash
 /**
  * build a systemd file triggerable action from json data
  */
-std::unique_ptr<TriggerableActionInterface>
-    buildFileSystemd(const nlohmann::json& data);
+std::unique_ptr<TriggerableActionInterface> buildFileSystemd(
+    const nlohmann::json& data);
 
 /**
  * build a systemd triggerable action from json data
  */
-std::unique_ptr<TriggerableActionInterface>
-    buildSystemd(const nlohmann::json& data);
+std::unique_ptr<TriggerableActionInterface> buildSystemd(
+    const nlohmann::json& data);
 
 constexpr std::array defaultConfigPaths = {
     "/usr/share/phosphor-ipmi-flash",
@@ -108,7 +108,7 @@ struct HandlersBuilderIfc
      * @param[in] data - json data from a json file.
      * @return list of HandlerConfig objects.
      */
-    virtual std::vector<HandlerConfig<T>>
-        buildHandlerFromJson(const nlohmann::json& data) = 0;
+    virtual std::vector<HandlerConfig<T>> buildHandlerFromJson(
+        const nlohmann::json& data) = 0;
 };
 } // namespace ipmi_flash

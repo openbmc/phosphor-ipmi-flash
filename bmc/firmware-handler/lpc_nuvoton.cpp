@@ -97,8 +97,8 @@ void LpcMapperNuvoton::close()
  *   - WindowOffset = 4 and WindowSize = len - 4 if (addr & 0x7) == 0
  *   - WindowSize = 0 means that the region cannot be mapped otherwise
  */
-WindowMapResult
-    LpcMapperNuvoton::mapWindow(std::uint32_t address, std::uint32_t length)
+WindowMapResult LpcMapperNuvoton::mapWindow(std::uint32_t address,
+                                            std::uint32_t length)
 {
     WindowMapResult result = {};
 

@@ -71,8 +71,8 @@ class Device
     virtual const struct pci_id_match* getMatch() const = 0;
     virtual struct pci_device getDevice() const = 0;
     virtual void expectSetup(PciAccessMock&, const struct pci_device&) const {};
-    virtual std::unique_ptr<PciBridgeIntf>
-        getBridge(PciAccess* pci, bool skipBridgeDisable = false) const = 0;
+    virtual std::unique_ptr<PciBridgeIntf> getBridge(
+        PciAccess* pci, bool skipBridgeDisable = false) const = 0;
     virtual std::string getName() const = 0;
 };
 
@@ -121,8 +121,8 @@ class NuvotonDevice : public Device
             .WillOnce(Return(0));
     }
 
-    std::unique_ptr<PciBridgeIntf>
-        getBridge(PciAccess* pci, bool skipBridgeDisable = false) const override
+    std::unique_ptr<PciBridgeIntf> getBridge(
+        PciAccess* pci, bool skipBridgeDisable = false) const override
     {
         return std::make_unique<NuvotonPciBridge>(pci, skipBridgeDisable);
     }
@@ -164,8 +164,8 @@ class AspeedDevice : public Device
         return dev;
     }
 
-    std::unique_ptr<PciBridgeIntf>
-        getBridge(PciAccess* pci, bool skipBridgeDisable = false) const override
+    std::unique_ptr<PciBridgeIntf> getBridge(
+        PciAccess* pci, bool skipBridgeDisable = false) const override
     {
         return std::make_unique<AspeedPciBridge>(pci, skipBridgeDisable);
     }

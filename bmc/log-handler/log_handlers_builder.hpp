@@ -29,7 +29,7 @@ namespace ipmi_flash
 class LogHandlersBuilder : public HandlersBuilderIfc<LogBlobHandler::ActionPack>
 {
   public:
-    std::vector<HandlerConfig<LogBlobHandler::ActionPack>>
-        buildHandlerFromJson(const nlohmann::json& data) override;
+    std::vector<HandlerConfig<LogBlobHandler::ActionPack>> buildHandlerFromJson(
+        const nlohmann::json& data) override;
 };
 } // namespace ipmi_flash
