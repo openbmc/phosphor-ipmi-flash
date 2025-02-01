@@ -1,25 +1,78 @@
 option('tests', type: 'feature', description: 'Build tests')
 
 # Build Options
-option('bmc-blob-handler', type: 'feature', description: 'Build the BMC BLOB handler')
-option('cleanup-delete', type: 'feature', description: 'Enable use of the delete files cleanup mechanism')
+option(
+    'bmc-blob-handler',
+    type: 'feature',
+    description: 'Build the BMC BLOB handler',
+)
+option(
+    'cleanup-delete',
+    type: 'feature',
+    description: 'Enable use of the delete files cleanup mechanism',
+)
 option('host-tool', type: 'feature', description: 'Build the host tool')
 
 # BMC Blob Handler Options
-option('host-bios', type: 'boolean', value: false, description: 'Install default BIOS update configs')
-option('reboot-update', type: 'boolean', value: false, description: 'Enable use of reboot update mechanism')
-option('update-status', type: 'boolean', value: false, description: 'Enable use of update status file')
+option(
+    'host-bios',
+    type: 'boolean',
+    value: false,
+    description: 'Install default BIOS update configs',
+)
+option(
+    'reboot-update',
+    type: 'boolean',
+    value: false,
+    description: 'Enable use of reboot update mechanism',
+)
+option(
+    'update-status',
+    type: 'boolean',
+    value: false,
+    description: 'Enable use of update status file',
+)
 
-option('update-type', type : 'combo', choices : ['none', 'static-layout', 'tarball-ubi'], description: 'Enable firmware update via Blobs')
+option(
+    'update-type',
+    type: 'combo',
+    choices: ['none', 'static-layout', 'tarball-ubi'],
+    description: 'Enable firmware update via Blobs',
+)
 
-option('lpc-type', type : 'combo', choices : ['none', 'aspeed-lpc', 'nuvoton-lpc'], description: 'Enable external transfers using Aspeed/Nuvoton LPC')
-option('p2a-type', type : 'combo', choices : ['none', 'aspeed-p2a', 'nuvoton-p2a-vga', 'nuvoton-p2a-mbox'], description: 'Enable external transfers using Aspeed PCI-to-AHB, Nuvoton PCI-to-AHB via VGA, or Nuvoton PCI-to-AHB via MBOX')
-option('net-bridge', type: 'boolean', value: false, description: 'Enable external transfers using a TCP connection')
+option(
+    'lpc-type',
+    type: 'combo',
+    choices: ['none', 'aspeed-lpc', 'nuvoton-lpc'],
+    description: 'Enable external transfers using Aspeed/Nuvoton LPC',
+)
+option(
+    'p2a-type',
+    type: 'combo',
+    choices: ['none', 'aspeed-p2a', 'nuvoton-p2a-vga', 'nuvoton-p2a-mbox'],
+    description: 'Enable external transfers using Aspeed PCI-to-AHB, Nuvoton PCI-to-AHB via VGA, or Nuvoton PCI-to-AHB via MBOX',
+)
+option(
+    'net-bridge',
+    type: 'boolean',
+    value: false,
+    description: 'Enable external transfers using a TCP connection',
+)
 
 # Host Tool Options
-option('ppc', type: 'boolean', value: false, description: 'Enable ppc host memory access')
+option(
+    'ppc',
+    type: 'boolean',
+    value: false,
+    description: 'Enable ppc host memory access',
+)
 # Default value 1872 is 0x0750 below
-option('nuvoton-pci-did', type : 'integer', value : 1872, description : 'The device-id for Nuvoton PCI bridge')
+option(
+    'nuvoton-pci-did',
+    type: 'integer',
+    value: 1872,
+    description: 'The device-id for Nuvoton PCI bridge',
+)
 
 # Configuration Details
 
@@ -27,19 +80,89 @@ option('nuvoton-pci-did', type : 'integer', value : 1872, description : 'The dev
 # e.g. https://github.com/openbmc/linux/blob/1da2ce51886a3b2f5db2087f26c661e13ee13b84/arch/arm/boot/dts/aspeed-bmc-quanta-q71l.dts#L26
 # or https://github.com/openbmc/linux/blob/1da2ce51886a3b2f5db2087f26c661e13ee13b84/arch/arm/boot/dts/aspeed-bmc-opp-zaius.dts#L166
 # for PCI, this address is passed back to the host and is used directly.
-option('mapped-address', type : 'string', value : '0', description : 'Value for memory region mapping')
+option(
+    'mapped-address',
+    type: 'string',
+    value: '0',
+    description: 'Value for memory region mapping',
+)
 
-option('static-handler-staged-name', type : 'string', value : '/run/initramfs/bmc-image', description : 'The file to use for staging the firmware update')
-option('tarball-staged-name', type : 'string', value : '/tmp/image-update.tar', description : 'The file to use for staging the firmware update')
-option('hash-filename', type : 'string', value : '/tmp/bmc.sig', description : 'The file to use for the hash provided')
-option('verify-status-filename', type : 'string', value : '/tmp/bmc.verify', description : 'The file checked for the verification status.')
-option('update-status-filename', type : 'string', value : '/tmp/bmc.update', description : 'The file checked for the update status')
-option('bios-verify-status-filename', type : 'string', value : '/tmp/bios.verify', description : 'The file checked for the verification status')
+option(
+    'static-handler-staged-name',
+    type: 'string',
+    value: '/run/initramfs/bmc-image',
+    description: 'The file to use for staging the firmware update',
+)
+option(
+    'tarball-staged-name',
+    type: 'string',
+    value: '/tmp/image-update.tar',
+    description: 'The file to use for staging the firmware update',
+)
+option(
+    'hash-filename',
+    type: 'string',
+    value: '/tmp/bmc.sig',
+    description: 'The file to use for the hash provided',
+)
+option(
+    'verify-status-filename',
+    type: 'string',
+    value: '/tmp/bmc.verify',
+    description: 'The file checked for the verification status.',
+)
+option(
+    'update-status-filename',
+    type: 'string',
+    value: '/tmp/bmc.update',
+    description: 'The file checked for the update status',
+)
+option(
+    'bios-verify-status-filename',
+    type: 'string',
+    value: '/tmp/bios.verify',
+    description: 'The file checked for the verification status',
+)
 
-option('preparation-dbus-service', type : 'string', value : 'phosphor-ipmi-flash-bmc-prepare.target', description : 'The systemd target started when the host starts to send an update')
-option('verify-dbus-service', type : 'string', value : 'phosphor-ipmi-flash-bmc-verify.target', description : 'The systemd target started for verification')
-option('update-dbus-service', type : 'string', value : 'phosphor-ipmi-flash-bmc-update.target', description : 'The systemd target started for updating the BMC')
-option('bios-staged-name', type : 'string', value : 'bios-staged-name', description : 'The file to use for staging the bios firmware update')
-option('preparation-bios-target', type : 'string', value : 'phosphor-ipmi-flash-bios-prepare.target', description : 'The systemd target started when the host starts to send an update')
-option('verify-bios-target', type : 'string', value : 'phosphor-ipmi-flash-bios-verify.target', description : 'The systemd target started for verifying the BIOS image')
-option('update-bios-target', type : 'string', value : 'phosphor-ipmi-flash-bios-update.target', description : 'The systemd target started for updating the BIOS')
+option(
+    'preparation-dbus-service',
+    type: 'string',
+    value: 'phosphor-ipmi-flash-bmc-prepare.target',
+    description: 'The systemd target started when the host starts to send an update',
+)
+option(
+    'verify-dbus-service',
+    type: 'string',
+    value: 'phosphor-ipmi-flash-bmc-verify.target',
+    description: 'The systemd target started for verification',
+)
+option(
+    'update-dbus-service',
+    type: 'string',
+    value: 'phosphor-ipmi-flash-bmc-update.target',
+    description: 'The systemd target started for updating the BMC',
+)
+option(
+    'bios-staged-name',
+    type: 'string',
+    value: 'bios-staged-name',
+    description: 'The file to use for staging the bios firmware update',
+)
+option(
+    'preparation-bios-target',
+    type: 'string',
+    value: 'phosphor-ipmi-flash-bios-prepare.target',
+    description: 'The systemd target started when the host starts to send an update',
+)
+option(
+    'verify-bios-target',
+    type: 'string',
+    value: 'phosphor-ipmi-flash-bios-verify.target',
+    description: 'The systemd target started for verifying the BIOS image',
+)
+option(
+    'update-bios-target',
+    type: 'string',
+    value: 'phosphor-ipmi-flash-bios-update.target',
+    description: 'The systemd target started for updating the BIOS',
+)
