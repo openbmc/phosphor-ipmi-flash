@@ -3,8 +3,8 @@
 This document describes the OpenBmc software implementing the secure flash
 update mechanism.
 
-The primary details are
-[here](https://github.com/openbmc/docs/blob/master/designs/firmware-update-via-blobs.md).
+The primary details are in
+[OpenBMC docs](https://github.com/openbmc/docs/blob/master/designs/firmware-update-via-blobs.md).
 
 ## Building and using the host-tool
 
