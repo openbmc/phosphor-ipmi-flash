@@ -1,6 +1,7 @@
 {
   "comments": [
     {
+      "unresolved": true,
       "key": {
         "uuid": "df00eab2_7ec71a62",
         "filename": "bmc/version-handler/version_handlers_builder.cpp",
@@ -14,10 +15,10 @@
       "side": 1,
       "message": "Move this into the loop, otherwise a missing \"blob\" would result in printing the last one.",
       "revId": "94f0838b82f30f821d4b9a23ae52880846f9d841",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "74d582dd_6a504ee4",
         "filename": "bmc/version-handler/version_handlers_builder.cpp",
@@ -32,10 +33,10 @@
       "message": "I\u0027d also make the default something more obvious than the empty string, like \"(unknown)\" or something to that effect.",
       "parentUuid": "df00eab2_7ec71a62",
       "revId": "94f0838b82f30f821d4b9a23ae52880846f9d841",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
       "key": {
         "uuid": "eab0d76f_44fc1c28",
         "filename": "bmc/version-handler/version_handlers_builder.cpp",
@@ -49,8 +50,8 @@
       "side": 1,
       "message": "Would be nice to collapse this lookup of \"version\" with the next one.",
       "revId": "94f0838b82f30f821d4b9a23ae52880846f9d841",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
-  ]
+  ],
+  "submitRequirementResults": []
 }
