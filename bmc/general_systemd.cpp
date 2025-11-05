@@ -57,8 +57,9 @@ bool SystemdNoFile::trigger()
         method.append(triggerService);
         method.append(mode);
 
-        sdbusplus::message::object_path obj_path;
-        bus.call(method).read(obj_path);
+        auto obj_path =
+            bus.call(method).unpack<sdbusplus::message::object_path>();
+
         job = std::move(obj_path);
         std::fprintf(stderr, "Triggered %s mode %s: %s\n",
                      triggerService.c_str(), mode.c_str(), job->c_str());
