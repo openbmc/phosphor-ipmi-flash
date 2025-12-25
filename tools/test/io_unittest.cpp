@@ -66,7 +66,7 @@ TEST_F(DevMemTest, OpenFromWriteFails)
 {
     EXPECT_CALL(sys_mock, open(_, _)).WillOnce(Return(-1));
 
-    char source;
+    char source{};
     EXPECT_FALSE(devmem->write(/*offset*/ 0, /*length*/ 1, &source));
 }
 
@@ -78,7 +78,7 @@ TEST_F(DevMemTest, MmapFromWriteFails)
     EXPECT_CALL(sys_mock, mmap(0, _, _, _, fd, _)).WillOnce(Return(MAP_FAILED));
     EXPECT_CALL(sys_mock, close(fd));
 
-    char source;
+    char source{};
     EXPECT_FALSE(devmem->write(/*offset*/ 0, /*length*/ 1, &source));
 }
 
