@@ -84,7 +84,12 @@ TEST_F(FileHandlerOpenTest, VerifySimpleRead)
     EXPECT_TRUE(handler.open("", std::ios::in));
     auto result = handler.read(0, 10);
     EXPECT_EQ(handler.getSize(), testPattern.size());
-    ASSERT_TRUE(result);
+
+    if (!result)
+    {
+        GTEST_FAIL() << "expected result to be present";
+        return;
+    }
     EXPECT_EQ(result->size(), 10);
     EXPECT_EQ(*result, testPattern);
 }
@@ -104,7 +109,12 @@ TEST_F(FileHandlerOpenTest, VerifyTruncatedAndOffsetReads)
     FileHandler handler(TESTPATH);
     EXPECT_TRUE(handler.open("", std::ios::in));
     auto result = handler.read(3, 10);
-    ASSERT_TRUE(result);
+
+    if (!result)
+    {
+        GTEST_FAIL() << "expected result to be present";
+        return;
+    }
     EXPECT_EQ(*result, expectedResult);
 }
 
