@@ -117,7 +117,7 @@ std::unique_ptr<blobs::GenericBlobInterface> createHandler()
     std::vector<HandlerPack> supportedFirmware;
 
     supportedFirmware.push_back(
-        std::move(CreateFileHandlerPack(hashBlobId, HASH_FILENAME)));
+        CreateFileHandlerPack(hashBlobId, HASH_FILENAME));
 
     for (auto& config : configsFromJson)
     {

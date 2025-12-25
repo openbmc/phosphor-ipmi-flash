@@ -77,7 +77,7 @@ std::vector<HandlerConfig<LogBlobHandler::ActionPack>>
             const std::string& onOpenType = onOpen.at("type");
             if (onOpenType == "systemd")
             {
-                pack->onOpen = std::move(buildSystemd(onOpen));
+                pack->onOpen = buildSystemd(onOpen);
             }
             else if (onOpenType == "skip")
             {
@@ -93,7 +93,7 @@ std::vector<HandlerConfig<LogBlobHandler::ActionPack>>
             const std::string& onDeleteType = onDelete.at("type");
             if (onDeleteType == "systemd")
             {
-                pack->onDelete = std::move(buildSystemd(onDelete));
+                pack->onDelete = buildSystemd(onDelete);
             }
             else if (onDeleteType == "skip")
             {

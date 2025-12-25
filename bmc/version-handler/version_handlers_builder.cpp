@@ -88,7 +88,7 @@ std::vector<HandlerConfig<VersionBlobHandler::ActionPack>>
             const std::string& onOpenType = onOpen.at("type");
             if (onOpenType == "systemd")
             {
-                pack->onOpen = std::move(buildSystemd(onOpen));
+                pack->onOpen = buildSystemd(onOpen);
             }
             else if (onOpenType == "skip")
             {
