@@ -52,8 +52,8 @@ const std::vector<std::uint16_t> OpenFailParams{
     static_cast<std::uint16_t>(blobs::OpenFlags::write) | 0b011 << 8,
 };
 
-INSTANTIATE_TEST_CASE_P(WithFlags, FirmwareOpenFailTest,
-                        ::testing::ValuesIn(OpenFailParams));
+INSTANTIATE_TEST_SUITE_P(WithFlags, FirmwareOpenFailTest,
+                         ::testing::ValuesIn(OpenFailParams));
 
 } // namespace
 } // namespace ipmi_flash
