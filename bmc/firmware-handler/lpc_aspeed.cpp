@@ -147,7 +147,7 @@ bool LpcMapperAspeed::mapRegion()
     }
 
     mappedRegion = reinterpret_cast<uint8_t*>(
-        sys->mmap(0, regionSize, PROT_READ, MAP_SHARED, mappedFd, 0));
+        sys->mmap(nullptr, regionSize, PROT_READ, MAP_SHARED, mappedFd, 0));
 
     if (mappedRegion == MAP_FAILED)
     {

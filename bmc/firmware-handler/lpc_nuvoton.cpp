@@ -53,8 +53,9 @@ MemorySet LpcMapperNuvoton::open()
         throw MapperException("Unable to open /dev/mem");
     }
 
-    mapped = reinterpret_cast<uint8_t*>(sys->mmap(
-        0, memoryRegionSize, PROT_READ, MAP_SHARED, mappedFd, regionAddress));
+    mapped = reinterpret_cast<uint8_t*>(
+        sys->mmap(nullptr, memoryRegionSize, PROT_READ, MAP_SHARED, mappedFd,
+                  regionAddress));
     if (mapped == MAP_FAILED)
     {
         sys->close(mappedFd);
