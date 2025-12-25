@@ -20,8 +20,8 @@ class SkipAction : public TriggerableActionInterface
     // Disallow copy and assign.
     SkipAction(const SkipAction&) = delete;
     SkipAction& operator=(const SkipAction&) = delete;
-    SkipAction(SkipAction&&) = default;
-    SkipAction& operator=(SkipAction&&) = default;
+    SkipAction(SkipAction&&) = delete;
+    SkipAction& operator=(SkipAction&&) = delete;
 
     bool trigger() override;
     void abort() override;

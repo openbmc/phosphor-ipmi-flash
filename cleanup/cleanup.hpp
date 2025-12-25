@@ -25,8 +25,8 @@ class FileCleanupHandler : public blobs::GenericBlobInterface
     {}
 
     ~FileCleanupHandler() = default;
-    FileCleanupHandler(const FileCleanupHandler&) = default;
-    FileCleanupHandler& operator=(const FileCleanupHandler&) = default;
+    FileCleanupHandler(const FileCleanupHandler&) = delete;
+    FileCleanupHandler& operator=(const FileCleanupHandler&) = delete;
     FileCleanupHandler(FileCleanupHandler&&) = default;
     FileCleanupHandler& operator=(FileCleanupHandler&&) = default;
 

@@ -51,7 +51,7 @@ class PpcMemDevice : public HostIoInterface
     PpcMemDevice(const PpcMemDevice&) = delete;
     PpcMemDevice& operator=(const PpcMemDevice&) = delete;
     PpcMemDevice(PpcMemDevice&&) = default;
-    PpcMemDevice& operator=(PpcMemDevice&&) = default;
+    PpcMemDevice& operator=(PpcMemDevice&&) = delete;
 
     bool read(const std::size_t offset, const std::size_t length,
               void* const destination) override;
