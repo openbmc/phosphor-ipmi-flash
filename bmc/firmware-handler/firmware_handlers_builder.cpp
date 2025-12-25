@@ -77,7 +77,7 @@ std::vector<HandlerConfig<ActionPack>>
             const std::string prepareType = prep.at("type");
             if (prepareType == "systemd")
             {
-                pack->preparation = std::move(buildSystemd(prep));
+                pack->preparation = buildSystemd(prep);
             }
             else if (prepareType == "skip")
             {
@@ -93,11 +93,11 @@ std::vector<HandlerConfig<ActionPack>>
             const std::string verifyType = verify.at("type");
             if (verifyType == "fileSystemdVerify")
             {
-                pack->verification = std::move(buildFileSystemd(verify));
+                pack->verification = buildFileSystemd(verify);
             }
             else if (verifyType == "systemd")
             {
-                pack->verification = std::move(buildSystemd(verify));
+                pack->verification = buildSystemd(verify);
             }
             else if (verifyType == "skip")
             {
@@ -119,11 +119,11 @@ std::vector<HandlerConfig<ActionPack>>
             }
             else if (updateType == "fileSystemdUpdate")
             {
-                pack->update = std::move(buildFileSystemd(update));
+                pack->update = buildFileSystemd(update);
             }
             else if (updateType == "systemd")
             {
-                pack->update = std::move(buildSystemd(update));
+                pack->update = buildSystemd(update);
             }
             else if (updateType == "skip")
             {
