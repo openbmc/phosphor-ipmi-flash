@@ -23,7 +23,11 @@ class LpcMapperAspeed : public HardwareMapperInterface
      */
     LpcMapperAspeed(std::uint32_t regionAddress, std::size_t regionSize,
                     const internal::Sys* sys = &internal::sys_impl) :
-        regionAddress(regionAddress), regionSize(regionSize), sys(sys) {};
+        regionSize(regionSize), sys(sys)
+
+    {
+        (void)regionAddress; // explicitly mark as “unused”
+    }
 
     LpcMapperAspeed(const LpcMapperAspeed&) = delete;
     LpcMapperAspeed& operator=(const LpcMapperAspeed&) = delete;
@@ -49,7 +53,6 @@ class LpcMapperAspeed : public HardwareMapperInterface
     static const std::string lpcControlPath;
     int mappedFd = -1;
     std::uint8_t* mappedRegion = nullptr;
-    std::uint32_t regionAddress;
     std::size_t regionSize;
     const internal::Sys* sys;
 };
