@@ -100,17 +100,17 @@ int main(int argc, char* argv[])
     {
         // clang-format off
         static struct option long_options[] = {
-            {"command", required_argument, 0, 'c'},
-            {"interface", required_argument, 0, 'i'},
-            {"image", required_argument, 0, 'm'},
-            {"sig", required_argument, 0, 's'},
-            {"address", required_argument, 0, 'a'},
-            {"length", required_argument, 0, 'l'},
-            {"type", required_argument, 0, 't'},
-            {"ignore-update", no_argument, 0, 'u'},
-            {"host", required_argument, 0, 'H'},
-            {"port", optional_argument, 0, 'p'},
-            {0, 0, 0, 0}
+            {"command", required_argument, nullptr, 'c'},
+            {"interface", required_argument, nullptr, 'i'},
+            {"image", required_argument, nullptr, 'm'},
+            {"sig", required_argument, nullptr, 's'},
+            {"address", required_argument, nullptr, 'a'},
+            {"length", required_argument, nullptr, 'l'},
+            {"type", required_argument, nullptr, 't'},
+            {"ignore-update", no_argument, nullptr, 'u'},
+            {"host", required_argument, nullptr, 'H'},
+            {"port", optional_argument, nullptr, 'p'},
+            {nullptr, 0, nullptr, 0}
         };
         // clang-format on
 

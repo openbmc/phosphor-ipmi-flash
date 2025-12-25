@@ -66,8 +66,8 @@ bool PciDataHandler::open()
      */
     std::uint64_t offset = regionAddress - map.addr;
 
-    mapped = reinterpret_cast<std::uint8_t*>(
-        mmap(0, memoryRegionSize, PROT_READ, MAP_SHARED, mappedFd, offset));
+    mapped = reinterpret_cast<std::uint8_t*>(mmap(
+        nullptr, memoryRegionSize, PROT_READ, MAP_SHARED, mappedFd, offset));
     if (mapped == MAP_FAILED)
     {
         sys->close(mappedFd);
