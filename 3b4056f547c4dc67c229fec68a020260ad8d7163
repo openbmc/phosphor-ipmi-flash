@@ -22,6 +22,30 @@
       },
       "revId": "3b4056f547c4dc67c229fec68a020260ad8d7163",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42f12924_b7c2ece8",
+        "filename": "bmc/firmware-handler/test/file_handler_unittest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2025-12-31T04:00:23Z",
+      "side": 1,
+      "message": "I tried this and not working as expected . clang-tidy’s bugprone-unchecked-optional-access only accepts a plain C++ guard (e.g., if (!result) return;) before dereferencing std::optional. Test macros (ASSERT_TRUE, EXPECT_THAT(Optional(...))) aren’t modeled by the analyzer, so they don’t silence the warning.",
+      "parentUuid": "8be054f0_1b7b4a82",
+      "range": {
+        "startLine": 88,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 36
+      },
+      "revId": "3b4056f547c4dc67c229fec68a020260ad8d7163",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
