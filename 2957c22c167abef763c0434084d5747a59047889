@@ -22,6 +22,30 @@
       },
       "revId": "2957c22c167abef763c0434084d5747a59047889",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e57e2878_88c0ea41",
+        "filename": "bmc/firmware-handler/lpc_aspeed.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000086
+      },
+      "writtenOn": "2025-12-31T03:56:02Z",
+      "side": 1,
+      "message": "We could have considered [[maybe_unused]], but some maintainers prefer not to use that attribute. To minimize code changes, I chose the current approach instead. If we decide not to keep this in the future, it can be easily removed.",
+      "parentUuid": "95734826_ca42290b",
+      "range": {
+        "startLine": 24,
+        "startChar": 34,
+        "endLine": 24,
+        "endChar": 47
+      },
+      "revId": "2957c22c167abef763c0434084d5747a59047889",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
