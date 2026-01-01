@@ -46,6 +46,30 @@
       },
       "revId": "2957c22c167abef763c0434084d5747a59047889",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6675f89e_b2a90d73",
+        "filename": "bmc/firmware-handler/lpc_aspeed.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2026-01-01T19:27:52Z",
+      "side": 1,
+      "message": "got it, yeah this seems fine for aspeed",
+      "parentUuid": "e57e2878_88c0ea41",
+      "range": {
+        "startLine": 24,
+        "startChar": 34,
+        "endLine": 24,
+        "endChar": 47
+      },
+      "revId": "2957c22c167abef763c0434084d5747a59047889",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
