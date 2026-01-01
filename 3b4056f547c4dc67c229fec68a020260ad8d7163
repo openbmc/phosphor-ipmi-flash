@@ -46,6 +46,30 @@
       },
       "revId": "3b4056f547c4dc67c229fec68a020260ad8d7163",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "81bf51cf_2cbe0d4d",
+        "filename": "bmc/firmware-handler/test/file_handler_unittest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2026-01-01T19:29:52Z",
+      "side": 1,
+      "message": "Hmm.. ok - maybe the clang-tidy has changed since I last wrote a test with optional",
+      "parentUuid": "42f12924_b7c2ece8",
+      "range": {
+        "startLine": 88,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 36
+      },
+      "revId": "3b4056f547c4dc67c229fec68a020260ad8d7163",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
