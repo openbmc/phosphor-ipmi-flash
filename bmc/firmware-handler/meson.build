@@ -68,18 +68,15 @@ firmware_source = [
     'lpc_handler.cpp',
 ]
 
-if (get_option('lpc-type') == 'aspeed-lpc' or
-    get_option('tests').allowed())
+if (get_option('lpc-type') == 'aspeed-lpc' or get_option('tests').allowed())
     firmware_source += 'lpc_aspeed.cpp'
 endif
 
-if (get_option('lpc-type') == 'nuvoton-lpc' or
-    get_option('tests').allowed())
+if (get_option('lpc-type') == 'nuvoton-lpc' or get_option('tests').allowed())
     firmware_source += 'lpc_nuvoton.cpp'
 endif
 
-if (get_option('p2a-type') == 'aspeed-p2a' or
-    get_option('tests').allowed())
+if (get_option('p2a-type') == 'aspeed-p2a' or get_option('tests').allowed())
     firmware_source += 'pci_handler.cpp'
 endif
 

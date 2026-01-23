@@ -66,9 +66,9 @@ endif
 
 # Enable LPC and PCI for tests only.
 assert(
-    get_option('tests').allowed() \
-    or get_option('lpc-type') == 'none' \
-    or get_option('p2a-type') == 'none',
+    get_option('tests').allowed() or get_option('lpc-type') == 'none' or get_option(
+        'p2a-type',
+    ) == 'none',
     'Invalid configuration enabling both PCI and LPC.',
 )
 
@@ -77,11 +77,11 @@ if get_option('p2a-type') != 'none'
 endif
 
 feature_map = {
-    'host-bios'        : '-DENABLE_HOST_BIOS',
-    'ppc'              : '-DENABLE_PPC',
-    'reboot-update'    : '-DENABLE_REBOOT_UPDATE',
-    'update-status'    : '-DENABLE_UPDATE_STATUS',
-    'net-bridge'       : '-DENABLE_NET_BRIDGE',
+    'host-bios': '-DENABLE_HOST_BIOS',
+    'ppc': '-DENABLE_PPC',
+    'reboot-update': '-DENABLE_REBOOT_UPDATE',
+    'update-status': '-DENABLE_UPDATE_STATUS',
+    'net-bridge': '-DENABLE_NET_BRIDGE',
 }
 
 # Get the options status and build a project summary to show which flags are
@@ -96,8 +96,8 @@ endforeach
 
 
 update_type_combo_map = {
-    'static-layout'    : '-DENABLE_STATIC_LAYOUT',
-    'tarball-ubi'      : '-DENABLE_TARBALL_UBI',
+    'static-layout': '-DENABLE_STATIC_LAYOUT',
+    'tarball-ubi': '-DENABLE_TARBALL_UBI',
 }
 
 foreach option_key, option_value : update_type_combo_map
@@ -112,8 +112,8 @@ foreach option_key, option_value : update_type_combo_map
 endforeach
 
 lpc_type_combo_map = {
-    'aspeed-lpc'       : '-DASPEED_LPC',
-    'nuvoton-lpc'      : '-DNUVOTON_LPC',
+    'aspeed-lpc': '-DASPEED_LPC',
+    'nuvoton-lpc': '-DNUVOTON_LPC',
 }
 
 foreach option_key, option_value : lpc_type_combo_map
@@ -124,9 +124,9 @@ foreach option_key, option_value : lpc_type_combo_map
 endforeach
 
 pci_type_combo_map = {
-    'aspeed-p2a'       : '-DASPEED_P2A',
-    'nuvoton-p2a-vga'  : '-DNUVOTON_P2A_VGA',
-    'nuvoton-p2a-mbox' : '-DNUVOTON_P2A_MBOX',
+    'aspeed-p2a': '-DASPEED_P2A',
+    'nuvoton-p2a-vga': '-DNUVOTON_P2A_VGA',
+    'nuvoton-p2a-mbox': '-DNUVOTON_P2A_MBOX',
 }
 
 foreach option_key, option_value : pci_type_combo_map
