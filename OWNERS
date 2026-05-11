@@ -36,14 +36,10 @@ owners:
 - wak@google.com
 
 reviewers:
-- anoo@us.ibm.com
 
 matchers:
 
 openbmc:
-- name: Adriana Kobylak
-  email: anoo@us.ibm.com
-  discord: anoo
 - name: Brandon Kim
   email: brandonkim@google.com
   discord: brandonk
